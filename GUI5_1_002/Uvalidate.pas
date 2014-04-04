@@ -18,6 +18,9 @@ uses
   Uproject, Uutils, Uvertex;
 
 function  ValidateEditor(I: Integer; var S: String; var E: String): Boolean;
+//PLRM edit, previously ommitted definition so that could not be accessed from outside
+//Actual funciton unchanged.
+function ValidateSubcatch(I: Integer; var S: String): Boolean;
 
 implementation
 

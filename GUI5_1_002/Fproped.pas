@@ -59,7 +59,8 @@ implementation
 
 {$R *.DFM}
 
-uses Fmain, Ubrowser, Uedit, Uvalidate, Ulid;
+uses Fmain, Ubrowser, Uedit, Uvalidate, Ulid,
+_PLRMD1LandUseAssignmnt2, _PLRMD2SoilsAssignmnt, _PLRM3PSCDef, GSPLRM, GSUtils, GSTypes;//PLRM Additions
 
 const
   TXT_PROPERTY = 'Property';
@@ -178,6 +179,34 @@ begin
   // User wants to edit a subcatchment's initial loadings
   else if (CurrentList = SUBCATCH) and (Index = SUBCATCH_LOADING_INDEX)
   then Uedit.EditLoadings(Project.CurrentItem[CurrentList], S, Modified)
+
+
+  //PLRM Addition User wants to enter Landuse menu
+  else if (CurrentList = SUBCATCH) and (Index = 24)//SUBCATCH_LOADING_INDEX)
+  then //Uedit.EditLoadings(Project.CurrentItem[CurrentList], S, Modified)
+  begin
+    //FrmLuse := TPLRMLandUse.Create(Application);
+    getCatchLuseInput(Project.GetID(SUBCATCH, Project.CurrentItem[CurrentList]));
+  end
+  //PLRM Addition User wants to enter Landuse menu
+  else if (CurrentList = SUBCATCH) and (Index = 25)//SUBCATCH_LOADING_INDEX)
+  then //Uedit.EditLoadings(Project.CurrentItem[CurrentList], S, Modified)
+  begin
+    getCatchSoilsInput(Project.GetID(SUBCATCH, Project.CurrentItem[CurrentList]));
+  end
+  //PLRM Addition User wants to enter PSC menu
+  else if (CurrentList = SUBCATCH) and (Index = 26)//SUBCATCH_LOADING_INDEX)
+  then //Uedit.EditLoadings(Project.CurrentItem[CurrentList], S, Modified)
+  begin
+    //check if land uses have been assigned
+    if (PLRMObj.currentCatchment.hasDefLuse = false) then
+    begin
+      ShowMessage('Please provide land use information first');
+      Exit;
+    end;
+    //FrmDrnXtcs := TPLRMPCSDef.Create(Application);
+    getSCandDrngXtrstcsInput(Project.GetID(SUBCATCH, Project.CurrentItem[CurrentList]));
+  end
 
   // User wants to edit a node's inflows
   else if (Project.IsNode(CurrentList)) and (Index = NODE_INFLOWS_INDEX)

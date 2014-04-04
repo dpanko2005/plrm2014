@@ -99,7 +99,47 @@ uses
   Dproject in 'Dproject.pas' {ProjectForm},
   Dgweqn in 'Dgweqn.pas' {GWEqnForm},
   Dtimeplot in 'Dtimeplot.pas' {TimePlotForm},
-  Dproselect in 'Dproselect.pas' {ProfileSelectForm};
+  Dproselect in 'Dproselect.pas' {ProfileSelectForm},
+  _DPLRMabout in 'PLRMFinalGS\Forms\Dialogs\_DPLRMabout.pas' {PLRMAboutBoxForm},
+  _PLRMD1LandUseAssignmnt in 'PLRMFinalGS\Forms\Dialogs\_PLRMD1LandUseAssignmnt.pas' {Form1},
+  _PLRMD1LandUseAssignmnt2 in 'PLRMFinalGS\Forms\Dialogs\_PLRMD1LandUseAssignmnt2.pas' {PLRMLandUse},
+  _PLRMD2SoilsAssignmnt in 'PLRMFinalGS\Forms\Dialogs\_PLRMD2SoilsAssignmnt.pas' {PLRMD2SoilsAssignmnt},
+  _PLRMD3CatchProps in 'PLRMFinalGS\Forms\Dialogs\_PLRMD3CatchProps.pas' {CatchProps},
+  _PLRMD4Schematics in 'PLRMFinalGS\Forms\Dialogs\_PLRMD4Schematics.pas' {DetSchm},
+  _PLRMD5VolumeDischarge in 'PLRMFinalGS\Forms\Dialogs\_PLRMD5VolumeDischarge.pas' {VolumeDischargeForm},
+  _PLRMD6About in 'PLRMFinalGS\Forms\Dialogs\_PLRMD6About.pas' {About},
+  _PLRMDprogress in 'PLRMFinalGS\Forms\Dialogs\_PLRMDprogress.pas' {plrmProgress},
+  _PLRMstats in 'PLRMFinalGS\Forms\Dialogs\_PLRMstats.pas' {frmPLRMStats},
+  _CFMain in 'PLRMFinalGS\Forms\_CFMain.pas' {MainForm2},
+  _FCatchParam in 'PLRMFinalGS\Forms\_FCatchParam.pas' {FCatchParam},
+  _FCatchProp in 'PLRMFinalGS\Forms\_FCatchProp.pas' {FcatchProp},
+  _FGlobalCatchments in 'PLRMFinalGS\Forms\_FGlobalCatchments.pas' {FGlobalCatch},
+  _FSWTParam in 'PLRMFinalGS\Forms\_FSWTParam.pas' {Form7},
+  _PLRM0Wizard in 'PLRMFinalGS\Forms\_PLRM0Wizard.pas' {PLRMWiz},
+  _PLRM1ProjNscenManger in 'PLRMFinalGS\Forms\_PLRM1ProjNscenManger.pas' {ProjNscenManager},
+  _PLRM2ProjNscenEditor in 'PLRMFinalGS\Forms\_PLRM2ProjNscenEditor.pas' {ProjNscenEditor},
+  _PLRM3PSCDef in 'PLRMFinalGS\Forms\_PLRM3PSCDef.pas' {PLRMPCSDef},
+  _PLRM4_1RoadCRCSum in 'PLRMFinalGS\Forms\_PLRM4_1RoadCRCSum.pas' {RoadCRCs},
+  _PLRM4_2ParcelCRCSumary in 'PLRMFinalGS\Forms\_PLRM4_2ParcelCRCSumary.pas' {ParcelCRCs},
+  _PLRM4RoadConditions in 'PLRMFinalGS\Forms\_PLRM4RoadConditions.pas' {PLRMRoadConditions},
+  _PLRM5RoadDrnXtcs in 'PLRMFinalGS\Forms\_PLRM5RoadDrnXtcs.pas' {PLRMDrainageConditions},
+  GSCatchments in 'PLRMFinalGS\Units\GSCatchments.pas',
+  GSDataAccess in 'PLRMFinalGS\Units\GSDataAccess.pas',
+  GSFileManage in 'PLRMFinalGS\Units\GSFileManage.pas',
+  GSIO in 'PLRMFinalGS\Units\GSIO.pas',
+  GSNodes in 'PLRMFinalGS\Units\GSNodes.pas',
+  GSPLRM in 'PLRMFinalGS\Units\GSPLRM.pas',
+  GSResults in 'PLRMFinalGS\Units\GSResults.pas',
+  GSTypes in 'PLRMFinalGS\Units\GSTypes.pas',
+  GSUtils in 'PLRMFinalGS\Units\GSUtils.pas',
+  GSXML in 'PLRMFinalGS\Units\GSXML.pas',
+  PLRMStats in 'PLRMFinalGS\Units\PLRMStats.pas',
+  _PLRM6DrngXtsDetail in 'PLRMFinalGS\Forms\_PLRM6DrngXtsDetail.pas' {PLRMDrngXtsDetail},
+  _PLRM6DrngXtsDetailBk in 'PLRMFinalGS\Forms\_PLRM6DrngXtsDetailBk.pas' {Form2},
+  _PLRM7SWTs in 'PLRMFinalGS\Forms\_PLRM7SWTs.pas' {SWTs},
+  _PLRM7SWTsBK in 'PLRMFinalGS\Forms\_PLRM7SWTsBK.pas' {PLRMSWTs},
+  _PLRM7SWTsBK2 in 'PLRMFinalGS\Forms\_PLRM7SWTsBK2.pas' {SWTs3},
+  _PLRM9ScenCompsMulti in 'PLRMFinalGS\Forms\_PLRM9ScenCompsMulti.pas' {PLRMScenComps};
 
 {$R *.RES}
 
@@ -109,5 +149,21 @@ begin
   Application.Title := 'SWMM 5';
   Application.HelpFile := '';
   Application.CreateForm(TMainForm, MainForm);
+  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TDetSchm, DetSchm);
+  Application.CreateForm(TVolumeDischargeForm, VolumeDischargeForm);
+  Application.CreateForm(TplrmProgress, plrmProgress);
+  Application.CreateForm(TfrmPLRMStats, frmPLRMStats);
+  Application.CreateForm(TMainForm2, MainForm2);
+  Application.CreateForm(TFCatchParam, FCatchParam);
+  Application.CreateForm(TFcatchProp, FcatchProp);
+  Application.CreateForm(TFGlobalCatch, FGlobalCatch);
+  Application.CreateForm(TForm7, Form7);
+  Application.CreateForm(TPLRMWiz, PLRMWiz);
+  Application.CreateForm(TPLRMPCSDef, PLRMPCSDef);
+  Application.CreateForm(TForm2, Form2);
+  Application.CreateForm(TSWTs, SWTs);
+  Application.CreateForm(TSWTs3, SWTs3);
+  Application.CreateForm(TPLRMScenComps, PLRMScenComps);
   Application.Run;
 end.

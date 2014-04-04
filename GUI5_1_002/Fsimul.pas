@@ -74,7 +74,8 @@ implementation
 {$R *.DFM}
 
 uses
-  Fmain, Uexport, Uoutput;
+  Fmain, Uexport, Uoutput,
+  GSPLRM; //plrm
 
 const
   TXT_SWMM5 = 'SWMM 5 - ';
@@ -106,7 +107,7 @@ var
   ErrFlow: Single;                     //Flow routing continuity error
   ErrQual: Single;                     //Quality routing continuity error
   OldDays: LongInt;                    //Old elapsed number of days
-
+  PLRMFlag: Boolean;                   //PLRM addition
 
 procedure TSimulationForm.FormCreate(Sender: TObject);
 //-----------------------------------------------------------------------------
@@ -142,7 +143,9 @@ begin
                          PcntCompleteLabel.Width + 4;
 
   // Make the ProgressPage be the active page
-  Notebook1.PageIndex := 0;
+    //DP temp Notebook1.PageIndex := 0;
+  //PLRM addition
+  PLRMFlag := false;
 end;
 
 
@@ -153,6 +156,7 @@ procedure TSimulationForm.FormActivate(Sender: TObject);
 //-----------------------------------------------------------------------------
 begin
   Execute;
+  PLRMFlag := true; //PLRM Addition
 end;
 
 
@@ -172,6 +176,8 @@ procedure TSimulationForm.StopBtnClick(Sender: TObject);
 //-----------------------------------------------------------------------------
 begin
   RunStatus := rsStopped;
+  //PLRM Addition
+  PLRMObj.RunStatusStopped := 1;
 end;
 
 

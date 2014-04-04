@@ -19,7 +19,9 @@ uses SysUtils, Windows, Forms, Messages, Classes, Graphics,
 procedure AddGage(const X: Extended; const Y: Extended);
 procedure AddLabel(const X: Extended; const Y: Extended; const S: String);
 procedure AddLink(const Ltype: Integer; Node1, Node2: TNode;
-          PointList: array of TPoint; N: Integer);
+          PointList: array of TPoint; N: Integer); overload;  //PLRM modification added overload
+procedure AddLink(const Ltype: Integer; Node1, Node2: TNode;
+          PointList: array of TPoint; N: Integer; var ID: String); overload; //PLRM addition to add optional output
 procedure AddNode(const Ntype: Integer; const X: Extended; const Y: Extended);
 procedure AddObject(const ObjType: Integer);
 procedure AddSubcatch(PointList: array of TPoint; N: Integer);
@@ -59,7 +61,8 @@ uses
   Fmain, Fmap, Fproped, Dpollut, Dlanduse, Daquifer, Dinfil, Doptions, Dloads,
   Dtsect,  Dtseries, Dcurve, Dcontrol, Dsubland, Dpattern, Dxsect, Dgwater,
   Dinflows, Dclimate, Dsnow, Dnotes, Dunithyd, Dtreat, Ubrowser, Uoutput,
-  Uupdate, Uvalidate, Dreporting, Ulid;
+  Uupdate, Uvalidate, Dreporting, Ulid,                                               //(5.0.014 - LR)
+  GSPLRM; //plrm
 
 const
   TXT_VALUE = 'Value';
@@ -123,6 +126,9 @@ begin
   S.ID := PChar(Project.Lists[SUBCATCH].Strings[I]);
   Uutils.CopyStringArray(Project.DefProp[SUBCATCH].Data, S.Data);
 
+  //PLRM Edit - add catchment to PLRM Obj as well
+  PLRMObj.addSubCatch(S,I);
+
   // Save the coordinates of the subcatchment's vertex points
   for J := N-1 downto 0 do
   begin
@@ -152,7 +158,7 @@ end;
 
 
 procedure AddLink(const Ltype: Integer; Node1, Node2: TNode;
-  PointList: array of TPoint; N: Integer);
+  PointList: array of TPoint; N: Integer); overload;  //PLRM modified added overload, see below
 //-----------------------------------------------------------------------------
 // Adds a new link to the database.
 //-----------------------------------------------------------------------------
@@ -209,6 +215,63 @@ begin
   Ubrowser.BrowserAddItem(Ltype, I);
 end;
 
+procedure AddLink(const Ltype: Integer; Node1, Node2: TNode;
+  PointList: array of TPoint; N: Integer; var ID : String); overload;  //PLRM modified added overload
+//-----------------------------------------------------------------------------
+// Adds a new link to the database.
+//-----------------------------------------------------------------------------
+var
+  L  : TLink;
+  I  : Integer;
+  Vx,
+  Vy: Extended;
+  //ID : String;     //PLRM modification
+begin
+  // Create the link object and assign default properties to it
+  L := TLink.Create;
+  Uutils.CopyStringArray(Project.DefProp[Ltype].Data, L.Data);
+  L.Ltype := Ltype;
+
+  // Assign end nodes to the link
+  if (Node1 <> nil) and (Node2 <> nil) then
+  begin
+    L.Node1 := Node1;
+    L.Node2 := Node2;
+  end;
+
+  // Save the coordinates of the link's vertex points
+  for I := 1 to N do
+  begin
+    Vx := MapForm.Map.GetX(PointList[I].X);
+    Vy := MapForm.Map.GetY(PointList[I].Y);
+    L.Vlist.Add(Vx, Vy);
+  end;
+
+  // Initialize output result index and ID label
+  L.Zindex := -1;
+  ID := Project.GetNextID(Ltype);
+
+  // Add the link to the list of the project's objects
+  Project.Lists[Ltype].AddObject(ID, L);
+  I := Project.Lists[Ltype].Count - 1;
+  L.ID := PChar(Project.Lists[Ltype].Strings[I]);
+
+  // Compute the link's length if AutoLength is on
+  if (Ltype = CONDUIT) and Uglobals.AutoLength then
+    L.Data[CONDUIT_LENGTH_INDEX] := MapForm.Map.GetLinkLengthStr(Ltype, I);
+
+  // Assign the link a map color
+  if (Uglobals.CurrentLinkVar = NOVIEW)
+  or (Uglobals.CurrentLinkVar >= LINKOUTVAR1)
+  then L.ColorIndex := -1
+  else Uoutput.SetLinkColor(L,
+    LinkVariable[Uglobals.CurrentLinkVar].SourceIndex);
+
+  // Draw the link on the map and update the Data Browser
+  // (must update map before Browser)
+  MapForm.DrawObject(Ltype, I);
+  Ubrowser.BrowserAddItem(Ltype, I);
+end;
 
 procedure AddNode(const Ntype: Integer; const X: Extended; const Y: Extended);
 //-----------------------------------------------------------------------------
@@ -242,6 +305,9 @@ begin
   then N.ColorIndex := -1
   else Uoutput.SetNodeColor(N,
     NodeVariable[Uglobals.CurrentNodeVar].SourceIndex);
+
+  //PLRM Addition
+  PLRMObj.addNode(N,I);
 
   // Draw the node on map and update the Data Browser
   // (must update map before Browser)
@@ -1588,6 +1654,9 @@ begin
       UpdateEditor(EditorObject, EditorIndex);
       PropEditForm.BringToFront;
       PropEditForm.Editor.Edit;
+      //PLRM Edits
+      PropEditForm.Hide;
+      PLRMOBj.launchPropEditForm(EditorObject, EditorIndex);
     end;
 
     // Use specific dialog form editor for other objects

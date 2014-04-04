@@ -72,7 +72,8 @@ var
 implementation
 
 uses
-  Dquery, Dtimeplot, Fmain, Fproped, Fmap, Fovmap, Uedit, Uoutput, Uupdate;
+  Dquery, Dtimeplot, Fmain, Fproped, Fmap, Fovmap, Uedit, Uoutput, Uupdate,
+  GSPLRM; //PLRM Addition
 
 const
   TXT_DELETE_OBJECT = 'Delete selected object?';
@@ -260,6 +261,10 @@ procedure DeleteItem(const ObjType: Integer; const Index: Integer);
 var
   OldName: String;
 begin
+
+  //PLRM Addition
+  PLRMObj.deleteObj(ObjType,Index);
+
   // If object is visual, then erase it from the map
   // (which also deletes it from the database)
   Oldname := Project.Lists[ObjType].Strings[Index];

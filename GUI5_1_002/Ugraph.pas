@@ -499,7 +499,12 @@ begin
     Psize := GraphOptions.PointSize[I];
     if Psize > 0 then
     begin
-      Pointer.Size := Psize;
+      //PLRM 2014 Pointer.Size := Psize;
+          //PLRM Edit                                                                    //(5.0.013 - LR)
+      Pointer.HorizSize := Psize;                                           //(5.0.013 - LR)
+      Pointer.VertSize := Psize;
+//      Pointer.ChangeHorizSize(Psize);                                           //(5.0.013 - LR)
+//      Pointer.ChangeVertSize(Psize);
     end;
   end;
 end;

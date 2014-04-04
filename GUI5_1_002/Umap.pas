@@ -136,18 +136,23 @@ const
 
   DefMapOptions: TMapOptions =
     (ShowGageIDs        : False;
-     ShowSubcatchIDs    : False;
+         //PLRM Edit ShowSubcatchIDs    : False;
+     ShowSubcatchIDs    : True;
      ShowSubcatchValues : False;
      ShowSubcatchLinks  : True;
      SubcatchFillStyle  : Ord(bsBDiagonal);
      SubcatchLineSize   : 1;
      SubcatchSnapTol    : 0;
-     SubcatchSize       : 5;
-     ShowNodeIDs        : False;
+     //SubcatchSize       : 5;
+          SubcatchSize       : 10; //PLRM
+     //PLRM Edit ShowNodeIDs        : False;
+     ShowNodeIDs        : True;//PLRM
      ShowNodeValues     : False;
      ShowNodesBySize    : False;
-     ShowNodeBorder     : True;
-     NodeSize           : 3;
+     //ShowNodeBorder     : True;
+     //NodeSize           : 3;
+     ShowNodeBorder     : False;//PLRM
+     NodeSize           : 10;  //PLRM
      ShowLinkIDs        : False;
      ShowLinkValues     : False;
      ShowLinksBySize    : False;
@@ -157,12 +162,14 @@ const
      ShowSubcatchs      : True;
      ShowNodes          : True;
      ShowLinks          : True;
-     ShowNodeSymbols    : True;
+     //ShowNodeSymbols    : True;
+     ShowNodeSymbols    : False;  //PLRM
      ShowLinkSymbols    : True;
      ShowLabels         : True;
      LabelsTranspar     : True;
      NotationTranspar   : False;
-     NotationSize       : 7;
+     //NotationSize       : 7;
+     NotationSize       : 12; //PLRM
      ArrowStyle         : asNone;
      ArrowSize          : 2;
      ColorIndex         : 1;
@@ -183,6 +190,18 @@ type
     Bitmap    : TBitmap;         // Bitmap containing the drawn map
     BackBM    : TBitmap;         // Bitmap containing backdrop image
     GageBM    : TBitmap;         // Bitmap containing raingage image
+    PLRMGageBM    : TBitmap;         // PLRM addition Bitmap containing PLRM catchment image
+    PLRMSubCBM    : TBitmap;         // PLRM addition Bitmap containing PLRM catchment image
+    PLRMDetbBM    : TBitmap;         // PLRM addition
+    PLRMWetlBM    : TBitmap;         // PLRM addition
+    PLRMInfilBM    : TBitmap;         // PLRM addition
+    PLRMFltrBM    : TBitmap;         // PLRM addition
+    PLRMhydrBM    : TBitmap;         // PLRM addition
+    PLRMSpltrBM    : TBitmap;         // PLRM addition
+    PLRMjunctBM    : TBitmap;         // PLRM addition
+    PLRMOutflBM    : TBitmap;         // PLRM addition
+    PLRMCartFltrBM : TBitmap;         // PLRM addition
+
     Window    : TMapWindow;      // Display window sizing info
     Dimensions: TMapDimensions;  // Physical map dimensions
     Options   : TMapOptions;     // Display options
@@ -288,7 +307,8 @@ type
 implementation
 
 uses
-  Uoutput;
+  Uoutput,
+  GSPLRM, GSNodes; //PLRM Addition
 
 var
   P1, P2: TPoint;
@@ -313,6 +333,33 @@ begin
   BackBM.PixelFormat := pf24Bit;
   GageBM := TBitmap.Create;
   GageBM.Transparent := False;
+
+  //PLRM addition
+  PLRMSubCBM := TBitmap.Create;
+  PLRMGageBM := TBitmap.Create;
+  PLRMSubCBM := TBitmap.Create;
+  PLRMDetbBM := TBitmap.Create;
+  PLRMWetlBM := TBitmap.Create;
+  PLRMInfilBM := TBitmap.Create;
+  PLRMFltrBM := TBitmap.Create;
+  PLRMhydrBM := TBitmap.Create;
+  PLRMSpltrBM := TBitmap.Create;
+  PLRMjunctBM := TBitmap.Create;
+  PLRMOutflBM := TBitmap.Create;
+  PLRMCartFltrBM := TBitmap.Create;
+
+  PLRMSubCBM.Transparent := True;
+  PLRMGageBM.Transparent := True;
+  PLRMDetbBM.Transparent := True;
+  PLRMWetlBM.Transparent := True;
+  PLRMInfilBM.Transparent := True;
+  PLRMFltrBM.Transparent := True;
+  PLRMhydrBM.Transparent := True;
+  PLRMSpltrBM.Transparent := True;
+  PLRMjunctBM.Transparent := True;
+  PLRMOutflBM.Transparent := True;
+  PLRMCartFltrBM.Transparent := True;
+
   Dimensions := DefMapDimensions;
   Options := DefMapOptions;
   Backdrop := DefMapBackdrop;
@@ -325,6 +372,20 @@ begin
   Bitmap.Free;
   BackBM.Free;
   GageBM.Free;
+
+    //PLRM addition
+  PLRMSubCBM.Free;
+  PLRMGageBM.Free;
+  //PLRMSubCBM.Free;
+  PLRMDetbBM.Free;
+  PLRMWetlBM.Free;
+  PLRMInfilBM.Free;
+  PLRMFltrBM.Free;
+  PLRMhydrBM.Free;
+  PLRMSpltrBM.Free;
+  PLRMjunctBM.Free;
+  PLRMOutflBM.Free;
+  PLRMCartFltrBM.Free;
   inherited Destroy;
 end;
 
@@ -683,6 +744,7 @@ var
   Size  : Integer;
   Offset: Integer;
   Color: TColor;
+  tempInt:Integer; //PLRM addition
 begin
   // Check if object falls within current display window
   // (GetBoundingRect also gets global variables P1 & P2
@@ -725,11 +787,19 @@ begin
     SetNodeColor(ObjType, Index);
     Size := SetNodeSize;
 
-    // Draw the node
+    //PLRM edit, prior to drawing node set current PLRM Node
+    tempInt := PLRMObj.nodes.IndexOf(Project.getNode(ObjType,Index).ID);
+    if (tempInt <> -1) then PLRMObj.currentNode := PLRMObj.nodes.Objects[tempInt] as TPLRMNode;
     if ObjType = STORAGE then DrawStorage(P1.X, P1.Y, Size)
     else if ObjType = DIVIDER then DrawDivider(P1.X, P1.Y, Size)
     else if ObjType = OUTFALL then DrawOutfall(P1.X, P1.Y, Size)
     else DrawNode(P1.X, P1.Y, Size);
+
+    // Draw the node
+//    if ObjType = STORAGE then DrawStorage(P1.X, P1.Y, Size)
+//    else if ObjType = DIVIDER then DrawDivider(P1.X, P1.Y, Size)
+//    else if ObjType = OUTFALL then DrawOutfall(P1.X, P1.Y, Size)
+//    else DrawNode(P1.X, P1.Y, Size);
 
     // Add notation if called for
     if (ZoomRatio >= Options.NotationZoom) then
@@ -863,12 +933,12 @@ begin
   begin
     // Draw the polygon
     Canvas.Brush.Style := TBrushStyle(Options.SubcatchFillStyle);
-    Canvas.Polygon(Slice(Points, N-1));
+    //Canvas.Polygon(Slice(Points, N-1));  PLRM Edit
 
     // Draw the polygon's frame
     Canvas.Pen.Width := Options.SubcatchLineSize;
     Canvas.Pen.Color := ForeColor;
-    Canvas.PolyLine(Slice(Points, N));
+    //Canvas.PolyLine(Slice(Points, N));   PLRM Edit
   end;
 
   // Draw the subcatchment's centroid symbol
@@ -879,7 +949,10 @@ begin
   B := Options.SubcatchSize;
   C := GetSubcatchCentroid(S);
   R := Rect(C.X - B, C.Y - B, C.X + B + 1, C.Y + B + 1);
-  Canvas.Rectangle(R);
+  //Canvas.Rectangle(R);  PLRM Edit
+
+    //PLRM Addition - now draw Bitmap
+   Canvas.Draw(C.X - Round(PLRMSubCBM.Width/2), C.Y - Round(PLRMSubCBM.Height/2), PLRMSubCBM);
 
   // Draw outlet connection
   if Options.ShowSubcatchLinks then
@@ -943,7 +1016,9 @@ procedure TMap.DrawNode(const X: Integer; const Y: Integer;
 //  Draws a node at location X,Y with size Size.
 //-----------------------------------------------------------------------------
 begin
-  Canvas.Ellipse(X-Size, Y-Size, X+Size+1, Y+Size+1);
+    //Canvas.Ellipse(X-Size, Y-Size, X+Size+1, Y+Size+1);  PLRM Edit
+      //PLRM Addition - now draw Bitmap
+  Canvas.Draw(X - Round(PLRMJunctBM.Width/2), Y - Round(PLRMJunctBM.Height/2), PLRMJunctBM);
 end;
 
 
@@ -960,7 +1035,10 @@ begin
   Poly[0] := Point(X-W, Y-W);
   Poly[1] := Point(X, Y+W);
   Poly[2] := Point(X+W, Y-W);
-  Canvas.Polygon(Poly);
+  //Canvas.Polygon(Poly);   PLRM Edit
+
+    //PLRM Addition - now draw Bitmap
+  Canvas.Draw(X - Round(PLRMOutflBM.Width/2), Y - Round(PLRMOutflBM.Height/2), PLRMOutflBM);
 end;
 
 
@@ -978,7 +1056,9 @@ begin
   Poly[1] := Point(X+W, Y);
   Poly[2] := Point(X, Y+W);
   Poly[3] := Point(X-W, Y);
-  Canvas.Polygon(Poly);
+  //Canvas.Polygon(Poly);  PLRM Edit
+    //PLRM Addition - now draw Bitmap
+  Canvas.Draw(X - Round(PLRMSpltrBM.Width/2), Y - Round(PLRMSpltrBM.Height/2), PLRMSpltrBM);
 end;
 
 
@@ -991,6 +1071,16 @@ var
   Poly: array[0..3] of TPoint;
   W: Integer;
 begin
+ //PLRM Additions
+  case PLRMObj.currentNode.SWTType of
+       1: Canvas.Draw(X - Round(PLRMDetbBM.Width/2), Y - Round(PLRMDetbBM.Height/2), PLRMDetbBM);  //Detention
+       2: Canvas.Draw(X - Round(PLRMInfilBM.Width/2), Y - Round(PLRMInfilBM.Height/2), PLRMInfilBM); //Infiltration
+       3: Canvas.Draw(X - Round(PLRMWetlBM.Width/2), Y - Round(PLRMWetlBM.Height/2), PLRMWetlBM); //Wetland
+       4: Canvas.Draw(X - Round(PLRMFltrBM.Width/2), Y - Round(PLRMFltrBM.Height/2), PLRMFltrBM); //'Filter'
+       5: Canvas.Draw(X - Round(PLRMCartFltrBM.Width/2), Y - Round(PLRMCartFltrBM.Height/2), PLRMCartFltrBM); //'Hydrodynamic Device'
+       6: Canvas.Draw(X - Round(PLRMhydrBM.Width/2), Y - Round(PLRMhydrBM.Height/2), PLRMhydrBM); //'Hydrodynamic Device'
+  end;
+
   if (Options.ShowNodeSymbols) and (ZoomRatio >= Options.SymbolZoom) then
   begin
     W := 2*Size;
@@ -998,11 +1088,11 @@ begin
     Poly[1] := Point(X-W, Y+Size+1);
     Poly[2] := Point(X+W+1, Y+Size+1);
     Poly[3] := Point(X+W+1, Y-W-1);
-    Canvas.PolyLine(Poly);
-    Canvas.Rectangle(X-W, Y-Size, X+W+2, Y+Size+2);
+    //Canvas.PolyLine(Poly);   PLRM Edit
+    //Canvas.Rectangle(X-W, Y-Size, X+W+2, Y+Size+2); PLRM Edit
   end
   else
-    Canvas.Rectangle(X-Size, Y-Size, X+Size+1, Y+Size+1);
+    //Canvas.Rectangle(X-Size, Y-Size, X+Size+1, Y+Size+1);  PLRM Edit
 end;
 
 
