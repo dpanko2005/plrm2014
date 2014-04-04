@@ -323,6 +323,104 @@
 				<Form>ProfileSelectForm</Form>
 				<FormType>dfm</FormType>
 			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\Dialogs\_DPLRMabout.pas">
+				<Form>PLRMAboutBoxForm</Form>
+			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\Dialogs\_PLRMD1LandUseAssignmnt.pas">
+				<Form>Form1</Form>
+			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\Dialogs\_PLRMD1LandUseAssignmnt2.pas">
+				<Form>PLRMLandUse</Form>
+			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\Dialogs\_PLRMD2SoilsAssignmnt.pas">
+				<Form>PLRMD2SoilsAssignmnt</Form>
+			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\Dialogs\_PLRMD3CatchProps.pas">
+				<Form>CatchProps</Form>
+			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\Dialogs\_PLRMD4Schematics.pas">
+				<Form>DetSchm</Form>
+			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\Dialogs\_PLRMD5VolumeDischarge.pas">
+				<Form>VolumeDischargeForm</Form>
+			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\Dialogs\_PLRMD6About.pas">
+				<Form>About</Form>
+			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\Dialogs\_PLRMDprogress.pas">
+				<Form>plrmProgress</Form>
+			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\Dialogs\_PLRMstats.pas">
+				<Form>frmPLRMStats</Form>
+			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\_CFMain.pas">
+				<Form>MainForm2</Form>
+			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\_FCatchParam.pas">
+				<Form>FCatchParam</Form>
+			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\_FCatchProp.pas">
+				<Form>FcatchProp</Form>
+			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\_FGlobalCatchments.pas">
+				<Form>FGlobalCatch</Form>
+			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\_FSWTParam.pas">
+				<Form>Form7</Form>
+			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\_PLRM0Wizard.pas">
+				<Form>PLRMWiz</Form>
+			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\_PLRM1ProjNscenManger.pas">
+				<Form>ProjNscenManager</Form>
+			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\_PLRM2ProjNscenEditor.pas">
+				<Form>ProjNscenEditor</Form>
+			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\_PLRM3PSCDef.pas">
+				<Form>PLRMPCSDef</Form>
+			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\_PLRM4_1RoadCRCSum.pas">
+				<Form>RoadCRCs</Form>
+			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\_PLRM4_2ParcelCRCSumary.pas">
+				<Form>ParcelCRCs</Form>
+			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\_PLRM4RoadConditions.pas">
+				<Form>PLRMRoadConditions</Form>
+			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\_PLRM5RoadDrnXtcs.pas">
+				<Form>PLRMDrainageConditions</Form>
+			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Units\GSCatchments.pas"/>
+			<DCCReference Include="PLRMFinalGS\Units\GSDataAccess.pas"/>
+			<DCCReference Include="PLRMFinalGS\Units\GSFileManage.pas"/>
+			<DCCReference Include="PLRMFinalGS\Units\GSIO.pas"/>
+			<DCCReference Include="PLRMFinalGS\Units\GSNodes.pas"/>
+			<DCCReference Include="PLRMFinalGS\Units\GSPLRM.pas"/>
+			<DCCReference Include="PLRMFinalGS\Units\GSResults.pas"/>
+			<DCCReference Include="PLRMFinalGS\Units\GSTypes.pas"/>
+			<DCCReference Include="PLRMFinalGS\Units\GSUtils.pas"/>
+			<DCCReference Include="PLRMFinalGS\Units\GSXML.pas"/>
+			<DCCReference Include="PLRMFinalGS\Units\PLRMStats.pas"/>
+			<DCCReference Include="PLRMFinalGS\Forms\_PLRM6DrngXtsDetail.pas">
+				<Form>PLRMDrngXtsDetail</Form>
+			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\_PLRM6DrngXtsDetailBk.pas">
+				<Form>Form2</Form>
+			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\_PLRM7SWTs.pas">
+				<Form>SWTs</Form>
+			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\_PLRM7SWTsBK.pas">
+				<Form>PLRMSWTs</Form>
+			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\_PLRM7SWTsBK2.pas">
+				<Form>SWTs3</Form>
+			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\_PLRM9ScenCompsMulti.pas">
+				<Form>PLRMScenComps</Form>
+			</DCCReference>
 			<None Include="objprops.txt"/>
 			<None Include="viewvars.txt"/>
 			<None Include="Epaswmm5.dpr"/>
@@ -389,13 +487,13 @@
 					<Platform value="Win32">True</Platform>
 				</Platforms>
 				<Deployment>
+					<DeployFile Class="ProjectOutput" Configuration="Release" LocalName="Epaswmm5.exe">
+						<Platform Name="Win32"/>
+					</DeployFile>
 					<DeployFile Class="DebugSymbols" Configuration="Release" LocalName="Epaswmm5.rsm">
 						<Platform Name="Win32">
 							<RemoteName>Epaswmm5.rsm</RemoteName>
 						</Platform>
-					</DeployFile>
-					<DeployFile Class="ProjectOutput" Configuration="Release" LocalName="Epaswmm5.exe">
-						<Platform Name="Win32"/>
 					</DeployFile>
 					<DeployClass Name="ProjectOutput" Required="true">
 						<Platform Name="OSX32">

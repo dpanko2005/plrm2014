@@ -35,7 +35,7 @@ uses
   Forms, Dialogs, Menus, ExtCtrls, Buttons, StdCtrls, ComCtrls, Types,
   Printers, Chart, ExtDlgs, ImgList, Grids, ToolWin,
   HTMLHelpViewer, Spin, ShellAPI, Vcl.Themes, Vcl.Styles,
-
+  GSTypes, //PLRM addition
   Uglobals, Uproject, Uutils, Animator, PgSetup, OpenDlg, Xprinter;
 
 const
@@ -48,7 +48,8 @@ const
   MSG_NO_BACKDROP = 'Could not find backdrop file ';
   MSG_FIND_BACKDROP = '. Do you want to search for it?';
 
-  TXT_MAIN_CAPTION = 'SWMM 5.1';
+  //TXT_MAIN_CAPTION = 'SWMM 5.1';
+  TXT_MAIN_CAPTION = PLRMVERSION;//'Tahoe Pollutant Load Reduction Model - v2.0'; //PLRM edits
   TXT_STATUS_REPORT = 'Status Report';
   TXT_SAVE_CHANGES = 'Save changes made to current project?';
   TXT_SAVE_RESULTS = 'Save current simulation results?';
@@ -465,6 +466,18 @@ type
       Direction: TUpDownDirection);
     procedure FormShow(Sender: TObject);
 
+
+    //PLRM    addition
+    procedure btnPlrmWizardClick(Sender: TObject);
+    procedure btnRunPLRMClick(Sender: TObject);
+    procedure btnPLRMRunClick(Sender: TObject);
+    procedure btnSavePLRMClick(Sender: TObject);
+    procedure btnPrjMgrClick(Sender: TObject);
+    procedure btnScnCompsClick(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure btnSaveRptClick(Sender: TObject);
+    procedure btnAboutClick(Sender: TObject);
+
   private
     { Private declarations }
 
@@ -514,6 +527,9 @@ type
     procedure UpdateProgressBar(var Count: Integer; const StepSize: Integer);
     procedure ToolItemClick(Sender:TObject);
     procedure ShowStatusHint(const Msg: String);
+
+    //PLRM addition
+    procedure PLRMSaveFile(Fname: String);
 end;
 
 var
@@ -529,7 +545,8 @@ uses
   Fsimul, Dsummary, Dabout, Dcalib1, Dcombine, Ddefault, Dgrpdel, Dprefers,
   Dproject, Dreport, Dstats, Dgrouped, Dfind, Dquery, Dmapexp, Dbackdrp,
   Dbackdim, Dtools1, Ubrowser, Uinifile, Umap, Uimport, Uexport, Uoutput,
-  Utools, Uupdate, Dreporting, Dproselect, Dtimeplot;
+  Utools, Uupdate, Dreporting, Dproselect, Dtimeplot,
+  _PLRM1ProjNscenManger, GSPLRM, GSUtils, _PLRMstats, PLRMStats,_PLRM9ScenCompsMulti, _PLRMD6About;   //PLRM additions
 
 //============================================================================
 //            Form Creation, Resizing, & Closing Handlers
@@ -650,6 +667,10 @@ begin
   // Prevent form from repainting itself for now
   LockWindowUpdate(Handle);
 
+    //PLRM Addition
+  initPLRMPaths();  //initials paths and directories used throught plrm
+  PLRMObj := TPLRM.Create;
+
   // Enable only for testing
   //ReportMemoryLeaksOnShutdown := True;
 end;
@@ -693,6 +714,11 @@ begin
 
   // Otherwise simulate a click on File|New
   else MnuNewClick(Sender);
+
+    //PLRM addition
+  //plrm 2014 MnuStdToolbar.Checked := False;
+      //PLRM Additions
+    getProjManager(1);
 end;
 
 
@@ -740,6 +766,10 @@ begin
 
   // Un-register ability to accept dragged files from Explorer
   DragAcceptFiles(Self.Handle, False);
+
+   //PLRM Addition
+  //btnSavePLRMClick(Sender);
+  PLRMObj.Free;
 end;
 
 
@@ -810,7 +840,10 @@ begin
   // Re-set name of input project file
   InputFileName := '';
   InputFileType := iftINP;
-  Caption := TXT_MAIN_CAPTION;
+  //PLRM Edits Caption := TXT_MAIN_CAPTION;
+  if Assigned(PLRMObj) then
+    Caption := TXT_MAIN_CAPTION + '[Project Name: ' + PLRMObj.projUserName +  '] [Scenario Name: ' + PLRMObj.scenarioName + ' ]';
+
   ReadOnlyFlag := False;
 
   // Clear current project data
@@ -1603,7 +1636,6 @@ begin
     Free;
   end;
 end;
-
 
 procedure TMainForm.MnuProjectRunSimulationClick(Sender: TObject);
 //-----------------------------------------------------------------------------
@@ -2458,6 +2490,179 @@ begin
   end;
 end;
 
+////PLRM Addition
+procedure TMainForm.btnAboutClick(Sender: TObject);
+begin
+  getAbout();
+end;
+
+procedure TMainForm.btnPLRMRunClick(Sender: TObject);
+//-----------------------------------------------------------------------------
+// Displays a run's Status Report when Report|Status is selected.
+//-----------------------------------------------------------------------------
+begin
+  //PLRM Edit Jan 2010 edit added to track whether user working with scenario see #233
+  getProjManagerWithMsg();
+  if PLRMObj.hasActvScn = false then exit;
+
+  // Check if Status Report form already exists
+  if FormExists('StatusForm') then Exit;
+
+  // Otherwise create it
+  StatusForm := TStatusForm.Create(self);
+  //with TStatusForm.Create(self) do
+  with StatusForm do
+  try
+    Caption := TXT_STATUS_REPORT;
+    isPLRMStatusReportActive := true; // used in Fstatus to decide whether to show plrm status form or default swmm status form
+    RefreshStatusReport;
+    RefreshStatusReport(PLRMObj.wrkdir + '\' + 'swmm.prpt');
+    //set back to false in fStatus.close  isPLRMStatusReportActive := false;
+    //SetFocus;
+    StatusForm.ManualFloat(StatusForm.ClientRect);
+      StatusForm.Show;
+  finally
+  end;
+//  if not FormExists('frmPLRMStats')
+//  then with TfrmPLRMStats.Create(self) do
+//  try
+//    Show;
+//  finally
+//  end;
+
+end;
+
+//PLRM Addition
+procedure TMainForm.btnPlrmWizardClick(Sender: TObject);
+begin
+   //if PLRMWiz.visible <> true then PLRMWiz.showModal;
+end;
+//PLRM Addition
+procedure TMainForm.btnPrjMgrClick(Sender: TObject);
+begin
+  if PLRMObj.hasActvScn = false then
+    getProjManager(1)
+  else
+    getProjManager;
+end;
+//PLRM Addition
+procedure TMainForm.btnRunPLRMClick(Sender: TObject);
+var
+  flag: Boolean;
+begin
+  //PLRM Edit Jan 2010 edit added to track whether user working with scenario see #233
+  getProjManagerWithMsg();
+  if PLRMObj.hasActvScn = false then exit;
+
+  flag := PLRMObj.Run(); //plrm addition
+  if ((flag = true)) then
+  begin
+
+    PLRMObj.RunStatusStopped := 0; // 0 - stopped = false, 1 - stopped = true
+    RunSimulation();
+    if(PLRMObj.RunStatusStopped = 1) then
+    begin
+      reloadUserHydro();
+      exit;
+    end;
+    if ((RunFlag = True)) then
+    begin
+      MapToolBar.Enabled := false;
+      PLRMToolBar.Enabled := false;
+      ObjectToolBar.Enabled := false;
+      PLRMStats.GetAllResults();
+      MainForm.HideProgressBar;
+      CopyFile(PChar(Uglobals.TempReportFile ), PChar(currentRptFilePath), False); //plrm addition
+      PLRMToolBar.Enabled := true;
+      ObjectToolBar.Enabled := true;
+      MapToolBar.Enabled := true;
+    end
+    else // attemmpt to reload user hydrology from user swmm file
+    begin
+        // Re-Display the Status Report if the run produced errors
+      if Uglobals.RunStatus = rsError then MnuReportStatusClick(Self);
+      ShowMessage('Please check the status report and press "OK" to continue');
+      if (FileExists(PLRMObj.scenarioXMLFilePath)= true) then
+        if (openAndLoadSWMMInptFilefromXML(PLRMObj.scenarioXMLFilePath)= true) then
+          PLRMObj.LinkObjsToSWMMObjs()
+        else
+          showMessage('An error occured while trying to reload project xml file');
+    end;
+  end
+  else
+    ShowMessage('The simulation cannot continue');
+end;
+
+//PLRM Addition. Saves interim state and canvas contents
+procedure TMainForm.btnSavePLRMClick(Sender: TObject);
+var
+  flag: Boolean;
+begin
+  //PLRM Edit Jan 2010 edit added to track whether user working with scenario see #233
+  getProjManagerWithMsg();
+  if PLRMObj.hasActvScn = false then exit;
+
+  flag := true; //PLRMObj.chkNodesAndCatchs();
+  if ((flag = true)) then
+  begin
+    if PLRMobj.plrmToXML() = false then
+    begin
+      showMessage('An error occured while saving the current project. Please try saving again after providing more input');
+    end;
+  end;
+end;
+
+//PLRM Addition
+procedure TMainForm.btnSaveRptClick(Sender: TObject);
+begin
+  //PLRM Edit Jan 2010 edit added to track whether user working with scenario see #233
+  getProjManagerWithMsg();
+  if PLRMObj.hasActvScn = false then exit;
+
+  //if model has not been run warn and exit
+  if (FileExists(PLRMObj.wrkdir + '\' + 'swmm.prpt') = False) then
+  begin
+    ShowMessage('This model has not been run. Run the model first before attempting to save the report');
+    exit;
+  end;
+
+  with SaveDialog do
+  begin
+    Title := 'Save PLRM Status Report As:';
+    Filter := 'PLRM Report Files (*.PRPT)|*.PRPT|All files|*.*';
+    InitialDir := ExtractFileDir(PLRMObj.scenarioXMLFilePath);
+    DefaultExt := '.PRPT';
+    if Length(InputFileName) > 0
+    then Filename := ChangeFileExt(ExtractFileName(PLRMObj.scenarioXMLFilePath),DefaultExt)
+    //then Filename := ExtractFileName(PLRMObj.scenarioXMLFilePath),DefaultExt
+    else Filename := '*.PRPT';
+    if Execute then gsCopyFile(InitialDir + '\' + 'swmm.prpt',FileName,true); //SaveFile(Filename);
+    DefaultExt := '';
+  end;
+end;
+
+procedure TMainForm.btnScnCompsClick(Sender: TObject);
+var tempInt:Integer;
+begin
+ PLRMScenComps :=  TPLRMScenComps.Create(self) ;
+ with PLRMScenComps do
+      try
+      begin
+        tempInt := ShowModal;
+        if tempInt = mrCancel then
+          exit;
+      end;
+    finally
+      Free;
+    end;
+    ModalResult := mrOK;
+end;
+
+procedure TMainForm.Button1Click(Sender: TObject);
+begin
+  btnRunPLRMClick(Sender);
+end;
+
 procedure TMainForm.ResizeControl(aControl: TControl);
 begin
   with aControl do
@@ -2594,7 +2799,8 @@ begin
   Uglobals.InputFileName := Fname;
   SetCurrentDir(ExtractFileDir(Fname));
   MRUUpdate(Self, Uglobals.InputFileName);
-  Caption := TXT_MAIN_CAPTION + ' - ' + ExtractFileName(Uglobals.InputFileName);
+  //PLRM edits Caption := TXT_MAIN_CAPTION + ' - ' + ExtractFileName(Uglobals.InputFileName);
+  Caption := TXT_MAIN_CAPTION + '[Project Name: ' + PLRMObj.projUserName +  '] [Scenario Name: ' + PLRMObj.scenarioName + ' ]';
 
   // Clear all existing data
   ClearAll;
@@ -2691,7 +2897,7 @@ begin
   begin
 
     // See if input data should be saved
-    Result := MessageDlg(TXT_SAVE_CHANGES, mtConfirmation, mbYesNoCancel, 0);
+    //PLRM Edit Result := MessageDlg(TXT_SAVE_CHANGES, mtConfirmation, mbYesNoCancel, 0);
     if Result = mrYes then
     begin
       MnuSaveClick(Sender);
@@ -2700,7 +2906,7 @@ begin
       if Uglobals.RunFlag and not Uglobals.ResultsSaved then
       begin
         if Uglobals.AutoSave
-        or (MessageDlg(TXT_SAVE_RESULTS, mtConfirmation, [mbYes, mbNo], 0) = mrYes)
+        //PLRM edit or (MessageDlg(TXT_SAVE_RESULTS, mtConfirmation, [mbYes, mbNo], 0) = mrYes)
         then Uexport.SaveResults(Uglobals.InputFileName);
       end;
     end;
@@ -2715,6 +2921,11 @@ begin
   end;
 end;
 
+//PLRM addition to allow access to private member fxn SaveFile
+procedure TMainForm.PLRMSaveFile(Fname: String);
+begin
+   SaveFile(Fname);
+end;
 
 procedure TMainForm.SaveFile(Fname: String);
 //-----------------------------------------------------------------------------
@@ -2737,8 +2948,10 @@ begin
     Uexport.SaveProject(Fname);
     Uglobals.InputFileName := Fname;
     Uglobals.InputFileType := iftINP;
-    Caption := Txt_MAIN_CAPTION + ' - ' +
-               ExtractFileName(Uglobals.InputFileName);
+    //PLRM edits Caption := Txt_MAIN_CAPTION + ' - ' +
+              // ExtractFileName(Uglobals.InputFileName);
+    Caption := TXT_MAIN_CAPTION + '[Project Name: ' + PLRMObj.projUserName +  '] [Scenario Name: ' + PLRMObj.scenarioName + ' ]';
+
     MRUUpdate(Self, Uglobals.InputFileName);
     Uglobals.HasChanged := False;
     Uglobals.ReadOnlyFlag := False;
@@ -3110,7 +3323,9 @@ begin
     Header.Text := '';
     Header.Alignment := taCenter;
     Header.Enabled := True;
-    Footer.Text := TXT_MAIN_CAPTION;
+    //PLRM Edits Footer.Text := TXT_MAIN_CAPTION;
+    //Footer.Text := TXT_MAIN_CAPTION + '[Project Name: ' + PLRMObj.projUserName +  '] [Scenario Name: ' + PLRMObj.scenarioName + ' ]';
+
     Footer.Alignment := taLeftJustify;
     Footer.Enabled := True;
     PageNumbers := pnLowerRight;

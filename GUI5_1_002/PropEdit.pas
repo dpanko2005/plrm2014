@@ -166,6 +166,8 @@ type
     procedure SetProps(var PropArray: array of TPropRecord; Values: TStrings);
     procedure GetProps(Plist, Vlist: TStringlist);
     procedure Edit;
+        //PLRM Addition
+    procedure PLRMEditProperty(CurCol, CurRow: LongInt; Key: Char; strVal:String);
     function  IsValid: Boolean;
     property  Modified: Boolean read FModified;
     property  Row: Integer read FRow;
@@ -993,6 +995,12 @@ begin
   end;
 end;
 
+//PLRM Addition
+procedure TPropEdit.PLRMEditProperty(CurCol, CurRow: LongInt; Key: Char;strVal:String);
+begin
+  FGrid.Cells[CurCol,CurRow] := strVal;
+  EditProperty(CurCol, CurRow,Key);
+end;
 
 procedure TPropEdit.EditProperty(CurCol, CurRow: LongInt; Key: Char);
 //-----------------------------------------------------------------------------

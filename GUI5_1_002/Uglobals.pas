@@ -499,7 +499,8 @@ const
 {$I viewvars.txt}  //File containing definitions of view variables
 
 var
-
+  //PLRM variables
+ currentRptFilePath:String;
 //--------------------
 // Program preferences
 //--------------------

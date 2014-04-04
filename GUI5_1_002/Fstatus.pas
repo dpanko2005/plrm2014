@@ -28,7 +28,10 @@ type
     { Private declarations }
   public
     { Public declarations }
-    procedure RefreshStatusReport;
+    //plrm edit procedure RefreshStatusReport;
+    procedure RefreshStatusReport;overload;
+    procedure RefreshStatusReport(prlmRptFilePath:String);overload;
+
     procedure ClearReport;
     procedure CopyTo;
     procedure Print(Destination: TDestination);
@@ -36,17 +39,24 @@ type
 
 var
   StatusForm: TStatusForm;        // Do not comment out this line.
+   PLRMTopicPos: array[0..19] of LongInt;                 //PLRM Addition
 
 implementation
 
 {$R *.DFM}
 
 uses
-  Dcopy, Fmain;
+  Dcopy, Fmain, GSUtils; //PLRM edit
 
 const
   MSG_NO_FILE = 'There is no Report File to view.';
   MSG_REPORT_TOO_BIG = 'Status Report too big to fit in window.';
+
+    PLRMTopics: array[0..3] of String =                           //PLRM addition
+    ('Global Information',
+     'Catchments',
+     'Storm Water Treatment',
+     'Scenario Summary');
 
 
 procedure TStatusForm.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -55,6 +65,7 @@ procedure TStatusForm.FormClose(Sender: TObject; var Action: TCloseAction);
 //-----------------------------------------------------------------------------
 begin
   Action := caFree;
+  isPLRMStatusReportActive := false; //PLRM edit
 end;
 
 procedure TStatusForm.RefreshStatusReport;
@@ -76,6 +87,53 @@ begin
   else
   begin
     AssignFile(F, TempReportFile);
+    Skip := False;
+    try
+      {$I-}
+      Reset(F);
+      {$I+}
+      Memo1.Lines.BeginUpdate;
+      while not Eof(F) do
+      begin
+        Readln(F, Line);
+        if Skip = False then
+        begin
+          if  (ContainsText(Line, 'Subcatchment Runoff'))
+          or (ContainsText(Line, 'Node Depth'))
+          then Skip := True;
+        end
+        else if ContainsText(Line, 'Analysis begun')
+        then Skip := False;
+        if not Skip then   Memo1.Lines.Add(Line);
+      end;
+    finally
+      Memo1.Lines.EndUpdate;
+      CloseFile(F);
+    end;
+    Memo1.SelStart := 0;
+  end;
+end;
+
+//plrm 2014 update of previous plrm procedure
+procedure TStatusForm.RefreshStatusReport(prlmRptFilePath:String);
+//-----------------------------------------------------------------------------
+// Reloads the form with the contents
+// of the Status Report File generated from an analysis.
+//-----------------------------------------------------------------------------
+var
+  Line : String;
+  F : TextFile;
+  Skip: Boolean;
+begin
+  // Clear report's contents
+  Memo1.Clear;
+
+  // Make sure that the report file exists
+  if not FileExists(prlmRptFilePath)
+  then Memo1.Lines.Add(MSG_NO_FILE)
+  else
+  begin
+    AssignFile(F, prlmRptFilePath);
     Skip := False;
     try
       {$I-}

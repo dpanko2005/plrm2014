@@ -181,6 +181,8 @@ object SimulationForm: TSimulationForm
       Left = 0
       Top = 0
       Caption = 'ResultPage'
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object StatusLabel: TLabel
         Left = 56
         Top = 12

@@ -105,6 +105,7 @@ type
     HintPanel: TPanel;
     HintLabel: TLabel;
     ImageList1: TImageList;
+    ImageList2: TImageList;
 
     procedure CreateParams(var Params: TCreateParams); override;
     procedure FormCreate(Sender: TObject);
@@ -371,6 +372,16 @@ begin
 
   // Save image of rain gage (stored as bitmap 0 in ImageList1)
   ImageList1.GetBitmap(0, Map.GageBM);
+    ImageList2.GetBitmap(0, Map.PLRMSubCBM);   //PLRM addition
+  ImageList2.GetBitmap(1, Map.PLRMDetbBM);   //PLRM addition
+  ImageList2.GetBitmap(2, Map.PLRMWetlBM);   //PLRM addition
+  ImageList2.GetBitmap(3, Map.PLRMInfilBM);   //PLRM addition
+  ImageList2.GetBitmap(4, Map.PLRMFltrBM);   //PLRM addition
+  ImageList2.GetBitmap(5, Map.PLRMhydrBM);   //PLRM addition
+  ImageList2.GetBitmap(6, Map.PLRMSpltrBM);   //PLRM addition
+  ImageList2.GetBitmap(7, Map.PLRMjunctBM);   //PLRM addition
+  ImageList2.GetBitmap(8, Map.PLRMOutflBM);   //PLRM addition
+  ImageList2.GetBitmap(10, Map.PLRMCartFltrBM);   //PLRM addition
   RedrawOnResize := False;
 
   // Assign background color choices
@@ -641,6 +652,8 @@ begin
   Map.Backdrop := DefMapBackdrop;
   Map.Dimensions := DefMapDimensions;
   Map.ZoomIndex := 0;
+  //PLRM edit to eliminate division by 0
+  Map.Resize(Rect(0,0,ClientWidth,ClientHeight));
   Map.Rescale;
   RedrawMap;
   OVMapForm.OVmap.Backdrop := DefMapBackdrop;
@@ -934,8 +947,11 @@ begin
   RAINGAGE:
     Cursor := crXHAIR;
 
+   //PLRM edit
   SUBCATCH:
-    Cursor := crPENCIL;
+    Cursor := crXHAIR;
+//  SUBCATCH:
+//    Cursor := crPENCIL;
 
   JUNCTION..STORAGE:
     Cursor := crXHAIR;
@@ -1006,7 +1022,14 @@ begin
 
     // Begin executing the called-for action
     case CurrentTool of
-    SUBCATCH:      BeginFencing(X, Y);
+    SUBCATCH:      //BeginFencing(X, Y);
+     begin
+      BeginFencing(X, Y);
+      //PLRM Addition to end fencing after one click
+      // Get screen coords. of mouse position for use with popup menus
+      P := ClientToScreen(Point(X, Y));
+      Endfencing;
+    end;
     SELECT:        BeginSelecting(X, Y);
     GROUPSELECT:   BeginFencing(X, Y);
     VERTEXSELECT:  GoVertexing(X, Y);
@@ -1036,13 +1059,13 @@ begin
     else if (CurrentTool = SELECT) and FindObject(X, Y) then
     begin
       Ubrowser.BrowserUpdate(SelectedObject, SelectedIndex);
-      PopupMenu1.Popup(P.X, P.Y);
+      //PopupMenu1.Popup(P.X, P.Y);  //PLRM edit, commented out
     end
 
     // Otherwise invoke the map's popup menu.
     else
     begin
-      PopupMenu2.Popup(P.X, P.Y);
+      //PopupMenu2.Popup(P.X, P.Y);   //PLRM edit, commented out
     end;
   end;
 end;
@@ -1209,7 +1232,7 @@ begin
       FlyOverIndex := SelectedIndex;
 
       // Display the flyover hint
-      DisplayFlyOver(X,Y);
+      //DisplayFlyOver(X,Y);  //PLRM Edit commented out
     end;
   end
 
