@@ -3034,13 +3034,13 @@ var
 begin
   with Project.Options do
   begin
-
-  // Process starting date/time
+    // Process starting date/time
     try
       StartDate := StrToDate(Data[START_DATE_INDEX], MyFormatSettings);
     except
       On EConvertError do StartDate := Date;
     end;
+
     StartTime := Uutils.StrHoursToTime(Data[START_TIME_INDEX]);
     if StartTime < 0 then StartTime := 0;
     D := StartDate + StartTime;

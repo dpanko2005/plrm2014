@@ -58,6 +58,7 @@ type
     procedure tbxScenNameKeyPress(Sender: TObject; var Key: Char);
     procedure tbxProjNameExit(Sender: TObject);
     procedure tbxScenNameExit(Sender: TObject);
+    procedure FormShow(Sender: TObject);
 
   private
     { Private declarations }
@@ -177,6 +178,14 @@ begin
     Self.Caption := PLRM2_TITLE;
 end;
 
+procedure TProjNscenEditor.FormShow(Sender: TObject);
+begin
+        if PLRMObj.simTypeID = 2 then
+     Self.rgpSimLength.Buttons[0].Checked := true
+   else
+    Self.rgpSimLength.Buttons[1].Checked := true;
+end;
+
 procedure TProjNscenEditor.Label12Click(Sender: TObject);
 begin
   GSUtils.BrowseURL('http://maps.google.com/maps?q=http://sites.google.com/site/unofficialplrm/Home/MetGrid_v2.kml?attredirects=0') ;
@@ -196,7 +205,6 @@ procedure TProjNscenEditor.rgpSimLengthClick(Sender: TObject);
 begin
   //do nothing, not allowed to change
 end;
-
 
 procedure TProjNscenEditor.tbxProjNameExit(Sender: TObject);
 begin

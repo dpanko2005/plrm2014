@@ -374,10 +374,11 @@ procedure TProjNscenManager.TreeView1DblClick(Sender: TObject);
          tbxProjDescription.Text := PLRMObj.prjDescription;
          tbxMetGrid.Text := intToStr(PLRMObj.metgridNum);
          tbxDB.Text := PLRMObj.dbPath;
+         {PLRM 2014 moved to TProjNscenEditor.FormCreate
          if PLRMObj.simTypeID = 2 then
           rgpSimLength.Buttons[0].Checked := true
         else
-        rgpSimLength.Buttons[1].Checked := true;
+        rgpSimLength.Buttons[1].Checked := true; }
 
          grpbxScnInfo.Hide; //hide the scenario information
          btnNext.Hide; //hide the next button
@@ -462,11 +463,11 @@ procedure TProjNscenManager.TreeView1DblClick(Sender: TObject);
        tbxScenName.Text := PLRMObj.scenarioName;
        mbxScenarioNotes.Text := PLRMObj.scenarioNotes;
 
-       if PLRMObj.simTypeID = 2 then
+       //PLRM 2014 moved to TProjNscenEditor.FormCreate
+       {if PLRMObj.simTypeID = 2 then
          rgpSimLength.Buttons[0].Checked := true
        else
-        rgpSimLength.Buttons[1].Checked := true;
-
+        rgpSimLength.Buttons[1].Checked := true;  }
 
        //Set project fields to read-only and gray out
        tbxProjName.Color := cl3DLight;

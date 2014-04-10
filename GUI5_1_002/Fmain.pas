@@ -331,6 +331,27 @@ type
     MnuExportStatusRpt: TMenuItem;
     StatusHint: TToolButton;
     ToolButton1: TToolButton;
+    PLRMToolBar: TToolBar;
+    btnAbout: TToolButton;
+    btnPrjMgr: TToolButton;
+    btnRun: TToolButton;
+    btnSave: TToolButton;
+    btnSaveRpt: TToolButton;
+    btnScnComps: TToolButton;
+    plrmImageList: TImageList;
+    ToolBar1: TToolBar;
+    tbPLRMCatch: TToolButton;
+    tbPLRMJunction: TToolButton;
+    tbPLRMOutfall: TToolButton;
+    ToolbarButton9716: TToolButton;
+    tbPLRMFlowsplitr: TToolButton;
+    tbPLRMDetn: TToolButton;
+    tbPLRMInfilt: TToolButton;
+    tbPLRMWetl: TToolButton;
+    tbPLRMBedfilt: TToolButton;
+    tbPLRMCartfilt: TToolButton;
+    tbPLRMHydrodyn: TToolButton;
+    ControlBar2: TControlBar;
 
     procedure FormCreate(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -438,6 +459,8 @@ type
 
     procedure ObjectTreeViewChange(Sender: TObject; Node: TTreeNode);
     procedure ObjectTreeViewClick(Sender: TObject);
+    //plrm 201 - added from SWMM 5.022
+    procedure ObjectButtonClick(Sender: TObject);
 
     procedure ItemListBoxClick(Sender: TObject);
     procedure ItemListBoxDblClick(Sender: TObject);
@@ -467,7 +490,7 @@ type
     procedure FormShow(Sender: TObject);
 
 
-    //PLRM    addition
+    //PLRM    additions
     procedure btnPlrmWizardClick(Sender: TObject);
     procedure btnRunPLRMClick(Sender: TObject);
     procedure btnPLRMRunClick(Sender: TObject);
@@ -477,6 +500,17 @@ type
     procedure Button1Click(Sender: TObject);
     procedure btnSaveRptClick(Sender: TObject);
     procedure btnAboutClick(Sender: TObject);
+    procedure tbPLRMJunctionClick(Sender: TObject); //PLRM 2014 Addition
+    procedure plrmDrawObjButtonHelper(Sender: TObject;ObjType: Integer;ItemIndex: Integer);
+    procedure tbPLRMCatchClick(Sender: TObject);
+    procedure tbPLRMOutfallClick(Sender: TObject);
+    procedure tbPLRMFlowsplitrClick(Sender: TObject);
+    procedure tbPLRMHydrodynClick(Sender: TObject);
+    procedure tbPLRMBedfiltClick(Sender: TObject);
+    procedure tbPLRMCartfiltClick(Sender: TObject);
+    procedure tbPLRMWetlClick(Sender: TObject);
+    procedure tbPLRMInfiltClick(Sender: TObject);
+    procedure tbPLRMDetnClick(Sender: TObject);//PLRM 2014 Addition
 
   private
     { Private declarations }
@@ -546,7 +580,8 @@ uses
   Dproject, Dreport, Dstats, Dgrouped, Dfind, Dquery, Dmapexp, Dbackdrp,
   Dbackdim, Dtools1, Ubrowser, Uinifile, Umap, Uimport, Uexport, Uoutput,
   Utools, Uupdate, Dreporting, Dproselect, Dtimeplot,
-  _PLRM1ProjNscenManger, GSPLRM, GSUtils, _PLRMstats, PLRMStats,_PLRM9ScenCompsMulti, _PLRMD6About;   //PLRM additions
+  _PLRM1ProjNscenManger, GSPLRM, GSUtils, _PLRMstats, PLRMStats,_PLRM9ScenCompsMulti, _PLRMD6About,   //PLRM additions
+    UEdit; //plrm 2014 edit
 
 //============================================================================
 //            Form Creation, Resizing, & Closing Handlers
@@ -710,10 +745,12 @@ begin
   begin
     ProjectDir := ExtractFileDir(InputFilename);
     OpenFile(Sender, InputFileName);
-  end
+  //PLRM 2014 end
+  end;
 
   // Otherwise simulate a click on File|New
-  else MnuNewClick(Sender);
+  //PLRM 2014 else MnuNewClick(Sender);
+
 
     //PLRM addition
   //plrm 2014 MnuStdToolbar.Checked := False;
@@ -1897,7 +1934,146 @@ begin
   end;
 end;
 
+//PLRM 2014 Addition
+procedure TMainForm.plrmDrawObjButtonHelper(Sender: TObject;ObjType: Integer;ItemIndex: Integer);
+//-----------------------------------------------------------------------------
+// Helper function for PLRM object buttons used to draw objects on the canvas.
+//-----------------------------------------------------------------------------
+var
+  I:integer;
+begin
+//PLRM Edit - Jan 2010 edit added to track whether user working with scenario see #233
+  getProjManagerWithMsg();
+  if PLRMObj.hasActvScn = false then exit;
 
+  {// Place all buttons on the Map Toolbar in the UP position
+  for I := 1 to MAXMAPTOOLBARINDEX do
+  begin
+    with FindComponent('tbPLRM'+IntToStr(I)) as TToolButton do
+    begin
+      Down := False;
+    end;
+  end; }
+
+  // Place the selected button on the Object Toolbar in the DOWN position
+  //TToolButton(Sender).Down := True;
+  //Store hint so that we can differentiate between various storage node types
+  PLRMObj.currentToolHint := TToolButton(Sender).Hint;
+
+  Project.CurrentItem[ObjType] := ItemIndex;
+  // Update the display of items for the selected category
+  Ubrowser.BrowserUpdate(ObjType, ItemIndex); // do this for native swmm objects only and not for plrm objects
+
+  Uglobals.CurrentList := ObjType;
+  Project.CurrentItem[Uglobals.CurrentList] := ItemIndex;
+  // Hide the Property Editor if no visual item was selected
+  if (ItemIndex < 0) or not Project.IsVisual(ObjType) then PropEditForm.Hide;
+
+  // Update the Property Editor and highlight the item on the map
+  // if a visual object was selected
+  if Project.IsVisual(ObjType) then
+  begin
+    if ItemIndex >= 0 then Uedit.UpdateEditor(ObjType, ItemIndex);
+    MapForm.ChangeHiliteObject(ObjType, ItemIndex);
+    if TimePlotForm.Visible then TimePlotForm.SetObject;
+  end
+  else MapForm.ChangeHiliteObject(-1, -1);
+  if PropEditForm.Visible then PropEditForm.SetFocus;
+
+  // simulate click of the new button (+ sign)
+  BrowserBtnNewClick(Sender);
+end;
+
+//PLRM 2014 Addition
+procedure TMainForm.tbPLRMBedfiltClick(Sender: TObject);
+//-----------------------------------------------------------------------------
+// PLRM Toolbar Handler for button used to draw bed filters on  the canvas.
+//-----------------------------------------------------------------------------
+begin
+     plrmDrawObjButtonHelper(Sender, STORAGE, 0);
+end;
+
+//PLRM 2014 Addition
+procedure TMainForm.tbPLRMCartfiltClick(Sender: TObject);
+//-----------------------------------------------------------------------------
+// PLRM Toolbar Handler for button used to cartridge filter on  the canvas.
+//-----------------------------------------------------------------------------
+begin
+plrmDrawObjButtonHelper(Sender, STORAGE, 0);
+end;
+
+//PLRM 2014 Addition
+procedure TMainForm.tbPLRMCatchClick(Sender: TObject);
+//-----------------------------------------------------------------------------
+// PLRM Toolbar Handler for button used to draw catchments on  the canvas.
+//-----------------------------------------------------------------------------
+begin
+    plrmDrawObjButtonHelper(Sender, SUBCATCH, 0);
+end;
+
+//PLRM 2014 Addition
+procedure TMainForm.tbPLRMDetnClick(Sender: TObject);
+//-----------------------------------------------------------------------------
+// PLRM Toolbar Handler for button used to draw detention basins on  the canvas.
+//-----------------------------------------------------------------------------
+begin
+  plrmDrawObjButtonHelper(Sender, STORAGE, -1);
+end;
+
+//PLRM 2014 Addition
+procedure TMainForm.tbPLRMJunctionClick(Sender: TObject);
+//-----------------------------------------------------------------------------
+// OnChange handler for the ObjectTreeView on the Browser's Data page.
+//-----------------------------------------------------------------------------
+begin
+  plrmDrawObjButtonHelper(Sender, JUNCTION, -1);
+end;
+
+//PLRM 2014 Addition
+procedure TMainForm.tbPLRMFlowsplitrClick(Sender: TObject);
+//-----------------------------------------------------------------------------
+// PLRM Toolbar Handler for button used to draw flow splitters on  the canvas.
+//-----------------------------------------------------------------------------
+begin
+  plrmDrawObjButtonHelper(Sender, DIVIDER, -1);
+end;
+
+//PLRM 2014 Addition
+procedure TMainForm.tbPLRMHydrodynClick(Sender: TObject);
+//-----------------------------------------------------------------------------
+// PLRM Toolbar Handler for button used to draw hydrodynamic device on  the canvas.
+//-----------------------------------------------------------------------------
+begin
+   plrmDrawObjButtonHelper(Sender, STORAGE, -1);
+end;
+
+//PLRM 2014 Addition
+procedure TMainForm.tbPLRMInfiltClick(Sender: TObject);
+//-----------------------------------------------------------------------------
+// PLRM Toolbar Handler for button used to draw infiltration basin on  the canvas.
+//-----------------------------------------------------------------------------
+begin
+    plrmDrawObjButtonHelper(Sender, STORAGE, -1);
+end;
+
+procedure TMainForm.tbPLRMOutfallClick(Sender: TObject);
+//-----------------------------------------------------------------------------
+// PLRM Toolbar Handler for button used to draw outfalls on  the canvas.
+//-----------------------------------------------------------------------------
+begin
+     plrmDrawObjButtonHelper(Sender, OUTFALL, 0);
+end;
+
+//PLRM 2014 Addition
+procedure TMainForm.tbPLRMWetlClick(Sender: TObject);
+//-----------------------------------------------------------------------------
+// PLRM Toolbar Handler for button used to draw wetlands on  the canvas.
+//-----------------------------------------------------------------------------
+begin
+    plrmDrawObjButtonHelper(Sender, STORAGE, -1);
+end;
+
+//PLRM 2014 Addition
 procedure TMainForm.ToolItemClick(Sender: TObject);
 //-----------------------------------------------------------------------------
 // Launches an application when it is selected from the Tools menu.
@@ -2088,6 +2264,43 @@ begin
 
 end;
 
+//PLRM 2014 additions
+procedure TMainForm.ObjectButtonClick(Sender: TObject);
+//-----------------------------------------------------------------------------
+// OnClick handler for the buttons on the Object Toolbar - invokes the
+// ToolButtonClick procedure on the MapForm. The Tag property of each
+// button stores the button's number.
+//-----------------------------------------------------------------------------
+var
+  I: Integer;
+begin
+  //PLRM Addition
+  //PLRM Edit - Jan 2010 edit added to track whether user working with scenario see #233
+  getProjManagerWithMsg();
+  if PLRMObj.hasActvScn = false then exit;
+
+  //Store hint so that we can differentiate between various storage node types
+  PLRMObj.currentToolHint := TToolButton(Sender).Hint;
+
+  // Place all buttons on the Map Toolbar in the UP position
+  for I := 1 to MAXMAPTOOLBARINDEX do
+  begin
+    with FindComponent('MapButton'+IntToStr(I)) as TToolButton do
+    begin
+      Down := False;
+    end;
+  end;
+
+  // Place the selected button on the Object Toolbar in the DOWN position
+  TToolButton(Sender).Down := True;
+
+  //1. simulate selection on treeView
+
+  //2. simulate click of + button
+       BrowserBtnNewClick(Sender);
+  // Pass the button click on to the MapForm
+  MapForm.ToolButtonClick(TToolButton(Sender).Tag);
+end;
 
 //=============================================================================
 //                     Browser Panel Procedures
@@ -2569,12 +2782,12 @@ begin
     begin
       MapToolBar.Enabled := false;
       PLRMToolBar.Enabled := false;
-      ObjectToolBar.Enabled := false;
+      //plrm 2014 ObjectToolBar.Enabled := false;
       PLRMStats.GetAllResults();
       MainForm.HideProgressBar;
       CopyFile(PChar(Uglobals.TempReportFile ), PChar(currentRptFilePath), False); //plrm addition
       PLRMToolBar.Enabled := true;
-      ObjectToolBar.Enabled := true;
+      //plrm 2014 ObjectToolBar.Enabled := true;
       MapToolBar.Enabled := true;
     end
     else // attemmpt to reload user hydrology from user swmm file

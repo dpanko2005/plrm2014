@@ -61,6 +61,7 @@ object ProjNscenEditor: TProjNscenEditor
     000000000000000000000000000000000000000000000000000000000000}
   OldCreateOrder = False
   OnCreate = FormCreate
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 12
   object Image1: TImage
