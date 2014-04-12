@@ -1006,7 +1006,8 @@ procedure TPLRM.addNode(N:Uproject.TNode; ObjIndex:Integer);
     newNode.ObjType:= N.Ntype;
      newNode.ObjIndex:= ObjIndex;
 
-    //determine swt type
+    //determine swt type uses length of button hint string to figure out
+    //what button was pushed
     newNode.isSwt := true;
     case Length(currentToolHint) of
        8: newNode.SWTType := 3;  //WetBasin

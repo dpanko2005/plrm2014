@@ -7,7 +7,7 @@ uses
   Windows, Messages, Dialogs, SysUtils, Variants, Classes, Uglobals, Uproject,
   Ustats, Math, GSTypes, GSNodes, GSCatchments;
 
-function  GetStatsSelection(var Stats: TStatsSelection; ObjID:String; ObjType:Integer; OutVar:Integer;
+function  GetStatsSelection(var Stats: TStatsSelection; ObjID:String; ObjType:ShortInt; OutVar:Integer;
        StatsTypeIndex: Integer; TimePeriodIndex: Integer): Boolean;
 procedure GetVariableTypes(var Stats: TStatsSelection);
 function GetAveAnnualLoadsForLink(LinkObjName: String): TStringList;
@@ -214,7 +214,7 @@ begin
     GetSWTStats := SWTLoads;
 end;
 
-function GetStatsSelection(var Stats: TStatsSelection; ObjID:String; ObjType:Integer; OutVar:Integer;
+function GetStatsSelection(var Stats: TStatsSelection; ObjID:String; ObjType:ShortInt; OutVar:Integer;
   StatsTypeIndex: Integer; TimePeriodIndex: Integer): Boolean;
 //-----------------------------------------------------------------------------
 // Places user's selections into a TStatsSelection data structure
@@ -338,7 +338,6 @@ if GetStatsSelection(Stats,'',SYS,VarNumber, StatsIndex, PeriodIndex) then
   else ShowMessage('Problem Getting Stats Selection!');
 
   GetRainStats := AnnualVol;
-
 end;
 
 function GetTotalLoads(outfallName: String): PLRMGridDataDbl;
@@ -357,7 +356,7 @@ begin
      outLoads.Clear;
      GetTotalLoads := tempSysLds;
 end;
- 
+
 function GetCatchmentStats(catchName: String): PLRMGridDataDbl;
 var
  OutLnkID: String; // outfall link name
@@ -375,7 +374,6 @@ begin
      catchLoads.Clear;
      GetCatchmentStats := tempLoads;
 end;
-
 
 procedure GetAllResults();
 var
@@ -462,7 +460,8 @@ begin
   resultsToTextFile(PLRMResults, PLRMObj.wrkdir + '\' + 'swmm.prpt');
   ShowMessage('All Results Collected!');
 
-   reloadUserHydro();
+  //plrm 2014 moved reloadUserHydro fxn call to fmain to separate concerns
+  //reloadUserHydro();
   tempSWTs := nil;
 end;
 

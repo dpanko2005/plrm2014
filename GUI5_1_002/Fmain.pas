@@ -2008,7 +2008,7 @@ procedure TMainForm.tbPLRMCatchClick(Sender: TObject);
 // PLRM Toolbar Handler for button used to draw catchments on  the canvas.
 //-----------------------------------------------------------------------------
 begin
-    plrmDrawObjButtonHelper(Sender, SUBCATCH, 0);
+    plrmDrawObjButtonHelper(Sender, SUBCATCH, -1);
 end;
 
 //PLRM 2014 Addition
@@ -2061,7 +2061,7 @@ procedure TMainForm.tbPLRMOutfallClick(Sender: TObject);
 // PLRM Toolbar Handler for button used to draw outfalls on  the canvas.
 //-----------------------------------------------------------------------------
 begin
-     plrmDrawObjButtonHelper(Sender, OUTFALL, 0);
+     plrmDrawObjButtonHelper(Sender, OUTFALL, -1);
 end;
 
 //PLRM 2014 Addition
@@ -2784,6 +2784,7 @@ begin
       PLRMToolBar.Enabled := false;
       //plrm 2014 ObjectToolBar.Enabled := false;
       PLRMStats.GetAllResults();
+      PLRMStats.reloadUserHydro();
       MainForm.HideProgressBar;
       CopyFile(PChar(Uglobals.TempReportFile ), PChar(currentRptFilePath), False); //plrm addition
       PLRMToolBar.Enabled := true;
