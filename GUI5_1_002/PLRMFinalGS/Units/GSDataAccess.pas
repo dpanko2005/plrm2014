@@ -176,6 +176,7 @@ begin
    except
       ShowMessage('Connection to the database failed, Please close all applications and try again')
    end;
+   //Result := nil;
 end;
 
 //Closes a database connection
@@ -232,8 +233,9 @@ var
   DS    : TADODataSet;
 begin
   try
-    if (conn.Connected = True) then
+
   begin
+  if (conn.Connected = True) then
     DS := TADODataSet.Create(application);
     DS.Connection := conn;
     DS.CommandText :=   sqlStr;
