@@ -1,32 +1,32 @@
 unit Fmain;
 
-{-------------------------------------------------------------------}
-{                    Unit:    Fmain.pas                             }
-{                    Project: EPA SWMM                              }
-{                    Version: 5.1                                   }
-{                    Date:    03/21/14    (5.1.001)                 }
-{                             03/28/14    (5.1.002)                 }
-{                    Author:  L. Rossman                            }
-{                                                                   }
-{   Delphi form unit containing the main MDI form for EPA SWMM.     }
-{                                                                   }
-{   This unit contains the main MDI parent form, MainForm.          }
-{   It contains the program's main menu, its tool bars, a           }
-{   status panel and a Browser (i.e., control) panel.               }
-{                                                                   }
-{   The MDI Child forms consist of:                                 }
-{     MapForm         - study area map                              }
-{     StatusForm      - simulation status report                    }
-{     GraphForm       - time series graph                           }
-{     ProfilePlotForm - water elevation profile plot                }
-{     TableForm       - tabular listing of results                  }
-{     StatsReportForm - statistical analysis report                 }
-{                                                                   }
-{   Consult the files Uproject.pas, Uglobals.pas, Objprops.txt,     }
-{   and Viewvars.txt for a description of the constants, classes,   }
-{   and global variables used throughout the program.               }
-{                                                                   }
-{-------------------------------------------------------------------}
+{ ------------------------------------------------------------------- }
+{ Unit:    Fmain.pas }
+{ Project: EPA SWMM }
+{ Version: 5.1 }
+{ Date:    03/21/14    (5.1.001) }
+{ 03/28/14    (5.1.002) }
+{ Author:  L. Rossman }
+{ }
+{ Delphi form unit containing the main MDI form for EPA SWMM. }
+{ }
+{ This unit contains the main MDI parent form, MainForm. }
+{ It contains the program's main menu, its tool bars, a }
+{ status panel and a Browser (i.e., control) panel. }
+{ }
+{ The MDI Child forms consist of: }
+{ MapForm         - study area map }
+{ StatusForm      - simulation status report }
+{ GraphForm       - time series graph }
+{ ProfilePlotForm - water elevation profile plot }
+{ TableForm       - tabular listing of results }
+{ StatsReportForm - statistical analysis report }
+{ }
+{ Consult the files Uproject.pas, Uglobals.pas, Objprops.txt, }
+{ and Viewvars.txt for a description of the constants, classes, }
+{ and global variables used throughout the program. }
+{ }
+{ ------------------------------------------------------------------- }
 
 interface
 
@@ -35,21 +35,23 @@ uses
   Forms, Dialogs, Menus, ExtCtrls, Buttons, StdCtrls, ComCtrls, Types,
   Printers, Chart, ExtDlgs, ImgList, Grids, ToolWin,
   HTMLHelpViewer, Spin, ShellAPI, Vcl.Themes, Vcl.Styles,
-  GSTypes, //PLRM addition
+  GSTypes, // PLRM addition
   Uglobals, Uproject, Uutils, Animator, PgSetup, OpenDlg, Xprinter;
 
 const
   MSG_NO_MAP_FILE = 'Could not read map file ';
-  MSG_NO_CALIB_DATA = 'No calibration data has been registered for this project.';
+  MSG_NO_CALIB_DATA =
+    'No calibration data has been registered for this project.';
   MSG_NO_INPUT_FILE = 'Input file no longer exists.';
   MSG_NOT_EPASWMM_FILE = 'Not an EPA-SWMM file.';
-  MSG_READONLY = ' is read-only.'#10+
+  MSG_READONLY = ' is read-only.'#10 +
     'Use File >> Save As command to save it under a different name.';
   MSG_NO_BACKDROP = 'Could not find backdrop file ';
   MSG_FIND_BACKDROP = '. Do you want to search for it?';
 
-  //TXT_MAIN_CAPTION = 'SWMM 5.1';
-  TXT_MAIN_CAPTION = PLRMVERSION;//'Tahoe Pollutant Load Reduction Model - v2.0'; //PLRM edits
+  // TXT_MAIN_CAPTION = 'SWMM 5.1';
+  TXT_MAIN_CAPTION = PLRMVERSION;
+  // 'Tahoe Pollutant Load Reduction Model - v2.0'; //PLRM edits
   TXT_STATUS_REPORT = 'Status Report';
   TXT_SAVE_CHANGES = 'Save changes made to current project?';
   TXT_SAVE_RESULTS = 'Save current simulation results?';
@@ -62,21 +64,23 @@ const
   TXT_OPEN_PROJECT_TITLE = 'Open a Project';
   TXT_OPEN_MAP_TITLE = 'Open a Map';
   TXT_SAVE_PROJECT_TITLE = 'Save Project As';
-  TXT_OPEN_PROJECT_FILTER =
-   'Input file (*.INP)|*.INP|' + 'Backup files (*.BAK)|*.BAK|All files|*.*';
+  TXT_OPEN_PROJECT_FILTER = 'Input file (*.INP)|*.INP|' +
+    'Backup files (*.BAK)|*.BAK|All files|*.*';
   TXT_SAVE_PROJECT_FILTER = 'Input files (*.INP)|*.INP|All files|*.*';
   TXT_SCENARIO_FILTER = 'Scenario files (*.SCN)|*.SCN|All files|*.*';
-  TXT_MAP_FILTER  = 'Map files (*.MAP)|*.MAP|All files|*.*';
-  TXT_ADD_RAINGAGE = '  Click the map where the new Rain Gage should be placed.';
+  TXT_MAP_FILTER = 'Map files (*.MAP)|*.MAP|All files|*.*';
+  TXT_ADD_RAINGAGE =
+    '  Click the map where the new Rain Gage should be placed.';
   TXT_ADD_SUBCATCH = '  Draw the outline of the new Subcatchment on the map ' +
-                     '(left-click adds a vertex, right-click closes the outline).';
+    '(left-click adds a vertex, right-click closes the outline).';
   TXT_ADD_NODE = '  Click the map where the new Node should be placed.';
-  TXT_ADD_LINK = '  Click on the new Link''s start node and then on its end node.';
+  TXT_ADD_LINK =
+    '  Click on the new Link''s start node and then on its end node.';
   TXT_ADD_LABEL = '  Click the map where the new Label should be placed.';
 
-  RunStatusHint: array[0..3] of String =
-    ('No Results Available','Results Are Current','Results Need Updating',
-     'No Results - Last Run Failed');
+  RunStatusHint: array [0 .. 3] of String = ('No Results Available',
+    'Results Are Current', 'Results Need Updating',
+    'No Results - Last Run Failed');
 
   // Max. index of Map Toolbar buttons
   MAXMAPTOOLBARINDEX = 8;
@@ -87,142 +91,142 @@ type
 
     // File Menu
     MnuFile: TMenuItem;
-      MnuNew: TMenuItem;
-      MnuOpen: TMenuItem;
-      MnuReopen: TMenuItem;
-      N13: TMenuItem;
-      MnuSave: TMenuItem;
-      MnuSaveAs: TMenuItem;
-      N1: TMenuItem;
-      MnuExport: TMenuItem;
-        MnuExportMap: TMenuItem;
-        MnuExportHotstart: TMenuItem;
-      MnuCombine: TMenuItem;
-      N10: TMenuItem;
-      MnuPageSetup: TMenuItem;
-      MnuPrintPreview: TMenuItem;
-      MnuPrint: TMenuItem;
-      N11: TMenuItem;
-      N2: TMenuItem;
-      MnuExit: TMenuItem;
+    MnuNew: TMenuItem;
+    MnuOpen: TMenuItem;
+    MnuReopen: TMenuItem;
+    N13: TMenuItem;
+    MnuSave: TMenuItem;
+    MnuSaveAs: TMenuItem;
+    N1: TMenuItem;
+    MnuExport: TMenuItem;
+    MnuExportMap: TMenuItem;
+    MnuExportHotstart: TMenuItem;
+    MnuCombine: TMenuItem;
+    N10: TMenuItem;
+    MnuPageSetup: TMenuItem;
+    MnuPrintPreview: TMenuItem;
+    MnuPrint: TMenuItem;
+    N11: TMenuItem;
+    N2: TMenuItem;
+    MnuExit: TMenuItem;
 
     // Edit Menu
     MnuEdit: TMenuItem;
-      MnuCopy: TMenuItem;
-      N3: TMenuItem;
-      MnuSelectObject: TMenuItem;
-      MnuSelectVertex: TMenuItem;
-      MnuSelectRegion: TMenuItem;
-      MnuSelectAll: TMenuItem;
-      N16: TMenuItem;
-      MnuFindObject: TMenuItem;
-      N17: TMenuItem;
-      MnuGroupEdit: TMenuItem;
-      MnuGroupDelete: TMenuItem;
+    MnuCopy: TMenuItem;
+    N3: TMenuItem;
+    MnuSelectObject: TMenuItem;
+    MnuSelectVertex: TMenuItem;
+    MnuSelectRegion: TMenuItem;
+    MnuSelectAll: TMenuItem;
+    N16: TMenuItem;
+    MnuFindObject: TMenuItem;
+    N17: TMenuItem;
+    MnuGroupEdit: TMenuItem;
+    MnuGroupDelete: TMenuItem;
 
     // View Menu
     MnuView: TMenuItem;
-      MnuDimensions: TMenuItem;
-      MnuBackdrop: TMenuItem;
-        MnuBackdropLoad: TMenuItem;
-        MnuBackdropUnload: TMenuItem;
-        N15: TMenuItem;
-        MnuBackdropAlign: TMenuItem;
-        MnuBackdropResize: TMenuItem;
-        N18: TMenuItem;
-        MnuBackdropWatermark: TMenuItem;
-      N5: TMenuItem;
-      MnuPan: TMenuItem;
-      MnuZoomIn: TMenuItem;
-      MnuZoomOut: TMenuItem;
-      MnuFullExtent: TMenuItem;
-      N14: TMenuItem;
-      MnuQuery: TMenuItem;
-      N12: TMenuItem;
-      MnuOVMap: TMenuItem;
-      MnuObjects: TMenuItem;
-        MnuShowGages: TMenuItem;
-        MnuShowSubcatch: TMenuItem;
-        MnuShowNodes: TMenuItem;
-        MnuShowLinks: TMenuItem;
-        MnuShowLabels: TMenuItem;
-        MnuShowBackdrop: TMenuItem;
-      MnuLegends: TMenuItem;
-        MnuSubcatchLegend: TMenuItem;
-        MnuNodeLegend: TMenuItem;
-        MnuLinkLegend: TMenuItem;
-        MnuTimeLegend: TMenuItem;
-        N6: TMenuItem;
-        MnuModifyLegend: TMenuItem;
-          MnuModifySubcatchLegend: TMenuItem;
-          MnuModifyNodeLegend: TMenuItem;
-          MnuModifyLinkLegend: TMenuItem;
+    MnuDimensions: TMenuItem;
+    MnuBackdrop: TMenuItem;
+    MnuBackdropLoad: TMenuItem;
+    MnuBackdropUnload: TMenuItem;
+    N15: TMenuItem;
+    MnuBackdropAlign: TMenuItem;
+    MnuBackdropResize: TMenuItem;
+    N18: TMenuItem;
+    MnuBackdropWatermark: TMenuItem;
+    N5: TMenuItem;
+    MnuPan: TMenuItem;
+    MnuZoomIn: TMenuItem;
+    MnuZoomOut: TMenuItem;
+    MnuFullExtent: TMenuItem;
+    N14: TMenuItem;
+    MnuQuery: TMenuItem;
+    N12: TMenuItem;
+    MnuOVMap: TMenuItem;
+    MnuObjects: TMenuItem;
+    MnuShowGages: TMenuItem;
+    MnuShowSubcatch: TMenuItem;
+    MnuShowNodes: TMenuItem;
+    MnuShowLinks: TMenuItem;
+    MnuShowLabels: TMenuItem;
+    MnuShowBackdrop: TMenuItem;
+    MnuLegends: TMenuItem;
+    MnuSubcatchLegend: TMenuItem;
+    MnuNodeLegend: TMenuItem;
+    MnuLinkLegend: TMenuItem;
+    MnuTimeLegend: TMenuItem;
+    N6: TMenuItem;
+    MnuModifyLegend: TMenuItem;
+    MnuModifySubcatchLegend: TMenuItem;
+    MnuModifyNodeLegend: TMenuItem;
+    MnuModifyLinkLegend: TMenuItem;
 
     // Project Menu
     MnuProject: TMenuItem;
-      MnuProjectSummary: TMenuItem;
-      MnuProjectDetails: TMenuItem;
-      MnuProjectDefaults: TMenuItem;
-      MnuProjectCalibData: TMenuItem;
-      N9: TMenuItem;
-      MnuProjectRunSimulation: TMenuItem;
+    MnuProjectSummary: TMenuItem;
+    MnuProjectDetails: TMenuItem;
+    MnuProjectDefaults: TMenuItem;
+    MnuProjectCalibData: TMenuItem;
+    N9: TMenuItem;
+    MnuProjectRunSimulation: TMenuItem;
 
     // Report Menu
     MnuReport: TMenuItem;
-      MnuReportStatus: TMenuItem;
-      MnuReportGraph: TMenuItem;
-        MnuGraphTimeSeries: TMenuItem;
-        MnuGraphScatter: TMenuItem;
-        MnuGraphProfile: TMenuItem;
-      MnuReportTable: TMenuItem;
-        MnuTableByObject: TMenuItem;
-        MnuTableByVariable: TMenuItem;
-      MnuReportStatistics: TMenuItem;
-      N8: TMenuItem;
-      MnuReportOptions: TMenuItem;
+    MnuReportStatus: TMenuItem;
+    MnuReportGraph: TMenuItem;
+    MnuGraphTimeSeries: TMenuItem;
+    MnuGraphScatter: TMenuItem;
+    MnuGraphProfile: TMenuItem;
+    MnuReportTable: TMenuItem;
+    MnuTableByObject: TMenuItem;
+    MnuTableByVariable: TMenuItem;
+    MnuReportStatistics: TMenuItem;
+    N8: TMenuItem;
+    MnuReportOptions: TMenuItem;
 
     // Tools Menu
     MnuTools: TMenuItem;
-      MnuProgramOptions: TMenuItem;
-      MnuMapDisplayOptions: TMenuItem;
-      N7: TMenuItem;
-      MnuConfigureTools: TMenuItem;
+    MnuProgramOptions: TMenuItem;
+    MnuMapDisplayOptions: TMenuItem;
+    N7: TMenuItem;
+    MnuConfigureTools: TMenuItem;
 
     // Window Menu
     MnuWindow: TMenuItem;
-      MnuWindowTile: TMenuItem;
-      MnuWindowCascade: TMenuItem;
-      MnuWindowCloseAll: TMenuItem;
+    MnuWindowTile: TMenuItem;
+    MnuWindowCascade: TMenuItem;
+    MnuWindowCloseAll: TMenuItem;
 
     // Help Menu
     MnuHelp: TMenuItem;
-      MnuHelpTopics: TMenuItem;
-      MnuHowdoI: TMenuItem;
-      MnuHelpUnits: TMenuItem;
-      MnuHelpErrors: TMenuItem;
-      N19: TMenuItem;
-      MnuHelpTutorial: TMenuItem;
-      N4: TMenuItem;
-      MnuAbout: TMenuItem;
+    MnuHelpTopics: TMenuItem;
+    MnuHowdoI: TMenuItem;
+    MnuHelpUnits: TMenuItem;
+    MnuHelpErrors: TMenuItem;
+    N19: TMenuItem;
+    MnuHelpTutorial: TMenuItem;
+    N4: TMenuItem;
+    MnuAbout: TMenuItem;
 
     // Popup Menus
     TablePopupMenu: TPopupMenu;
-      PopupTableByObject: TMenuItem;
+    PopupTableByObject: TMenuItem;
     PopupTableByVariable: TMenuItem;
     AutoLengthMnu: TPopupMenu;
-      AutoLengthOnMnu: TMenuItem;
-      AutoLengthOffMnu: TMenuItem;
+    AutoLengthOnMnu: TMenuItem;
+    AutoLengthOffMnu: TMenuItem;
     FlowUnitsMnu: TPopupMenu;
-      CFSMnuItem: TMenuItem;
-      GPMMnuItem: TMenuItem;
-      MGDMnuItem: TMenuItem;
-      N20: TMenuItem;
-      CMSMnuItem: TMenuItem;
-      LPSMnuItem: TMenuItem;
-      MLDMnuItem: TMenuItem;
+    CFSMnuItem: TMenuItem;
+    GPMMnuItem: TMenuItem;
+    MGDMnuItem: TMenuItem;
+    N20: TMenuItem;
+    CMSMnuItem: TMenuItem;
+    LPSMnuItem: TMenuItem;
+    MLDMnuItem: TMenuItem;
     OffsetsMnu: TPopupMenu;
-      OffsetsMnuDepth: TMenuItem;
-      OffsetsMnuElev: TMenuItem;
+    OffsetsMnuDepth: TMenuItem;
+    OffsetsMnuElev: TMenuItem;
 
     // System Dialogs
     OpenPictureDialog: TOpenPictureDialog;
@@ -234,7 +238,7 @@ type
 
     // Progress Bar
     ProgressPanel: TPanel;
-      ProgressBar: TProgressBar;
+    ProgressBar: TProgressBar;
     MnuReportSummary: TMenuItem;
     ControlBar1: TControlBar;
     BtnImageList: TImageList;
@@ -459,7 +463,7 @@ type
 
     procedure ObjectTreeViewChange(Sender: TObject; Node: TTreeNode);
     procedure ObjectTreeViewClick(Sender: TObject);
-    //plrm 201 - added from SWMM 5.022
+    // plrm 201 - added from SWMM 5.022
     procedure ObjectButtonClick(Sender: TObject);
 
     procedure ItemListBoxClick(Sender: TObject);
@@ -489,8 +493,7 @@ type
       Direction: TUpDownDirection);
     procedure FormShow(Sender: TObject);
 
-
-    //PLRM    additions
+    // PLRM    additions
     procedure btnPlrmWizardClick(Sender: TObject);
     procedure btnRunPLRMClick(Sender: TObject);
     procedure btnPLRMRunClick(Sender: TObject);
@@ -500,8 +503,9 @@ type
     procedure Button1Click(Sender: TObject);
     procedure btnSaveRptClick(Sender: TObject);
     procedure btnAboutClick(Sender: TObject);
-    procedure tbPLRMJunctionClick(Sender: TObject); //PLRM 2014 Addition
-    procedure plrmDrawObjButtonHelper(Sender: TObject;ObjType: Integer;ItemIndex: Integer);
+    procedure tbPLRMJunctionClick(Sender: TObject); // PLRM 2014 Addition
+    procedure plrmDrawObjButtonHelper(Sender: TObject; ObjType: Integer;
+      ItemIndex: Integer);
     procedure tbPLRMCatchClick(Sender: TObject);
     procedure tbPLRMOutfallClick(Sender: TObject);
     procedure tbPLRMFlowsplitrClick(Sender: TObject);
@@ -510,13 +514,13 @@ type
     procedure tbPLRMCartfiltClick(Sender: TObject);
     procedure tbPLRMWetlClick(Sender: TObject);
     procedure tbPLRMInfiltClick(Sender: TObject);
-    procedure tbPLRMDetnClick(Sender: TObject);//PLRM 2014 Addition
+    procedure tbPLRMDetnClick(Sender: TObject); // PLRM 2014 Addition
 
   private
     { Private declarations }
 
     // Most recently used files menu
-    MnuMRU: array[0..Uglobals.MAXMRUINDEX] of TMenuItem;
+    MnuMRU: array [0 .. Uglobals.MAXMRUINDEX] of TMenuItem;
 
     Startup: Boolean;
     procedure ClearAll;
@@ -531,7 +535,7 @@ type
     procedure ResizeControl(aControl: TControl);
     procedure RunSimulation;
     procedure SaveFile(Fname: String);
-    function  SaveFileDlg(Sender: TObject): Integer;
+    function SaveFileDlg(Sender: TObject): Integer;
 
     // MRU file support
     procedure MRUClick(Sender: TObject);
@@ -541,11 +545,11 @@ type
     // Drag and drop file support
     procedure WMDropFiles(var Msg: TWMDropFiles); message WM_DROPFILES;
 
- public
+  public
     { Public declarations }
-    MRUList:  TStringList;
+    MRUList: TStringList;
     procedure CreateReport(ReportSelection: TReportSelection);
-    function  FormExists(const Name: String): Boolean;
+    function FormExists(const Name: String): Boolean;
     procedure HideProgressBar;
     procedure OpenFile(Sender: TObject; const Fname: String);
     procedure PageSetup;
@@ -559,12 +563,12 @@ type
     procedure ShowRunStatus;
     procedure UpdateProfilePlots;
     procedure UpdateProgressBar(var Count: Integer; const StepSize: Integer);
-    procedure ToolItemClick(Sender:TObject);
+    procedure ToolItemClick(Sender: TObject);
     procedure ShowStatusHint(const Msg: String);
 
-    //PLRM addition
+    // PLRM addition
     procedure PLRMSaveFile(Fname: String);
-end;
+  end;
 
 var
   MainForm: TMainForm;
@@ -580,29 +584,30 @@ uses
   Dproject, Dreport, Dstats, Dgrouped, Dfind, Dquery, Dmapexp, Dbackdrp,
   Dbackdim, Dtools1, Ubrowser, Uinifile, Umap, Uimport, Uexport, Uoutput,
   Utools, Uupdate, Dreporting, Dproselect, Dtimeplot,
-  _PLRM1ProjNscenManger, GSPLRM, GSUtils, _PLRMstats, PLRMStats,_PLRM9ScenCompsMulti, _PLRMD6About,   //PLRM additions
-    UEdit; //plrm 2014 edit
+  _PLRM1ProjNscenManger, GSPLRM, GSUtils, _PLRMstats, PLRMStats,
+  _PLRM9ScenCompsMulti, _PLRMD6About, // PLRM additions
+  UEdit; // plrm 2014 edit
 
-//============================================================================
-//            Form Creation, Resizing, & Closing Handlers
-//============================================================================
+// ============================================================================
+// Form Creation, Resizing, & Closing Handlers
+// ============================================================================
 
 procedure TMainForm.FormCreate(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Main form's OnCreate handler.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 var
-  I  : Integer;
+  I: Integer;
 begin
   // Load custom cursors from the mycurs32.res file
-  Screen.Cursors[crXHAIR]   := LoadCursor(HInstance, PChar('xhair'));
-  Screen.Cursors[crZOOMIN]  := LoadCursor(HInstance, PChar('zoomin'));
+  Screen.Cursors[crXHAIR] := LoadCursor(HInstance, PChar('xhair'));
+  Screen.Cursors[crZOOMIN] := LoadCursor(HInstance, PChar('zoomin'));
   Screen.Cursors[crZOOMOUT] := LoadCursor(HInstance, PChar('zoomout'));
-  Screen.Cursors[crFIST]    := LoadCursor(HInstance, PChar('fist'));
-  Screen.Cursors[crMOVE]    := LoadCursor(HInstance, PChar('move'));
-  Screen.Cursors[crPENCIL]  := LoadCursor(HInstance, PChar('pencil'));
-  Screen.Cursors[crARROWTIP]:= LoadCursor(HInstance, PChar('arrowtip'));
-  Screen.Cursors[crSQUARE]  := LoadCursor(HInstance, PChar('square'));
+  Screen.Cursors[crFIST] := LoadCursor(HInstance, PChar('fist'));
+  Screen.Cursors[crMOVE] := LoadCursor(HInstance, PChar('move'));
+  Screen.Cursors[crPENCIL] := LoadCursor(HInstance, PChar('pencil'));
+  Screen.Cursors[crARROWTIP] := LoadCursor(HInstance, PChar('arrowtip'));
+  Screen.Cursors[crSQUARE] := LoadCursor(HInstance, PChar('square'));
 
   // Identify various directories
   Uglobals.SetDirectories;
@@ -610,8 +615,8 @@ begin
   // Set the user interface theme style
   Uinifile.ReadStyleName;
   TStyleManager.TrySetStyle(Uglobals.StyleName);
-  if Uglobals.StyleName = 'Windows'
-  then StatusBar.DrawingStyle := TTBDrawingStyle(dsNormal);
+  if Uglobals.StyleName = 'Windows' then
+    StatusBar.DrawingStyle := TTBDrawingStyle(dsNormal);
 
   // Set main window caption
   Caption := TXT_MAIN_CAPTION;
@@ -625,16 +630,16 @@ begin
   // Set format settings
   Uglobals.SetFormatSettings;
 
-   // Create most-recently-used (MRU) file list
+  // Create most-recently-used (MRU) file list
   MRUList := TStringList.Create;
 
   // Create MRU file menu items
   for I := 0 to Uglobals.MAXMRUINDEX do
   begin
-    MnuMRU[I] := TMenuItem.Create(self);
-    MnuMRU[I].Tag     := I;
+    MnuMRU[I] := TMenuItem.Create(Self);
+    MnuMRU[I].Tag := I;
     MnuMRU[I].OnClick := MRUClick;
-    MnuMRU[I].Name    := 'MRU' + IntToStr(I);
+    MnuMRU[I].Name := 'MRU' + IntToStr(I);
     MnuMRU[I].Visible := False;
     MnuReopen.Add(MnuMRU[I]);
   end;
@@ -643,9 +648,12 @@ begin
   Utools.OpenToolList;
 
   // Use default number of decimal places
-  for I := 0 to SUBCATCHVIEWS do SubcatchUnits[I].Digits := 2;
-  for I := 0 to NODEVIEWS do NodeUnits[I].Digits := 2;
-  for I := 0 to LINKVIEWS do LinkUnits[I].Digits := 2;
+  for I := 0 to SUBCATCHVIEWS do
+    SubcatchUnits[I].Digits := 2;
+  for I := 0 to NODEVIEWS do
+    NodeUnits[I].Digits := 2;
+  for I := 0 to LINKVIEWS do
+    LinkUnits[I].Digits := 2;
 
   // Create Project database object
   Project := TProject.Create;
@@ -671,13 +679,13 @@ begin
   MapButton1.Down := True;
 
   // Create auxilary stay-on-top forms                                         //(5.1.002)
-  OVMapForm := TOVMapForm.Create(self);               // Overview map form
-  ReportSelectForm := TReportSelectForm.Create(self); // Report Selector
-  ReportingForm := TReportingForm.Create(self);       // Report Options
-  TimePlotForm := TTimePlotForm.Create(self);         // Time Plot Selector
-  FindForm := TFindForm.Create(self);                 // Object Finder form
-  QueryForm := TQueryForm.Create(self);               // Map Query form
-  PropEditForm := TPropEditForm.Create(self);         // Property Editor form
+  OVMapForm := TOVMapForm.Create(Self); // Overview map form
+  ReportSelectForm := TReportSelectForm.Create(Self); // Report Selector
+  ReportingForm := TReportingForm.Create(Self); // Report Options
+  TimePlotForm := TTimePlotForm.Create(Self); // Time Plot Selector
+  FindForm := TFindForm.Create(Self); // Object Finder form
+  QueryForm := TQueryForm.Create(Self); // Map Query form
+  PropEditForm := TPropEditForm.Create(Self); // Property Editor form
 
   // Retrieve preferences from .INI file
   Uinifile.ReadMainFormSize;
@@ -702,33 +710,31 @@ begin
   // Prevent form from repainting itself for now
   LockWindowUpdate(Handle);
 
-    //PLRM Addition
-  initPLRMPaths();  //initials paths and directories used throught plrm
+  // PLRM Addition
+  initPLRMPaths(); // initials paths and directories used throught plrm
   PLRMObj := TPLRM.Create;
 
   // Enable only for testing
-  //ReportMemoryLeaksOnShutdown := True;
+  // ReportMemoryLeaksOnShutdown := True;
 end;
-
 
 procedure TMainForm.FormActivate(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Main form's OnActivate handler.
 // Creates the Map form when the MainForm is first activated.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-//////////////////////////                                                     //(5.1.002)
+  /// ///////////////////////                                                     //(5.1.002)
 end;
 
-
-procedure TMainForm.FormShow(Sender: TObject);                                 //(5.1.002)
-//-----------------------------------------------------------------------------
+procedure TMainForm.FormShow(Sender: TObject); // (5.1.002)
+// -----------------------------------------------------------------------------
 // Main form's OnShow handler.
 // Creates the Map & auxilary forms when the MainForm is first shown.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   // Create a Map child form
-  MapForm := TMapForm.Create(self);
+  MapForm := TMapForm.Create(Self);
   with MapForm do
   begin
     FormResize(Sender);
@@ -743,29 +749,40 @@ begin
   // Open a project file if one is provided on the command line,
   if Length(InputFileName) > 0 then
   begin
-    ProjectDir := ExtractFileDir(InputFilename);
+    ProjectDir := ExtractFileDir(InputFileName);
     OpenFile(Sender, InputFileName);
-  //PLRM 2014 end
+    // PLRM 2014 end
   end;
 
   // Otherwise simulate a click on File|New
-  //PLRM 2014 else MnuNewClick(Sender);
+  // PLRM 2014 else MnuNewClick(Sender);
 
-
-    //PLRM addition
-  //plrm 2014 MnuStdToolbar.Checked := False;
-      //PLRM Additions
-    getProjManager(1);
+  // PLRM addition
+  // plrm 2014 MnuStdToolbar.Checked := False;
+  // PLRM Additions
+  getProjManager(1);
 end;
 
-
 procedure TMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Main form's OnClose handler. Frees all allocated resources.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 var
   I: Integer;
 begin
+
+ // 2014 PLRM Addition to fix bug where edits to some forms werent being saved if the
+  // user exits without pushing PLRM Save button
+  // Show a save confirmation dialog
+  // buttonSelected := MessageDlg('Confirmation',mtError, mbOKCancel, 0);
+
+  // Show the button type selected
+  if MessageDlg('Do you want to save changes?', mtConfirmation, mbYesNo, 0) = mrYes
+  then
+  begin
+    btnSavePLRMClick(Sender);
+  end;
+  // else do nothing - user doesn't want to save their changes
 
   // Save preferences to the .INI file
   if not Uutils.IsReadOnly(IniFileDir) then
@@ -796,7 +813,8 @@ begin
   Utools.CloseToolList;
 
   // Free the most-recently-used file menu items
-  for I := 0 to Uglobals.MAXMRUINDEX do MnuMRU[I].Free;
+  for I := 0 to Uglobals.MAXMRUINDEX do
+    MnuMRU[I].Free;
 
   // Free the most-recently-used file list
   MRUList.Free;
@@ -804,72 +822,69 @@ begin
   // Un-register ability to accept dragged files from Explorer
   DragAcceptFiles(Self.Handle, False);
 
-   //PLRM Addition
-  //btnSavePLRMClick(Sender);
+  // PLRM Addition
+  // PLRM 2007 btnSavePLRMClick(Sender);
   PLRMObj.Free;
 end;
 
-
 procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnCloseQuery handler for Main form.
 // Checks if user wants to save the current project or cancel the
 // Close request.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-  if SaveFileDlg(Sender) = mrCancel
-  then CanClose := False
-  else CanClose := True;
+  if SaveFileDlg(Sender) = mrCancel then
+    CanClose := False
+  else
+    CanClose := True;
 end;
 
 
-//=============================================================================
-//                        File Menu Handlers
-//=============================================================================
+// =============================================================================
+// File Menu Handlers
+// =============================================================================
 
 procedure TMainForm.MnuFileClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for File menu
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 var
   I: Integer;
   Enable: Boolean;
 begin
   // Enable Reopen item if MRU list not empty
   Enable := False;
-  for I := 0 to MRUList.Count-1 do
+  for I := 0 to MRUList.Count - 1 do
   begin
-    if Length(MRUList[I]) > 0 then Enable := True;
+    if Length(MRUList[I]) > 0 then
+      Enable := True;
   end;
   MnuReopen.Enabled := Enable;
 
   // Enable/disable printing (if printing is allowed)
   if MnuPageSetup.Enabled then
   begin
-    MnuPrint.Enabled :=
-      (ActiveMDIChild is TTableForm) or
-      (ActiveMDIChild is TGraphForm) or
-      (ActiveMDIChild is TProfilePlotForm) or
-      (ActiveMDIChild is TStatsReportForm) or
-      (ActiveMDIChild is TStatusForm) or
-      (ActiveMDIChild is TResultsForm) or
-      (ActiveMDIChild is TMapForm);
+    MnuPrint.Enabled := (ActiveMDIChild is TTableForm) or
+      (ActiveMDIChild is TGraphForm) or (ActiveMDIChild is TProfilePlotForm) or
+      (ActiveMDIChild is TStatsReportForm) or (ActiveMDIChild is TStatusForm) or
+      (ActiveMDIChild is TResultsForm) or (ActiveMDIChild is TMapForm);
     MnuPrintPreview.Enabled := MnuPrint.Enabled;
   end;
 
   // Enable/disable Export | Hotstart File and Export | Status Report
-  MnuExportHotStart.Enabled := RunFlag;
+  MnuExportHotstart.Enabled := RunFlag;
   MnuExportStatusRpt.Enabled := RunFlag;
 end;
 
-
 procedure TMainForm.MnuNewClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Creates a new project when File|New selected from main menu.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   // Save current project data if it has changed
-    if SaveFileDlg(Sender) = mrCancel then Exit;
+  if SaveFileDlg(Sender) = mrCancel then
+    Exit;
 
   // Close any simulation output display forms
   CloseForms;
@@ -877,30 +892,31 @@ begin
   // Re-set name of input project file
   InputFileName := '';
   InputFileType := iftINP;
-  //PLRM Edits Caption := TXT_MAIN_CAPTION;
+  // PLRM Edits Caption := TXT_MAIN_CAPTION;
   if Assigned(PLRMObj) then
-    Caption := TXT_MAIN_CAPTION + '[Project Name: ' + PLRMObj.projUserName +  '] [Scenario Name: ' + PLRMObj.scenarioName + ' ]';
+    Caption := TXT_MAIN_CAPTION + '[Project Name: ' + PLRMObj.projUserName +
+      '] [Scenario Name: ' + PLRMObj.scenarioName + ' ]';
 
   ReadOnlyFlag := False;
 
   // Clear current project data
-  ClearAll;             // Clears all project data
-  ShowRunStatus;        // Resets run status icon
-  PageSetup;            // Resets the printer page options
+  ClearAll; // Clears all project data
+  ShowRunStatus; // Resets run status icon
+  PageSetup; // Resets the printer page options
 
   // Make Title/Notes be the Browser's current data category
   Ubrowser.BrowserUpdate(NOTES, Project.CurrentItem[NOTES]);
   BrowserPageControl.ActivePage := BrowserDataPage;
 end;
 
-
 procedure TMainForm.MnuOpenClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Opens a project file when File|Open selected from main menu.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   // Prompt the user to either save the current project data or to cancel
-  if SaveFileDlg(Sender) = mrCancel then Exit;
+  if SaveFileDlg(Sender) = mrCancel then
+    Exit;
 
   // Execute the Open File dialog
   with OpenTextFileDialog do
@@ -917,42 +933,41 @@ begin
     if Execute then
     begin
       ReadOnlyFlag := (ofReadOnly in Options) or
-                      (HasAttr(FileName, faReadOnly));
+        (HasAttr(Filename, faReadOnly));
       ProjectDir := ExtractFileDir(Filename);
       OpenFile(Sender, Filename);
-      MapForm.ChangeHiliteObject(-1, -1);   // Remove object hilighting on map
+      MapForm.ChangeHiliteObject(-1, -1); // Remove object hilighting on map
     end;
     FilterIndex := 1;
   end;
 end;
 
-
 procedure TMainForm.MnuReopenClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for File|Reopen menu item.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   MRUDisplay(Sender);
 end;
 
-
 procedure TMainForm.MnuSaveClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for File|Save menu item.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   // For a new, un-named input file, implement the Save As command
-  if (Length(InputFileName) = 0) then MnuSaveAsClick(Sender)
+  if (Length(InputFileName) = 0) then
+    MnuSaveAsClick(Sender)
 
-  // Otherwise save project data under the current input file name
-  else SaveFile(InputFileName);
+    // Otherwise save project data under the current input file name
+  else
+    SaveFile(InputFileName);
 end;
 
-
 procedure TMainForm.MnuSaveAsClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Saves project to a new file when File|Save As selected from main menu.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   with SaveDialog do
   begin
@@ -960,29 +975,29 @@ begin
     Filter := TXT_SAVE_PROJECT_FILTER;
     InitialDir := ProjectDir;
     DefaultExt := 'inp';
-    if Length(InputFileName) > 0
-    then Filename := ChangeFileExt(ExtractFileName(InputFileName),'.inp')
-    else Filename := '*.inp';
-    if Execute then SaveFile(Filename);
+    if Length(InputFileName) > 0 then
+      Filename := ChangeFileExt(ExtractFileName(InputFileName), '.inp')
+    else
+      Filename := '*.inp';
+    if Execute then
+      SaveFile(Filename);
     DefaultExt := '';
   end;
 end;
 
-
 procedure TMainForm.MnuExportMapClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Launches the Map Export dialog when File|Export|Map selected.
 // Allows the study area map image to be saved to file.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-  with TMapExportForm.Create(self) do
-  try
-    ShowModal;
-  finally
-    Free;
-  end;
+  with TMapExportForm.Create(Self) do
+    try
+      ShowModal;
+    finally
+      Free;
+    end;
 end;
-
 
 procedure TMainForm.MnuExportStatusRptClick(Sender: TObject);
 var
@@ -990,71 +1005,71 @@ var
 begin
   if not FileExists(Uglobals.TempReportFile) then
     ShowMessage('Status Report is not available.')
-  else with SaveDialog do
-  begin
-    Title := 'Save Status and Summary Report As';
-    Filter := 'Report files (*.rpt)|*.rpt|All files|*.*';
-    DefaultExt := 'rpt';
-    Filename := '*.rpt';
-    InitialDir := ProjectDir;
-    if Execute then
+  else
+    with SaveDialog do
     begin
-      Source := Copy(Uglobals.TempReportFile, 1, MaxInt);
-      if not Windows.CopyFile(PChar(Source), PChar(Filename), False)
-      then ShowMessage('Could not export Status Report.');
+      Title := 'Save Status and Summary Report As';
+      Filter := 'Report files (*.rpt)|*.rpt|All files|*.*';
+      DefaultExt := 'rpt';
+      Filename := '*.rpt';
+      InitialDir := ProjectDir;
+      if Execute then
+      begin
+        Source := Copy(Uglobals.TempReportFile, 1, MaxInt);
+        if not Windows.CopyFile(PChar(Source), PChar(Filename), False) then
+          ShowMessage('Could not export Status Report.');
+      end;
+      DefaultExt := '';
     end;
-    DefaultExt := '';
-  end;
 end;
 
 procedure TMainForm.MnuExportHotstartClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Allows output results at the current time period to be saved to a
 // Hotstart file.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-  if MessageDlg('Do you wish to save the current state of '#10+
-                'the conveyance system to a Hotstart file?',
-                mtConfirmation, [mbYes, mbNo], 0) = mrYes then
-  with SaveDialog do
-  begin
-    Title := 'Save Hotstart File As';
-    Filter := 'Hotstart files (*.HSF)|*.HSF|All files|*.*';
-    DefaultExt := 'hsf';
-    Filename := '*.hsf';
-    InitialDir := ProjectDir;
-    if Execute then Uexport.SaveHotstartFile(Filename);
-    DefaultExt := '';
-  end;
+  if MessageDlg('Do you wish to save the current state of '#10 +
+    'the conveyance system to a Hotstart file?', mtConfirmation, [mbYes, mbNo],
+    0) = mrYes then
+    with SaveDialog do
+    begin
+      Title := 'Save Hotstart File As';
+      Filter := 'Hotstart files (*.HSF)|*.HSF|All files|*.*';
+      DefaultExt := 'hsf';
+      Filename := '*.hsf';
+      InitialDir := ProjectDir;
+      if Execute then
+        Uexport.SaveHotstartFile(Filename);
+      DefaultExt := '';
+    end;
 end;
 
-
 procedure TMainForm.MnuCombineClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Launches the Combine dialog form when File|Combine selected.
 // Allows two SWMM Routing Interface results files to be combined into one
 // (see Help file or Users Manual for description of a Routing Interface file.)
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-  with TFileCombineForm.Create(self) do
-  try
-    ShowModal;
-  finally
-    Free;
-  end;
+  with TFileCombineForm.Create(Self) do
+    try
+      ShowModal;
+    finally
+      Free;
+    end;
 end;
 
-
 procedure TMainForm.MnuPageSetupClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Displays the Page Setup dialog when File|Page Setup selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   // Transfer current contents of the PageLayout structure to
   // the PageSetupDialog component
-  PageSetupDialog.PageMargins.Left   := PageLayout.LMargin;
-  PageSetupDialog.PageMargins.Right  := PageLayout.RMargin;
-  PageSetupDialog.PageMargins.Top    := PageLayout.TMargin;
+  PageSetupDialog.PageMargins.Left := PageLayout.LMargin;
+  PageSetupDialog.PageMargins.Right := PageLayout.RMargin;
+  PageSetupDialog.PageMargins.Top := PageLayout.TMargin;
   PageSetupDialog.PageMargins.Bottom := PageLayout.BMargin;
   PageSetupDialog.BoldFont := BoldFonts;
   Printer.Orientation := TPrinterOrientation(Orientation);
@@ -1076,237 +1091,221 @@ begin
   end;
 end;
 
-
 procedure TMainForm.MnuPrintPreviewClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Prints the active window to a preview form when File|Print Preview selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   Print(Xprinter.dPreview);
 end;
 
-
 procedure TMainForm.MnuPrintClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Prints the active window to the printer when File|Print selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   Print(Xprinter.dPrinter);
 end;
 
-
 procedure TMainForm.Print(Dest: TDestination);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Prints the active window to Dest (Preview window or printer).
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-    if ActiveMDIChild is TMapForm
-    then TMapForm(ActiveMDIChild).Print(Dest)
+  if ActiveMDIChild is TMapForm then
+    TMapForm(ActiveMDIChild).Print(Dest)
 
-    else if ActiveMDIChild is TGraphForm
-    then TGraphForm(ActiveMDIChild).Print(Dest)
+  else if ActiveMDIChild is TGraphForm then
+    TGraphForm(ActiveMDIChild).Print(Dest)
 
-    else if ActiveMDIChild is TProfilePlotForm
-    then TProfilePlotForm(ActiveMDIChild).Print(Dest)
+  else if ActiveMDIChild is TProfilePlotForm then
+    TProfilePlotForm(ActiveMDIChild).Print(Dest)
 
-    else if ActiveMDIChild is TStatsReportForm
-    then TStatsReportForm(ActiveMDIChild).Print(Dest)
+  else if ActiveMDIChild is TStatsReportForm then
+    TStatsReportForm(ActiveMDIChild).Print(Dest)
 
-    else if ActiveMDIChild is TTableForm
-    then TTableForm(ActiveMDIChild).Print(Dest)
+  else if ActiveMDIChild is TTableForm then
+    TTableForm(ActiveMDIChild).Print(Dest)
 
-    else if ActiveMDIChild is TStatusForm
-    then TStatusForm(ActiveMDIChild).Print(Dest)
+  else if ActiveMDIChild is TStatusForm then
+    TStatusForm(ActiveMDIChild).Print(Dest)
 
-    else if ActiveMDIChild is TResultsForm
-    then TResultsForm(ActiveMDIChild).Print(Dest);
+  else if ActiveMDIChild is TResultsForm then
+    TResultsForm(ActiveMDIChild).Print(Dest);
 end;
 
-
 procedure TMainForm.MnuExitClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Shuts down program when File|Exit selected from main menu.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   Close;
 end;
 
 
-//=============================================================================
-//                         Edit Menu Handlers
-//=============================================================================
+// =============================================================================
+// Edit Menu Handlers
+// =============================================================================
 
 procedure TMainForm.MnuEditClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for Edit menu.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   // Menu options Select Object, Select Vertex, & Select Region apply
   // only when the MapForm window is active
   MnuSelectObject.Enabled := ActiveMDIChild is TMapForm;
   MnuSelectVertex.Enabled := (ActiveMDIChild is TMapForm) and
-                             MapButton2.Enabled;
+    MapButton2.Enabled;
   MnuSelectRegion.Enabled := ActiveMDIChild is TMapForm;
 
   // Select All applies when either the MapForm window, a TableForm window
   // or a StatsReportForm window is active
   MnuSelectAll.Enabled := (ActiveMDIChild is TMapForm) or
-                          (ActiveMDIChild is TTableForm) or
-                          (ActiveMDIChild is TStatusForm) or
-                          ((ActiveMDIChild is TStatsReportForm) and
-                           (TStatsReportForm(ActiveMDIChild).
-                            PageControl1.ActivePageIndex = 1));
+    (ActiveMDIChild is TTableForm) or (ActiveMDIChild is TStatusForm) or
+    ((ActiveMDIChild is TStatsReportForm) and (TStatsReportForm(ActiveMDIChild)
+    .PageControl1.ActivePageIndex = 1));
 
   // Group editing applies only if a fenceline has been drawn on the
   // MapForm's map
-  MnuGroupEdit.Enabled := (not MapForm.Linking) and
-                          (MapForm.NumFencePts > 0);
+  MnuGroupEdit.Enabled := (not MapForm.Linking) and (MapForm.NumFencePts > 0);
   MnuGroupDelete.Enabled := MnuGroupEdit.Enabled;
 
   // Only allow certain windows to be copied
   MnuCopy.Enabled := (ActiveMDIChild is TMapForm) or
-                     (ActiveMDIChild is TGraphForm) or
-                     (ActiveMDIChild is TProfilePlotForm) or
-                     (ActiveMDIChild is TStatusForm) or
-                     (ActiveMDIChild is TResultsForm) or
-                     (ActiveMDIChild is TTableForm) or
-                     (ActiveMDIChild is TStatsReportForm);
+    (ActiveMDIChild is TGraphForm) or (ActiveMDIChild is TProfilePlotForm) or
+    (ActiveMDIChild is TStatusForm) or (ActiveMDIChild is TResultsForm) or
+    (ActiveMDIChild is TTableForm) or (ActiveMDIChild is TStatsReportForm);
 end;
-
 
 procedure TMainForm.MnuCopyClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Copies active window to the clipboard or to a file when Edit|Copy To
 // is selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-  if ActiveMDIChild is TMapForm
-  then TMapForm(ActiveMDIChild).CopyTo
+  if ActiveMDIChild is TMapForm then
+    TMapForm(ActiveMDIChild).CopyTo
 
-  else if ActiveMDIChild is TStatusForm
-  then TStatusForm(ActiveMDIChild).CopyTo
+  else if ActiveMDIChild is TStatusForm then
+    TStatusForm(ActiveMDIChild).CopyTo
 
-  else if ActiveMDIChild is TResultsForm
-  then TResultsForm(ActiveMDIChild).CopyTo
+  else if ActiveMDIChild is TResultsForm then
+    TResultsForm(ActiveMDIChild).CopyTo
 
-  else if ActiveMDIChild is TGraphForm
-  then TGraphForm(ActiveMDIChild).CopyTo
+  else if ActiveMDIChild is TGraphForm then
+    TGraphForm(ActiveMDIChild).CopyTo
 
-  else if ActiveMDIChild is TProfilePlotForm
-  then TProfilePlotForm(ActiveMDIChild).CopyTo
+  else if ActiveMDIChild is TProfilePlotForm then
+    TProfilePlotForm(ActiveMDIChild).CopyTo
 
-  else if ActiveMDIChild is TTableForm
-  then TTableForm(ActiveMDIChild).CopyTo
+  else if ActiveMDIChild is TTableForm then
+    TTableForm(ActiveMDIChild).CopyTo
 
-  else if ActiveMDIChild is TStatsReportForm
-  then TStatsReportForm(ActiveMDIChild).CopyTo;
+  else if ActiveMDIChild is TStatsReportForm then
+    TStatsReportForm(ActiveMDIChild).CopyTo;
 end;
 
-
 procedure TMainForm.MnuSelectObjectClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Puts the MapForm into Object Selection mode when Edit|Select Object
 // is selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   SelectorButtonClick;
 end;
 
-
 procedure TMainForm.MnuSelectVertexClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Puts the MapForm into Vertex Selection mode when Edit|Select Vertex
 // is selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   MapButtonClick(MapButton2);
 end;
 
-
 procedure TMainForm.MnuSelectRegionClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Puts the MapForm into Region Selection mode when Edit|Select Region
 // is selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   MapButtonClick(MapButton3);
 end;
 
-
 procedure TMainForm.MnuSelectAllClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Selects all objects on a given form when Edit|Select All is selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-  if ActiveMDIChild is TMapForm then TMapForm(ActiveMDIChild).SelectAll;
-  if ActiveMDIChild is TTableForm then TTableForm(ActiveMDIChild).SelectAll;
-  if ActiveMDIChild is TStatsReportForm
-  then TStatsReportForm(ActiveMDIChild).SelectAll;
-  //if ActiveMDIChild is TStatusForm
-  //then TStatusForm(ActiveMDIChild).SelectAll;
+  if ActiveMDIChild is TMapForm then
+    TMapForm(ActiveMDIChild).SelectAll;
+  if ActiveMDIChild is TTableForm then
+    TTableForm(ActiveMDIChild).SelectAll;
+  if ActiveMDIChild is TStatsReportForm then
+    TStatsReportForm(ActiveMDIChild).SelectAll;
+  // if ActiveMDIChild is TStatusForm
+  // then TStatusForm(ActiveMDIChild).SelectAll;
 end;
 
-
 procedure TMainForm.MnuFindObjectClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Activates the FindForm to locate a visual object by name.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-  //if ActiveMDIChild is TStatusForm
-  //then TStatusForm(ActiveMDIChild).FindObject
-  //else
+  // if ActiveMDIChild is TStatusForm
+  // then TStatusForm(ActiveMDIChild).FindObject
+  // else
   FindForm.Visible := True;
 end;
 
-
 procedure TMainForm.MnuGroupEditClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Displays the Group Edit dialog when Edit|Group Edit selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-  with TGroupEditForm.Create(self) do
-  try
-    PropEditForm.Hide;
-    ShowModal;
-  finally
-    Free;
-  end;
-  if PropEditForm.Visible then Ubrowser.BrowserEditObject;
+  with TGroupEditForm.Create(Self) do
+    try
+      PropEditForm.Hide;
+      ShowModal;
+    finally
+      Free;
+    end;
+  if PropEditForm.Visible then
+    Ubrowser.BrowserEditObject;
 end;
-
 
 procedure TMainForm.MnuGroupDeleteClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Deletes all objects in the selected region of the study area map when
 // Edit|Group Delete is selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-  with TGroupDeleteForm.Create(self) do
-  try
-    ShowModal;
-  finally
-    Free;
-  end;
+  with TGroupDeleteForm.Create(Self) do
+    try
+      ShowModal;
+    finally
+      Free;
+    end;
 end;
 
 
-//=============================================================================
-//                         View Menu Handlers
-//=============================================================================
+// =============================================================================
+// View Menu Handlers
+// =============================================================================
 
 procedure TMainForm.MnuDimensionsClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for View|Dimensions menu item.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   MapForm.ModifyMapDimensions;
 end;
 
-
 procedure TMainForm.MnuBackdropClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for View|Backdrop menu item.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 var
   EnableFlag: Boolean;
 begin
@@ -1327,87 +1326,86 @@ begin
   MnuBackdropWatermark.Checked := EnableFlag and MapForm.Map.Backdrop.Watermark;
 end;
 
-
 procedure TMainForm.MnuBackdropLoadClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for the View|Backdrop|Load menu item.
 // Loads a backdrop image file into the project's map display.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 var
-  BackdropFileForm : TBackdropFileForm;
+  BackdropFileForm: TBackdropFileForm;
 begin
-  BackdropFileForm := TBackdropFileForm.Create(self);
+  BackdropFileForm := TBackdropFileForm.Create(Self);
   try
     // Use the Backdrop File dialog to get the name of a backdrop file
-    if BackdropFileForm.ShowModal = mrOK then with MapForm do
-    begin
-
-      // Retrieve the backdrop's file name and coordinates from the dialog
-      Application.ProcessMessages;
-      with Map.Backdrop do
+    if BackdropFileForm.ShowModal = mrOK then
+      with MapForm do
       begin
-        Filename := BackdropFileForm.GetBackdropFilename;
-        BackdropFileForm.GetBackdropCoords(LowerLeft, UpperRight);
-        Visible  := True;
+
+        // Retrieve the backdrop's file name and coordinates from the dialog
+        Application.ProcessMessages;
+        with Map.Backdrop do
+        begin
+          Filename := BackdropFileForm.GetBackdropFilename;
+          BackdropFileForm.GetBackdropCoords(LowerLeft, UpperRight);
+          Visible := True;
+        end;
+
+        // Display the backdrop image on the study area map
+        OpenBackdropFile;
+        RedrawMap;
+
+        // Update the Overview Map
+        UpdateOVmap;
+        if OVMapForm.Visible then
+          OVMapForm.Redraw;
+        Uglobals.HasChanged := True;
       end;
-
-      // Display the backdrop image on the study area map
-      OpenBackdropFile;
-      RedrawMap;
-
-      // Update the Overview Map
-      UpdateOVmap;
-      if OVmapForm.Visible then OVmapForm.Redraw;
-      Uglobals.HasChanged := True;
-    end;
 
   finally
     BackdropFileForm.Free;
   end;
 end;
 
-
 procedure TMainForm.MnuBackdropUnloadClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for View|Backdrop|Unload menu item.
 // Resets the project's backdrop image to a no-image default.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-  MapForm.Map.Backdrop := UMap.DefMapBackdrop;
-  OVmapForm.OVmap.Backdrop := MapForm.Map.Backdrop;
+  MapForm.Map.Backdrop := Umap.DefMapBackdrop;
+  OVMapForm.OVmap.Backdrop := MapForm.Map.Backdrop;
   MapForm.RedrawMap;
-  OVmapForm.Redraw;
+  OVMapForm.Redraw;
   Uglobals.HasChanged := True;
 end;
 
-
 procedure TMainForm.MnuBackdropAlignClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for View|Backdrop|Align menu item.
 // Allows the user to reposition the backdrop image over the study area map.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   MapActionClick(MnuPan);
   MapForm.BeginAligning(Sender);
 end;
 
-
 procedure TMainForm.MnuBackdropResizeClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for View|Backdrop|Resize menu item.
 // Displays the Backdrop Dimensions form to resize the backdrop image's
 // bounding area.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-  if FormExists('BackdropDimensionsForm') then Exit;
-  with TBackdropDimensionsForm.Create(self) do Show;
+  if FormExists('BackdropDimensionsForm') then
+    Exit;
+  with TBackdropDimensionsForm.Create(Self) do
+    Show;
 end;
 
-
 procedure TMainForm.MnuBackdropWatermarkClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for View|Backdrop|Watermark menu item.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   with MnuBackdropWatermark do
   begin
@@ -1422,11 +1420,10 @@ begin
   Uglobals.HasChanged := True;
 end;
 
-
 procedure TMainForm.MapActionClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for Map menu items Full Extent, Rescale, Pan, and Zoom.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   with MapForm do
   begin
@@ -1437,50 +1434,51 @@ begin
 
     // The Tag property of each menu item was set to a
     // constant corresponding to the action it controls.
-    if Sender is TMenuItem then with TMenuItem(Sender) do
-    case Tag of
+    if Sender is TMenuItem then
+      with TMenuItem(Sender) do
+        case Tag of
 
-      // Display map at full extent
-      FULLEXTENT:
-      begin
-        MapForm.DrawFullExtent;
-        SelectorButtonClick;
-      end;
+          // Display map at full extent
+          FULLEXTENT:
+            begin
+              MapForm.DrawFullExtent;
+              SelectorButtonClick;
+            end;
 
-      // Panning & zooming handled by MapButtons 4-6
-      PAN:     MapButtonClick(MapButton4);
-      ZOOMIN:  MapButtonClick(MapButton5);
-      ZOOMOUT: MapButtonClick(MapButton6);
-    end;
+          // Panning & zooming handled by MapButtons 4-6
+          PAN:
+            MapButtonClick(MapButton4);
+          ZOOMIN:
+            MapButtonClick(MapButton5);
+          ZOOMOUT:
+            MapButtonClick(MapButton6);
+        end;
   end;
 end;
 
-
 procedure TMainForm.MnuQueryClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Activates the Query dialog to highlight items on the map that
 // meet a specific criteria when View|Query is selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   QueryForm.Visible := True;
 end;
 
-
 procedure TMainForm.MnuOVMapClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Toggles display of the Overview Map when View|Overview Map selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   MnuOVMap.Checked := not MnuOVMap.Checked;
   OVMapForm.Visible := MnuOVMap.Checked;
 end;
 
-
 procedure TMainForm.MnuObjectsClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for View|Objects menu item.
 // Allows the user to toggle the display of certain categories of map objects.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   MnuShowGages.Checked := MapForm.Map.Options.ShowGages;
   MnuShowSubcatch.Checked := MapForm.Map.Options.ShowSubcatchs;
@@ -1491,159 +1489,145 @@ begin
   MnuShowBackdrop.Enabled := (Length(MapForm.Map.Backdrop.Filename) > 0);
 end;
 
-
 procedure TMainForm.MnuShowObjectsClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Common OnClick handler for View/Objects/Gages..Labels.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   MapForm.PopupShowObjectsClick(Sender);
 end;
 
-
 procedure TMainForm.MnuShowBackdropClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for View/Objects/Backdrop.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   MapForm.PopupShowBackdropClick(Sender);
 end;
 
-
 procedure TMainForm.MnuLegendsClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Enables/disables submenu items when View|Legends selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   // Legend items are disabled if no view variable is selected
   // or if map is in Query mode
-  MnuSubcatchLegend.Enabled   := (not Uglobals.QueryFlag) and
-                                 (Uglobals.CurrentSubcatchVar <> NOVIEW);
-  MnuNodeLegend.Enabled   := (not Uglobals.QueryFlag) and
-                             (Uglobals.CurrentNodeVar <> NOVIEW);
-  MnuLinkLegend.Enabled   := (not Uglobals.QueryFlag) and
-                             (Uglobals.CurrentLinkVar <> NOVIEW);
-  MnuTimeLegend.Enabled   := Uglobals.RunFlag;
+  MnuSubcatchLegend.Enabled := (not Uglobals.QueryFlag) and
+    (Uglobals.CurrentSubcatchVar <> NOVIEW);
+  MnuNodeLegend.Enabled := (not Uglobals.QueryFlag) and
+    (Uglobals.CurrentNodeVar <> NOVIEW);
+  MnuLinkLegend.Enabled := (not Uglobals.QueryFlag) and
+    (Uglobals.CurrentLinkVar <> NOVIEW);
+  MnuTimeLegend.Enabled := Uglobals.RunFlag;
   MnuModifyLegend.Enabled := (not Uglobals.QueryFlag);
 end;
 
-
 procedure TMainForm.MnuSubcatchLegendClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Toggles display of Map's Subcatchment legend when
 // View|Legends|Subcatch selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   MapForm.ToggleSubcatchLegend;
 end;
 
-
 procedure TMainForm.MnuLinkLegendClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Toggles display of Map's Link legend when View|Legends|Link selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   MapForm.ToggleLinkLegend;
 end;
 
-
 procedure TMainForm.MnuNodeLegendClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Toggles display of Map's Node legend when View|Legends|Node selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   MapForm.ToggleNodeLegend;
 end;
 
-
 procedure TMainForm.MnuTimeLegendClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Toggles display of Map's Time legend when View|Legends|Time selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   MapForm.ToggleTimeLegend;
 end;
 
-
 procedure TMainForm.MnuModifyLegendClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Enables/disables submenu items when View|Legends|Modify selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   MnuModifySubcatchLegend.Enabled := (Uglobals.CurrentSubcatchVar <> NOVIEW);
   MnuModifyNodeLegend.Enabled := (Uglobals.CurrentNodeVar <> NOVIEW);
   MnuModifyLinkLegend.Enabled := (Uglobals.CurrentLinkVar <> NOVIEW);
 end;
 
-
 procedure TMainForm.MnuModifySubcatchLegendClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Displays Legend Editor form when View|Legends|Modify|Subcatch is selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   MapForm.ModifySubcatchLegend;
 end;
 
-
 procedure TMainForm.MnuModifyNodeLegendClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Displays Legend Editor form when View|Legends|Modify|Node is selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   MapForm.ModifyNodeLegend;
 end;
 
-
 procedure TMainForm.MnuModifyLinkLegendClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Displays Legend Editor form when View|Legends|Modify|Link is selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   MapForm.ModifyLinkLegend;
 end;
 
-//=============================================================================
-//                        Project Menu Handlers
-//=============================================================================
+// =============================================================================
+// Project Menu Handlers
+// =============================================================================
 
 procedure TMainForm.MnuProjectSummaryClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Displays the Project Summary form when Project|Summary is selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-  with TProjectSummaryForm.Create(self) do
-  try
-    ShowModal;
-  finally
-    Free;
-  end;
+  with TProjectSummaryForm.Create(Self) do
+    try
+      ShowModal;
+    finally
+      Free;
+    end;
 end;
 
-
 procedure TMainForm.MnuProjectDefaultsClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Displays the Project Defaults dialog when Project|Defaults is selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 var
-  DefaultsForm : TDefaultsForm;
+  DefaultsForm: TDefaultsForm;
 begin
   PropEditForm.Hide;
-  DefaultsForm := TDefaultsForm.Create(self);
+  DefaultsForm := TDefaultsForm.Create(Self);
   try
-    if (DefaultsForm.ShowModal = mrOK)
-    and (DefaultsForm.Modified = True)
-    then SetChangeFlags;
+    if (DefaultsForm.ShowModal = mrOK) and (DefaultsForm.Modified = True) then
+      SetChangeFlags;
   finally
     DefaultsForm.Free;
   end;
 end;
 
-
 procedure TMainForm.MnuProjectDetailsClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Displays current project data in the EPA SWMM input file format
 // when Project|Details is selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 var
   OldTabDelimited: Boolean;
   ProjectForm: TProjectForm;
@@ -1659,38 +1643,38 @@ begin
   Uglobals.TabDelimited := OldTabDelimited;
 end;
 
-
 procedure TMainForm.MnuProjectCalibDataClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Displays the Calibration Data dialog to register calibration data
 // when Project|Calibration Data is selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-  with TCalibDataForm.Create(self) do
-  try
-    if (ShowModal = mrOK) then Uglobals.RegisterCalibData;
-  finally
-    Free;
-  end;
+  with TCalibDataForm.Create(Self) do
+    try
+      if (ShowModal = mrOK) then
+        Uglobals.RegisterCalibData;
+    finally
+      Free;
+    end;
 end;
 
 procedure TMainForm.MnuProjectRunSimulationClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Runs a simulation when Project|Run Simulation is selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   RunSimulation;
 end;
 
 
-//=============================================================================
-//                         Report Menu Handlers
-//=============================================================================
+// =============================================================================
+// Report Menu Handlers
+// =============================================================================
 
 procedure TMainForm.MnuReportClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Controls what kind of reports can be generated when Report menu is selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   // Reports are available only if a successful analysis run has been made
   MnuReportStatus.Enabled := True;
@@ -1700,25 +1684,24 @@ begin
   MnuReportTable.Enabled := Uglobals.RunFlag;
 
   // The Options menu item is enabled depending on type of active window
-  MnuReportOptions.Enabled :=
-    (ActiveMDIChild is TProfilePlotForm) or
-    (ActiveMDIChild is TGraphForm) or
-    ((ActiveMDIChild is TStatsReportForm) and
+  MnuReportOptions.Enabled := (ActiveMDIChild is TProfilePlotForm) or
+    (ActiveMDIChild is TGraphForm) or ((ActiveMDIChild is TStatsReportForm) and
     (TStatsReportForm(ActiveMDIChild).PageControl1.ActivePageIndex = 2));
 end;
 
 procedure TMainForm.MnuReportStatusClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Displays a run's Status Report when Report|Status is selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 var
-  StatusForm : TStatusForm;
+  StatusForm: TStatusForm;
 begin
   // Check if Status Report form already exists
-  if FormExists('StatusForm') then Exit;
+  if FormExists('StatusForm') then
+    Exit;
 
   // Otherwise create it
-  StatusForm := TStatusForm.Create(self);
+  StatusForm := TStatusForm.Create(Self);
   try
     StatusForm.Caption := TXT_STATUS_REPORT;
     StatusForm.RefreshStatusReport;
@@ -1728,17 +1711,18 @@ begin
 end;
 
 procedure TMainForm.MnuReportSummaryClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Displays a run's Summary Report when Report|Summary is selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 var
   ResultsForm: TResultsForm;
 begin
   // Check if Summary Results form already exists
-  if FormExists('ResultsForm') then Exit;
+  if FormExists('ResultsForm') then
+    Exit;
 
   // Otherwise create it
-  ResultsForm := TResultsForm.Create(self);
+  ResultsForm := TResultsForm.Create(Self);
   try
     ResultsForm.RefreshReport;
     ResultsForm.SetFocus;
@@ -1747,502 +1731,506 @@ begin
 end;
 
 procedure TMainForm.MnuReportGraphClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Enables Time Series and Scatter plot options only if results are
 // available when Report|Graph is selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   MnuGraphScatter.Enabled := Uglobals.RunFlag;
   MnuGraphTimeSeries.Enabled := Uglobals.RunFlag;
 end;
 
-
 procedure TMainForm.TBGraphClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for the graphing toolbar buttons.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-  if Sender = TBGraph then MnuGraphTimeSeriesClick(Sender);
-  if Sender = TBProfile then MnuGraphProfileClick(Sender);
-  if Sender = TBScatter then MnuGraphScatterClick(Sender);
+  if Sender = TBGraph then
+    MnuGraphTimeSeriesClick(Sender);
+  if Sender = TBProfile then
+    MnuGraphProfileClick(Sender);
+  if Sender = TBScatter then
+    MnuGraphScatterClick(Sender);
 end;
 
-
 procedure TMainForm.MnuGraphTimeSeriesClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Displays the Report Selection dialog form for a Time Series Plot when
 // Report|Graph|Time Series is selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   ReportSelectForm.Visible := False;
   TimePlotForm.Setup;
   TimePlotForm.Show;
-{
-  if Assigned(ReportSelectForm) then with ReportSelectForm do
-  try
+  {
+    if Assigned(ReportSelectForm) then with ReportSelectForm do
+    try
     SetReportType(TIMESERIESPLOT);
     Show;
-  finally
-  end;
-}
+    finally
+    end;
+  }
 end;
-
 
 procedure TMainForm.MnuGraphScatterClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Displays the Report Selection dialog form for a Scatter Plot when
 // Report|Graph|Scatter is selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-  if Assigned(ReportSelectForm) then with ReportSelectForm do
-  try
-    SetReportType(SCATTERPLOT);
-    Show;
-  finally
-  end;
+  if Assigned(ReportSelectForm) then
+    with ReportSelectForm do
+      try
+        SetReportType(SCATTERPLOT);
+        Show;
+      finally
+      end;
 end;
-
 
 procedure TMainForm.MnuGraphProfileClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Displays the Report Selection dialog form for a Profile Plot when
 // Report|Graph|Profile is selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-  if not FormExists('ProfileSelectForm')
-  then ProfileSelectForm := TProfileSelectForm.Create(self);
+  if not FormExists('ProfileSelectForm') then
+    ProfileSelectForm := TProfileSelectForm.Create(Self);
   with ProfileSelectForm do
-  try
-    Show;
-  finally
-  end;
+    try
+      Show;
+    finally
+    end;
 end;
-
 
 procedure TMainForm.MnuTableByObjectClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Displays the Report Selection dialog form for a Table by Object when
 // Report|Table|By Object is selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-  if Assigned(ReportSelectForm) then with ReportSelectForm do
-  try
-    SetReportType(TABLEBYOBJECT);
-    Show;
-  finally
-  end;
+  if Assigned(ReportSelectForm) then
+    with ReportSelectForm do
+      try
+        SetReportType(TABLEBYOBJECT);
+        Show;
+      finally
+      end;
 end;
-
 
 procedure TMainForm.MnuTableByVariableClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Displays the Report Selection dialog form for a Table by Variable when
 // Report|Table|By Variable is selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-  if Assigned(ReportSelectForm) then with ReportSelectForm do
-  try
-    SetReportType(TABLEBYVARIABLE);
-    Show;
-  finally
-  end;
+  if Assigned(ReportSelectForm) then
+    with ReportSelectForm do
+      try
+        SetReportType(TABLEBYVARIABLE);
+        Show;
+      finally
+      end;
 end;
-
 
 procedure TMainForm.MnuReportStatisticsClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Displays the Statistics Selection dialog form when
 // Report|Statistics is selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-  if not FormExists('StatsSelectForm')
-  then with TStatsSelectForm.Create(self) do
-  try
-    Show;
-  finally
-  end;
+  if not FormExists('StatsSelectForm') then
+    with TStatsSelectForm.Create(Self) do
+      try
+        Show;
+      finally
+      end;
 end;
-
 
 procedure TMainForm.MnuReportCustomizeClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for Report|Customize menu option.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-  if (ActiveMDIChild is TGraphForm)
-  then with ActiveMDIChild as TGraphForm do SetGraphOptions
-  else if (ActiveMDIChild is TProfilePlotForm)
-  then with ActiveMDIChild as TProfilePlotForm do SetPlotOptions
-  else if (ActiveMDIChild is TStatsReportForm)
-  then with ActiveMDIChild as TStatsReportForm do SetGraphOptions;
+  if (ActiveMDIChild is TGraphForm) then
+    with ActiveMDIChild as TGraphForm do
+      SetGraphOptions
+  else if (ActiveMDIChild is TProfilePlotForm) then
+    with ActiveMDIChild as TProfilePlotForm do
+      SetPlotOptions
+  else if (ActiveMDIChild is TStatsReportForm) then
+    with ActiveMDIChild as TStatsReportForm do
+      SetGraphOptions;
 end;
 
 
-//=============================================================================
-//                       Tool Menu Handlers
-//=============================================================================
+// =============================================================================
+// Tool Menu Handlers
+// =============================================================================
 
 procedure TMainForm.MnuPreferencesClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Displays Preferences dialog form when Tools|Program Preferences selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 var
   S: String;
 begin
-  with TPreferencesForm.Create(self) do
-  try
-    if ShowModal = mrOK then
-    begin
-      S := GetStyleName;
-      //MapForm.RedrawMap;
+  with TPreferencesForm.Create(Self) do
+    try
+      if ShowModal = mrOK then
+      begin
+        S := GetStyleName;
+        // MapForm.RedrawMap;
+      end;
+    finally
+      Free;
     end;
-  finally
-    Free;
-  end;
   if (Length(S) > 0) and (S <> TStyleManager.ActiveStyle.Name) then
   begin
     Uglobals.StyleName := S;
     TStyleManager.TrySetStyle(S);
-    if S = 'Windows'
-    then StatusBar.DrawingStyle := TTBDrawingStyle(dsNormal)
-    else StatusBar.DrawingStyle := TTBDrawingStyle(dsGradient);
+    if S = 'Windows' then
+      StatusBar.DrawingStyle := TTBDrawingStyle(dsNormal)
+    else
+      StatusBar.DrawingStyle := TTBDrawingStyle(dsGradient);
     Application.ProcessMessages;
-    MnuWindowCascadeClick(self);
+    MnuWindowCascadeClick(Self);
   end;
 end;
 
-
 procedure TMainForm.MnuViewOptionsClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Displays Map Options dialog when Tools|Map Display Options selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   MapForm.SetMapOptions;
 end;
 
-
 procedure TMainForm.MnuConfigureToolsClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Displays a Tool Options dialog when Tools | Configure Tools selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   with TToolOptionsForm.Create(Self) do
-  try
-    ShowModal;
-  finally
-    Free;
-  end;
+    try
+      ShowModal;
+    finally
+      Free;
+    end;
 end;
 
-//PLRM 2014 Addition
-procedure TMainForm.plrmDrawObjButtonHelper(Sender: TObject;ObjType: Integer;ItemIndex: Integer);
-//-----------------------------------------------------------------------------
+// PLRM 2014 Addition
+procedure TMainForm.plrmDrawObjButtonHelper(Sender: TObject; ObjType: Integer;
+  ItemIndex: Integer);
+// -----------------------------------------------------------------------------
 // Helper function for PLRM object buttons used to draw objects on the canvas.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 var
-  I:integer;
+  I: Integer;
 begin
-//PLRM Edit - Jan 2010 edit added to track whether user working with scenario see #233
+  // PLRM Edit - Jan 2010 edit added to track whether user working with scenario see #233
   getProjManagerWithMsg();
-  if PLRMObj.hasActvScn = false then exit;
+  if PLRMObj.hasActvScn = False then
+    Exit;
 
-  {// Place all buttons on the Map Toolbar in the UP position
-  for I := 1 to MAXMAPTOOLBARINDEX do
-  begin
+  { // Place all buttons on the Map Toolbar in the UP position
+    for I := 1 to MAXMAPTOOLBARINDEX do
+    begin
     with FindComponent('tbPLRM'+IntToStr(I)) as TToolButton do
     begin
-      Down := False;
+    Down := False;
     end;
-  end; }
+    end; }
 
   // Place the selected button on the Object Toolbar in the DOWN position
-  //TToolButton(Sender).Down := True;
-  //Store hint so that we can differentiate between various storage node types
+  // TToolButton(Sender).Down := True;
+  // Store hint so that we can differentiate between various storage node types
   PLRMObj.currentToolHint := TToolButton(Sender).Hint;
 
   Project.CurrentItem[ObjType] := ItemIndex;
   // Update the display of items for the selected category
-  Ubrowser.BrowserUpdate(ObjType, ItemIndex); // do this for native swmm objects only and not for plrm objects
+  Ubrowser.BrowserUpdate(ObjType, ItemIndex);
+  // do this for native swmm objects only and not for plrm objects
 
   Uglobals.CurrentList := ObjType;
   Project.CurrentItem[Uglobals.CurrentList] := ItemIndex;
   // Hide the Property Editor if no visual item was selected
-  if (ItemIndex < 0) or not Project.IsVisual(ObjType) then PropEditForm.Hide;
+  if (ItemIndex < 0) or not Project.IsVisual(ObjType) then
+    PropEditForm.Hide;
 
   // Update the Property Editor and highlight the item on the map
   // if a visual object was selected
   if Project.IsVisual(ObjType) then
   begin
-    if ItemIndex >= 0 then Uedit.UpdateEditor(ObjType, ItemIndex);
+    if ItemIndex >= 0 then
+      UEdit.UpdateEditor(ObjType, ItemIndex);
     MapForm.ChangeHiliteObject(ObjType, ItemIndex);
-    if TimePlotForm.Visible then TimePlotForm.SetObject;
+    if TimePlotForm.Visible then
+      TimePlotForm.SetObject;
   end
-  else MapForm.ChangeHiliteObject(-1, -1);
-  if PropEditForm.Visible then PropEditForm.SetFocus;
+  else
+    MapForm.ChangeHiliteObject(-1, -1);
+  if PropEditForm.Visible then
+    PropEditForm.SetFocus;
 
   // simulate click of the new button (+ sign)
   BrowserBtnNewClick(Sender);
 end;
 
-//PLRM 2014 Addition
+// PLRM 2014 Addition
 procedure TMainForm.tbPLRMBedfiltClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // PLRM Toolbar Handler for button used to draw bed filters on  the canvas.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-     plrmDrawObjButtonHelper(Sender, STORAGE, 0);
+  plrmDrawObjButtonHelper(Sender, STORAGE, 0);
 end;
 
-//PLRM 2014 Addition
+// PLRM 2014 Addition
 procedure TMainForm.tbPLRMCartfiltClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // PLRM Toolbar Handler for button used to cartridge filter on  the canvas.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-plrmDrawObjButtonHelper(Sender, STORAGE, 0);
+  plrmDrawObjButtonHelper(Sender, STORAGE, 0);
 end;
 
-//PLRM 2014 Addition
+// PLRM 2014 Addition
 procedure TMainForm.tbPLRMCatchClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // PLRM Toolbar Handler for button used to draw catchments on  the canvas.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-    plrmDrawObjButtonHelper(Sender, SUBCATCH, -1);
+  plrmDrawObjButtonHelper(Sender, SUBCATCH, -1);
 end;
 
-//PLRM 2014 Addition
+// PLRM 2014 Addition
 procedure TMainForm.tbPLRMDetnClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // PLRM Toolbar Handler for button used to draw detention basins on  the canvas.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   plrmDrawObjButtonHelper(Sender, STORAGE, -1);
 end;
 
-//PLRM 2014 Addition
+// PLRM 2014 Addition
 procedure TMainForm.tbPLRMJunctionClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnChange handler for the ObjectTreeView on the Browser's Data page.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   plrmDrawObjButtonHelper(Sender, JUNCTION, -1);
 end;
 
-//PLRM 2014 Addition
+// PLRM 2014 Addition
 procedure TMainForm.tbPLRMFlowsplitrClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // PLRM Toolbar Handler for button used to draw flow splitters on  the canvas.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   plrmDrawObjButtonHelper(Sender, DIVIDER, -1);
 end;
 
-//PLRM 2014 Addition
+// PLRM 2014 Addition
 procedure TMainForm.tbPLRMHydrodynClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // PLRM Toolbar Handler for button used to draw hydrodynamic device on  the canvas.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-   plrmDrawObjButtonHelper(Sender, STORAGE, -1);
+  plrmDrawObjButtonHelper(Sender, STORAGE, -1);
 end;
 
-//PLRM 2014 Addition
+// PLRM 2014 Addition
 procedure TMainForm.tbPLRMInfiltClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // PLRM Toolbar Handler for button used to draw infiltration basin on  the canvas.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-    plrmDrawObjButtonHelper(Sender, STORAGE, -1);
+  plrmDrawObjButtonHelper(Sender, STORAGE, -1);
 end;
 
 procedure TMainForm.tbPLRMOutfallClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // PLRM Toolbar Handler for button used to draw outfalls on  the canvas.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-     plrmDrawObjButtonHelper(Sender, OUTFALL, -1);
+  plrmDrawObjButtonHelper(Sender, OUTFALL, -1);
 end;
 
-//PLRM 2014 Addition
+// PLRM 2014 Addition
 procedure TMainForm.tbPLRMWetlClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // PLRM Toolbar Handler for button used to draw wetlands on  the canvas.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-    plrmDrawObjButtonHelper(Sender, STORAGE, -1);
+  plrmDrawObjButtonHelper(Sender, STORAGE, -1);
 end;
 
-//PLRM 2014 Addition
+// PLRM 2014 Addition
 procedure TMainForm.ToolItemClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Launches an application when it is selected from the Tools menu.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   Utools.RunTool(TMenuItem(Sender).Caption);
 end;
 
 
-//=============================================================================
-//                       Window Menu Handlers
-//=============================================================================
+// =============================================================================
+// Window Menu Handlers
+// =============================================================================
 
 procedure TMainForm.MnuWindowClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for the Window menu - disables the Close All & Tile
 // menu items if the MapForm is the only MDI child window.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 var
   Flag: Boolean;
 begin
-  if MDIChildCount <= 1 then Flag := False else Flag := True;
+  if MDIChildCount <= 1 then
+    Flag := False
+  else
+    Flag := True;
   MnuWindowCloseAll.Enabled := Flag;
   MnuWindowTile.Enabled := Flag;
 end;
 
-
 procedure TMainForm.MnuWindowCascadeClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Cascades MDI child windows when Window|Cascade is selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 var
   ControlBarHeight: Integer;
 begin
   // Account for height & width of Toolbars
   ControlBarHeight := 0;
-  if ControlBar1.Visible
-  then ControlBarHeight := ControlBar1.Height;
+  if ControlBar1.Visible then
+    ControlBarHeight := ControlBar1.Height;
 
   // Arrange all MDI child windows
   if (MDIChildCount >= 1) then
   begin
     // First prevent windows from re-drawing and cascade them
-    //LockWindowUpdate(Handle);
+    // LockWindowUpdate(Handle);
     MapForm.RedrawOnResize := False;
     Cascade;
     MapForm.RedrawOnResize := True;
 
     // Place MapForm in upper left
-    if Assigned(MapForm) then with MapForm do
-      SetBounds(0, 0, MainForm.ClientWidth -
-                MainForm.BrowserPageControl.Width -
-                MainForm.Splitter1.Width - 4,
-                MainForm.ClientHeight - ControlBarHeight -
-                MainForm.StatusBar.Height - 5);
+    if Assigned(MapForm) then
+      with MapForm do
+        SetBounds(0, 0, MainForm.ClientWidth - MainForm.BrowserPageControl.Width
+          - MainForm.Splitter1.Width - 4, MainForm.ClientHeight -
+          ControlBarHeight - MainForm.StatusBar.Height - 5);
 
     // Allow windows to re-draw themselves
-    //LockWindowUpdate(0);
+    // LockWindowUpdate(0);
   end;
 end;
 
-
 procedure TMainForm.MnuWindowTileClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Tiles MDI child windows when Window|Cascade is selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   MapForm.WindowState := wsMinimized;
   Tile;
 end;
 
-
 procedure TMainForm.MnuWindowCloseAllClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Closes all MDI children (except the Map) when Window|Close All is selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   CloseForms;
 end;
 
-
 procedure TMainForm.MnuAboutClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Displays About form when Help|About is selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-  with TAboutBoxForm.Create(self) do
-  try
-    ShowModal;
-  finally
-    Free;
-  end;
+  with TAboutBoxForm.Create(Self) do
+    try
+      ShowModal;
+    finally
+      Free;
+    end;
 end;
 
 
-//=============================================================================
-//                        Toolbar Button Handlers
-//=============================================================================
+// =============================================================================
+// Toolbar Button Handlers
+// =============================================================================
 
 procedure TMainForm.TBOptionsClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for the Options toolbar button.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-  if (ActiveMDIChild is TMapForm)
-  then with ActiveMDIChild as TMapForm do SetMapOptions
-  else MnuReportCustomizeClick(Sender);
+  if (ActiveMDIChild is TMapForm) then
+    with ActiveMDIChild as TMapForm do
+      SetMapOptions
+  else
+    MnuReportCustomizeClick(Sender);
 end;
 
-
 procedure TMainForm.MapButton7Click(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for Full Extent button on the Map Toolbar.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   MapActionClick(MnuFullExtent);
 end;
 
-
 procedure TMainForm.SelectorButtonClick;
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Activates the Select tool button on Map Toolbar.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-  //HideProgressBar;
+  // HideProgressBar;
   ShowStatusHint('');
   BrowserBtnNew.Down := False;
   MapButtonClick(MapButton1);
 end;
 
-
 procedure TMainForm.PanButtonClick;
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Activates the Pan tool button on Map Toolbar.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   MapButton4.Down := True;
   MapForm.ToolButtonClick(MapButton4.Tag);
 end;
 
-
 procedure TMainForm.MapButtonClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for the Map Toolbar buttons - invokes the
 // ToolButtonClick procedure on the MapForm. The Tag property of each
 // MapButton stores the button's action code:
 // MapButton   Tag   Action
 // ----------  ----  -----------------------------
-//    1        101    Activate Map Selection tool
-//    2        102    Activate Vertex Selection tool
-//    3        103    Activate Group Selection tool
-//    4        104    Activate Map Panning tool
-//    5        105    Activate Map Zoom In tool
-//    6        106    Activate Map Zoom Out tool
-//    7        107    (Activated by MapButon7Click)
-//    8        108    Activate Map Ruler tool
-//-----------------------------------------------------------------------------
+// 1        101    Activate Map Selection tool
+// 2        102    Activate Vertex Selection tool
+// 3        103    Activate Group Selection tool
+// 4        104    Activate Map Panning tool
+// 5        105    Activate Map Zoom In tool
+// 6        106    Activate Map Zoom Out tool
+// 7        107    (Activated by MapButon7Click)
+// 8        108    Activate Map Ruler tool
+// -----------------------------------------------------------------------------
 var
   I: Integer;
 begin
   // Stop adding new objects to the map
-  //HideProgressBar;
+  // HideProgressBar;
   ShowStatusHint('');
   BrowserBtnNew.Down := False;
 
   // Place all buttons on the Object Toolbar in the UP position
   for I := 1 to MAXMAPTOOLBARINDEX do
   begin
-    with FindComponent('MapButton'+IntToStr(I)) as TToolButton do
+    with FindComponent('MapButton' + IntToStr(I)) as TToolButton do
       Down := False;
   end;
 
@@ -2264,28 +2252,29 @@ begin
 
 end;
 
-//PLRM 2014 additions
+// PLRM 2014 additions
 procedure TMainForm.ObjectButtonClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for the buttons on the Object Toolbar - invokes the
 // ToolButtonClick procedure on the MapForm. The Tag property of each
 // button stores the button's number.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 var
   I: Integer;
 begin
-  //PLRM Addition
-  //PLRM Edit - Jan 2010 edit added to track whether user working with scenario see #233
+  // PLRM Addition
+  // PLRM Edit - Jan 2010 edit added to track whether user working with scenario see #233
   getProjManagerWithMsg();
-  if PLRMObj.hasActvScn = false then exit;
+  if PLRMObj.hasActvScn = False then
+    Exit;
 
-  //Store hint so that we can differentiate between various storage node types
+  // Store hint so that we can differentiate between various storage node types
   PLRMObj.currentToolHint := TToolButton(Sender).Hint;
 
   // Place all buttons on the Map Toolbar in the UP position
   for I := 1 to MAXMAPTOOLBARINDEX do
   begin
-    with FindComponent('MapButton'+IntToStr(I)) as TToolButton do
+    with FindComponent('MapButton' + IntToStr(I)) as TToolButton do
     begin
       Down := False;
     end;
@@ -2294,138 +2283,138 @@ begin
   // Place the selected button on the Object Toolbar in the DOWN position
   TToolButton(Sender).Down := True;
 
-  //1. simulate selection on treeView
+  // 1. simulate selection on treeView
 
-  //2. simulate click of + button
-       BrowserBtnNewClick(Sender);
+  // 2. simulate click of + button
+  BrowserBtnNewClick(Sender);
   // Pass the button click on to the MapForm
   MapForm.ToolButtonClick(TToolButton(Sender).Tag);
 end;
 
-//=============================================================================
-//                     Browser Panel Procedures
+// =============================================================================
+// Browser Panel Procedures
 //
-//  The Browser panel consists of two tabbed pages.
+// The Browser panel consists of two tabbed pages.
 //
-//  The Data page allows users to select an object category from the
-//  ObjectTreeView control, and select a particular object in that
-//  category from the ItemListBox control.
+// The Data page allows users to select an object category from the
+// ObjectTreeView control, and select a particular object in that
+// category from the ItemListBox control.
 //
-//  The Map page allows users to select variables to view on the MapForm
-//  from the SubcatchViewBox, NodeViewBox, and LinkViewBox. A viewing
-//  time period can be selected from the DateListBox, TimeListBox, or
-//  ElapsedTimeSpin controls.
+// The Map page allows users to select variables to view on the MapForm
+// from the SubcatchViewBox, NodeViewBox, and LinkViewBox. A viewing
+// time period can be selected from the DateListBox, TimeListBox, or
+// ElapsedTimeSpin controls.
 //
-//  Most actions on the Browser panel are handled in the Ubrowser unit.
-//=============================================================================
+// Most actions on the Browser panel are handled in the Ubrowser unit.
+// =============================================================================
 
 procedure TMainForm.BrowserBtnNewClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for the New button on the Browser's Data page.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   BrowserBtnNew.Down := True;
-  if Uglobals.CurrentList in
-    [RAINGAGE, SUBCATCH, JUNCTION..STORAGE, CONDUIT..OUTLET, MAPLABEL]
-  then
+  if Uglobals.CurrentList in [RAINGAGE, SUBCATCH, JUNCTION .. STORAGE,
+    CONDUIT .. OUTLET, MAPLABEL] then
   begin
     case Uglobals.CurrentList of
-    RAINGAGE: ShowStatusHint(TXT_ADD_RAINGAGE);
-    SUBCATCH: ShowStatusHint(TXT_ADD_SUBCATCH);
-    JUNCTION..STORAGE: ShowStatusHint(TXT_ADD_NODE);
-    CONDUIT..OUTLET: ShowStatusHint(TXT_ADD_LINK);
-    MAPLABEL: ShowStatusHint(TXT_ADD_LABEL);
+      RAINGAGE:
+        ShowStatusHint(TXT_ADD_RAINGAGE);
+      SUBCATCH:
+        ShowStatusHint(TXT_ADD_SUBCATCH);
+      JUNCTION .. STORAGE:
+        ShowStatusHint(TXT_ADD_NODE);
+      CONDUIT .. OUTLET:
+        ShowStatusHint(TXT_ADD_LINK);
+      MAPLABEL:
+        ShowStatusHint(TXT_ADD_LABEL);
     end;
     MapButton1.Down := False;
     MapForm.ToolButtonClick(Uglobals.CurrentList);
   end
-  else Ubrowser.BrowserNewObject;
+  else
+    Ubrowser.BrowserNewObject;
 end;
 
-
 procedure TMainForm.BrowserBtnDeleteClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for the Delete button on the Browser's Data page.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   Ubrowser.BrowserDeleteObject;
 end;
 
-
 procedure TMainForm.BrowserBtnEditClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for the Edit button on the Browser's Data page.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   Ubrowser.BrowserEditObject;
 end;
 
-
 procedure TMainForm.BrowserBtnUpClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for the Up button on the Browser's Data page.
 // Moves the current selection in the ItemListBox up one position
 // in the list of objects of that type.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 var
   ItemIndex: Integer;
 begin
-  if Uglobals.CurrentList < 0 then Exit;
+  if Uglobals.CurrentList < 0 then
+    Exit;
   ItemIndex := Project.CurrentItem[Uglobals.CurrentList];
   with Project.Lists[Uglobals.CurrentList] do
     if ItemIndex > 0 then
     begin
-      Exchange(ItemIndex, ItemIndex-1);
-      ItemListBox.ItemIndex := ItemIndex-1;
+      Exchange(ItemIndex, ItemIndex - 1);
+      ItemListBox.ItemIndex := ItemIndex - 1;
       Uglobals.HasChanged := True;
     end;
 end;
 
-
 procedure TMainForm.BrowserBtnDownClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for the Down button on the Browser's Data page.
 // Moves the current selection in the ItemListBox down one position
 // in the list of objects of that type.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 var
   ItemIndex: Integer;
 begin
-  if Uglobals.CurrentList < 0 then Exit;
+  if Uglobals.CurrentList < 0 then
+    Exit;
   ItemIndex := Project.CurrentItem[Uglobals.CurrentList];
   with Project.Lists[Uglobals.CurrentList] do
-    if ItemIndex < Count-1 then
+    if ItemIndex < Count - 1 then
     begin
-      Exchange(ItemIndex, ItemIndex+1);
-      ItemListBox.ItemIndex := ItemIndex+1;
+      Exchange(ItemIndex, ItemIndex + 1);
+      ItemListBox.ItemIndex := ItemIndex + 1;
       Uglobals.HasChanged := True;
     end;
 end;
 
-
 procedure TMainForm.BrowserBtnSortClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for the Sort button on the Browser's Data page.
 // Sorts the items of the current object category by ID name.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   Ubrowser.BrowserSortObjects;
 end;
 
-
 procedure TMainForm.ObjectTreeViewClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for the ObjectTreeView on the Browser's Data page.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   MainForm.SelectorButtonClick;
 end;
 
-
 procedure TMainForm.ObjectTreeViewChange(Sender: TObject; Node: TTreeNode);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnChange handler for the ObjectTreeView on the Browser's Data page.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 var
   ObjType: Integer;
   ItemIndex: Integer;
@@ -2454,78 +2443,76 @@ begin
   Ubrowser.BrowserUpdate(ObjType, ItemIndex);
 end;
 
-
 procedure TMainForm.ItemListBoxData(Control: TWinControl; Index: Integer;
   var Data: string);
 begin
   // Check for valid item index
   Data := '';
-  //aColor := clVLB;
-  if (Index < 0)
-  or (Index >= Project.Lists[Uglobals.CurrentList].Count)
-  then exit;
-{
-  // Gray-out display of item name if its a node with no coordinates
-  if Project.IsNode(Uglobals.CurrentList) then
-  begin
+  // aColor := clVLB;
+  if (Index < 0) or (Index >= Project.Lists[Uglobals.CurrentList].Count) then
+    Exit;
+  {
+    // Gray-out display of item name if its a node with no coordinates
+    if Project.IsNode(Uglobals.CurrentList) then
+    begin
     if (Project.GetNode(Uglobals.CurrentList, Index).X = MISSING)
     or (Project.GetNode(Uglobals.CurrentList, Index).Y = MISSING)
     then aColor := clGray;
-  end;
-}
+    end;
+  }
   // Get database ID label of item at current index
   Data := Project.GetID(Uglobals.CurrentList, Index);
 
 end;
 
 procedure TMainForm.ItemListBoxClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for the Browser panel's ItemListBox.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   with ItemListBox do
   begin
     if ItemIndex >= 0 then
     begin
       Ubrowser.BrowserUpdate(Uglobals.CurrentList, ItemIndex);
-      if Assigned(FindForm)
-      then FindForm.SearchFor(Uglobals.CurrentList, ItemIndex);
+      if Assigned(FindForm) then
+        FindForm.SearchFor(Uglobals.CurrentList, ItemIndex);
     end;
   end;
 end;
 
-
 procedure TMainForm.ItemListBoxDblClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnDblClick handler for the Browser panel's ItemListBox --
 // edits the item double-clicked on.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   // End any drag operation begun on a MouseDown action
   ItemListBox.EndDrag(False);
 
   // Select & edit the list box item
   ItemListBoxClick(Sender);
-  if ItemListBox.ItemIndex >= 0 then Ubrowser.BrowserEditObject;
+  if ItemListBox.ItemIndex >= 0 then
+    Ubrowser.BrowserEditObject;
 end;
-
 
 procedure TMainForm.ItemListBoxDrawItem(Control: TWinControl; Index: Integer;
   Rect: TRect; State: TOwnerDrawState);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnDrawItem handler for the Browser panel's ItemListBox.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 Var
- LListBox : TListBox;
+  LListBox: TListBox;
 begin
   // For native Windows style, draw item in the usual fashion
   LListBox := TListBox(Control);
-  if not StyleServices.Enabled then with LListBox.Canvas do
-  begin
-    FillRect(Rect);
-    TextRect(Rect, Rect.Left+2, Rect.Top, LListBox.Items[Index]);
-    Exit;
-  end;
+  if not StyleServices.Enabled then
+    with LListBox.Canvas do
+    begin
+      FillRect(Rect);
+      TextRect(Rect, Rect.Left + 2, Rect.Top, LListBox.Items[Index]);
+      Exit;
+    end;
 
   // Check the state
   if odSelected in State then
@@ -2536,7 +2523,7 @@ begin
   // Draw the background and text
   LListBox.Canvas.FillRect(Rect);
   SetBkMode(LListBox.Canvas.Handle, TRANSPARENT);
-  LListBox.Canvas.TextOut(Rect.Left + 2, Rect.Top+2, LListBox.Items[Index]);
+  LListBox.Canvas.TextOut(Rect.Left + 2, Rect.Top + 2, LListBox.Items[Index]);
 
   // Draw the Highlight rect using the vcl styles colors
   if odFocused In State then
@@ -2547,10 +2534,10 @@ begin
 end;
 
 procedure TMainForm.ItemListBoxKeyPress(Sender: TObject; var Key: Char);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnKeyPress handler for the Browser panel's ItemListBox --
 // edits the item if the Enter key was pressed.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   if Key = #13 then
   begin
@@ -2559,65 +2546,66 @@ begin
   end;
 end;
 
-
 procedure TMainForm.ItemListBoxKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnKeyDown handler for the Browser panel's ItemListBox --
 // deletes the item if the Delete key was pressed or inserts a new item if
 // the Insert key was pressed.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-  if Project.IsSortable(Uglobals.CurrentList) then case Key of
-  VK_DELETE:  BrowserBtnDeleteClick(Sender);
-  VK_INSERT:  BrowserBtnNewClick(Sender);
-  end;
+  if Project.IsSortable(Uglobals.CurrentList) then
+    case Key of
+      VK_DELETE:
+        BrowserBtnDeleteClick(Sender);
+      VK_INSERT:
+        BrowserBtnNewClick(Sender);
+    end;
 end;
 
-
-procedure TMainForm.ItemListBoxMouseDown(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-//-----------------------------------------------------------------------------
+procedure TMainForm.ItemListBoxMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+// -----------------------------------------------------------------------------
 // OnMouseDown handler for the Browser panel's ItemListBox. Allows an
 // item to be dragged from the ItemListBox.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   // Only visual objects can be dragged
-  if (Button = mbLeft)
-  and (Uglobals.CurrentList in
-      [RAINGAGE, SUBCATCH, JUNCTION, OUTFALL, DIVIDER, STORAGE, MAPLABEL])
-  //then with Sender as TVirtualListBox do
-  then with Sender as TListBox do
-  begin
-    if ItemAtPos(Point(X, Y), True) >= 0 then BeginDrag(False);
-  end;
+  if (Button = mbLeft) and (Uglobals.CurrentList in [RAINGAGE, SUBCATCH,
+    JUNCTION, OUTFALL, DIVIDER, STORAGE, MAPLABEL])
+  // then with Sender as TVirtualListBox do
+  then
+    with Sender as TListBox do
+    begin
+      if ItemAtPos(Point(X, Y), True) >= 0 then
+        BeginDrag(False);
+    end;
 end;
-
 
 procedure TMainForm.MapViewBoxChange(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Generic OnChange handler for the combo boxes that select a
 // map theme on the Browser panel's Map page.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-  if (Sender = SubcatchViewBox)
-  and (SubcatchViewBox.ItemIndex <> Uglobals.CurrentSubcatchVar)
-  then Ubrowser.ChangeMapTheme(SUBCATCHMENTS, SubcatchViewBox.ItemIndex)
+  if (Sender = SubcatchViewBox) and
+    (SubcatchViewBox.ItemIndex <> Uglobals.CurrentSubcatchVar) then
+    Ubrowser.ChangeMapTheme(SUBCATCHMENTS, SubcatchViewBox.ItemIndex)
 
-  else if (Sender = NodeViewBox)
-  and (NodeViewBox.ItemIndex <> Uglobals.CurrentNodeVar)
-  then Ubrowser.ChangeMapTheme(NODES, NodeViewBox.ItemIndex)
+  else if (Sender = NodeViewBox) and
+    (NodeViewBox.ItemIndex <> Uglobals.CurrentNodeVar) then
+    Ubrowser.ChangeMapTheme(NODES, NodeViewBox.ItemIndex)
 
-  else if (Sender = LinkViewBox)
-  and (LinkViewBox.ItemIndex <> Uglobals.CurrentLinkVar)
-  then Ubrowser.ChangeMapTheme(LINKS, LinkViewBox.ItemIndex);
+  else if (Sender = LinkViewBox) and
+    (LinkViewBox.ItemIndex <> Uglobals.CurrentLinkVar) then
+    Ubrowser.ChangeMapTheme(LINKS, LinkViewBox.ItemIndex);
 end;
 
 
-//=============================================================================
-//  The following procedures are event handlers for the Time/Date/ElapsedTime
-//  controls on the Map page of the Browser panel.
-//=============================================================================
+// =============================================================================
+// The following procedures are event handlers for the Time/Date/ElapsedTime
+// controls on the Map page of the Browser panel.
+// =============================================================================
 
 procedure TMainForm.DateListBoxClick(Sender: TObject);
 begin
@@ -2632,8 +2620,7 @@ end;
 procedure TMainForm.DateScrollBarScroll(Sender: TObject;
   ScrollCode: TScrollCode; var ScrollPos: Integer);
 begin
-  if ScrollCode in
-  [scLineUp, scLineDown, scPageUp, scPageDown, scPosition] then
+  if ScrollCode in [scLineUp, scLineDown, scPageUp, scPageDown, scPosition] then
   begin
     DateListBox.ItemIndex := ScrollPos;
     DateListBoxClick(Sender);
@@ -2653,8 +2640,7 @@ end;
 procedure TMainForm.TimeScrollBarScroll(Sender: TObject;
   ScrollCode: TScrollCode; var ScrollPos: Integer);
 begin
-  if ScrollCode in
-    [scLineUp, scLineDown, scPageUp, scPageDown, scPosition] then
+  if ScrollCode in [scLineUp, scLineDown, scPageUp, scPageDown, scPosition] then
   begin
     TimeListBox.ItemIndex := ScrollPos;
     TimeListBoxClick(Sender);
@@ -2662,19 +2648,20 @@ begin
 end;
 
 procedure TMainForm.ElapsedTimeUpDownChangingEx(Sender: TObject;
-  var AllowChange: Boolean; NewValue: Smallint;
-  Direction: TUpDownDirection);
+  var AllowChange: Boolean; NewValue: Smallint; Direction: TUpDownDirection);
 begin
-  if Direction = updUp then Ubrowser.IncreaseElapsedTime;
-  if Direction = updDown then Ubrowser.DecreaseElapsedTime;
+  if Direction = updUp then
+    Ubrowser.IncreaseElapsedTime;
+  if Direction = updDown then
+    Ubrowser.DecreaseElapsedTime;
   AllowChange := False;
 end;
 
 
-//=============================================================================
-//  The following procedures handle resizing of the Browser panel's
-//  controls when the panel is re-sized by the user.
-//=============================================================================
+// =============================================================================
+// The following procedures handle resizing of the Browser panel's
+// controls when the panel is re-sized by the user.
+// =============================================================================
 
 procedure TMainForm.BrowserPageControlResize(Sender: TObject);
 var
@@ -2696,148 +2683,165 @@ begin
     // Need to save & redisplay panel's display text since associating
     // the panel with ElapsedTimeUpDown causes it to display the
     // the latter's Position property
-    if Enabled then S := Text else S := '';
-    Width := Parent.ClientWidth - 2*Left - ElapsedTimeUpDown.Width;
+    if Enabled then
+      S := Text
+    else
+      S := '';
+    Width := Parent.ClientWidth - 2 * Left - ElapsedTimeUpDown.Width;
     ElapsedTimeUpDown.Associate := ElapsedTimePanel;
     Text := S;
   end;
 end;
 
-////PLRM Addition
+/// /PLRM Addition
 procedure TMainForm.btnAboutClick(Sender: TObject);
 begin
   getAbout();
 end;
 
 procedure TMainForm.btnPLRMRunClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Displays a run's Status Report when Report|Status is selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-  //PLRM Edit Jan 2010 edit added to track whether user working with scenario see #233
+  // PLRM Edit Jan 2010 edit added to track whether user working with scenario see #233
   getProjManagerWithMsg();
-  if PLRMObj.hasActvScn = false then exit;
+  if PLRMObj.hasActvScn = False then
+    Exit;
 
   // Check if Status Report form already exists
-  if FormExists('StatusForm') then Exit;
+  if FormExists('StatusForm') then
+    Exit;
 
   // Otherwise create it
-  StatusForm := TStatusForm.Create(self);
-  //with TStatusForm.Create(self) do
+  StatusForm := TStatusForm.Create(Self);
+  // with TStatusForm.Create(self) do
   with StatusForm do
-  try
-    Caption := TXT_STATUS_REPORT;
-    isPLRMStatusReportActive := true; // used in Fstatus to decide whether to show plrm status form or default swmm status form
-    RefreshStatusReport;
-    RefreshStatusReport(PLRMObj.wrkdir + '\' + 'swmm.prpt');
-    //set back to false in fStatus.close  isPLRMStatusReportActive := false;
-    //SetFocus;
-    StatusForm.ManualFloat(StatusForm.ClientRect);
+    try
+      Caption := TXT_STATUS_REPORT;
+      isPLRMStatusReportActive := True;
+      // used in Fstatus to decide whether to show plrm status form or default swmm status form
+      RefreshStatusReport;
+      RefreshStatusReport(PLRMObj.wrkdir + '\' + 'swmm.prpt');
+      // set back to false in fStatus.close  isPLRMStatusReportActive := false;
+      // SetFocus;
+      StatusForm.ManualFloat(StatusForm.ClientRect);
       StatusForm.Show;
-  finally
-  end;
-//  if not FormExists('frmPLRMStats')
-//  then with TfrmPLRMStats.Create(self) do
-//  try
-//    Show;
-//  finally
-//  end;
+    finally
+    end;
+  // if not FormExists('frmPLRMStats')
+  // then with TfrmPLRMStats.Create(self) do
+  // try
+  // Show;
+  // finally
+  // end;
 
 end;
 
-//PLRM Addition
+// PLRM Addition
 procedure TMainForm.btnPlrmWizardClick(Sender: TObject);
 begin
-   //if PLRMWiz.visible <> true then PLRMWiz.showModal;
+  // if PLRMWiz.visible <> true then PLRMWiz.showModal;
 end;
-//PLRM Addition
+
+// PLRM Addition
 procedure TMainForm.btnPrjMgrClick(Sender: TObject);
 begin
-  if PLRMObj.hasActvScn = false then
+  if PLRMObj.hasActvScn = False then
     getProjManager(1)
   else
     getProjManager;
 end;
-//PLRM Addition
+
+// PLRM Addition
 procedure TMainForm.btnRunPLRMClick(Sender: TObject);
 var
-  flag: Boolean;
+  Flag: Boolean;
 begin
-  //PLRM Edit Jan 2010 edit added to track whether user working with scenario see #233
+  // PLRM Edit Jan 2010 edit added to track whether user working with scenario see #233
   getProjManagerWithMsg();
-  if PLRMObj.hasActvScn = false then exit;
+  if PLRMObj.hasActvScn = False then
+    Exit;
 
-  flag := PLRMObj.Run(); //plrm addition
-  if ((flag = true)) then
+  Flag := PLRMObj.Run(); // plrm addition
+  if ((Flag = True)) then
   begin
 
     PLRMObj.RunStatusStopped := 0; // 0 - stopped = false, 1 - stopped = true
     RunSimulation();
-    if(PLRMObj.RunStatusStopped = 1) then
+    if (PLRMObj.RunStatusStopped = 1) then
     begin
       reloadUserHydro();
-      exit;
+      Exit;
     end;
     if ((RunFlag = True)) then
     begin
-      MapToolBar.Enabled := false;
-      PLRMToolBar.Enabled := false;
-      //plrm 2014 ObjectToolBar.Enabled := false;
+      MapToolBar.Enabled := False;
+      PLRMToolBar.Enabled := False;
+      // plrm 2014 ObjectToolBar.Enabled := false;
       PLRMStats.GetAllResults();
       PLRMStats.reloadUserHydro();
       MainForm.HideProgressBar;
-      CopyFile(PChar(Uglobals.TempReportFile ), PChar(currentRptFilePath), False); //plrm addition
-      PLRMToolBar.Enabled := true;
-      //plrm 2014 ObjectToolBar.Enabled := true;
-      MapToolBar.Enabled := true;
+      CopyFile(PChar(Uglobals.TempReportFile), PChar(currentRptFilePath),
+        False); // plrm addition
+      PLRMToolBar.Enabled := True;
+      // plrm 2014 ObjectToolBar.Enabled := true;
+      MapToolBar.Enabled := True;
     end
     else // attemmpt to reload user hydrology from user swmm file
     begin
-        // Re-Display the Status Report if the run produced errors
-      if Uglobals.RunStatus = rsError then MnuReportStatusClick(Self);
+      // Re-Display the Status Report if the run produced errors
+      if Uglobals.RunStatus = rsError then
+        MnuReportStatusClick(Self);
       ShowMessage('Please check the status report and press "OK" to continue');
-      if (FileExists(PLRMObj.scenarioXMLFilePath)= true) then
-        if (openAndLoadSWMMInptFilefromXML(PLRMObj.scenarioXMLFilePath)= true) then
+      if (FileExists(PLRMObj.scenarioXMLFilePath) = True) then
+        if (openAndLoadSWMMInptFilefromXML(PLRMObj.scenarioXMLFilePath) = True)
+        then
           PLRMObj.LinkObjsToSWMMObjs()
         else
-          showMessage('An error occured while trying to reload project xml file');
+          ShowMessage
+            ('An error occured while trying to reload project xml file');
     end;
   end
   else
     ShowMessage('The simulation cannot continue');
 end;
 
-//PLRM Addition. Saves interim state and canvas contents
+// PLRM Addition. Saves interim state and canvas contents
 procedure TMainForm.btnSavePLRMClick(Sender: TObject);
 var
-  flag: Boolean;
+  Flag: Boolean;
 begin
-  //PLRM Edit Jan 2010 edit added to track whether user working with scenario see #233
+  // PLRM Edit Jan 2010 edit added to track whether user working with scenario see #233
   getProjManagerWithMsg();
-  if PLRMObj.hasActvScn = false then exit;
+  if PLRMObj.hasActvScn = False then
+    Exit;
 
-  flag := true; //PLRMObj.chkNodesAndCatchs();
-  if ((flag = true)) then
+  Flag := True; // PLRMObj.chkNodesAndCatchs();
+  if ((Flag = True)) then
   begin
-    if PLRMobj.plrmToXML() = false then
+    if PLRMObj.plrmToXML() = False then
     begin
-      showMessage('An error occured while saving the current project. Please try saving again after providing more input');
+      ShowMessage
+        ('An error occured while saving the current project. Please try saving again after providing more input');
     end;
   end;
 end;
 
-//PLRM Addition
+// PLRM Addition
 procedure TMainForm.btnSaveRptClick(Sender: TObject);
 begin
-  //PLRM Edit Jan 2010 edit added to track whether user working with scenario see #233
+  // PLRM Edit Jan 2010 edit added to track whether user working with scenario see #233
   getProjManagerWithMsg();
-  if PLRMObj.hasActvScn = false then exit;
+  if PLRMObj.hasActvScn = False then
+    Exit;
 
-  //if model has not been run warn and exit
+  // if model has not been run warn and exit
   if (FileExists(PLRMObj.wrkdir + '\' + 'swmm.prpt') = False) then
   begin
-    ShowMessage('This model has not been run. Run the model first before attempting to save the report');
-    exit;
+    ShowMessage
+      ('This model has not been run. Run the model first before attempting to save the report');
+    Exit;
   end;
 
   with SaveDialog do
@@ -2846,30 +2850,35 @@ begin
     Filter := 'PLRM Report Files (*.PRPT)|*.PRPT|All files|*.*';
     InitialDir := ExtractFileDir(PLRMObj.scenarioXMLFilePath);
     DefaultExt := '.PRPT';
-    if Length(InputFileName) > 0
-    then Filename := ChangeFileExt(ExtractFileName(PLRMObj.scenarioXMLFilePath),DefaultExt)
-    //then Filename := ExtractFileName(PLRMObj.scenarioXMLFilePath),DefaultExt
-    else Filename := '*.PRPT';
-    if Execute then gsCopyFile(InitialDir + '\' + 'swmm.prpt',FileName,true); //SaveFile(Filename);
+    if Length(InputFileName) > 0 then
+      Filename := ChangeFileExt(ExtractFileName(PLRMObj.scenarioXMLFilePath),
+        DefaultExt)
+      // then Filename := ExtractFileName(PLRMObj.scenarioXMLFilePath),DefaultExt
+    else
+      Filename := '*.PRPT';
+    if Execute then
+      gsCopyFile(InitialDir + '\' + 'swmm.prpt', Filename, True);
+    // SaveFile(Filename);
     DefaultExt := '';
   end;
 end;
 
 procedure TMainForm.btnScnCompsClick(Sender: TObject);
-var tempInt:Integer;
+var
+  tempInt: Integer;
 begin
- PLRMScenComps :=  TPLRMScenComps.Create(self) ;
- with PLRMScenComps do
-      try
+  PLRMScenComps := TPLRMScenComps.Create(Self);
+  with PLRMScenComps do
+    try
       begin
         tempInt := ShowModal;
         if tempInt = mrCancel then
-          exit;
+          Exit;
       end;
     finally
       Free;
     end;
-    ModalResult := mrOK;
+  ModalResult := mrOK;
 end;
 
 procedure TMainForm.Button1Click(Sender: TObject);
@@ -2880,7 +2889,7 @@ end;
 procedure TMainForm.ResizeControl(aControl: TControl);
 begin
   with aControl do
-    Width := Parent.ClientWidth - 2*Left;
+    Width := Parent.ClientWidth - 2 * Left;
 end;
 
 procedure TMainForm.RecenterControl(aControl: TControl);
@@ -2889,26 +2898,27 @@ begin
     Left := (Parent.ClientWidth - Width) div 2;
 end;
 
-//=============================================================================
-//              Most Recently Used (MRU) File Procedures
-//=============================================================================
+// =============================================================================
+// Most Recently Used (MRU) File Procedures
+// =============================================================================
 
 procedure TMainForm.MRUUpdate(Sender: TObject; const AddFileName: String);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Updates the MRU list when a new file (AddFileName) is opened.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
-////  Size of MRU file list limited to MAXMRUINDEX
-////  as defined in the Uglobals.pas unit.
+/// /  Size of MRU file list limited to MAXMRUINDEX
+/// /  as defined in the Uglobals.pas unit.
 
 var
   Index: Integer;
 begin
   Index := 0;
   while Index < (MRUList.Count - 1) do
-    if AddFileName = MRUList[Index]
-    then MRUList.Delete(Index)
-    else Index := Index + 1;
+    if AddFileName = MRUList[Index] then
+      MRUList.Delete(Index)
+    else
+      Index := Index + 1;
   while MRUList.Count > Uglobals.MAXMRUINDEX do
     MRUList.Delete(MRUList.Count - 1);
   while MRUList.Count < Uglobals.MAXMRUINDEX do
@@ -2916,11 +2926,10 @@ begin
   MRUList.Insert(0, AddFileName);
 end;
 
-
 procedure TMainForm.MRUDisplay(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Displays the MRU file list on the File menu.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 var
   I: Integer;
 begin
@@ -2931,19 +2940,18 @@ begin
   end;
 end;
 
-
 procedure TMainForm.MRUClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for the File|MRU File menu item - opens the selected file.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 var
   Index: Integer;
   Fname: String;
 begin
   Index := TMenuItem(Sender).Tag;
   Fname := MRUList[Index];
-  if not FileExists(Fname)
-  then MessageDlg(MSG_NO_INPUT_FILE, mtInformation, [mbOK], 0)
+  if not FileExists(Fname) then
+    MessageDlg(MSG_NO_INPUT_FILE, mtInformation, [mbOK], 0)
   else if SaveFileDlg(Sender) <> mrCancel then
   begin
     ReadOnlyFlag := (HasAttr(Fname, faReadOnly));
@@ -2953,14 +2961,14 @@ begin
 end;
 
 
-//=============================================================================
-//                      File Open & Save Procedures
-//=============================================================================
+// =============================================================================
+// File Open & Save Procedures
+// =============================================================================
 
 procedure TMainForm.ReadCmdLine;
-//-----------------------------------------------------------------------------
-//  Reads command line switches.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// Reads command line switches.
+// -----------------------------------------------------------------------------
 var
   I: Integer;
 begin
@@ -2974,9 +2982,8 @@ begin
     begin
 
       // The next parameter is the EPASWMM INI directory
-      if (I < ParamCount)
-      and DirectoryExists(ParamStr(I+1))
-      then IniFileDir := ParamStr(I+1);
+      if (I < ParamCount) and DirectoryExists(ParamStr(I + 1)) then
+        IniFileDir := ParamStr(I + 1);
       I := I + 2;
     end
 
@@ -2985,24 +2992,24 @@ begin
     begin
 
       // The next parameter is the start-up project file name
-      if (I < ParamCount)and FileExists(ParamStr(I+1)) then
+      if (I < ParamCount) and FileExists(ParamStr(I + 1)) then
       begin
-        InputFileName := ParamStr(I+1);
-        if Length(ExtractFileDir(InputFileName)) = 0
-        then InputFileName := GetCurrentDir + '\' + InputFileName;
+        InputFileName := ParamStr(I + 1);
+        if Length(ExtractFileDir(InputFileName)) = 0 then
+          InputFileName := GetCurrentDir + '\' + InputFileName;
       end;
       I := I + 2;
     end
-    else I := I + 1;
+    else
+      I := I + 1;
 
   end;
 end;
 
-
 procedure TMainForm.OpenFile(Sender: TObject; const Fname: String);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Opens an existing project file named Fname.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 var
   I: Integer;
 begin
@@ -3013,8 +3020,9 @@ begin
   Uglobals.InputFileName := Fname;
   SetCurrentDir(ExtractFileDir(Fname));
   MRUUpdate(Self, Uglobals.InputFileName);
-  //PLRM edits Caption := TXT_MAIN_CAPTION + ' - ' + ExtractFileName(Uglobals.InputFileName);
-  Caption := TXT_MAIN_CAPTION + '[Project Name: ' + PLRMObj.projUserName +  '] [Scenario Name: ' + PLRMObj.scenarioName + ' ]';
+  // PLRM edits Caption := TXT_MAIN_CAPTION + ' - ' + ExtractFileName(Uglobals.InputFileName);
+  Caption := TXT_MAIN_CAPTION + '[Project Name: ' + PLRMObj.projUserName +
+    '] [Scenario Name: ' + PLRMObj.scenarioName + ' ]';
 
   // Clear all existing data
   ClearAll;
@@ -3040,7 +3048,8 @@ begin
   // Initialize current item in each object category
   for I := 0 to MAXCLASS do
   begin
-    if Project.Lists[I].Count > 0 then Project.CurrentItem[I] := 0;
+    if Project.Lists[I].Count > 0 then
+      Project.CurrentItem[I] := 0;
   end;
   Uglobals.CurrentList := -1;
 
@@ -3066,20 +3075,19 @@ begin
   Ubrowser.BrowserUpdate(NOTES, Project.CurrentItem[NOTES]);
 end;
 
-
 procedure TMainForm.FindBackdropFile;
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Let's the user search for a map backdrop file.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   with MapForm.Map do
   begin
-    if  (Length(Backdrop.Filename) > 0) then
+    if (Length(Backdrop.Filename) > 0) then
     begin
       if not FileExists(Backdrop.Filename) then
       begin
         if MessageDlg(MSG_NO_BACKDROP + Backdrop.Filename + MSG_FIND_BACKDROP,
-          mtError, [mbYes,mbNo],0) = mrYes then
+          mtError, [mbYes, mbNo], 0) = mrYes then
         begin
           with OpenPictureDialog do
           begin
@@ -3089,21 +3097,23 @@ begin
               Backdrop.Filename := Filename;
               Backdrop.Visible := True;
             end
-            else Backdrop := Umap.DefMapBackdrop;
+            else
+              Backdrop := Umap.DefMapBackdrop;
           end;
         end
-        else Backdrop := Umap.DefMapBackdrop;
+        else
+          Backdrop := Umap.DefMapBackdrop;
       end
-      else Backdrop.Visible := True;
+      else
+        Backdrop.Visible := True;
     end;
   end;
 end;
 
-
 function TMainForm.SaveFileDlg(Sender: TObject): Integer;
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Checks if user wants to save current project to file.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   // If project data has changed then ask user to save input & results
   Result := mrNo;
@@ -3111,7 +3121,7 @@ begin
   begin
 
     // See if input data should be saved
-    //PLRM Edit Result := MessageDlg(TXT_SAVE_CHANGES, mtConfirmation, mbYesNoCancel, 0);
+    // PLRM Edit Result := MessageDlg(TXT_SAVE_CHANGES, mtConfirmation, mbYesNoCancel, 0);
     if Result = mrYes then
     begin
       MnuSaveClick(Sender);
@@ -3120,8 +3130,9 @@ begin
       if Uglobals.RunFlag and not Uglobals.ResultsSaved then
       begin
         if Uglobals.AutoSave
-        //PLRM edit or (MessageDlg(TXT_SAVE_RESULTS, mtConfirmation, [mbYes, mbNo], 0) = mrYes)
-        then Uexport.SaveResults(Uglobals.InputFileName);
+        // PLRM edit or (MessageDlg(TXT_SAVE_RESULTS, mtConfirmation, [mbYes, mbNo], 0) = mrYes)
+        then
+          Uexport.SaveResults(Uglobals.InputFileName);
       end;
     end;
   end
@@ -3129,65 +3140,65 @@ begin
   // If project data not changed made, see if results should be saved
   else if Uglobals.RunFlag and (not Uglobals.ResultsSaved) then
   begin
-    if Uglobals.AutoSave
-    or (MessageDlg(TXT_SAVE_RESULTS, mtConfirmation, [mbYes, mbNo], 0) = mrYes)
-    then Uexport.SaveResults(Uglobals.InputFileName);
+    if Uglobals.AutoSave or (MessageDlg(TXT_SAVE_RESULTS, mtConfirmation,
+      [mbYes, mbNo], 0) = mrYes) then
+      Uexport.SaveResults(Uglobals.InputFileName);
   end;
 end;
 
-//PLRM addition to allow access to private member fxn SaveFile
+// PLRM addition to allow access to private member fxn SaveFile
 procedure TMainForm.PLRMSaveFile(Fname: String);
 begin
-   SaveFile(Fname);
+  SaveFile(Fname);
 end;
 
 procedure TMainForm.SaveFile(Fname: String);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Saves project data in text format to file Fname.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   // Append .inp extension to file name if none exists
-  if ExtractFileExt(Fname) = '' then Fname := Fname + '.inp';
+  if ExtractFileExt(Fname) = '' then
+    Fname := Fname + '.inp';
 
   // Check if project file is read-only
-  if ReadOnlyFlag
-  and (CompareText(Fname, Uglobals.InputFileName) = 0)
-  then MessageDlg(ExtractFileName(Uglobals.InputFileName) + MSG_READONLY,
-                  mtInformation, [mbOK], 0)
+  if ReadOnlyFlag and (CompareText(Fname, Uglobals.InputFileName) = 0) then
+    MessageDlg(ExtractFileName(Uglobals.InputFileName) + MSG_READONLY,
+      mtInformation, [mbOK], 0)
 
-  // Save project under new name
+    // Save project under new name
   else
   begin
     Screen.Cursor := crHourGlass;
     Uexport.SaveProject(Fname);
     Uglobals.InputFileName := Fname;
     Uglobals.InputFileType := iftINP;
-    //PLRM edits Caption := Txt_MAIN_CAPTION + ' - ' +
-              // ExtractFileName(Uglobals.InputFileName);
-    Caption := TXT_MAIN_CAPTION + '[Project Name: ' + PLRMObj.projUserName +  '] [Scenario Name: ' + PLRMObj.scenarioName + ' ]';
+    // PLRM edits Caption := Txt_MAIN_CAPTION + ' - ' +
+    // ExtractFileName(Uglobals.InputFileName);
+    Caption := TXT_MAIN_CAPTION + '[Project Name: ' + PLRMObj.projUserName +
+      '] [Scenario Name: ' + PLRMObj.scenarioName + ' ]';
 
     MRUUpdate(Self, Uglobals.InputFileName);
     Uglobals.HasChanged := False;
     Uglobals.ReadOnlyFlag := False;
     if AutoBackup then
-      CopyFile(PChar(Fname), PChar(ChangeFileExt(Fname, '.bak')), FALSE);
+      CopyFile(PChar(Fname), PChar(ChangeFileExt(Fname, '.bak')), False);
     Screen.Cursor := crDefault;
   end;
 end;
 
-
 procedure TMainForm.ClearAll;
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Clears the entire project database.
 // (Called when File|New or File|Open selected)
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 var
   I: Integer;
 begin
   // Clear all output and input data
   Uoutput.ClearOutput;
   DeleteTempFiles;
-  Uglobals.TempInputFile  := '';
+  Uglobals.TempInputFile := '';
   Uglobals.TempReportFile := '';
   Uglobals.TempOutputFile := '';
   Project.Clear;
@@ -3224,7 +3235,7 @@ begin
 
   // Clear all calibration file information
   for I := Low(CalibData) to High(CalibData) do
-    Uglobals.CalibData[I].FileName := '';
+    Uglobals.CalibData[I].Filename := '';
 
   // Disable output reporting toolbar buttons
   TBGraph.Enabled := False;
@@ -3232,7 +3243,7 @@ begin
   TBStats.Enabled := False;
   TBScatter.Enabled := False;
   PopupReportSummary.Enabled := False;
-  //TBAnimator.Enabled := False;
+  // TBAnimator.Enabled := False;
 
   // Reset status flags
   Uglobals.HasChanged := False;
@@ -3242,22 +3253,20 @@ begin
 
 end;
 
-
 procedure TMainForm.CreateTempFiles;
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Creates temporary files that begin with the letters 'swmm'.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
-  Uglobals.TempInputFile  := Uutils.GetTempFile(Uglobals.TempDir, 'swmm');
+  Uglobals.TempInputFile := Uutils.GetTempFile(Uglobals.TempDir, 'swmm');
   Uglobals.TempReportFile := Uutils.GetTempFile(Uglobals.TempDir, 'swmm');
   Uglobals.TempOutputFile := Uutils.GetTempFile(Uglobals.TempDir, 'swmm');
 end;
 
-
 procedure TMainForm.DeleteTempFiles;
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Deletes temporary files.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   SysUtils.DeleteFile(Uglobals.TempInputFile);
   if not Uglobals.ResultsSaved then
@@ -3267,15 +3276,14 @@ begin
   end;
 end;
 
-
 procedure TMainForm.WMDropFiles(var Msg: TWMDropFiles);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Opens a project file dragged from Explorer and dropped on main window.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 var
-  DropH: HDROP;               // drop handle
-  FileNameLength: Integer;    // length of a dropped file name
-  FileName: string;           // a dropped file name
+  DropH: HDROP; // drop handle
+  FileNameLength: Integer; // length of a dropped file name
+  Filename: string; // a dropped file name
 begin
   inherited;
 
@@ -3288,16 +3296,16 @@ begin
 
     // Create string large enough to store file
     // (Delphi allows for #0 terminating character automatically)
-    SetLength(FileName, FileNameLength);
+    SetLength(Filename, FileNameLength);
 
     // Get the file name
-    DragQueryFile(DropH, 0, PChar(FileName), FileNameLength + 1);
+    DragQueryFile(DropH, 0, PChar(Filename), FileNameLength + 1);
 
     // Ask user to save current file
     if SaveFileDlg(Self) <> mrCancel then
     begin
       // Open new input file
-      ReadOnlyFlag := (HasAttr(FileName, faReadOnly));
+      ReadOnlyFlag := (HasAttr(Filename, faReadOnly));
       ProjectDir := ExtractFileDir(Filename);
       OpenFile(Self, Filename);
     end;
@@ -3311,14 +3319,14 @@ begin
 end;
 
 
-//=============================================================================
-//                     Form-Related Procedures
-//=============================================================================
+// =============================================================================
+// Form-Related Procedures
+// =============================================================================
 
 function TMainForm.FormExists(const Name: String): Boolean;
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Checks if form with given name already exists.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 var
   I: Integer;
 begin
@@ -3339,21 +3347,21 @@ begin
   end;
 end;
 
-
 procedure TMainForm.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
-//-----------------------------------------------------------------------------
-//  Form's KeyDown handler.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// Form's KeyDown handler.
+// -----------------------------------------------------------------------------
 begin
   // Turn off adding objects when Escape is pressed
-  if (Key = VK_ESCAPE) and BrowserBtnNew.Down then SelectorButtonClick;
+  if (Key = VK_ESCAPE) and BrowserBtnNew.Down then
+    SelectorButtonClick;
 end;
 
 procedure TMainForm.CreateReport(ReportSelection: TReportSelection);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Creates a new graph or table form.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 var
   GraphForm: TGraphForm;
   ProfilePlotForm: TProfilePlotForm;
@@ -3361,62 +3369,66 @@ var
 begin
   if ReportSelection.ReportType = TIMESERIESPLOT then
   begin
-    GraphForm := TGraphForm.Create(self);
+    GraphForm := TGraphForm.Create(Self);
     try
-      if GraphForm.CreateGraph(ReportSelection)
-      then GraphForm.RefreshGraph
-      else GraphForm.Close;
+      if GraphForm.CreateGraph(ReportSelection) then
+        GraphForm.RefreshGraph
+      else
+        GraphForm.Close;
     finally
     end;
   end
 
   else if ReportSelection.ReportType = SCATTERPLOT then
   begin
-    GraphForm := TGraphForm.Create(self);
+    GraphForm := TGraphForm.Create(Self);
     try
-      if GraphForm.CreateGraph(ReportSelection)
-      then GraphForm.RefreshGraph
-      else GraphForm.Close;
+      if GraphForm.CreateGraph(ReportSelection) then
+        GraphForm.RefreshGraph
+      else
+        GraphForm.Close;
     finally
     end;
   end
 
   else if ReportSelection.ReportType = PROFILEPLOT then
   begin
-    ProfilePlotForm := TProfilePlotForm.Create(self);
+    ProfilePlotForm := TProfilePlotForm.Create(Self);
     try
-      if ProfilePlotForm.CreatePlot(ReportSelection)
-      then ProfilePlotForm.Show
-      else ProfilePlotForm.Close;
+      if ProfilePlotForm.CreatePlot(ReportSelection) then
+        ProfilePlotForm.Show
+      else
+        ProfilePlotForm.Close;
     finally
     end;
   end
 
   else if ReportSelection.ReportType in [TABLEBYVARIABLE, TABLEBYOBJECT] then
   begin
-    TableForm := TTableForm.Create(self);
+    TableForm := TTableForm.Create(Self);
     try
-      if TableForm.CreateTable(ReportSelection)
-      then TableForm.Show
-      else TableForm.Close;
+      if TableForm.CreateTable(ReportSelection) then
+        TableForm.Show
+      else
+        TableForm.Close;
     finally
     end;
   end;
   StatusBar.Refresh;
 end;
 
-
 procedure TMainForm.CloseForms;
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Closes all forms (except the MapForm).
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 var
-  I : Integer;
+  I: Integer;
 begin
   // Close MDI child forms
   for I := MDIChildCount - 1 downto 0 do
   begin
-    if (MDIChildren[I] is TMapForm) then continue;
+    if (MDIChildren[I] is TMapForm) then
+      continue;
     MDIChildren[I].Close;
     MDIChildren[I].Free;
   end;
@@ -3429,33 +3441,38 @@ begin
   end;
 
   // Hide Map Query and Find forms if visible
-  if Assigned(QueryForm) then with QueryForm do
-  begin
-    Close;
-    Clear;
-  end;
-  if Assigned(FindForm) then with FindForm do
-  begin
-    Close;
-    Clear;
-  end;
-  if Assigned(ReportingForm) then with ReportingForm do
-  begin
-    Close;
-    Clear;
-  end;
+  if Assigned(QueryForm) then
+    with QueryForm do
+    begin
+      Close;
+      Clear;
+    end;
+  if Assigned(FindForm) then
+    with FindForm do
+    begin
+      Close;
+      Clear;
+    end;
+  if Assigned(ReportingForm) then
+    with ReportingForm do
+    begin
+      Close;
+      Clear;
+    end;
 
-  if Assigned(ReportSelectForm) then ReportSelectForm.Close;
-  if Assigned(StatsSelectForm) then StatsSelectForm.Close;
-  if Assigned(BackdropDimensionsForm) then BackdropDimensionsForm.Close;
+  if Assigned(ReportSelectForm) then
+    ReportSelectForm.Close;
+  if Assigned(StatsSelectForm) then
+    StatsSelectForm.Close;
+  if Assigned(BackdropDimensionsForm) then
+    BackdropDimensionsForm.Close;
 
 end;
 
-
 procedure TMainForm.RefreshMapForm;
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Refreshes the MapForm after new project data is retreived.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   Uoutput.SetSubcatchColors;
   Uoutput.SetNodeColors;
@@ -3463,11 +3480,10 @@ begin
   MapForm.RedrawMap;
 end;
 
-
 procedure TMainForm.RefreshForms;
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Refreshes all open output display forms after new analysis is made.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 var
   I: Integer;
 begin
@@ -3477,53 +3493,58 @@ begin
   begin
 
     if (MDIChildren[I] is TStatusForm) then
-      with MDIChildren[I] as TStatusForm do RefreshStatusReport
+      with MDIChildren[I] as TStatusForm do
+        RefreshStatusReport
 
     else if (MDIChildren[I] is TResultsForm) then
-      with MDIChildren[I] as TResultsForm do RefreshReport
+      with MDIChildren[I] as TResultsForm do
+        RefreshReport
 
     else if (MDIChildren[I] is TGraphForm) then
-      with MDIChildren[I] as TGraphForm do RefreshGraph
+      with MDIChildren[I] as TGraphForm do
+        RefreshGraph
 
     else if (MDIChildren[I] is TProfilePlotForm) then
-      with MDIChildren[I] as TProfilePlotForm do RefreshPlot
+      with MDIChildren[I] as TProfilePlotForm do
+        RefreshPlot
 
     else if (MDIChildren[I] is TTableForm) then
-      with MDIChildren[I] as TTableForm do RefreshTable
+      with MDIChildren[I] as TTableForm do
+        RefreshTable
 
     else if (MDIChildren[I] is TStatsReportForm) then
-      with MDIChildren[I] as TStatsReportForm do RefreshReport;
+      with MDIChildren[I] as TStatsReportForm do
+        RefreshReport;
   end;
   LockWindowUpdate(0);
 end;
 
-
 procedure TMainForm.UpdateProfilePlots;
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Updates all profile plots when a new time period is selected.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 var
   I: Integer;
 begin
   LockWindowUpdate(Handle);
   for I := MDIChildCount - 1 downto 0 do
   begin
-   if MDIChildren[I] is TProfilePlotForm then
-     with MDIChildren[I] as TProfilePlotForm do
-       UpdatePlot(Uglobals.CurrentPeriod);
+    if MDIChildren[I] is TProfilePlotForm then
+      with MDIChildren[I] as TProfilePlotForm do
+        UpdatePlot(Uglobals.CurrentPeriod);
   end;
   LockWindowUpdate(0);
 end;
 
 
-//=============================================================================
-//                       Printer Page Setup Procedures
-//=============================================================================
+// =============================================================================
+// Printer Page Setup Procedures
+// =============================================================================
 
 procedure TMainForm.InitPageLayout;
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Initializes the printer's page layout.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   with Uglobals.PageLayout do
   begin
@@ -3537,8 +3558,8 @@ begin
     Header.Text := '';
     Header.Alignment := taCenter;
     Header.Enabled := True;
-    //PLRM Edits Footer.Text := TXT_MAIN_CAPTION;
-    //Footer.Text := TXT_MAIN_CAPTION + '[Project Name: ' + PLRMObj.projUserName +  '] [Scenario Name: ' + PLRMObj.scenarioName + ' ]';
+    // PLRM Edits Footer.Text := TXT_MAIN_CAPTION;
+    // Footer.Text := TXT_MAIN_CAPTION + '[Project Name: ' + PLRMObj.projUserName +  '] [Scenario Name: ' + PLRMObj.scenarioName + ' ]';
 
     Footer.Alignment := taLeftJustify;
     Footer.Enabled := True;
@@ -3548,56 +3569,58 @@ begin
   Orientation := Ord(poPortrait);
 end;
 
-
 procedure TMainForm.PageSetup;
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Transfers current page margins & header/footer options to the
 // Printer object.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 var
   Y: Single;
   Justify: TJustify;
 begin
-  if Printer.Printers.Count > 0 then with thePrinter do
-  begin
-    // Set printer orientation
-    SetOrientation(TPrinterOrientation(Orientation));
-
-    // Set page margins
-    with PageLayout do
-      SetMargins(TMargin,BMargin,LMargin,RMargin);
-
-    with PageSetupDialog do
+  if Printer.Printers.Count > 0 then
+    with thePrinter do
     begin
-      // Define header line (0.5 inches above top margin)
-      Justify := TJustify(Ord(Header.Alignment));
-      SetHeaderInformation(1,PageLayout.TMargin-0.5,Header.Text,Justify,
-        'Arial',14,[fsBold]);
-      SetHeaders(Header.Enabled);
+      // Set printer orientation
+      SetOrientation(TPrinterOrientation(Orientation));
 
-      // Define footer line (0.5 inches from bottom of page)
-      Justify := TJustify(Ord(Footer.Alignment));
-      SetFooterInformation(1,GetPageHeight-0.5,Footer.Text,Justify,
-        'Arial',10,[fsBold, fsItalic]);
-      SetFooters(Footer.Enabled);
+      // Set page margins
+      with PageLayout do
+        SetMargins(TMargin, BMargin, LMargin, RMargin);
 
-      // Set page number location
-      Justify := jRight;
-      if PageNumbers in [pnUpperLeft, pnLowerLeft] then Justify := jLeft;
-      if PageNumbers in [pnUpperCenter, pnLowerCenter] then Justify := jCenter;
-      Y := 0.5;
-      if PageNumbers in [pnLowerLeft, pnLowerCenter, pnLowerRight] then
-        Y := GetPageHeight-0.5;
-      SetPageNumberInformation(Y,'Page ',Justify,'Arial',10,[]);
-      SetPageNumbers(not (PageNumbers = pnNone));
+      with PageSetupDialog do
+      begin
+        // Define header line (0.5 inches above top margin)
+        Justify := TJustify(Ord(Header.Alignment));
+        SetHeaderInformation(1, PageLayout.TMargin - 0.5, Header.Text, Justify,
+          'Arial', 14, [fsBold]);
+        SetHeaders(Header.Enabled);
+
+        // Define footer line (0.5 inches from bottom of page)
+        Justify := TJustify(Ord(Footer.Alignment));
+        SetFooterInformation(1, GetPageHeight - 0.5, Footer.Text, Justify,
+          'Arial', 10, [fsBold, fsItalic]);
+        SetFooters(Footer.Enabled);
+
+        // Set page number location
+        Justify := jRight;
+        if PageNumbers in [pnUpperLeft, pnLowerLeft] then
+          Justify := jLeft;
+        if PageNumbers in [pnUpperCenter, pnLowerCenter] then
+          Justify := jCenter;
+        Y := 0.5;
+        if PageNumbers in [pnLowerLeft, pnLowerCenter, pnLowerRight] then
+          Y := GetPageHeight - 0.5;
+        SetPageNumberInformation(Y, 'Page ', Justify, 'Arial', 10, []);
+        SetPageNumbers(not(PageNumbers = pnNone));
+      end;
     end;
-  end;
 end;
 
 
-//=============================================================================
-//                        Progress Bar Procedures
-//=============================================================================
+// =============================================================================
+// Progress Bar Procedures
+// =============================================================================
 
 procedure TMainForm.ShowStatusHint(const Msg: String);
 begin
@@ -3615,10 +3638,10 @@ begin
 end;
 
 procedure TMainForm.ShowProgressBar(const Msg: String);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Activates the ProgressBar by hiding the StatusPanel panel and making
 // the ProgressPanel panel visible.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 var
   W: Integer;
 begin
@@ -3636,25 +3659,23 @@ begin
   ProgressPanel.Refresh;
 end;
 
-
 procedure TMainForm.HideProgressBar;
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Hides the ProgressBar by switching the visibility of the ProgressPanel
 // panel and the StatusPanel panel.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   ProgressBar.Visible := False;
   ProgressPanel.Visible := False;
   StatusBar.Visible := True;
-  //StatusBar.Refresh;
+  // StatusBar.Refresh;
 end;
-
 
 procedure TMainForm.UpdateProgressBar(var Count: Integer;
   const StepSize: Integer);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Updates the display of the ProgressBar's meter.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   Inc(Count);
   if Count >= StepSize then
@@ -3667,32 +3688,32 @@ begin
 end;
 
 
-//=============================================================================
-//                          Status Bar Procedures
-//=============================================================================
+// =============================================================================
+// Status Bar Procedures
+// =============================================================================
 
 procedure TMainForm.AutoLengthOnMnuClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for the 'On' menu choice for the Auto-Length button
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   AutoLength := True;
   AutoLengthBtn.Caption := 'Auto-Length: On';
 end;
 
 procedure TMainForm.AutoLengthOffMnuClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for the 'Off' menu choice for the Auto-Length button
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   AutoLength := False;
   AutoLengthBtn.Caption := 'Auto-Length: Off';
 end;
 
 procedure TMainForm.FlowUnitsMnuItemClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for the menu attached to the Flow Units button
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   with Sender as TMenuItem do
   begin
@@ -3706,9 +3727,9 @@ begin
 end;
 
 procedure TMainForm.OffsetsMnuItemClick(Sender: TObject);
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // OnClick handler for the menu attached to the Offsets button
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   with Sender as TMenuItem do
   begin
@@ -3719,37 +3740,42 @@ begin
       SetChangeFlags;
       Uupdate.UpdateDefOptions;
       Uupdate.UpdateLinkHints;
-      if PropEditForm.Visible then PropEditForm.RefreshPropertyHint;
+      if PropEditForm.Visible then
+        PropEditForm.RefreshPropertyHint;
       Uupdate.UpdateOffsets;
     end;
   end;
 end;
 
 procedure TMainForm.ShowRunStatus;
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Displays the analysis success or failure icon in the StatusPanel.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 var
   I: Integer;
 begin
-  if RunStatus = rsNone then I := 0
+  if RunStatus = rsNone then
+    I := 0
   else if RunStatus in [rsSuccess, rsWarning] then
   begin
-    if Uglobals.UpdateFlag then I := 2
-    else I := 1;
+    if Uglobals.UpdateFlag then
+      I := 2
+    else
+      I := 1;
   end
-  else I := 3;
+  else
+    I := 3;
   RunStatusButton.ImageIndex := I;
   RunStatusButton.Hint := RunStatusHint[I];
   StatusBar.Refresh;
 end;
 
 procedure TMainForm.SetChangeFlags;
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Updates change flags after a change is made to the project.
 // HasChanged: True if database has changed.
 // UpdateFlag: True if analysis results need updating.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   Uglobals.HasChanged := True;
   if Uglobals.RunFlag and not Uglobals.UpdateFlag then
@@ -3760,23 +3786,23 @@ begin
 end;
 
 
-//=============================================================================
-//                    Procedures for Running a Simulation
-//=============================================================================
+// =============================================================================
+// Procedures for Running a Simulation
+// =============================================================================
 
 procedure Execute;
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Executes the command line (console) version of the SWMM engine.
 // (Not currently used.)
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 var
   OldDir: String;
   CmdLine: String;
-  S: TStringlist;
+  S: TStringList;
 begin
   GetDir(0, OldDir);
   ChDir(TempDir);
-  S := TStringlist.Create;
+  S := TStringList.Create;
   try
     Uexport.ExportProject(S);
     Uexport.ExportTempDir(S);
@@ -3784,24 +3810,22 @@ begin
   finally
     S.Free;
   end;
-  CmdLine := EpaSwmmDir + 'swmm5.exe ' +
-             ExtractFileName(TempInputFile) + ' ' +
-             ExtractFileName(TempReportFile) + ' ' +
-             ExtractFileName(TempOutputFile);
-  Uutils.WinExecAndWait(CmdLine, '', SW_SHOWNORMAL, false);
-  if GetFileSize(Uglobals.TempReportFile) <= 0
-  then Uglobals.RunStatus := rsFailed
-  else Uglobals.RunStatus := Uoutput.CheckRunStatus(Uglobals.TempOutputFile);
-  if not (Uglobals.RunStatus in [rsSuccess, rsWarning])
-  then ShowMessage('Run was unsuccessful.');
+  CmdLine := EpaSwmmDir + 'swmm5.exe ' + ExtractFileName(TempInputFile) + ' ' +
+    ExtractFileName(TempReportFile) + ' ' + ExtractFileName(TempOutputFile);
+  Uutils.WinExecAndWait(CmdLine, '', SW_SHOWNORMAL, False);
+  if GetFileSize(Uglobals.TempReportFile) <= 0 then
+    Uglobals.RunStatus := rsFailed
+  else
+    Uglobals.RunStatus := Uoutput.CheckRunStatus(Uglobals.TempOutputFile);
+  if not(Uglobals.RunStatus in [rsSuccess, rsWarning]) then
+    ShowMessage('Run was unsuccessful.');
   ChDir(OldDir);
 end;
 
-
 procedure TMainForm.RunSimulation;
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Uses the external SWMM engine to run a simulation.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 var
   I: Integer;
 
@@ -3815,8 +3839,9 @@ begin
   for I := 0 to MDIChildCount - 1 do
   begin
     if (MDIChildren[I] is TStatusForm) then
-      with MDIChildren[I] as TStatusForm do ClearReport;
-      //FileViewer.IsOpen := False;
+      with MDIChildren[I] as TStatusForm do
+        ClearReport;
+    // FileViewer.IsOpen := False;
   end;
 
   // Create a new set of temporary files
@@ -3825,39 +3850,41 @@ begin
   CreateTempFiles;
 
   // Call the command line version of the engine (not currently used).
-  //Execute;
+  // Execute;
 
   // Display the Simulation dialog form (which will call the DLL
   // version of the engine)
-  with TSimulationForm.Create(self) do
-  try
-    ShowModal;
-  finally
-    Free;
-  end;
+  with TSimulationForm.Create(Self) do
+    try
+      ShowModal;
+    finally
+      Free;
+    end;
 
   // Delete temporary files if the run ended prematurely
-  if (Uglobals.RunStatus = rsShutdown) then DeleteTempFiles;
+  if (Uglobals.RunStatus = rsShutdown) then
+    DeleteTempFiles;
 
   // Set RunFlag if the run produced results
-  if Uglobals.RunStatus in [rsSuccess, rsWarning]
-  then Uglobals.RunFlag := True
-  else Uglobals.RunFlag := False;
+  if Uglobals.RunStatus in [rsSuccess, rsWarning] then
+    Uglobals.RunFlag := True
+  else
+    Uglobals.RunFlag := False;
   ShowRunStatus;
 
   // Display the Status Report if the run produced errors
-  if Uglobals.RunStatus = rsError then MnuReportStatusClick(Self);
+  if Uglobals.RunStatus = rsError then
+    MnuReportStatusClick(Self);
 
   // Refresh output results and any existing reporting forms
   RefreshResults;
   RefreshForms;
 end;
 
-
 procedure TMainForm.RefreshResults;
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Prepares the system to display the results of a simulation run.
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 begin
   // Enable reporting toolbar buttons
   TBGraph.Enabled := Uglobals.RunFlag;
@@ -3865,7 +3892,7 @@ begin
   TBStats.Enabled := Uglobals.RunFlag;
   TBScatter.Enabled := Uglobals.RunFlag;
   PopupReportSummary.Enabled := Uglobals.RunFlag;
-  //TBAnimator.Enabled := UGlobals.RunFlag;
+  // TBAnimator.Enabled := UGlobals.RunFlag;
 
   // Do following if output results exist
   if Uglobals.RunFlag then
@@ -3885,12 +3912,12 @@ begin
   // comes from simulation results).
   else
   begin
-    if   Uglobals.CurrentSubcatchVar >= SUBCATCHOUTVAR1
-    then Uglobals.CurrentSubcatchVar := NOVIEW;
-    if   Uglobals.CurrentNodeVar >= NODEOUTVAR1
-    then Uglobals.CurrentNodeVar := NOVIEW;
-    if   Uglobals.CurrentLinkVar >= LINKOUTVAR1
-    then Uglobals.CurrentLinkVar := NOVIEW;
+    if Uglobals.CurrentSubcatchVar >= SUBCATCHOUTVAR1 then
+      Uglobals.CurrentSubcatchVar := NOVIEW;
+    if Uglobals.CurrentNodeVar >= NODEOUTVAR1 then
+      Uglobals.CurrentNodeVar := NOVIEW;
+    if Uglobals.CurrentLinkVar >= LINKOUTVAR1 then
+      Uglobals.CurrentLinkVar := NOVIEW;
     if Assigned(QueryForm) then
     begin
       QueryForm.UpdateVariables;
@@ -3899,16 +3926,16 @@ begin
     MapForm.RedrawMap;
   end;
 
-// Refresh map legends
+  // Refresh map legends
   MapForm.DrawSubcatchLegend;
   MapForm.DrawNodeLegend;
   MapForm.DrawLinkLegend;
 end;
 
 
-//=============================================================================
-//                     Help System Procedures
-//=============================================================================
+// =============================================================================
+// Help System Procedures
+// =============================================================================
 
 procedure TMainForm.MnuHelpTopicsClick(Sender: TObject);
 begin
@@ -3931,7 +3958,7 @@ end;
 procedure TMainForm.MnuHelpTutorialClick(Sender: TObject);
 begin
   Application.HelpFile := EpaSwmmDir + TUTORFILE;
-  Application.HelpCommand(HELP_CONTENTS,0);
+  Application.HelpCommand(HELP_CONTENTS, 0);
   Application.HelpFile := EpaSwmmDir + HLPFILE;
 end;
 
