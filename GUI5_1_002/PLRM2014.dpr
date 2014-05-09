@@ -133,7 +133,6 @@ uses
   GSXML in 'PLRMFinalGS\Units\GSXML.pas',
   PLRMStats in 'PLRMFinalGS\Units\PLRMStats.pas',
   _PLRM6DrngXtsDetail in 'PLRMFinalGS\Forms\_PLRM6DrngXtsDetail.pas' {PLRMDrngXtsDetail},
-  _PLRM6DrngXtsDetailBk in 'PLRMFinalGS\Forms\_PLRM6DrngXtsDetailBk.pas' {Form2},
   _PLRM7SWTs in 'PLRMFinalGS\Forms\_PLRM7SWTs.pas' {SWTs},
   _PLRM9ScenCompsMulti in 'PLRMFinalGS\Forms\_PLRM9ScenCompsMulti.pas' {PLRMScenComps};
 

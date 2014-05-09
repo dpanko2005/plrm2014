@@ -1268,7 +1268,9 @@ function TPLRMCatch.catchToXML(projectLuseNames:TStringList; ProjectLuseCodes:TS
           tempHSCParam[J] := tempHSCParam[J] / CONVACFT;
 
         tempArea := tempHSCParam[J];
-        if tempArea <> 0 then
+        //2014 if tempArea <> 0 then
+        //2014 do not attempt to model hscs with areas less than 0.01 acres
+        if tempArea > 0.001 then
         begin
           tempFloLength := Math.Power(tempArea*CONVACFT * widthFactor,widthPower);
           if tempFloLength > maxFloLength then tempFloLength := maxFloLength;
