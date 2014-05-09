@@ -2491,7 +2491,6 @@ object PLRMD2SoilsAssignmnt: TPLRMD2SoilsAssignmnt
       Font.Height = -13
       Font.Name = 'Tahoma'
       Font.Style = []
-      ItemHeight = 16
       ParentFont = False
       TabOrder = 7
       Visible = False
@@ -2564,6 +2563,7 @@ object PLRMD2SoilsAssignmnt: TPLRMD2SoilsAssignmnt
     Font.Style = []
     ParentFont = False
     TabOrder = 5
+    Visible = False
     OnClick = btnApplyClick
   end
 end

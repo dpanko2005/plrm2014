@@ -2272,7 +2272,7 @@ object SWTs: TSWTs
     Top = 76
     Width = 564
     Height = 571
-    ActivePage = TabSheet3
+    ActivePage = TabSheet7
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -2676,7 +2676,6 @@ object SWTs: TSWTs
         Font.Height = -13
         Font.Name = 'Tahoma'
         Font.Style = []
-        ItemHeight = 16
         ParentFont = False
         TabOrder = 2
         Visible = False
@@ -2741,7 +2740,6 @@ object SWTs: TSWTs
           Font.Height = -13
           Font.Name = 'Tahoma'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 1
           OnChange = cbxDetOutletOnChange
@@ -3036,7 +3034,6 @@ object SWTs: TSWTs
         Font.Height = -13
         Font.Name = 'Tahoma'
         Font.Style = []
-        ItemHeight = 16
         ParentFont = False
         TabOrder = 0
         Visible = False
@@ -3101,7 +3098,6 @@ object SWTs: TSWTs
           Font.Height = -13
           Font.Name = 'Tahoma'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 1
           OnChange = cbxOutNodeOnChange
@@ -3505,7 +3501,6 @@ object SWTs: TSWTs
         Font.Height = -13
         Font.Name = 'Tahoma'
         Font.Style = []
-        ItemHeight = 16
         ParentFont = False
         TabOrder = 0
         Visible = False
@@ -3570,7 +3565,6 @@ object SWTs: TSWTs
           Font.Height = -13
           Font.Name = 'Tahoma'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 1
           OnChange = cbxOutNodeOnChange
@@ -3969,7 +3963,6 @@ object SWTs: TSWTs
         Font.Height = -13
         Font.Name = 'Tahoma'
         Font.Style = []
-        ItemHeight = 16
         ParentFont = False
         TabOrder = 0
         Visible = False
@@ -4033,7 +4026,6 @@ object SWTs: TSWTs
           Font.Height = -13
           Font.Name = 'Tahoma'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 1
           OnChange = cbxOutNodeOnChange
@@ -4431,7 +4423,6 @@ object SWTs: TSWTs
         Font.Height = -13
         Font.Name = 'Tahoma'
         Font.Style = []
-        ItemHeight = 16
         ParentFont = False
         TabOrder = 0
         Visible = False
@@ -4496,7 +4487,6 @@ object SWTs: TSWTs
           Font.Height = -13
           Font.Name = 'Tahoma'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 1
           OnChange = cbxOutNodeOnChange
@@ -4884,7 +4874,6 @@ object SWTs: TSWTs
         Font.Height = -13
         Font.Name = 'Tahoma'
         Font.Style = []
-        ItemHeight = 16
         ParentFont = False
         TabOrder = 0
         Visible = False
@@ -4949,7 +4938,6 @@ object SWTs: TSWTs
           Font.Height = -13
           Font.Name = 'Tahoma'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 1
           OnChange = cbxOutNodeOnChange
@@ -5411,7 +5399,6 @@ object SWTs: TSWTs
           Font.Height = -13
           Font.Name = 'Tahoma'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 1
           OnChange = cbxOutNodeOnChange
@@ -5435,7 +5422,6 @@ object SWTs: TSWTs
           Font.Height = -13
           Font.Name = 'Tahoma'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 3
           OnChange = cbxFldHighFlowNodeOnChange
@@ -5451,7 +5437,6 @@ object SWTs: TSWTs
           Font.Height = -13
           Font.Name = 'Tahoma'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 4
           Visible = False
@@ -5787,7 +5772,6 @@ object SWTs: TSWTs
           Font.Height = -13
           Font.Name = 'Tahoma'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 1
           OnChange = cbxOutNodeOnChange
@@ -5803,7 +5787,6 @@ object SWTs: TSWTs
           Font.Height = -13
           Font.Name = 'Tahoma'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 2
           Visible = False
@@ -6126,7 +6109,6 @@ object SWTs: TSWTs
           Font.Height = -13
           Font.Name = 'Tahoma'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 1
           Visible = False
@@ -6179,6 +6161,7 @@ object SWTs: TSWTs
     Font.Style = []
     ParentFont = False
     TabOrder = 3
+    Visible = False
     OnClick = btnApplyClick
   end
   object statBar: TStatusBar

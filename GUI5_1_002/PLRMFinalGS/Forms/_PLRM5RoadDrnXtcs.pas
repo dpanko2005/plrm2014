@@ -609,6 +609,7 @@ end;
 
 procedure TPLRMDrainageConditions.sgGenSetEditText(Sender: TObject; ACol,  ARow: Integer; const Value: string);
 var
+  tempInfFootPrintArea : double;
     tempSum : double;
     irow: Integer;
     sg:TStringGrid;
@@ -631,8 +632,17 @@ begin
             ShowMessage('Cell values must not exceed 100% and the sum of all the values in this column must add up to 100%!');
             sg.Cells[ACol,ARow] := prevGridValue;
             Exit;
+          end;
+
+          //check for inf facility areas that are really small resulting from
+          //subcatments that have small pervious areas
+          tempInfFootPrintArea := StrToFloat(sg.Cells[0, 0]) * StrToFloat(sg.Cells[1, 0])/StrToFloat(prevGridValue);
+           if ((ACol = 0) and (tempInfFootPrintArea <0.01) and (tempInfFootPrintArea > 0)) then
+          begin
+            ShowMessage('This change will result in an infiltration facility with an area less that 0.01 acres which will be neglected.');
+            //sg.Cells[ACol,ARow] := prevGridValue;
+            Exit;
           end
-          else
         end;
         sg.Cells[0, sg.RowCount-1] := FormatFloat('0.##',(100 - tempSum)); //update last row of first column
         updateCalcs(sg);

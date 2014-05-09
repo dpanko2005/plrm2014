@@ -163,7 +163,6 @@ begin
     PLRMObj.currentCatchment.hasDefDrnXtcs := false;
 end;
 
-//TODO addressed save %imp assigned to next selcected catchment
 procedure TPLRMLandUse.btnToRightClick(Sender: TObject);
 var I, tempInt:integer;
 begin
@@ -255,59 +254,59 @@ begin
   GSPLRM.PLRMObj.currentCatchment.hasDefLuse := true;
 
      //zero out previously assigned values from screen 5
-  with PLRMObj.currentCatchment do
-  begin
-    if(assigned(primRdDrng) and (PLRMobj.getCurCatchLuseProp(GSUtils.frmsLuses[0],2,hasLuse[0]) = 0.0)) then
+  //with PLRMObj.currentCatchment do
+  //begin
+    if(assigned(PLRMObj.currentCatchment.primRdDrng) and (PLRMobj.getCurCatchLuseProp(GSUtils.frmsLuses[0],2,hasLuse[0]) = 0.0)) then
     begin
-      primRdDrng[0][1] := '0';
-      primRdDrng[1][1] := '0';
-      primRdDrng[2][1] := '0';
-      primRdDrng[0][1] := '0';
-      primRdDrng[1][1] := '0';
-      primRdDrng[2][1] := '0';
+      PLRMObj.currentCatchment.primRdDrng[0][1] := '0';
+      PLRMObj.currentCatchment.primRdDrng[1][1] := '0';
+      PLRMObj.currentCatchment.primRdDrng[2][1] := '0';
+      PLRMObj.currentCatchment.primRdDrng[0][2] := '0';
+      PLRMObj.currentCatchment.primRdDrng[1][2] := '0';
+      PLRMObj.currentCatchment.primRdDrng[2][2] := '0';
     end;
-    if (assigned(secRdDrng) And (PLRMobj.getCurCatchLuseProp(GSUtils.frmsLuses[1],2,hasLuse[1]) = 0)) then
+    if (assigned(PLRMObj.currentCatchment.secRdDrng) And (PLRMobj.getCurCatchLuseProp(GSUtils.frmsLuses[1],2,hasLuse[1]) = 0)) then
     begin
-      secRdDrng[0][1] := '0';
-      secRdDrng[1][1] := '0';
-      secRdDrng[2][1] := '0';
-      secRdDrng[0][2] := '0';
-      secRdDrng[1][2] := '0';
-      secRdDrng[2][2] := '0';
+      PLRMObj.currentCatchment.secRdDrng[0][1] := '0';
+      PLRMObj.currentCatchment.secRdDrng[1][1] := '0';
+      PLRMObj.currentCatchment.secRdDrng[2][1] := '0';
+      PLRMObj.currentCatchment.secRdDrng[0][2] := '0';
+      PLRMObj.currentCatchment.secRdDrng[1][2] := '0';
+      PLRMObj.currentCatchment.secRdDrng[2][2] := '0';
     end;
-    if (assigned(sfrDrng) And (PLRMobj.getCurCatchLuseProp(GSUtils.frmsLuses[2],2,hasLuse[2]) = 0)) then
+    if (assigned(PLRMObj.currentCatchment.sfrDrng) And (PLRMobj.getCurCatchLuseProp(GSUtils.frmsLuses[2],2,hasLuse[2]) = 0)) then
     begin
-      sfrDrng[0][1] := '0';
-      sfrDrng[1][1] := '0';
-      sfrDrng[0][2] := '0';
-      sfrDrng[1][2] := '0';
+      PLRMObj.currentCatchment.sfrDrng[0][1] := '0';
+      PLRMObj.currentCatchment.sfrDrng[1][1] := '0';
+      PLRMObj.currentCatchment.sfrDrng[0][2] := '0';
+      PLRMObj.currentCatchment.sfrDrng[1][2] := '0';
     end;
-    if (assigned(mfrDrng) And (PLRMobj.getCurCatchLuseProp(GSUtils.frmsLuses[3],2,hasLuse[3]) = 0)) then
+    if (assigned(PLRMObj.currentCatchment.mfrDrng) And (PLRMobj.getCurCatchLuseProp(GSUtils.frmsLuses[3],2,hasLuse[3]) = 0)) then
     begin
-      mfrDrng[0][1] := '0';
-      mfrDrng[1][1] := '0';
-      mfrDrng[0][2] := '0';
-      mfrDrng[1][2] := '0';
+      PLRMObj.currentCatchment.mfrDrng[0][1] := '0';
+      PLRMObj.currentCatchment.mfrDrng[1][1] := '0';
+      PLRMObj.currentCatchment.mfrDrng[0][2] := '0';
+      PLRMObj.currentCatchment.mfrDrng[1][2] := '0';
     end;
-    if (assigned(cicuDrng) And (PLRMobj.getCurCatchLuseProp(GSUtils.frmsLuses[4],2,hasLuse[4]) = 0)) then
+    if (assigned(PLRMObj.currentCatchment.cicuDrng) And (PLRMobj.getCurCatchLuseProp(GSUtils.frmsLuses[4],2,hasLuse[4]) = 0)) then
     begin
-      cicuDrng[0][2] := '0';
-      cicuDrng[1][2] := '0';
-      cicuDrng[0][2] := '0';
-      cicuDrng[1][2] := '0';
+      PLRMObj.currentCatchment.cicuDrng[0][1] := '0';
+      PLRMObj.currentCatchment.cicuDrng[1][1] := '0';
+      PLRMObj.currentCatchment.cicuDrng[0][2] := '0';
+      PLRMObj.currentCatchment.cicuDrng[1][2] := '0';
     end;
-    if (assigned(vegTDrng) And (PLRMobj.getCurCatchLuseProp(GSUtils.frmsLuses[5],2,hasLuse[5]) = 0)) then
+    if (assigned(PLRMObj.currentCatchment.vegTDrng) And (PLRMobj.getCurCatchLuseProp(GSUtils.frmsLuses[5],2,hasLuse[5]) = 0)) then
     begin
-      vegTDrng[0][1] := '0';
-      vegTDrng[0][2] := '0';
+      PLRMObj.currentCatchment.vegTDrng[0][1] := '0';
+      PLRMObj.currentCatchment.vegTDrng[0][2] := '0';
     end;
 
-    if (assigned(othrDrng) And (PLRMobj.getCurCatchLuseProp(GSUtils.frmsLuses[6],2,hasLuse[6]) = 0)) then
+    if (assigned(PLRMObj.currentCatchment.othrDrng) And (PLRMobj.getCurCatchLuseProp(GSUtils.frmsLuses[6],2,hasLuse[6]) = 0)) then
     begin
-      othrDrng[0][2] := '0';
-      othrDrng[0][2] := '0';
+      PLRMObj.currentCatchment.othrDrng[0][1] := '0';
+      PLRMObj.currentCatchment.othrDrng[0][2] := '0';
     end;
-  end;
+  //end;
 end;
 
 procedure TPLRMLandUse.FormCreate(Sender: TObject);

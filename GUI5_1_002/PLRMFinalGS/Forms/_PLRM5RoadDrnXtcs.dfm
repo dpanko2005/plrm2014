@@ -4827,6 +4827,7 @@ object PLRMDrainageConditions: TPLRMDrainageConditions
     Font.Style = []
     ParentFont = False
     TabOrder = 3
+    Visible = False
     OnClick = btnApplyClick
   end
   object pgCtrlParcelRds: TPageControl
@@ -5791,7 +5792,6 @@ object PLRMDrainageConditions: TPLRMDrainageConditions
     Font.Height = -12
     Font.Name = 'Tahoma'
     Font.Style = []
-    ItemHeight = 14
     ParentFont = False
     TabOrder = 5
     Text = 'Select Catchment'

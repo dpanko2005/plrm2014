@@ -4752,7 +4752,7 @@ object PLRMPCSDef: TPLRMPCSDef
     OnClick = btnOkClick
   end
   object btnCloseFrm: TButton
-    Left = 481
+    Left = 559
     Top = 564
     Width = 66
     Height = 25
@@ -4817,7 +4817,6 @@ object PLRMPCSDef: TPLRMPCSDef
       Font.Height = -13
       Font.Name = 'Tahoma'
       Font.Style = []
-      ItemHeight = 16
       ParentFont = False
       TabOrder = 0
       Visible = False
@@ -5450,7 +5449,6 @@ object PLRMPCSDef: TPLRMPCSDef
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = []
-        ItemHeight = 13
         ParentFont = False
         TabOrder = 2
         Text = 'Create New ...'
@@ -5465,7 +5463,6 @@ object PLRMPCSDef: TPLRMPCSDef
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = []
-        ItemHeight = 13
         ParentFont = False
         TabOrder = 3
         Text = 'Create New ...'
@@ -5480,7 +5477,6 @@ object PLRMPCSDef: TPLRMPCSDef
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = []
-        ItemHeight = 13
         ParentFont = False
         TabOrder = 4
         Text = 'Create New ...'
@@ -5509,7 +5505,6 @@ object PLRMPCSDef: TPLRMPCSDef
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = []
-        ItemHeight = 13
         ParentFont = False
         TabOrder = 6
         Text = 'Create New ...'
@@ -5538,7 +5533,6 @@ object PLRMPCSDef: TPLRMPCSDef
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = []
-        ItemHeight = 13
         ParentFont = False
         TabOrder = 8
         Text = 'Create New ...'
@@ -5803,7 +5797,6 @@ object PLRMPCSDef: TPLRMPCSDef
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = []
-        ItemHeight = 13
         ParentFont = False
         TabOrder = 2
         OnChange = cbxSecRdCondsSchmChange
@@ -5819,7 +5812,6 @@ object PLRMPCSDef: TPLRMPCSDef
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = []
-        ItemHeight = 13
         ParentFont = False
         TabOrder = 3
         OnChange = cbxPrimRdCondsSchmChange
@@ -5887,7 +5879,7 @@ object PLRMPCSDef: TPLRMPCSDef
     end
   end
   object btnApply: TButton
-    Left = 560
+    Left = 481
     Top = 564
     Width = 66
     Height = 25
@@ -5899,6 +5891,7 @@ object PLRMPCSDef: TPLRMPCSDef
     Font.Style = []
     ParentFont = False
     TabOrder = 7
+    Visible = False
     OnClick = btnApplyClick
   end
 end

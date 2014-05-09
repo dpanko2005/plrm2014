@@ -2588,7 +2588,6 @@ object CatchProps: TCatchProps
       Font.Height = -13
       Font.Name = 'Tahoma'
       Font.Style = []
-      ItemHeight = 0
       ParentFont = False
       TabOrder = 0
       Visible = False
@@ -2710,7 +2709,6 @@ object CatchProps: TCatchProps
       Font.Height = -13
       Font.Name = 'Tahoma'
       Font.Style = []
-      ItemHeight = 0
       ParentFont = False
       TabOrder = 3
       OnChange = cbxNodeChange
@@ -2751,8 +2749,8 @@ object CatchProps: TCatchProps
     SimplePanel = True
   end
   object btnApply: TButton
-    Left = 224
-    Top = 569
+    Left = 153
+    Top = 566
     Width = 65
     Height = 25
     Caption = 'Apply'
@@ -2763,11 +2761,12 @@ object CatchProps: TCatchProps
     Font.Style = []
     ParentFont = False
     TabOrder = 3
+    Visible = False
     OnClick = btnApplyClick
   end
   object Button5: TButton
-    Left = 153
-    Top = 569
+    Left = 224
+    Top = 566
     Width = 65
     Height = 25
     Caption = 'Cancel'

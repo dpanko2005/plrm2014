@@ -4750,7 +4750,7 @@ object PLRMDrngXtsDetail: TPLRMDrngXtsDetail
   end
   object btnOK: TButton
     Left = 560
-    Top = 336
+    Top = 335
     Width = 64
     Height = 25
     Caption = 'OK'
@@ -4965,7 +4965,6 @@ object PLRMDrngXtsDetail: TPLRMDrngXtsDetail
       Font.Height = -12
       Font.Name = 'Tahoma'
       Font.Style = []
-      ItemHeight = 14
       ParentFont = False
       TabOrder = 1
       OnChange = cbxSnowPacksChange
@@ -5117,7 +5116,7 @@ object PLRMDrngXtsDetail: TPLRMDrngXtsDetail
       Top = 27
       Width = 600
       Height = 182
-      ActivePage = TabSheet2
+      ActivePage = TabSheet1
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -12
@@ -5133,10 +5132,6 @@ object PLRMDrngXtsDetail: TPLRMDrngXtsDetail
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object Label3: TLabel
           Left = 5
           Top = 2
@@ -5493,6 +5488,7 @@ object PLRMDrngXtsDetail: TPLRMDrngXtsDetail
     Font.Style = []
     ParentFont = False
     TabOrder = 6
+    Visible = False
     OnClick = btnApplyClick
   end
   object dlgSaveScheme: TSaveDialog

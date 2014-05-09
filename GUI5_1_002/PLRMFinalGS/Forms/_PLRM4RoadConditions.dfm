@@ -4822,7 +4822,6 @@ object PLRMRoadConditions: TPLRMRoadConditions
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = []
-        ItemHeight = 13
         ParentFont = False
         TabOrder = 0
         OnChange = cboRdAppStgyModChange
@@ -4838,7 +4837,6 @@ object PLRMRoadConditions: TPLRMRoadConditions
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = []
-        ItemHeight = 13
         ParentFont = False
         TabOrder = 1
         OnChange = cboRdAppStgyLowChange
@@ -4854,7 +4852,6 @@ object PLRMRoadConditions: TPLRMRoadConditions
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = []
-        ItemHeight = 13
         ParentFont = False
         TabOrder = 2
         OnChange = cboRdAppStgyHighChange
@@ -5288,7 +5285,6 @@ object PLRMRoadConditions: TPLRMRoadConditions
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = []
-        ItemHeight = 13
         ParentFont = False
         TabOrder = 0
         OnChange = cboRdSwprTypModChange
@@ -5304,7 +5300,6 @@ object PLRMRoadConditions: TPLRMRoadConditions
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = []
-        ItemHeight = 13
         ParentFont = False
         TabOrder = 1
         OnChange = cboRdSwprTypLowChange
@@ -5320,7 +5315,6 @@ object PLRMRoadConditions: TPLRMRoadConditions
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = []
-        ItemHeight = 13
         ParentFont = False
         TabOrder = 2
         OnChange = cboRdSwprTypHighChange
@@ -5346,7 +5340,6 @@ object PLRMRoadConditions: TPLRMRoadConditions
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = []
-        ItemHeight = 13
         ParentFont = False
         TabOrder = 0
         OnChange = cboRdSwprFreqModChange
@@ -5362,7 +5355,6 @@ object PLRMRoadConditions: TPLRMRoadConditions
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = []
-        ItemHeight = 13
         ParentFont = False
         TabOrder = 1
         OnChange = cboRdSwprFreqLowChange
@@ -5378,7 +5370,6 @@ object PLRMRoadConditions: TPLRMRoadConditions
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = []
-        ItemHeight = 13
         ParentFont = False
         TabOrder = 2
         OnChange = cboRdSwprFreqHighChange
@@ -5756,6 +5747,7 @@ object PLRMRoadConditions: TPLRMRoadConditions
     Font.Style = []
     ParentFont = False
     TabOrder = 6
+    Visible = False
     OnClick = btnApplyClick
   end
   object dlgSaveScheme: TSaveDialog
