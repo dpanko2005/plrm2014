@@ -2333,7 +2333,6 @@ object PLRMScenComps: TPLRMScenComps
       Font.Height = -12
       Font.Name = 'Tahoma'
       Font.Style = []
-      ItemHeight = 14
       ParentFont = False
       TabOrder = 0
       OnChange = cbxScenariosChange
@@ -2377,7 +2376,7 @@ object PLRMScenComps: TPLRMScenComps
       TabOrder = 4
     end
     object cbxProjects: TComboBox
-      Left = 3
+      Left = 2
       Top = 37
       Width = 260
       Height = 22
@@ -2387,7 +2386,6 @@ object PLRMScenComps: TPLRMScenComps
       Font.Height = -12
       Font.Name = 'Tahoma'
       Font.Style = []
-      ItemHeight = 14
       ParentFont = False
       TabOrder = 5
       OnChange = cbxProjectsChange

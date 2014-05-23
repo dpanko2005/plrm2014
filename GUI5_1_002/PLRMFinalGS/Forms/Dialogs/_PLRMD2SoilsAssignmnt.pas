@@ -95,6 +95,8 @@ begin
          GSUtils.deleteGridRow(lbxMapUnitTo.Items[I], 0,'0',sgMapUnit);
      GSUtils.TransferAllLstBxItems(lbxMapUnitFrom, lbxMapUnitTo);
      updateGrid(catchArea,sgMapUnit);
+     //2014 new property added to detech if change was made in soils so ksat can be recalculated
+     GSPLRM.PLRMObj.currentCatchment.hasChangedSoils := true;
 end;
 
 procedure TPLRMD2SoilsAssignmnt.btnAllToRightClick(Sender: TObject);
@@ -105,6 +107,8 @@ begin
       if (GSUtils.gridContainsStr(lbxMapUnitTo.Items[I],0, sgMapUnit) = false) then
         GSUtils.AddGridRow(lbxMapUnitTo.Items[I], sgMapUnit,0);
     updateGrid(catchArea,sgMapUnit);
+    //2014 new property added to detech if change was made in soils so ksat can be recalculated
+     GSPLRM.PLRMObj.currentCatchment.hasChangedSoils := true;
 end;
 
 procedure TPLRMD2SoilsAssignmnt.btnApplyClick(Sender: TObject);
@@ -127,6 +131,8 @@ begin
          GSUtils.deleteGridRow(lbxMapUnitTo.Items[I], 0,'0',sgMapUnit);
     GSUtils.TransferLstBxItems(lbxMapUnitFrom, lbxMapUnitTo);
     updateGrid(catchArea,sgMapUnit);
+    //2014 new property added to detech if change was made in soils so ksat can be recalculated
+     GSPLRM.PLRMObj.currentCatchment.hasChangedSoils := true;
 end;
 
 procedure TPLRMD2SoilsAssignmnt.btnToRightClick(Sender: TObject);
@@ -143,7 +149,9 @@ begin
      for I := 0 to lbxMapUnitTo.Items.Count - 1 do
       if (GSUtils.gridContainsStr(lbxMapUnitTo.Items[I],0, sgMapUnit) = false) then
         GSUtils.AddGridRow(lbxMapUnitTo.Items[I], sgMapUnit,0);
-     //updateGrid(catchArea,sgMapUnit);
+
+     //2014 new property added to detech if change was made in soils so ksat can be recalculated
+     GSPLRM.PLRMObj.currentCatchment.hasChangedSoils := true;
 end;
 
 procedure TPLRMD2SoilsAssignmnt.cbxGlobalSpecfcChange(Sender: TObject);

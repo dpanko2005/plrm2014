@@ -5123,7 +5123,6 @@ object PLRMRoadConditions: TPLRMRoadConditions
     Width = 65
     Height = 25
     Caption = 'OK'
-    Enabled = False
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
