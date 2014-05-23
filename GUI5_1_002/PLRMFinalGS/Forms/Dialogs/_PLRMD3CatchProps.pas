@@ -275,9 +275,34 @@ begin
 end;
 
 procedure TCatchProps.edtCatchNameExit(Sender: TObject);
+var
+   HydSchm:TPLRMHydPropsScheme;  //2014
+   RdSchm:TPLRMRdCondsScheme;  //2014
+   I:integer;
 begin
-  checkDupCatchName();
+    checkDupCatchName();
+
+    //2014 when catchment name changes update schemes to reflect new catchment names
+    if((PLRMObj.hydPropsSchemes <> nil ))  then
+    begin
+      for I := 0 to PLRMObj.hydPropsSchemes.Count -1 do
+      begin
+        HydSchm := PLRMObj.hydPropsSchemes.Objects[I] as TPLRMHydPropsScheme;
+        HydSchm.catchName := PLRMObj.currentCatchment.name ;
+      end;
+    end;
+
+    //2014 when catchment name changes update schemes to reflect new catchment names
+    if((PLRMObj.rdCondsSchemes <> nil ))  then
+    begin
+      for I := 0 to PLRMObj.rdCondsSchemes.Count -1 do
+      begin
+        RdSchm := PLRMObj.rdCondsSchemes.Objects[I] as TPLRMRdCondsScheme;
+        RdSchm.catchName := PLRMObj.currentCatchment.name ;
+      end;
+    end;
 end;
+
 
 procedure TCatchProps.edtCatchNameKeyPress(Sender: TObject; var Key: Char);
 begin

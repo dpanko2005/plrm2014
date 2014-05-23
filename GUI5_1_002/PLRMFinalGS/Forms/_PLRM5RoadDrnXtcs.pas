@@ -380,37 +380,37 @@ procedure TPLRMDrainageConditions.restoreFormContents(catch: TPLRMCatch);
     with PLRMObj.currentCatchment do
     begin
 
-      if assigned(PLRMObj.currentCatchment.primRdDrng) then
+      if (assigned(PLRMObj.currentCatchment.primRdDrng) and GSPLRM.PLRMObj.currentCatchment.hasChangedSoils = false) then
       begin
         hasLuse[0] := true;
         copyContentsToGridNChk(PLRMObj.currentCatchment.primRdDrng,0,0,sgPrimRds);
       end;
-      if assigned(PLRMObj.currentCatchment.secRdDrng) then
+      if (assigned(PLRMObj.currentCatchment.secRdDrng) and GSPLRM.PLRMObj.currentCatchment.hasChangedSoils = false) then
       begin
         hasLuse[1] := true;
         copyContentsToGridNChk(PLRMObj.currentCatchment.secRdDrng,0,0,sgSecRds);
       end;
-      if assigned(PLRMObj.currentCatchment.sfrDrng) then
+      if (assigned(PLRMObj.currentCatchment.sfrDrng) and GSPLRM.PLRMObj.currentCatchment.hasChangedSoils = false) then
       begin
         hasLuse[2] := true;
         copyContentsToGridNChk(PLRMObj.currentCatchment.sfrDrng,0,0,sgSFR);
       end;
-      if assigned(PLRMObj.currentCatchment.mfrDrng) then
+      if (assigned(PLRMObj.currentCatchment.mfrDrng) and GSPLRM.PLRMObj.currentCatchment.hasChangedSoils = false) then
       begin
         hasLuse[3] := true;
         copyContentsToGridNChk(PLRMObj.currentCatchment.mfrDrng,0,0,sgMFR);
       end;
-      if assigned(PLRMObj.currentCatchment.cicuDrng) then
+      if (assigned(PLRMObj.currentCatchment.cicuDrng) and GSPLRM.PLRMObj.currentCatchment.hasChangedSoils = false) then
       begin
         hasLuse[4] := true;
         copyContentsToGridNChk(PLRMObj.currentCatchment.cicuDrng,0,0,sgCICU);
       end;
-      if assigned(PLRMObj.currentCatchment.vegTDrng) then
+      if (assigned(PLRMObj.currentCatchment.vegTDrng) and GSPLRM.PLRMObj.currentCatchment.hasChangedSoils = false) then
       begin
         hasLuse[5] := true;
         copyContentsToGridNChk(PLRMObj.currentCatchment.vegTDrng,0,0,sgVeg);
       end;
-      if assigned(PLRMObj.currentCatchment.othrDrng) then
+      if (assigned(PLRMObj.currentCatchment.othrDrng) and GSPLRM.PLRMObj.currentCatchment.hasChangedSoils = false) then
       begin
         hasLuse[6] := true;
         copyContentsToGridNChk(PLRMObj.currentCatchment.othrDrng,0,0,sgOthr);

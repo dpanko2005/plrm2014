@@ -52,6 +52,7 @@ uses
     currentCatchment : TPLRMCatch;
     projectLandUseCodes :TStringList;
     projectLandUseNames:TStringList;
+    
 
     nodeAndCatchNames:TStringList; //stores names of all objs used to check for duplicate names
     //Node variables
