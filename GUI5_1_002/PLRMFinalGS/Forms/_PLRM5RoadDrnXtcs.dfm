@@ -4835,7 +4835,7 @@ object PLRMDrainageConditions: TPLRMDrainageConditions
     Top = 159
     Width = 865
     Height = 514
-    ActivePage = TabSheet4
+    ActivePage = TabSheet3
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -4852,6 +4852,10 @@ object PLRMDrainageConditions: TPLRMDrainageConditions
       Font.Style = []
       ImageIndex = 1
       ParentFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object GroupBox2: TGroupBox
         Left = 3
         Top = 4

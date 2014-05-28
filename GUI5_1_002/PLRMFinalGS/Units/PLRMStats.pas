@@ -185,7 +185,11 @@ begin
         InLinkID := tempNode.userName + '_InCo';
         ByLinkID := tempNode.userName + '_SurByWe'; // surcharge bypass outlet
         TrLinkID := tempNode.userName + '_SurOtCo'; // surcharge treated outlet
-        Tr2LinkID := tempNode.userName + '_WetTrWe'; // permanent pool outlet
+        //2014 bug fix addition
+        Tr2LinkID := tempNode.userName + '_WetOtCo'; // perm pool conduit after passing treatment node
+        //2014 bug fix replaced by above line
+        //Tr2LinkID := tempNode.userName + '_WetTrWe'; // permanent pool outlet
+
         if assigned(AnnLoads) then
           AnnLoads.Clear;
         AnnLoads := GetAveAnnualLoadsForLink(TrLinkID);

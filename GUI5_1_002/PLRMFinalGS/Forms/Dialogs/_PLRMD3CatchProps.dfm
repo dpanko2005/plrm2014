@@ -2721,6 +2721,7 @@ object CatchProps: TCatchProps
       TabOrder = 4
       Text = 'Catchment 1'
       OnChange = edtCatchNameChange
+      OnEnter = edtCatchNameEnter
       OnExit = edtCatchNameExit
       OnKeyPress = edtCatchNameKeyPress
     end
