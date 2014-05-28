@@ -4,7 +4,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, jpeg, ExtCtrls, Grids, DBGrids,GSTypes,_PLRM5RoadDrnXtcs;
+  Dialogs, StdCtrls, ComCtrls, jpeg, ExtCtrls, Grids, DBGrids, GSTypes,
+  _PLRM5RoadDrnXtcs;
 
 type
   TCatchProps = class(TForm)
@@ -29,10 +30,12 @@ type
     Image2: TImage;
     btnDefHydProps: TButton;
     procedure FormCreate(Sender: TObject);
-    procedure sgPropsDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
+    procedure sgPropsDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect;
+      State: TGridDrawState);
     procedure btnDefLuseClick(Sender: TObject);
     procedure btnDefSoilsClick(Sender: TObject);
-    procedure sgPropsSelectCell(Sender: TObject; ACol, ARow: Integer; var CanSelect: Boolean);
+    procedure sgPropsSelectCell(Sender: TObject; ACol, ARow: Integer;
+      var CanSelect: Boolean);
     procedure btnDefLuseCondsClick(Sender: TObject);
     procedure btnOkClick(Sender: TObject);
     procedure btnApplyClick(Sender: TObject);
@@ -44,69 +47,77 @@ type
     procedure edtCatchNameKeyPress(Sender: TObject; var Key: Char);
     procedure edtCatchNameChange(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    function checkDupCatchName():Boolean;
+    function checkDupCatchName(): Boolean;
     procedure edtCatchNameExit(Sender: TObject);
+    procedure edtCatchNameEnter(Sender: TObject);
 
   private
     { Private declarations }
   public
     { Public declarations }
   end;
+
 procedure getCatchProps(catchID: String);
 
 var
   CatchPropsFrm: TCatchProps;
-    allDrxXtcs : TPLRMDrngXtcsData;
+  allDrxXtcs: TPLRMDrngXtcsData;
+  currentCatchOrigName: string; // 2014 addtition used to update schemes
+
 implementation
+
 {$R *.dfm}
 
 uses
-GSIO, GSUtils, GSPLRM, GSNodes, GSCatchments, UProject,UGlobals,
-Uvalidate, _PLRMD1LandUseAssignmnt2,
-_PLRMD2SoilsAssignmnt, _PLRM3PSCDef,
-FPropEd, UBrowser;
+  GSIO, GSUtils, GSPLRM, GSNodes, GSCatchments, UProject, UGlobals,
+  Uvalidate, _PLRMD1LandUseAssignmnt2,
+  _PLRMD2SoilsAssignmnt, _PLRM3PSCDef,
+  FPropEd, UBrowser;
 
 procedure getCatchProps(catchID: String);
-  var
-    tempInt : Integer;
-  begin
-    initCatchID := catchID;
-    CatchPropsFrm := TCatchProps.Create(Application);
-    try
-      tempInt := CatchPropsFrm.ShowModal;
-    finally
-      CatchPropsFrm.Free;
-    end;
+var
+  tempInt: Integer;
+begin
+  initCatchID := catchID;
+  CatchPropsFrm := TCatchProps.Create(Application);
+  try
+    tempInt := CatchPropsFrm.ShowModal;
+  finally
+    CatchPropsFrm.Free;
+  end;
 end;
 
 procedure TCatchProps.btnDefHydPropsClick(Sender: TObject);
 begin
-  //check if soils info entered for current catchment and advance if true
+  // check if soils info entered for current catchment and advance if true
   if PLRMObj.currentCatchment.hasDefSoils = true then
   begin
-    PLRMObj.currentCatchment.soilsInfData := GSIO.getSoilsProps(PLRMObj.currentCatchment.soilsMapUnitData);
+    PLRMObj.currentCatchment.soilsInfData :=
+      GSIO.getSoilsProps(PLRMObj.currentCatchment.soilsMapUnitData);
     allDrxXtcs := getDrngCondsInput(cbxGlobalSpecfc.Text);
     PLRMObj.currentCatchment.hasDefDrnXtcs := true;
     btnOk.Enabled := btnDefHydProps.Enabled;
   end
   else
-    ShowMessage('Please go back and provide soils data for current catchment to proceed beyond this point');
+    ShowMessage
+      ('Please go back and provide soils data for current catchment to proceed beyond this point');
 end;
 
 procedure TCatchProps.btnDefLuseClick(Sender: TObject);
 var
-  tempInt,buttonSelected:Integer;
-  msg:String;
+  tempInt, buttonSelected: Integer;
+  msg: String;
 begin
   if btnDefHydProps.Enabled then
   begin
     msg := 'Warning!' + #13 + #13 +
-    'Viewing or editing Land Uses will require you to reconfirm ' + #13 +
-    'your Land Use Conditions (Step 4) and then reenter' + #13 +
-    'Drainage Conditions (Step 5) for this catchment.' + #13 +
-    'Do you want to proceed to the Land Use Editor (Step 2)?';
-    buttonSelected := MessageDlg(msg,mtCustom,[mbYes,mbNo,mbCancel], 0);
-    if buttonSelected <> mrYes    then Exit;
+      'Viewing or editing Land Uses will require you to reconfirm ' + #13 +
+      'your Land Use Conditions (Step 4) and then reenter' + #13 +
+      'Drainage Conditions (Step 5) for this catchment.' + #13 +
+      'Do you want to proceed to the Land Use Editor (Step 2)?';
+    buttonSelected := MessageDlg(msg, mtCustom, [mbYes, mbNo, mbCancel], 0);
+    if buttonSelected <> mrYes then
+      Exit;
   end;
   btnApplyClick(Sender);
   tempInt := getCatchLuseInput(PLRMObj.currentCatchment.name);
@@ -117,33 +128,48 @@ begin
     btnDefHydProps.Enabled := false;
     btnOk.Enabled := false;
   end;
-//   if tempInt = mrOK then btnDefSoils.Enabled := true;
-//  btnDefHydProps.Enabled := PLRMObj.currentCatchment.hasDefDrnXtcs;
-//  btnOk.Enabled :=
+  // if tempInt = mrOK then btnDefSoils.Enabled := true;
+  // btnDefHydProps.Enabled := PLRMObj.currentCatchment.hasDefDrnXtcs;
+  // btnOk.Enabled :=
 end;
 
 procedure TCatchProps.btnDefLuseCondsClick(Sender: TObject);
 begin
-    btnApplyClick(Sender);
-    if (PLRMObj.currentCatchment.hasDefLuse = false) then
-    begin
-      ShowMessage('Please provide land use information first');
-      Exit;
-    end;
-    getSCandDrngXtrstcsInput(PLRMObj.currentCatchment.name);
-    btnDefHydProps.Enabled := true;
-    btnOk.Enabled := false;
+  btnApplyClick(Sender);
+  if (PLRMObj.currentCatchment.hasDefLuse = false) then
+  begin
+    ShowMessage('Please provide land use information first');
+    Exit;
+  end;
+  getSCandDrngXtrstcsInput(PLRMObj.currentCatchment.name);
+  btnDefHydProps.Enabled := true;
+  btnOk.Enabled := false;
 end;
 
 procedure TCatchProps.btnDefSoilsClick(Sender: TObject);
 var
-  tempInt:Integer;
+  tempInt, buttonSelected: Integer;
+  msg: String;
 begin
-    btnApplyClick(Sender);
-    tempInt := getCatchSoilsInput(PLRMObj.currentCatchment.name);
-    if tempInt = mrOK then btnDefLuseConds.Enabled := true;
-    btnOk.Enabled := btnDefHydProps.Enabled;
-    btnOk.Enabled := btnDefHydProps.Enabled;
+  // 2014 addition to warn user that ksat values will be overwritten
+  if btnDefHydProps.Enabled then
+  begin
+    msg := 'Warning!' + #13 + #13 +
+      'Viewing or editing soils will ovewrite any custom ' + #13 +
+      'Green-Ampt infiltration parameters you may have' + #13 +
+      'previously entered.' + #13 + #13 +
+      'Do you want to proceed to the Soils Editor (Step 5)?';
+    buttonSelected := MessageDlg(msg, mtCustom, [mbYes, mbNo, mbCancel], 0);
+    if buttonSelected <> mrYes then
+      Exit;
+  end;
+
+  btnApplyClick(Sender);
+  tempInt := getCatchSoilsInput(PLRMObj.currentCatchment.name);
+  if tempInt = mrOK then
+    btnDefLuseConds.Enabled := true;
+  btnOk.Enabled := btnDefHydProps.Enabled;
+  btnOk.Enabled := btnDefHydProps.Enabled;
 end;
 
 procedure TCatchProps.btnOkClick(Sender: TObject);
@@ -153,21 +179,21 @@ begin
 end;
 
 procedure TCatchProps.btnApplyClick(Sender: TObject);
-//var
-//  tempInt :Integer;
+// var
+// tempInt :Integer;
 begin
 
   with PLRMObj.currentCatchment do
   begin
-    //order matters this block before next block
-//    tempInt := cbxGlobalSpecfc.items.IndexOf(name);
-//    if tempInt <> -1 then cbxGlobalSpecfc.items[tempInt] := edtCatchName.Text;
-//    cbxGlobalSpecfc.ItemIndex := tempInt;
-    PLRMObj.currentCatchment.area := StrToFloat(sgProps.Cells[1,1]);
-    physclProps := copyGridContents(0,1,sgProps);
+    // order matters this block before next block
+    // tempInt := cbxGlobalSpecfc.items.IndexOf(name);
+    // if tempInt <> -1 then cbxGlobalSpecfc.items[tempInt] := edtCatchName.Text;
+    // cbxGlobalSpecfc.ItemIndex := tempInt;
+    PLRMObj.currentCatchment.area := StrToFloat(sgProps.Cells[1, 1]);
+    physclProps := copyGridContents(0, 1, sgProps);
     hasPhysclProps := true;
-    //outNodeID := cbxNode.Text;
-    PLRMObj.updateCurCatchProps(name, edtCatchName.Text,physclProps,outNode);
+    // outNodeID := cbxNode.Text;
+    PLRMObj.updateCurCatchProps(name, edtCatchName.Text, physclProps, outNode);
   end;
 
 end;
@@ -179,215 +205,242 @@ end;
 
 procedure TCatchProps.cbxGlobalSpecfcChange(Sender: TObject);
 var
-  tempInt:Integer;
+  tempInt: Integer;
 begin
-  PLRMObj.currentCatchment := GSUtils.getComboBoxSelValue2(Sender) as TPLRMCatch;
+  PLRMObj.currentCatchment := GSUtils.getComboBoxSelValue2(Sender)
+    as TPLRMCatch;
   with PLRMObj.currentCatchment do
   begin
     edtCatchName.Text := name;
-    copyContentsToGrid(physclProps,0,1,sgProps);
-    //cbxNode.Text := outNodeID;
-    if (assigned(outNode) and (outNode.userName <> '')) then cbxNode.Text := outNode.username;
+    copyContentsToGrid(physclProps, 0, 1, sgProps);
+    // cbxNode.Text := outNodeID;
+    if (assigned(outNode) and (outNode.userName <> '')) then
+      cbxNode.Text := outNode.userName;
 
-    btnDefLuse.Enabled := true;   //always true
-    btnDefSoils.Enabled := hasDefLuse; //only true if landuse info provided
+    btnDefLuse.Enabled := true; // always true
+    btnDefSoils.Enabled := hasDefLuse; // only true if landuse info provided
     btnDefLuseConds.Enabled := (hasDefSoils and hasDefLuse);
 
     tempInt := PLRMObj.catchments.IndexOf(name);
-    BrowserUpdate(SUBCATCH,tempInt);
+    BrowserUpdate(SUBCATCH, tempInt);
   end;
 end;
 
 procedure TCatchProps.cbxNodeChange(Sender: TObject);
 var
-  strVal:String;
-  strErrVal:String;
+  strVal: String;
+  strErrVal: String;
 begin
-  PLRMObj.currentCatchment.outNode := GSUtils.getComboBoxSelValue2(Sender) as TPLRMNode;
+  PLRMObj.currentCatchment.outNode := GSUtils.getComboBoxSelValue2(Sender)
+    as TPLRMNode;
   if assigned(PLRMObj.currentCatchment.outNode) then
-     strVal := PLRMObj.currentCatchment.outNode.userName;
-  //strVal := (GSUtils.getComboBoxSelValue2(Sender) as TPLRMNode).userName;
-  if strVal = '' then strVal := '*';
-  //PLRMObj.currentCatchment.outNodeID := strVal;
-  PropEditForm.Editor.PLRMEditProperty(1, 5,#13, strVal);//Edits the outlet entry in property editor grid
-  ValidateEditor(6,strVal,strErrVal);
+    strVal := PLRMObj.currentCatchment.outNode.userName;
+  // strVal := (GSUtils.getComboBoxSelValue2(Sender) as TPLRMNode).userName;
+  if strVal = '' then
+    strVal := '*';
+  // PLRMObj.currentCatchment.outNodeID := strVal;
+  PropEditForm.Editor.PLRMEditProperty(1, 5, #13, strVal);
+  // Edits the outlet entry in property editor grid
+  ValidateEditor(6, strVal, strErrVal);
 end;
 
-function TCatchProps.checkDupCatchName():Boolean;
+function TCatchProps.checkDupCatchName(): Boolean;
 var
-  tempInt, I, J :Integer;
-  strErrVal:String;
+  tempInt, I, J: Integer;
+  strErrVal: String;
 begin
-    if PLRMObj.CurrentCatchment.name <> edtCatchName.Text then
+  if PLRMObj.currentCatchment.name <> edtCatchName.Text then
+  begin
+    tempInt := PLRMObj.nodeAndCatchNames.IndexOf(edtCatchName.Text);
+    if tempInt <> -1 then
     begin
-      tempInt := PLRMObj.nodeAndCatchNames.IndexOf(edtCatchName.Text);
+      ShowMessage
+        ('The object name you have provided is already in use. Please try another name');
+      edtCatchName.Text := PLRMObj.currentCatchment.name;
+      Result := false;
+    end
+    else
+    begin
+
+      tempInt := cbxGlobalSpecfc.items.IndexOf(PLRMObj.currentCatchment.name);
       if tempInt <> -1 then
       begin
-        ShowMessage('The object name you have provided is already in use. Please try another name');
-        edtCatchName.Text := PLRMObj.CurrentCatchment.name;
-        Result := false;
-      end
-      else
-      begin
-
-         tempInt := cbxGlobalSpecfc.items.IndexOf(PLRMObj.CurrentCatchment.name);
-         if tempInt <> - 1 then
-         begin
-          cbxGlobalSpecfc.items[tempInt] := edtCatchName.Text;
-          cbxGlobalSpecfc.ItemIndex := tempInt;
-         end;
-
-         tempInt := PLRMObj.nodeAndCatchNames.IndexOf(PLRMObj.CurrentCatchment.name);
-         PLRMObj.nodeAndCatchNames[tempInt] := edtCatchName.Text;
-
-         tempInt := PLRMObj.catchments.IndexOf(PLRMObj.CurrentCatchment.name);
-         PLRMObj.catchments[tempInt] := edtCatchName.Text;
-
-         PLRMObj.CurrentCatchment.name :=  edtCatchName.Text;
-
-         //change catchment names in road condition schemes
-         if PLRMObj.CurrentCatchment.primRdRcSchm <> nil then PLRMObj.CurrentCatchment.primRdRcSchm.catchName := edtCatchName.Text;
-         if PLRMObj.CurrentCatchment.secRdRcSchm <> nil then PLRMObj.CurrentCatchment.secRdRcSchm.catchName := edtCatchName.Text;
-         //change catchment names in hyd prop schemes
-         for I := 0 to High(PLRMObj.currentCatchment.catchHydPropSchemes) do
-         begin
-           for J := 0 to High(PLRMObj.currentCatchment.catchHydPropSchemes[I]) do
-           begin
-             if (PLRMObj.currentCatchment.catchHydPropSchemes[I][J] <> nil) then
-                PLRMObj.currentCatchment.catchHydPropSchemes[I][J].catchName := edtCatchName.Text;
-           end;
-         end;
-
-         //update name in swmm
-         EditorObject := SUBCATCH; // lets swmm functions know we are working with catchments
-         EditorIndex := PLRMObj.CurrentCatchment.ObjIndex;
-         tempInt := Project.Lists[SUBCATCH].IndexOf(edtCatchName.Text);
-         if tempInt = -1 then Project.Lists[SUBCATCH][EditorIndex] := edtCatchName.Text;
-         ValidateEditor(0,PLRMObj.CurrentCatchment.name,strErrVal);
+        cbxGlobalSpecfc.items[tempInt] := edtCatchName.Text;
+        cbxGlobalSpecfc.ItemIndex := tempInt;
       end;
+
+      tempInt := PLRMObj.nodeAndCatchNames.IndexOf
+        (PLRMObj.currentCatchment.name);
+      PLRMObj.nodeAndCatchNames[tempInt] := edtCatchName.Text;
+
+      tempInt := PLRMObj.catchments.IndexOf(PLRMObj.currentCatchment.name);
+      PLRMObj.catchments[tempInt] := edtCatchName.Text;
+
+      PLRMObj.currentCatchment.name := edtCatchName.Text;
+
+      // change catchment names in road condition schemes
+      if PLRMObj.currentCatchment.primRdRcSchm <> nil then
+        PLRMObj.currentCatchment.primRdRcSchm.catchName := edtCatchName.Text;
+      if PLRMObj.currentCatchment.secRdRcSchm <> nil then
+        PLRMObj.currentCatchment.secRdRcSchm.catchName := edtCatchName.Text;
+      // change catchment names in hyd prop schemes
+      for I := 0 to High(PLRMObj.currentCatchment.catchHydPropSchemes) do
+      begin
+        for J := 0 to High(PLRMObj.currentCatchment.catchHydPropSchemes[I]) do
+        begin
+          if (PLRMObj.currentCatchment.catchHydPropSchemes[I][J] <> nil) then
+            PLRMObj.currentCatchment.catchHydPropSchemes[I][J].catchName :=
+              edtCatchName.Text;
+        end;
+      end;
+
+      // update name in swmm
+      EditorObject := SUBCATCH;
+      // lets swmm functions know we are working with catchments
+      EditorIndex := PLRMObj.currentCatchment.ObjIndex;
+      tempInt := Project.Lists[SUBCATCH].IndexOf(edtCatchName.Text);
+      if tempInt = -1 then
+        Project.Lists[SUBCATCH][EditorIndex] := edtCatchName.Text;
+      ValidateEditor(0, PLRMObj.currentCatchment.name, strErrVal);
     end;
-    Result := true;
+  end;
+  Result := true;
 end;
 
 procedure TCatchProps.edtCatchNameChange(Sender: TObject);
 begin
-  //checkDupCatchName();
+  // checkDupCatchName();
+end;
+
+procedure TCatchProps.edtCatchNameEnter(Sender: TObject);
+begin
+  // 2014 set global currentCatchOrigName value so we can remember what the original name of
+  // catchment was and use it to search and update schemes if the user changes it
+  currentCatchOrigName := edtCatchName.Text;
 end;
 
 procedure TCatchProps.edtCatchNameExit(Sender: TObject);
 var
-   HydSchm:TPLRMHydPropsScheme;  //2014
-   RdSchm:TPLRMRdCondsScheme;  //2014
-   I:integer;
+  HydSchm: TPLRMHydPropsScheme; // 2014
+  RdSchm: TPLRMRdCondsScheme; // 2014
+  I: Integer;
 begin
-    checkDupCatchName();
+  checkDupCatchName();
 
-    //2014 when catchment name changes update schemes to reflect new catchment names
-    if((PLRMObj.hydPropsSchemes <> nil ))  then
+  // 2014 when catchment name changes update hydProp schemes to reflect new catchment names
+  if ((PLRMObj.hydPropsSchemes <> nil)) then
+  begin
+    for I := 0 to PLRMObj.hydPropsSchemes.Count - 1 do
     begin
-      for I := 0 to PLRMObj.hydPropsSchemes.Count -1 do
-      begin
-        HydSchm := PLRMObj.hydPropsSchemes.Objects[I] as TPLRMHydPropsScheme;
-        HydSchm.catchName := PLRMObj.currentCatchment.name ;
-      end;
+      HydSchm := PLRMObj.hydPropsSchemes.Objects[I] as TPLRMHydPropsScheme;
+      // if the catchment name for the scheme matches the old catchment name, update it
+      if (HydSchm.catchName = currentCatchOrigName) then
+        HydSchm.catchName := PLRMObj.currentCatchment.name;
     end;
+  end;
 
-    //2014 when catchment name changes update schemes to reflect new catchment names
-    if((PLRMObj.rdCondsSchemes <> nil ))  then
+  // 2014 when catchment name changes update rdCond schemes to reflect new catchment names
+  if ((PLRMObj.rdCondsSchemes <> nil)) then
+  begin
+    for I := 0 to PLRMObj.rdCondsSchemes.Count - 1 do
     begin
-      for I := 0 to PLRMObj.rdCondsSchemes.Count -1 do
-      begin
-        RdSchm := PLRMObj.rdCondsSchemes.Objects[I] as TPLRMRdCondsScheme;
-        RdSchm.catchName := PLRMObj.currentCatchment.name ;
-      end;
+      RdSchm := PLRMObj.rdCondsSchemes.Objects[I] as TPLRMRdCondsScheme;
+      // if the catchment name for the scheme matches the old catchment name, update it
+      if (RdSchm.catchName = currentCatchOrigName) then
+        RdSchm.catchName := PLRMObj.currentCatchment.name;
     end;
+  end;
 end;
-
 
 procedure TCatchProps.edtCatchNameKeyPress(Sender: TObject; var Key: Char);
 begin
-  gsEditKeyPressNoSpace(Sender,Key,gemPosNumber) ;
+  gsEditKeyPressNoSpace(Sender, Key, gemPosNumber);
 end;
 
 procedure TCatchProps.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-   //FreeStringListObjects(cbxNode.items);
+  // FreeStringListObjects(cbxNode.items);
 end;
 
 procedure TCatchProps.FormCreate(Sender: TObject);
 var
-  tempInt : Integer;
-  flag:Boolean;
-  data :PLRMGridData;
+  tempInt: Integer;
+  flag: Boolean;
+  data: PLRMGridData;
 begin
   statBar.SimpleText := PLRMVERSION;
   Self.Caption := PLRMD3_TITLE;
   tempInt := PLRMObj.getCatchIndex(initCatchID);
   PLRMObj.currentCatchment := PLRMObj.catchments.Objects[tempInt] as TPLRMCatch;
   edtCatchName.Text := initCatchID;
-with PLRMObj.currentCatchment do
-begin
-  //comes before lookup of index because lookup updates catchID if changed
-  cbxGlobalSpecfc.items := PLRMObj.catchments; // loads catchments into combo box
-  cbxGlobalSpecfc.ItemIndex := tempInt;
+  with PLRMObj.currentCatchment do
+  begin
+    // comes before lookup of index because lookup updates catchID if changed
+    cbxGlobalSpecfc.items := PLRMObj.catchments;
+    // loads catchments into combo box
+    cbxGlobalSpecfc.ItemIndex := tempInt;
 
-  cbxNode.Text := '';
-  cbxNode.items := PLRMObj.getAllNodes; //PLRMObj.nodes;
-  //tempInt := cbxNode.items.IndexOf(outNodeID);
-  tempInt := -1;
-  if outNode <> nil then tempInt := cbxNode.items.IndexOf(outNode.userName);
-  if hasphysclProps = true then
-    if tempInt <> -1 then
-    begin
-      cbxNode.ItemIndex := tempInt;
-    end;
+    cbxNode.Text := '';
+    cbxNode.items := PLRMObj.getAllNodes; // PLRMObj.nodes;
+    // tempInt := cbxNode.items.IndexOf(outNodeID);
+    tempInt := -1;
+    if outNode <> nil then
+      tempInt := cbxNode.items.IndexOf(outNode.userName);
+    if hasPhysclProps = true then
+      if tempInt <> -1 then
+      begin
+        cbxNode.ItemIndex := tempInt;
+      end;
 
-  data := physclProps;
-  flag := copyContentsToGrid(data,0,1,sgProps);
-  sgProps.Cells[0,0] := 'Parameters';
-  sgProps.Cells[1,0] := 'Values';
-  sgProps.Cells[2,0] := 'Units';
-  btnDefLuse.Enabled := true;   //always true
-  btnDefSoils.Enabled := hasDefLuse; //only true if landuse info provided
-  btnDefLuseConds.Enabled := (hasDefSoils and hasDefLuse);
-  btnDefHydProps.Enabled := (hasDefSoils and hasDefLuse and hasDefDrnXtcs);
-  btnOk.Enabled := btnDefHydProps.Enabled;
+    data := physclProps;
+    flag := copyContentsToGrid(data, 0, 1, sgProps);
+    sgProps.Cells[0, 0] := 'Parameters';
+    sgProps.Cells[1, 0] := 'Values';
+    sgProps.Cells[2, 0] := 'Units';
+    btnDefLuse.Enabled := true; // always true
+    btnDefSoils.Enabled := hasDefLuse; // only true if landuse info provided
+    btnDefLuseConds.Enabled := (hasDefSoils and hasDefLuse);
+    btnDefHydProps.Enabled := (hasDefSoils and hasDefLuse and hasDefDrnXtcs);
+    btnOk.Enabled := btnDefHydProps.Enabled;
+  end;
 end;
-end;
 
-procedure TCatchProps.sgPropsDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
-var S : String;
+procedure TCatchProps.sgPropsDrawCell(Sender: TObject; ACol, ARow: Integer;
+  Rect: TRect; State: TGridDrawState);
+var
+  S: String;
 begin
-  if ((ACol=0) or (ACol = 2) or (ARow = 0 ))then begin //or (ARow = 0 ))then begin
+  if ((ACol = 0) or (ACol = 2) or (ARow = 0)) then
+  begin // or (ARow = 0 ))then begin
     sgProps.Canvas.Brush.Color := cl3DLight;
     sgProps.Canvas.FillRect(Rect);
     S := sgProps.Cells[ACol, ARow];
     sgProps.Canvas.Font.Color := clBlue;
     sgProps.Canvas.TextOut(Rect.Left + 2, Rect.Top + 2, S);
   end;
-end; 
+end;
 
 procedure TCatchProps.sgPropsKeyPress(Sender: TObject; var Key: Char);
 begin
-    gsEditKeyPress(Sender,Key,gemPosNumber) ;
-    //if any of the input changes invalidate and have user go back through forms
-    btnDefLuse.Enabled := true;   //always true
-    btnDefSoils.Enabled := false;
-    btnDefLuseConds.Enabled := false;
-    btnDefHydProps.Enabled := false;
+  gsEditKeyPress(Sender, Key, gemPosNumber);
+  // if any of the input changes invalidate and have user go back through forms
+  btnDefLuse.Enabled := true; // always true
+  btnDefSoils.Enabled := false;
+  btnDefLuseConds.Enabled := false;
+  btnDefHydProps.Enabled := false;
 end;
 
 procedure TCatchProps.sgPropsSelectCell(Sender: TObject; ACol, ARow: Integer;
   var CanSelect: Boolean);
 begin
-  if ((ACol=0) or (ACol = 2) or (ARow = 0 ))then
-    begin
-      sgProps.Options:=sgProps.Options-[goEditing];
-      ShowMessage(CELLNOEDIT);
-    end
+  if ((ACol = 0) or (ACol = 2) or (ARow = 0)) then
+  begin
+    sgProps.Options := sgProps.Options - [goEditing];
+    ShowMessage(CELLNOEDIT);
+  end
   else
   begin
-    sgProps.Options:=sgProps.Options+[goEditing];
+    sgProps.Options := sgProps.Options + [goEditing];
   end;
 end;
 

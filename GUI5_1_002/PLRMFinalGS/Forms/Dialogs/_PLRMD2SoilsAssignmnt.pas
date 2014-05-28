@@ -95,7 +95,7 @@ begin
          GSUtils.deleteGridRow(lbxMapUnitTo.Items[I], 0,'0',sgMapUnit);
      GSUtils.TransferAllLstBxItems(lbxMapUnitFrom, lbxMapUnitTo);
      updateGrid(catchArea,sgMapUnit);
-     //2014 new property added to detech if change was made in soils so ksat can be recalculated
+     //2014 new property added to detect if change was made in soils so ksat can be recalculated
      GSPLRM.PLRMObj.currentCatchment.hasChangedSoils := true;
 end;
 
@@ -131,7 +131,7 @@ begin
          GSUtils.deleteGridRow(lbxMapUnitTo.Items[I], 0,'0',sgMapUnit);
     GSUtils.TransferLstBxItems(lbxMapUnitFrom, lbxMapUnitTo);
     updateGrid(catchArea,sgMapUnit);
-    //2014 new property added to detech if change was made in soils so ksat can be recalculated
+    //2014 new property added to detect if change was made in soils so ksat can be recalculated
      GSPLRM.PLRMObj.currentCatchment.hasChangedSoils := true;
 end;
 

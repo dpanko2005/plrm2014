@@ -376,41 +376,49 @@ procedure TPLRMDrainageConditions.restoreFormContents(catch: TPLRMCatch);
     hasLuse :array[0..6] of Boolean;
     I,J : Integer;
     prcnt : Double;
+    test:boolean;
   begin
+
     with PLRMObj.currentCatchment do
     begin
-
-      if (assigned(PLRMObj.currentCatchment.primRdDrng) and GSPLRM.PLRMObj.currentCatchment.hasChangedSoils = false) then
+      //if (assigned(PLRMObj.currentCatchment.primRdDrng)) then
+      if ((assigned(PLRMObj.currentCatchment.primRdDrng)) and (GSPLRM.PLRMObj.currentCatchment.hasChangedSoils = false)) then
       begin
         hasLuse[0] := true;
         copyContentsToGridNChk(PLRMObj.currentCatchment.primRdDrng,0,0,sgPrimRds);
       end;
-      if (assigned(PLRMObj.currentCatchment.secRdDrng) and GSPLRM.PLRMObj.currentCatchment.hasChangedSoils = false) then
+      //if (assigned(PLRMObj.currentCatchment.secRdDrng)) then
+      if ((assigned(PLRMObj.currentCatchment.secRdDrng)) and (GSPLRM.PLRMObj.currentCatchment.hasChangedSoils = false)) then
       begin
         hasLuse[1] := true;
         copyContentsToGridNChk(PLRMObj.currentCatchment.secRdDrng,0,0,sgSecRds);
       end;
-      if (assigned(PLRMObj.currentCatchment.sfrDrng) and GSPLRM.PLRMObj.currentCatchment.hasChangedSoils = false) then
+      //if (assigned(PLRMObj.currentCatchment.sfrDrng)) then
+      if ((assigned(PLRMObj.currentCatchment.sfrDrng)) and (GSPLRM.PLRMObj.currentCatchment.hasChangedSoils = false)) then
       begin
         hasLuse[2] := true;
         copyContentsToGridNChk(PLRMObj.currentCatchment.sfrDrng,0,0,sgSFR);
       end;
-      if (assigned(PLRMObj.currentCatchment.mfrDrng) and GSPLRM.PLRMObj.currentCatchment.hasChangedSoils = false) then
+      //if (assigned(PLRMObj.currentCatchment.mfrDrng)) then
+      if ((assigned(PLRMObj.currentCatchment.mfrDrng)) and (GSPLRM.PLRMObj.currentCatchment.hasChangedSoils = false)) then
       begin
         hasLuse[3] := true;
         copyContentsToGridNChk(PLRMObj.currentCatchment.mfrDrng,0,0,sgMFR);
       end;
-      if (assigned(PLRMObj.currentCatchment.cicuDrng) and GSPLRM.PLRMObj.currentCatchment.hasChangedSoils = false) then
+      //if (assigned(PLRMObj.currentCatchment.cicuDrng)) then
+      if ((assigned(PLRMObj.currentCatchment.cicuDrng)) and (GSPLRM.PLRMObj.currentCatchment.hasChangedSoils = false)) then
       begin
         hasLuse[4] := true;
         copyContentsToGridNChk(PLRMObj.currentCatchment.cicuDrng,0,0,sgCICU);
       end;
-      if (assigned(PLRMObj.currentCatchment.vegTDrng) and GSPLRM.PLRMObj.currentCatchment.hasChangedSoils = false) then
+      //if (assigned(PLRMObj.currentCatchment.vegTDrng)) then
+      if ((assigned(PLRMObj.currentCatchment.vegTDrng)) and (GSPLRM.PLRMObj.currentCatchment.hasChangedSoils = false)) then
       begin
         hasLuse[5] := true;
         copyContentsToGridNChk(PLRMObj.currentCatchment.vegTDrng,0,0,sgVeg);
       end;
-      if (assigned(PLRMObj.currentCatchment.othrDrng) and GSPLRM.PLRMObj.currentCatchment.hasChangedSoils = false) then
+      //if (assigned(PLRMObj.currentCatchment.othrDrng)) then
+      if ((assigned(PLRMObj.currentCatchment.othrDrng)) and (GSPLRM.PLRMObj.currentCatchment.hasChangedSoils = false)) then
       begin
         hasLuse[6] := true;
         copyContentsToGridNChk(PLRMObj.currentCatchment.othrDrng,0,0,sgOthr);
@@ -634,17 +642,17 @@ begin
             Exit;
           end;
 
-          //check for inf facility areas that are really small resulting from
+          //2014 check for inf facility areas that are really small resulting from
           //subcatments that have small pervious areas
           tempInfFootPrintArea := StrToFloat(sg.Cells[0, 0]) * StrToFloat(sg.Cells[1, 0])/StrToFloat(prevGridValue);
            if ((ACol = 0) and (tempInfFootPrintArea <0.01) and (tempInfFootPrintArea > 0)) then
           begin
-            ShowMessage('This change will result in an infiltration facility with an area less that 0.01 acres which will be neglected.');
+            ShowMessage('WARNING: This change will result in an infiltration facility with an area less than 0.01 acres.');
             //sg.Cells[ACol,ARow] := prevGridValue;
             Exit;
           end
         end;
-        sg.Cells[0, sg.RowCount-1] := FormatFloat('0.##',(100 - tempSum)); //update last row of first column
+        sg.Cells[0, sg.RowCount-1] := FormatFloat('0.###',(100 - tempSum)); //update last row of first column
         updateCalcs(sg);
       end;
 
