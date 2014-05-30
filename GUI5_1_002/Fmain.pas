@@ -356,6 +356,7 @@ type
     tbPLRMCartfilt: TToolButton;
     tbPLRMHydrodyn: TToolButton;
     ControlBar2: TControlBar;
+    btnViewRpt: TToolButton;
 
     procedure FormCreate(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -514,7 +515,8 @@ type
     procedure tbPLRMCartfiltClick(Sender: TObject);
     procedure tbPLRMWetlClick(Sender: TObject);
     procedure tbPLRMInfiltClick(Sender: TObject);
-    procedure tbPLRMDetnClick(Sender: TObject); // PLRM 2014 Addition
+    procedure tbPLRMDetnClick(Sender: TObject);
+    procedure btnViewRptClick(Sender: TObject); // PLRM 2014 Addition
 
   private
     { Private declarations }
@@ -2879,6 +2881,45 @@ begin
       Free;
     end;
   ModalResult := mrOK;
+end;
+
+//2014 PLRM Addition copied from previous btnPLRMRunClick
+procedure TMainForm.btnViewRptClick(Sender: TObject);
+// -----------------------------------------------------------------------------
+// Displays a run's Status Report when Report|Status is selected.
+// -----------------------------------------------------------------------------
+begin
+  // PLRM Edit Jan 2010 edit added to track whether user working with scenario see #233
+  getProjManagerWithMsg();
+  if PLRMObj.hasActvScn = False then
+    Exit;
+
+  // Check if Status Report form already exists
+  if FormExists('StatusForm') then
+    Exit;
+
+  // Otherwise create it
+  StatusForm := TStatusForm.Create(Self);
+  // with TStatusForm.Create(self) do
+  with StatusForm do
+    try
+      Caption := TXT_STATUS_REPORT;
+      isPLRMStatusReportActive := True;
+      // used in Fstatus to decide whether to show plrm status form or default swmm status form
+      RefreshStatusReport;
+      RefreshStatusReport(PLRMObj.wrkdir + '\' + 'swmm.prpt');
+      // set back to false in fStatus.close  isPLRMStatusReportActive := false;
+      // SetFocus;
+      StatusForm.ManualFloat(StatusForm.ClientRect);
+      StatusForm.Show;
+    finally
+    end;
+  // if not FormExists('frmPLRMStats')
+  // then with TfrmPLRMStats.Create(self) do
+  // try
+  // Show;
+  // finally
+  // end;
 end;
 
 procedure TMainForm.Button1Click(Sender: TObject);

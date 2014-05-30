@@ -418,7 +418,8 @@ var
          Area1 := WQV/TotDepth1;  // surcharge area
          end;
 
-         Inf := -1; //not applicable
+         //2014 comment out cause producing -ve numbers in swmm output Inf := -1; //not applicable
+         Inf := 0; //not applicable
        end;
        4: //Bed Filter
        begin
@@ -506,7 +507,8 @@ var
        //Stage-Discharge Curve for Treatment
        stageDisTmtGrid[1,I] := volDisGrid[1,I];
        //Stage-Discharge Curve for Infiltration
-       stageDisInfGrid[1,I] := FormatFloat('0.#####',(12*InfRate*Area1)/3600); // constant infiltration outflow in cfs
+       //2014 wrong conversion from sq.ft.in/hr to cfs stageDisInfGrid[1,I] := FormatFloat('0.#####',(12*InfRate*Area1)/3600); // constant infiltration outflow in cfs
+       stageDisInfGrid[1,I] := FormatFloat('0.#####',(InfRate*Area1)/(12*3600)); // constant infiltration outflow in cfs
 
        InfRate := Inf; // constant infiltration rate in/hr
        if (DDT <> -1) then
