@@ -1872,7 +1872,8 @@ begin
   FracPlowable := '0.0';
   for I := 1 to 3 do
   begin
-    for J := 1 to 8 do Data[I][J] := DefSnowPack[J];
+    //plrm 2014 rangecheck err for J := 1 to 8 do Data[I][J] := DefSnowPack[J];
+    for J := 1 to 7 do Data[I][J] := DefSnowPack[J];
   end;
   Plowing[1] := '1.0';
   for I := 2 to 6 do Plowing[I] := '0.0';

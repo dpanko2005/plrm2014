@@ -75,13 +75,22 @@ type  TExptdTypeCodes = (gemNone, gemNumber, gemPosNumber, gemNoSpace); // Same 
  type TcatchResults = record
     catchName: String;
     annLoads: PLRMGridDataDbl; //average annual volume and load for each pollutant
+    annLoadsLUse: PLRMGridDataDbl; //average annual volume and load for each pollutant by landuse
+    //stores land uses in the ordered required for volumes stored at annLoadsLUse[0]
+    volLandUses:TStringList;
+    //stores land uses in the ordered required for annLoadsLUse stored at annLoadsLUse[1+]
+    //should be same as volLandUses, but seperation protects against future swmm changes
+    loadLandUses:TStringList;
  end;
 
  type TswtResults = record
     swtType:Integer;
     swtName: String;
     perCap: Double;
-    swtLoads: PLRMGridDataDbl; //influent, treated, and bypassed volumes and loads
+    //influent, treated, and bypassed loads - 2014 comment edit now loads only used to store loads and vols
+    swtLoads: PLRMGridDataDbl;
+    //2014 addition influent, treated, and bypassed volumes
+    swtVols: PLRMGridDataDbl;
  end;
 
  type TPLRMResults = record
@@ -157,7 +166,7 @@ FRMSWTCRTFILTR = 'Cartridge Filter Editor';
 FRMSWTTRTVAULT = 'Hydrodynamic Device Editor';
 //Form titles
 //PLRMVERSION = 'Tahoe Pollutant Load Reduction Model - v1.0';
-PLRMVERSION = 'Lake Tahoe PLRM v1.1  ';
+PLRMVERSION = 'Lake Tahoe PLRM v2.0  ';
 PLRM0_WIZTITLE = 'PLRM Wizard';
 PLRM1_TITLE = 'Project and Scenario Manager';
 PLRM2_TITLE = 'Scenario Editor';

@@ -6,18 +6,85 @@ interface
 
 uses
   Windows, Messages, Dialogs, SysUtils, Variants, Classes, Uglobals, Uproject,
-  Ustats, Math, GSTypes, GSNodes, StrUtils;
+  Ustats, Math, GSTypes, GSNodes, GSIO, StrUtils;
 
-function SWTStatSummary(SWTType: Integer; swtName: String;
-  swtData: PLRMGridDataDbl): TStringList;
+{ function SWTStatSummary(SWTType: Integer; swtName: String;
+  swtData: PLRMGridDataDbl): TStringList; }
 function catchStatSummary(catchName: String; annLoads: PLRMGridDataDbl)
   : TStringList;
-function resultsToTextFile(Rslts: TPLRMResults; filePath: string): Boolean;
+// function resultsToTextFile(Rslts: TPLRMResults; filePath: string): Boolean;
+function resultsToTextFile(Rslts: TPLRMResults; filePath: string;
+  mode: Integer): Boolean;
+function SWTStatSummary(SWTType: Integer; swtName: String;
+  swtDataVols: PLRMGridDataDbl; swtDataLoads: PLRMGridDataDbl; mode: Integer)
+  : TStringList;
+function catchStatSummaryByLuse(catchName: String; catchLuseList: TStringList;
+  loadsByLuse: PLRMGridDataDbl): TStringList;
+function getLandUseLabel(catchmentAndLusName: String): String;
 
 implementation
 
 Uses
   GSUtils, GSPLRM;
+
+function catchStatSummaryByLuse(catchName: String; catchLuseList: TStringList;
+  loadsByLuse: PLRMGridDataDbl): TStringList;
+// This function reads in a PLRM grid of annual volumes and loads of influent and effluent
+// and returns a stringlist of summary statistics. Stringlist objects include:
+var
+  I, J: Integer;
+  tempSL: TStringList;
+  tempStr, tempLine1: String;
+  Tab: String;
+begin
+  if Uglobals.TabDelimited then
+    Tab := #9
+  else
+    Tab := ' ';
+  tempSL := TStringList.Create;
+  // plrm 2014 check to see if annLoads populated before continuing
+  if (Length(loadsByLuse) < 1) then
+  begin
+    tempSL.Add('Unable to get annual loads for catchments');
+    Result := tempSL;
+    exit;
+  end;
+  for I := 0 to High(loadsByLuse) do
+  begin
+    tempStr := getLandUseLabel(catchLuseList[I]);
+    tempLine1 := Format(rsltsFormatStrLft, [tempStr]) +
+      Format(rsltsFormatDec182f, [loadsByLuse[I, 0] * CONVMGALTOACFT]);
+    for J := 1 to High(loadsByLuse[0]) do
+    begin
+      tempLine1 := tempLine1 + Format(rsltsFormatDec182f, [loadsByLuse[I, J]]);
+    end;
+    tempSL.Add(tempLine1);
+  end;
+  Result := tempSL;
+end;
+
+function getLandUseLabel(catchmentAndLusName: String): String;
+var
+  luseDBData: dbReturnFields;
+  I: Integer;
+begin
+  luseDBData := GSIO.lookUpValFrmTable(18, 1, 2);
+
+  for I := 0 to luseDBData[0].Count - 1 do
+  begin
+    if (Pos(LowerCase('_' + luseDBData[0][I]), LowerCase(catchmentAndLusName)
+      ) > 0) then
+    begin
+      Result := luseDBData[1][I];
+      exit;
+    end;
+
+    Result := 'LU not found-' + catchmentAndLusName;
+    if (Pos('_Othr', catchmentAndLusName) > 0) then
+      Result := 'Other';
+
+  end;
+end;
 
 function catchStatSummary(catchName: String; annLoads: PLRMGridDataDbl)
   : TStringList;
@@ -34,19 +101,25 @@ begin
   else
     Tab := ' ';
   tempSL := TStringList.Create;
-  //plrm 2014 check to see if annLoads populated before continuing
-  if(Length(annLoads) < 1)  then
+  // plrm 2014 check to see if annLoads populated before continuing
+  if (Length(annLoads) < 1) then
   begin
-      tempSL.Add('Unable to get annual loads for catchments');
-      Result := tempSL;
-      exit;
+    tempSL.Add('Unable to get annual loads for catchments');
+    Result := tempSL;
+    exit;
   end;
+  { plrm 2014 now catchment vols from new swmm runoff summary with units in MGal so new conversion
+    tempLine1 := Format(rsltsFormatStrLft, [catchName]) +
+    Format(rsltsFormatDec182f, [annLoads[0, 0] / CONVACFT]); }
+
   tempLine1 := Format(rsltsFormatStrLft, [catchName]) +
-    Format(rsltsFormatDec182f, [annLoads[0, 0] / CONVACFT]);
+    Format(rsltsFormatDec182f, [annLoads[0, 0] * CONVMGALTOACFT]);
   // convert vol to ac-ft
-  for I := 1 to High(annLoads) do
-    tempLine1 := tempLine1 + Format(rsltsFormatDec182f,
-      [annLoads[I, 0] * CONVKGLBS]);
+  for I := 1 to High(annLoads[0]) do
+    { plrm 2014 now loads from new swmm subcatchment washoff summary with units in lbs so no conversion
+      tempLine1 := tempLine1 + Format(rsltsFormatDec182f,
+      [annLoads[0,I] * CONVKGLBS]); }
+    tempLine1 := tempLine1 + Format(rsltsFormatDec182f, [annLoads[0, I]]);
   tempSL.Add(tempLine1);
   Result := tempSL;
 end;
@@ -66,38 +139,56 @@ begin
     Tab := #9
   else
     Tab := ' ';
+
   tempSL := TStringList.Create;
+
   SetLength(totLoads, High(annLoads) + 1, High(annLoads[0]) + 1);
   for I := 0 to High(annLoads[0]) do
   begin
     tempSWMMNode := (Project.Lists[Outfall].Objects[I] as TNode);
     if ((tempSWMMNode <> nil) and (tempSWMMNode.ID <> 'GW')) then
     begin
+      { plrm 2014 now catchment vols from new swmm runoff summary with units in MGal so new conversion
+        tempLine1 := Format(rsltsFormatStrLft, [tempSWMMNode.ID]) +
+        Format(rsltsFormatDec182f, [annLoads[0, I] / CONVACFT]); }
+
       tempLine1 := Format(rsltsFormatStrLft, [tempSWMMNode.ID]) +
-        Format(rsltsFormatDec182f, [annLoads[0, I] / CONVACFT]);
-      // convert volume to ac-ft
+        Format(rsltsFormatDec182f, [annLoads[0, I] * CONVMGALTOACFT]);
+
       totLoads[0, 0] := totLoads[0, 0] + annLoads[0, I];
       for J := 1 to High(annLoads) do
       begin
-        tempLine1 := tempLine1 + Format(rsltsFormatDec182f,
-          [annLoads[J, I] * CONVKGLBS]);
+        { plrm 2014 now loads from new swmm subcatchment washoff summary with units in lbs so no conversion
+          tempLine1 := tempLine1 + Format(rsltsFormatDec182f,
+          [annLoads[J, I] * CONVKGLBS]); }
+
+        tempLine1 := tempLine1 + Format(rsltsFormatDec182f, [annLoads[J, I]]);
         totLoads[J, 0] := totLoads[J, 0] + (annLoads[J, I]);
       end;
       tempSL.Add(tempLine1);
     end;
   end;
 
-  tempLine1 := Format(rsltsFormatStrLft, ['Scenario Total']) +
+  { plrm 2014 now catchment vols from new swmm runoff summary with units in MGal so new conversion
+    tempLine1 := Format(rsltsFormatStrLft, ['Scenario Total']) +
     Format(rsltsFormatDec182f, [totLoads[0, 0] / CONVACFT]);
+  }
+  tempLine1 := Format(rsltsFormatStrLft, ['Scenario Total']) +
+    Format(rsltsFormatDec182f, [totLoads[0, 0] * CONVMGALTOACFT]);
+
   for I := 1 to High(totLoads) do
-    tempLine1 := tempLine1 + Format(rsltsFormatDec182f,
-      [totLoads[I, 0] * CONVKGLBS]);
+    { plrm 2014 now loads from new swmm subcatchment washoff summary with units in lbs so no conversion
+      tempLine1 := tempLine1 + Format(rsltsFormatDec182f,
+      [totLoads[I, 0] * CONVKGLBS]); }
+
+    tempLine1 := tempLine1 + Format(rsltsFormatDec182f, [totLoads[I, 0]]);
   tempSL.Add(tempLine1);
   Result := tempSL;
 end;
 
 function SWTStatSummary(SWTType: Integer; swtName: String;
-  swtData: PLRMGridDataDbl): TStringList;
+  swtDataVols: PLRMGridDataDbl; swtDataLoads: PLRMGridDataDbl; mode: Integer)
+  : TStringList;
 // This function reads in a PLRM grid of annual volumes and loads of influent and effluent
 // and returns a stringlist of summary statistics. Stringlist objects include:
 // 1.	Total Inflow Volume
@@ -119,6 +210,7 @@ begin
   tempSL := TStringList.Create;
   tempStr := Format(rsltsFormatStrLft, [swtName]) + Format(rsltsFormatStrRgt,
     ['Volume(ac-ft/yr)']);
+
   for J := 0 to Project.PollutNames.Count - 1 do
     tempStr := tempStr + Format(rsltsFormatStrRgt,
       [Project.PollutNames[J] + '(lbs/yr)']);
@@ -126,17 +218,17 @@ begin
   tempSL.Add
     ('-----------------------------------------------------------------------------------------------------------------------------------------------------------------');
 
-  inVol := swtData[0, 0]; // total inflow volume
-  byVol := swtData[0, 1];
-  trVol := swtData[0, 2];
+  inVol := swtDataVols[0, 0] * CONVMGALTOACFT; // total inflow volume
+  byVol := swtDataVols[0, 1] * CONVMGALTOACFT;
+  trVol := swtDataVols[0, 2] * CONVMGALTOACFT;
   pDif := 0;
   perCapt := 0;
 
   case SWTType of
     1, 3, 4, 5, 6:
-    // Detention, Bed Filter, Cartridge Filter bed, Hydrodynamic device
+      // Detention, Bed Filter, Cartridge Filter bed, Hydrodynamic device
       begin
-        comboVol := swtData[0, 3];
+        comboVol := swtDataVols[0, 3] * CONVMGALTOACFT;
         if (inVol <> 0) then
           pDif := ((inVol - comboVol) / inVol) * 100
           // (inflow-outflow)/inflow as a percent
@@ -151,58 +243,65 @@ begin
   end;
   perCapt := 100 * (1 - byVol / inVol);
   // Transfer volume results to TStringList;
+
   tempLine1 := Format(rsltsFormatStrLft, ['Total Influent']) +
-    Format(rsltsFormatDec182f, [inVol / CONVACFT]);
+    Format(rsltsFormatDec182f, [inVol]);
   tempLine2 := Format(rsltsFormatStrLft, ['Bypass Stream']) +
-    Format(rsltsFormatDec182f, [byVol / CONVACFT]);
+    Format(rsltsFormatDec182f, [byVol]);
   tempLine3 := Format(rsltsFormatStrLft, ['Treated Stream']) +
-    Format(rsltsFormatDec182f, [trVol / CONVACFT]);
+    Format(rsltsFormatDec182f, [trVol]);
   tempLine4 := Format(rsltsFormatStrLft, ['Total Effluent']) +
-    Format(rsltsFormatDec182f, [comboVol / CONVACFT]);
+    Format(rsltsFormatDec182f, [comboVol]);
   tempLine5 := Format(rsltsFormatStrLft, ['Volume/Load Removed']) +
-    Format(rsltsFormatDec182f, [(inVol - comboVol) / CONVACFT]);
+    Format(rsltsFormatDec182f, [(inVol - comboVol)]);
+
   tempLine6 := Format(rsltsFormatStrLft, ['%Change(Removed/Influent)']) +
     Format(rsltsFormatDec172f, [pDif]) + '%';
   tempLine7 := Format(rsltsFormatStrLft, ['%Capture(1-Bypass/Influent)']) +
     Format(rsltsFormatDec172f, [perCapt]) + '%';
 
-  for I := 1 to High(swtData) do
+  for I := 1 to High(swtDataLoads) do
   begin
     // Transfer load results to TStringList;
-    inVol := swtData[I, 0]; // total inflow volume
-    byVol := swtData[I, 1];
-    trVol := swtData[I, 2];
+    inVol := swtDataLoads[I, 0]; // total inflow volume
+    byVol := swtDataLoads[I, 1];
+    trVol := swtDataLoads[I, 2];
 
     case SWTType of
       1, 3, 4, 5, 6:
-      // Detention, Bed Filter, Cartridge Filter bed, Hydrodynamic device
-        comboVol := swtData[I, 3];
+        // Detention, Bed Filter, Cartridge Filter bed, Hydrodynamic device
+        comboVol := swtDataLoads[I, 3];
       2: // Infiltration
         comboVol := byVol;
     end;
     if (inVol <> 0) then
       pDif := ((inVol - comboVol) / inVol) * 100;
-    // (inflow-outflow)/inflow as a percent
-    tempLine1 := tempLine1 + Format(rsltsFormatDec182f, [inVol * CONVKGLBS]);
-    tempLine2 := tempLine2 + Format(rsltsFormatDec182f, [byVol * CONVKGLBS]);
-    tempLine3 := tempLine3 + Format(rsltsFormatDec182f, [trVol * CONVKGLBS]);
-    tempLine4 := tempLine4 + Format(rsltsFormatDec182f, [comboVol * CONVKGLBS]);
-    tempLine5 := tempLine5 + Format(rsltsFormatDec182f,
-      [(inVol - comboVol) * CONVKGLBS]);
+
+    tempLine1 := tempLine1 + Format(rsltsFormatDec182f, [inVol]);
+    tempLine2 := tempLine2 + Format(rsltsFormatDec182f, [byVol]);
+    tempLine3 := tempLine3 + Format(rsltsFormatDec182f, [trVol]);
+    tempLine4 := tempLine4 + Format(rsltsFormatDec182f, [comboVol]);
+    tempLine5 := tempLine5 + Format(rsltsFormatDec182f, [(inVol - comboVol)]);
     tempLine6 := tempLine6 + Format(rsltsFormatDec172f, [pDif]) + '%';
     pDif := 0;
   end;
-  tempSL.Add(tempLine1);
-  tempSL.Add(tempLine2);
-  tempSL.Add(tempLine3);
-  tempSL.Add(tempLine4);
+  if (mode = 1) then
+  begin
+    tempSL.Add(tempLine1);
+    tempSL.Add(tempLine2);
+    tempSL.Add(tempLine3);
+    tempSL.Add(tempLine4);
+  end;
   tempSL.Add(tempLine5);
   tempSL.Add(tempLine6);
   tempSL.Add(tempLine7);
   SWTStatSummary := tempSL;
 end;
 
-function resultsToTextFile(Rslts: TPLRMResults; filePath: string): Boolean;
+// mode = 0 => summary report - low detail
+// mode = 1 => supplemental report - high detail
+function resultsToTextFile(Rslts: TPLRMResults; filePath: string;
+  mode: Integer): Boolean;
 var
   tempList: TStringList;
   S, OutfallLines: TStringList;
@@ -222,6 +321,11 @@ begin
   for I := 0 to Project.PollutNames.Count - 1 do
     pollsHdr := pollsHdr + Format(rsltsFormatStrRgt,
       [Project.PollutNames[I] + '(lbs/yr)']);
+
+  // plrm 2014 add program name and version number
+  S.Add('*******************************************************************');
+  S.Add('POLLUTTANT LOAD REDUCTION MODEL (PLRM) - VERSION 2.0 (Build 2.0.006)');
+  S.Add('*******************************************************************');
 
   // Write general results
   S.Add('*******************');
@@ -243,18 +347,44 @@ begin
   S.Add('Catchments');
   S.Add('****************');
   S.Add(' ');
-  tempStr := Format(rsltsFormatStrLft, ['Catchment Name']) +
-    Format(rsltsFormatStrRgt, ['Volume(ac-ft/yr)']);
-  S.Add(tempStr + pollsHdr);
-  S.Add(undrlnStr);
-  for I := 0 to High(Rslts.catchData) do
+  if (mode = 0) then
   begin
-  // plrm 2014 added if statement to check for nil
-    if (Length(Rslts.catchData) > 0) then
+    tempStr := Format(rsltsFormatStrLft, ['Catchment Name']) +
+      Format(rsltsFormatStrRgt, ['Volume(ac-ft/yr)']);
+    S.Add(tempStr + pollsHdr);
+    S.Add(undrlnStr);
+  end;
+
+  if (mode = 0) then
+  begin
+    for I := 0 to High(Rslts.catchData) do
     begin
-      tempList := catchStatSummary(Rslts.catchData[I].catchName,
-        Rslts.catchData[I].annLoads);
-      S.Add(tempList[0]);
+      // plrm 2014 added if statement to check for nil
+      if (Length(Rslts.catchData) > 0) then
+      begin
+        tempList := catchStatSummary(Rslts.catchData[I].catchName,
+          Rslts.catchData[I].annLoads);
+        S.Add(tempList[0]);
+      end;
+    end;
+  end
+  else
+  begin
+    for I := 0 to High(Rslts.catchData) do
+    begin
+      tempStr := Format(rsltsFormatStrLft, [Rslts.catchData[I].catchName]) +
+        Format(rsltsFormatStrRgt, ['Volume(ac-ft/yr)']);
+
+      S.Add(tempStr + pollsHdr);
+      S.Add(undrlnStr);
+      // plrm 2014 added if statement to check for nil
+      if (Length(Rslts.catchData) > 0) then
+      begin
+        tempList := catchStatSummaryByLuse(Rslts.catchData[I].catchName,
+          Rslts.catchData[I].loadLandUses, Rslts.catchData[I].annLoadsLuse);
+        S.AddStrings(tempList);
+      end;
+      S.Add(' ');
     end;
   end;
   S.Add(' ');
@@ -267,10 +397,12 @@ begin
   for I := 0 to High(Rslts.swtData) do
   begin
     tempList := SWTStatSummary(Rslts.swtData[I].SWTType,
-      Rslts.swtData[I].swtName, Rslts.swtData[I].swtLoads);
+      Rslts.swtData[I].swtName, Rslts.swtData[I].swtVols,
+      Rslts.swtData[I].swtLoads, mode);
     S.Add(tempList.Text);
   end;
   S.Add(' ');
+
   // Write Scenario Summary
   S.Add('****************');
   S.Add('Scenario Summary');
