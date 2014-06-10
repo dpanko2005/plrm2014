@@ -248,7 +248,7 @@ begin
   if assigned(curHydPropsScheme) then curHydPropsScheme := nil; //memory already freed when freeing list of hydpropschemes
 
   inputFileXMLNode := nil;
-  for I := 0 to MAXNODETYPES do
+  for I := 1 to MAXNODETYPES do
     FreeAndNil(nodesTypeLists[I]);
 
   for I := 0 to MAXSWMMDEFBLKS do
