@@ -3,7 +3,7 @@ object MainForm: TMainForm
   Top = 128
   Caption = 'EPA SWMM 5'
   ClientHeight = 479
-  ClientWidth = 957
+  ClientWidth = 1176
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
   Font.Color = clBlack
@@ -160,8 +160,8 @@ object MainForm: TMainForm
   TextHeight = 15
   object Splitter1: TSplitter
     Left = 173
-    Top = 82
-    Height = 337
+    Top = 108
+    Height = 311
     Beveled = True
     Color = clBtnShadow
     ParentColor = False
@@ -171,7 +171,7 @@ object MainForm: TMainForm
   object ProgressPanel: TPanel
     Left = 0
     Top = 419
-    Width = 957
+    Width = 1176
     Height = 30
     Align = alBottom
     Alignment = taLeftJustify
@@ -179,6 +179,7 @@ object MainForm: TMainForm
     ParentBackground = False
     ParentColor = True
     TabOrder = 1
+    ExplicitWidth = 1092
     object ProgressBar: TProgressBar
       Left = 267
       Top = -2
@@ -191,15 +192,15 @@ object MainForm: TMainForm
   object ControlBar1: TControlBar
     Left = 0
     Top = 0
-    Width = 957
-    Height = 82
+    Width = 1176
+    Height = 108
     Align = alTop
     AutoSize = True
     DrawingStyle = dsGradient
     TabOrder = 2
     object StdToolBar: TToolBar
       Left = 262
-      Top = 54
+      Top = 80
       Width = 428
       Height = 22
       DrawingStyle = dsGradient
@@ -396,9 +397,9 @@ object MainForm: TMainForm
       end
     end
     object MapToolBar: TToolBar
-      Left = 791
+      Left = 1002
       Top = 2
-      Width = 160
+      Width = 155
       Height = 48
       Caption = 'MapToolBar'
       DrawingStyle = dsGradient
@@ -513,10 +514,10 @@ object MainForm: TMainForm
     object PLRMToolBar: TToolBar
       Left = 11
       Top = 2
-      Width = 767
+      Width = 950
       Height = 48
       ButtonHeight = 38
-      ButtonWidth = 109
+      ButtonWidth = 118
       Caption = 'PLRMToolBar'
       Images = plrmImageList
       ParentShowHint = False
@@ -536,7 +537,7 @@ object MainForm: TMainForm
         OnClick = btnAboutClick
       end
       object btnPrjMgr: TToolButton
-        Left = 109
+        Left = 118
         Top = 0
         Hint = 'Load Project Manager'
         Caption = 'Project Manager'
@@ -546,7 +547,7 @@ object MainForm: TMainForm
         OnClick = btnPrjMgrClick
       end
       object btnRun: TToolButton
-        Left = 218
+        Left = 236
         Top = 0
         Hint = 'Run'
         Caption = 'Run PLRM'
@@ -554,7 +555,7 @@ object MainForm: TMainForm
         OnClick = btnRunPLRMClick
       end
       object btnSave: TToolButton
-        Left = 327
+        Left = 354
         Top = 0
         Hint = 'Save Model'
         Caption = 'Save'
@@ -562,14 +563,14 @@ object MainForm: TMainForm
         OnClick = btnSavePLRMClick
       end
       object btnSaveRpt: TToolButton
-        Left = 436
+        Left = 472
         Top = 0
         Caption = 'Save Report'
         ImageIndex = 16
         OnClick = btnSaveRptClick
       end
       object btnScnComps: TToolButton
-        Left = 545
+        Left = 590
         Top = 0
         Hint = 'Compare Scenarios'
         Caption = 'Compare Scenarios'
@@ -577,18 +578,26 @@ object MainForm: TMainForm
         OnClick = btnScnCompsClick
       end
       object btnViewRpt: TToolButton
-        Left = 654
+        Left = 708
         Top = 0
         Caption = 'View Report'
         ImageIndex = 1
         OnClick = btnViewRptClick
+      end
+      object btnViewRptDetailed: TToolButton
+        Left = 826
+        Top = 0
+        Cursor = crDrag
+        Caption = 'Supplemental Report'
+        ImageIndex = 2
+        OnClick = btnViewRptDetailedClick
       end
     end
   end
   object StatusBar: TToolBar
     Left = 0
     Top = 449
-    Width = 957
+    Width = 1176
     Height = 30
     Align = alBottom
     AutoSize = True
@@ -603,6 +612,7 @@ object MainForm: TMainForm
     TabOrder = 3
     Transparent = True
     Wrapable = False
+    ExplicitWidth = 1092
     object StatusHint: TToolButton
       Left = 0
       Top = 0
@@ -717,9 +727,9 @@ object MainForm: TMainForm
   end
   object BrowserPageControl: TPageControl
     Left = 0
-    Top = 82
+    Top = 108
     Width = 173
-    Height = 337
+    Height = 311
     ActivePage = BrowserDataPage
     Align = alLeft
     DoubleBuffered = False
@@ -728,9 +738,10 @@ object MainForm: TMainForm
     OnResize = BrowserPageControlResize
     object BrowserDataPage: TTabSheet
       Caption = 'Project'
+      ExplicitHeight = 307
       object BrowserDataSplitter: TSplitter
         Left = 0
-        Top = 106
+        Top = 80
         Width = 165
         Height = 3
         Cursor = crVSplit
@@ -742,13 +753,14 @@ object MainForm: TMainForm
       end
       object ItemsPanel: TPanel
         Left = 0
-        Top = 109
+        Top = 83
         Width = 165
         Height = 198
         Align = alBottom
         BevelOuter = bvNone
         ParentBackground = False
         TabOrder = 1
+        ExplicitTop = 109
         object ItemsLabel: TLabel
           Left = 0
           Top = 22
@@ -863,7 +875,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 165
-        Height = 106
+        Height = 80
         Align = alClient
         AutoExpand = True
         Ctl3D = True
@@ -942,6 +954,7 @@ object MainForm: TMainForm
           000000000000000000010D540069006D00650020005000610074007400650072
           006E007300320000000900000009000000FFFFFFFFFFFFFFFF00000000000000
           0000000000010A4D006100700020004C006100620065006C007300}
+        ExplicitHeight = 106
       end
     end
     object BrowserMapPage: TTabSheet
@@ -951,7 +964,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 165
-        Height = 307
+        Height = 281
         Align = alClient
         BorderStyle = bsNone
         Ctl3D = False
@@ -1192,12 +1205,15 @@ object MainForm: TMainForm
     end
   end
   object ControlBar2: TControlBar
-    Left = 919
-    Top = 82
+    Left = 1138
+    Top = 108
     Width = 38
-    Height = 337
+    Height = 311
     Align = alRight
     TabOrder = 4
+    ExplicitLeft = 1054
+    ExplicitTop = 82
+    ExplicitHeight = 337
     object ToolBar1: TToolBar
       Left = 11
       Top = 2
@@ -1781,7 +1797,7 @@ object MainForm: TMainForm
     Left = 408
     Top = 160
     Bitmap = {
-      494C010106001402740210001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101060014027C0210001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -2134,7 +2150,7 @@ object MainForm: TMainForm
     Left = 408
     Top = 104
     Bitmap = {
-      494C01012600BC011C0210001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01012600BC01240210001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       000000000000360000002800000040000000A0000000010020000000000000A0
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -3481,7 +3497,7 @@ object MainForm: TMainForm
     Left = 408
     Top = 216
     Bitmap = {
-      494C010104005801B80110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010104005801C00110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -3762,7 +3778,7 @@ object MainForm: TMainForm
     Left = 408
     Top = 48
     Bitmap = {
-      494C01011700D800380110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011700D800400110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000006000000001002000000000000060
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -4565,7 +4581,7 @@ object MainForm: TMainForm
     Left = 544
     Top = 80
     Bitmap = {
-      494C010111001800380010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010111001800400010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000005000000001002000000000000050
       000000000000000000000000000000000000FFFFFFFF1D1D1DFF080808FFBABA
       BAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF

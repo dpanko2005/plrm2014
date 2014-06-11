@@ -13,7 +13,6 @@ function GetStatsSelection(var Stats: TStatsSelection; ObjID: String;
 procedure GetVariableTypes(var Stats: TStatsSelection);
 procedure GetAllResults();
 procedure reloadUserHydro();
-function GetRainStats(): Double;
 
 // plrm 2014 addition
 function GetResultsForTopic(intTopic: Integer; reportFilePath: String)
@@ -76,9 +75,9 @@ const
   TypeLabel: String = #10#10#10'Type';
 
 var
-  Topics: array [0 .. 13] of Integer;
-  TopicStart: array [0 .. 13] of Integer;
-  TopicSize: array [0 .. 13] of Integer;
+  Topics, emptyTopics: array [0 .. 13] of Integer;
+  TopicStart,emptyTopicStart: array [0 .. 13] of Integer;
+  TopicSize,emptyTopicSize: array [0 .. 13] of Integer;
   TopicHeaderLines: array [0 .. 13, 0 .. 3] of String;
   CopiedHeaders: array [0 .. 3] of String;
   ColHeaders: array of String;
@@ -151,6 +150,7 @@ begin
   SetLength(SWTLoads, Length(AnnLoads), 6);
 
   // row-0 Get annual influent loads
+  AnnLoads := nil;
   AnnLoads := GetAveAnnualLoadsForJuncOrLink(inJuncID, sourceTble);
   if (Assigned(AnnLoads)) then
     for I := 0 to Length(AnnLoads) - 1 do
@@ -447,49 +447,6 @@ begin
         Stats.FlowVarIndex := Stats.VarIndex;
       end;
   end;
-end;
-
-function GetRainStats(): Double; // total average annual rainfall in inches
-var
-  VolSum: Double; // cummulative inches of rainfall
-  AnnualVol: Double; // total average annual rainfall volume in inches
-  Stats: TStatsSelection; // Information on what to analyze
-  PeriodIndex: Integer;
-  StatsIndex: Integer;
-  EventList: TList; // List of all events
-  AnalysisResults: TStatsResults; // Analysis results
-  VarNumber: Integer;
-  VarUnits: String; // Units for variable
-  E: PStatsEvent; // Pointer to a TStatsEvent object
-  I, J: Integer;
-begin
-  PeriodIndex := 1; // 0-tpVariable, 1-tpDaily, 2-tpMonthly, 3-tpAnnual
-
-  // Create lists
-  EventList := TList.Create;
-
-  // Get Average Annual Volumes
-  VarNumber := SYS_RAINFALL; // rainfall
-  StatsIndex := 2; // 0-stMean, 1-stPeak, 2-stTotal, 3-stDuration, 4-stDelta,
-  // 5-stMeanConcen, 6-stPeakConcen, 7-stMeanLoad, 9-stPeakLoad,
-  // 9-stTotalLoad)
-  if GetStatsSelection(Stats, '', SYS, VarNumber, StatsIndex, PeriodIndex) then
-  begin
-    GetStats(Stats, EventList, AnalysisResults);
-    VolSum := 0;
-    for I := 0 to EventList.Count - 1 do
-    begin
-      E := EventList.Items[I];
-      VolSum := VolSum + E^.Value;
-    end;
-    EventList.Clear;
-    AnnualVol := VolSum / ((EndDateTime - StartDateTime) / 365.2422);
-
-  end
-  else
-    ShowMessage('Problem Getting Stats Selection!');
-
-  GetRainStats := AnnualVol;
 end;
 
 // begin plrm 2014 additions from Fresult
@@ -1012,6 +969,13 @@ begin
   PLRMResults.projectName := PLRMObj.projUserName;
   PLRMResults.wrkDir := PLRMObj.wrkDir + '\';
 
+  //clear topics arrays
+  //implemented as global variables in SWMM function we copied into this unit so
+  //need to clear them for back to back rans in order for  GetResultsForTopic to work properly
+   Topics:= emptyTopics;
+   TopicStart:= emptyTopicStart;
+   TopicSize:= emptyTopicSize;
+  //TopicHeaderLines: array [0 .. 13, 0 .. 3] of String; }
   // 2014 Locate report topics in the SWMM report file
   FindTopicsInReportFile;
   // Convert from index of available topics to absolute topic index
@@ -1045,7 +1009,7 @@ begin
 
     Z := 0;
     // compute catchment annual volumes from Subcatment runoff summary
-    for J := 0 to High(catchRunoffSmryArr) - 1 do
+    for J := 0 to High(catchRunoffSmryArr) do
     begin
       if ((Pos(tempCatch.name, catchRunoffSmryArr[J, 0]) > 0) and
         (Pos('ToInfCa', catchRunoffSmryArr[J, 0]) = 0) and
@@ -1056,7 +1020,7 @@ begin
         // 0-index is string names so cannot be converted to floats
         for K := CATCHTOTINFLCOLNUM to CATCHTOTINFLCOLNUM do
         begin
-          //catOut.vollandUses.Add(catchRunoffSmryArr[J, 0]);
+          // catOut.vollandUses.Add(catchRunoffSmryArr[J, 0]);
           tempDbl := StrToFloat(catchRunoffSmryArr[J, K]) / numSimYears;
           catOut.annLoadsLUse[Z, 0] := tempDbl;
           catOut.AnnLoads[0, 0] := catOut.AnnLoads[0, 0] + tempDbl;
@@ -1069,7 +1033,7 @@ begin
 
     Z := 0;
     // compute catchment annual loads from Subcatment washoff summary
-    for J := 0 to High(catchWashoffSmryArr) - 1 do
+    for J := 0 to High(catchWashoffSmryArr) do
     begin
       if ((Pos(tempCatch.name, catchWashoffSmryArr[J, 0]) > 0) and
         (Pos('ToInfCa', catchWashoffSmryArr[J, 0]) = 0) and
@@ -1080,9 +1044,15 @@ begin
         // 0-index is string names so cannot be converted to floats
         for K := 1 to Length(catchWashoffSmryArr[J]) - 1 do
         begin
-          tempDbl := StrToFloat(catchWashoffSmryArr[J, K]) / numSimYears;
-          catOut.annLoadsLUse[Z, K] := tempDbl;
-          catOut.AnnLoads[0, K] := catOut.AnnLoads[0, K] + tempDbl;
+        //TO be completed - for screeening out non-reported pollutants
+          {if ((Pos('TSS', Project.PollutNames[K-1]) = 0) and
+            (Pos('SRP', Project.PollutNames[K-1]) = 0) and
+            (Pos('DIN', Project.PollutNames[K-1]) = 0)) then
+          begin }
+            tempDbl := StrToFloat(catchWashoffSmryArr[J, K]) / numSimYears;
+            catOut.annLoadsLUse[Z, K] := tempDbl;
+            catOut.AnnLoads[0, K] := catOut.AnnLoads[0, K] + tempDbl;
+          {end; }
         end;
         inc(Z);
       end;
@@ -1125,10 +1095,6 @@ begin
   end;
   SetLength(PLRMResults.swtData, swtCount); // reset
 
-  // Get general information
-  PLRMResults.totPPT_in := GetRainStats();
-  PLRMResults.totPPT_cf := PLRMResults.totPPT_in * totArea * 3630;
-
   // Get Outfall Results
   for I := 0 to Project.Lists[Outfall].Count - 1 do
   begin
@@ -1158,7 +1124,7 @@ begin
 
   resultsToTextFile(PLRMResults, PLRMObj.wrkDir + '\' + 'swmm.prpt', 0);
   resultsToTextFile(PLRMResults, PLRMObj.wrkDir + '\' + 'swmmDetailed.prpt', 1);
-  ShowMessage('All Results Collected!');
+  //ShowMessage('All Results Collected!');
 
   // plrm 2014 moved reloadUserHydro fxn call to fmain to separate concerns
   // reloadUserHydro();
@@ -1169,6 +1135,7 @@ begin
   outfallLoadSmryArr := nil;
   tempLoads := nil;
   tempSWTs := nil;
+  Finalize(PLRMResults);
 end;
 
 procedure reloadUserHydro();

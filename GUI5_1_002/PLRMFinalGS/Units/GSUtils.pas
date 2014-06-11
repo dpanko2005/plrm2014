@@ -128,7 +128,9 @@ const    {ID num for accessing Icons for treeview from  imagelist}
    rsltsFormatDec183f = '%18.3f';
    rsltsFormatDec182f = '%18.2f';
    rsltsFormatDec181f = '%18.1f';
+   rsltsFormatDec180f = '%18.0f';
    rsltsFormatDec172f = '%17.2f';
+   rsltsFormatDec171f = '%17.2f';
 
 var
   defaultXslPath : String;

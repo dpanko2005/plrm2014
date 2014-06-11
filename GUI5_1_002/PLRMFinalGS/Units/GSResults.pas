@@ -53,10 +53,10 @@ begin
   begin
     tempStr := getLandUseLabel(catchLuseList[I]);
     tempLine1 := Format(rsltsFormatStrLft, [tempStr]) +
-      Format(rsltsFormatDec182f, [loadsByLuse[I, 0] * CONVMGALTOACFT]);
+      Format(rsltsFormatDec181f, [loadsByLuse[I, 0] * CONVMGALTOACFT]);
     for J := 1 to High(loadsByLuse[0]) do
     begin
-      tempLine1 := tempLine1 + Format(rsltsFormatDec182f, [loadsByLuse[I, J]]);
+      tempLine1 := tempLine1 + Format(rsltsFormatDec181f, [loadsByLuse[I, J]]);
     end;
     tempSL.Add(tempLine1);
   end;
@@ -108,18 +108,12 @@ begin
     Result := tempSL;
     exit;
   end;
-  { plrm 2014 now catchment vols from new swmm runoff summary with units in MGal so new conversion
-    tempLine1 := Format(rsltsFormatStrLft, [catchName]) +
-    Format(rsltsFormatDec182f, [annLoads[0, 0] / CONVACFT]); }
 
   tempLine1 := Format(rsltsFormatStrLft, [catchName]) +
-    Format(rsltsFormatDec182f, [annLoads[0, 0] * CONVMGALTOACFT]);
+    Format(rsltsFormatDec181f, [annLoads[0, 0] * CONVMGALTOACFT]);
   // convert vol to ac-ft
   for I := 1 to High(annLoads[0]) do
-    { plrm 2014 now loads from new swmm subcatchment washoff summary with units in lbs so no conversion
-      tempLine1 := tempLine1 + Format(rsltsFormatDec182f,
-      [annLoads[0,I] * CONVKGLBS]); }
-    tempLine1 := tempLine1 + Format(rsltsFormatDec182f, [annLoads[0, I]]);
+    tempLine1 := tempLine1 + Format(rsltsFormatDec181f, [annLoads[0, I]]);
   tempSL.Add(tempLine1);
   Result := tempSL;
 end;
@@ -148,40 +142,24 @@ begin
     tempSWMMNode := (Project.Lists[Outfall].Objects[I] as TNode);
     if ((tempSWMMNode <> nil) and (tempSWMMNode.ID <> 'GW')) then
     begin
-      { plrm 2014 now catchment vols from new swmm runoff summary with units in MGal so new conversion
-        tempLine1 := Format(rsltsFormatStrLft, [tempSWMMNode.ID]) +
-        Format(rsltsFormatDec182f, [annLoads[0, I] / CONVACFT]); }
-
       tempLine1 := Format(rsltsFormatStrLft, [tempSWMMNode.ID]) +
-        Format(rsltsFormatDec182f, [annLoads[0, I] * CONVMGALTOACFT]);
+        Format(rsltsFormatDec181f, [annLoads[0, I] * CONVMGALTOACFT]);
 
       totLoads[0, 0] := totLoads[0, 0] + annLoads[0, I];
       for J := 1 to High(annLoads) do
       begin
-        { plrm 2014 now loads from new swmm subcatchment washoff summary with units in lbs so no conversion
-          tempLine1 := tempLine1 + Format(rsltsFormatDec182f,
-          [annLoads[J, I] * CONVKGLBS]); }
-
-        tempLine1 := tempLine1 + Format(rsltsFormatDec182f, [annLoads[J, I]]);
+        tempLine1 := tempLine1 + Format(rsltsFormatDec181f, [annLoads[J, I]]);
         totLoads[J, 0] := totLoads[J, 0] + (annLoads[J, I]);
       end;
       tempSL.Add(tempLine1);
     end;
   end;
 
-  { plrm 2014 now catchment vols from new swmm runoff summary with units in MGal so new conversion
-    tempLine1 := Format(rsltsFormatStrLft, ['Scenario Total']) +
-    Format(rsltsFormatDec182f, [totLoads[0, 0] / CONVACFT]);
-  }
   tempLine1 := Format(rsltsFormatStrLft, ['Scenario Total']) +
-    Format(rsltsFormatDec182f, [totLoads[0, 0] * CONVMGALTOACFT]);
+    Format(rsltsFormatDec181f, [totLoads[0, 0] * CONVMGALTOACFT]);
 
   for I := 1 to High(totLoads) do
-    { plrm 2014 now loads from new swmm subcatchment washoff summary with units in lbs so no conversion
-      tempLine1 := tempLine1 + Format(rsltsFormatDec182f,
-      [totLoads[I, 0] * CONVKGLBS]); }
-
-    tempLine1 := tempLine1 + Format(rsltsFormatDec182f, [totLoads[I, 0]]);
+    tempLine1 := tempLine1 + Format(rsltsFormatDec181f, [totLoads[I, 0]]);
   tempSL.Add(tempLine1);
   Result := tempSL;
 end;
@@ -245,20 +223,20 @@ begin
   // Transfer volume results to TStringList;
 
   tempLine1 := Format(rsltsFormatStrLft, ['Total Influent']) +
-    Format(rsltsFormatDec182f, [inVol]);
+    Format(rsltsFormatDec181f, [inVol]);
   tempLine2 := Format(rsltsFormatStrLft, ['Bypass Stream']) +
-    Format(rsltsFormatDec182f, [byVol]);
+    Format(rsltsFormatDec181f, [byVol]);
   tempLine3 := Format(rsltsFormatStrLft, ['Treated Stream']) +
-    Format(rsltsFormatDec182f, [trVol]);
+    Format(rsltsFormatDec181f, [trVol]);
   tempLine4 := Format(rsltsFormatStrLft, ['Total Effluent']) +
-    Format(rsltsFormatDec182f, [comboVol]);
+    Format(rsltsFormatDec181f, [comboVol]);
   tempLine5 := Format(rsltsFormatStrLft, ['Volume/Load Removed']) +
-    Format(rsltsFormatDec182f, [(inVol - comboVol)]);
+    Format(rsltsFormatDec181f, [(inVol - comboVol)]);
 
   tempLine6 := Format(rsltsFormatStrLft, ['%Change(Removed/Influent)']) +
-    Format(rsltsFormatDec172f, [pDif]) + '%';
+    Format(rsltsFormatDec181f, [pDif]) + '%';
   tempLine7 := Format(rsltsFormatStrLft, ['%Capture(1-Bypass/Influent)']) +
-    Format(rsltsFormatDec172f, [perCapt]) + '%';
+    Format(rsltsFormatDec181f, [perCapt]) + '%';
 
   for I := 1 to High(swtDataLoads) do
   begin
@@ -277,12 +255,12 @@ begin
     if (inVol <> 0) then
       pDif := ((inVol - comboVol) / inVol) * 100;
 
-    tempLine1 := tempLine1 + Format(rsltsFormatDec182f, [inVol]);
-    tempLine2 := tempLine2 + Format(rsltsFormatDec182f, [byVol]);
-    tempLine3 := tempLine3 + Format(rsltsFormatDec182f, [trVol]);
-    tempLine4 := tempLine4 + Format(rsltsFormatDec182f, [comboVol]);
-    tempLine5 := tempLine5 + Format(rsltsFormatDec182f, [(inVol - comboVol)]);
-    tempLine6 := tempLine6 + Format(rsltsFormatDec172f, [pDif]) + '%';
+    tempLine1 := tempLine1 + Format(rsltsFormatDec181f, [inVol]);
+    tempLine2 := tempLine2 + Format(rsltsFormatDec181f, [byVol]);
+    tempLine3 := tempLine3 + Format(rsltsFormatDec181f, [trVol]);
+    tempLine4 := tempLine4 + Format(rsltsFormatDec181f, [comboVol]);
+    tempLine5 := tempLine5 + Format(rsltsFormatDec181f, [(inVol - comboVol)]);
+    tempLine6 := tempLine6 + Format(rsltsFormatDec171f, [pDif]) + '%';
     pDif := 0;
   end;
   if (mode = 1) then
@@ -385,6 +363,7 @@ begin
         S.AddStrings(tempList);
       end;
       S.Add(' ');
+      S.Add(' ');
     end;
   end;
   S.Add(' ');
@@ -468,8 +447,8 @@ begin
           (StrToFloat(AnsiMidStr(Rslts.nativeSWMMRpt[I - 1], 44, 14)) +
           uprZoneEt2 + lowrZoneEt2)) / Rslts.numYrsSimulated;
       end;
-      S.Add(tempStr1 + '   ' + Format(rsltsFormatDec182f, [tempStr2]) + '   ' +
-        Format(rsltsFormatDec182f, [tempStr3]));
+      S.Add(tempStr1 + '   ' + Format(rsltsFormatDec181f, [tempStr2]) + '   ' +
+        Format(rsltsFormatDec181f, [tempStr3]));
     end;
   end;
 
@@ -489,15 +468,15 @@ begin
     StrToFloat(AnsiMidStr(Rslts.nativeSWMMRpt[tempInt1 + Project.Lists[Outfall]
     .Count - 1], 51, 12)) * CONVMGALTOACFT;
 
-  S.Add('  System Surface Discharge..    ' + Format(rsltsFormatDec182f,
-    [sysDischarge / Rslts.numYrsSimulated]) + '   ' + Format(rsltsFormatDec182f,
+  S.Add('  System Surface Discharge..    ' + Format(rsltsFormatDec181f,
+    [sysDischarge / Rslts.numYrsSimulated]) + '   ' + Format(rsltsFormatDec181f,
     [areaFactor * sysDischarge / Rslts.numYrsSimulated]));
-  S.Add('  Percolation to Groundwater    ' + Format(rsltsFormatDec182f,
-    [percoltn / Rslts.numYrsSimulated]) + '   ' + Format(rsltsFormatDec182f,
+  S.Add('  Percolation to Groundwater    ' + Format(rsltsFormatDec181f,
+    [percoltn / Rslts.numYrsSimulated]) + '   ' + Format(rsltsFormatDec181f,
     [areaFactor * percoltn / Rslts.numYrsSimulated]));
   S.Add('  Continuity Error..........    ' + Format(rsltsFormatDec172f,
     [(100 * (precip - (sysDischarge + percoltn + et)) / precip)]) + '%');
-  S.Add('  Percent Surface Runoff....    ' + Format(rsltsFormatDec172f,
+  S.Add('  Percent Surface Runoff....    ' + Format(rsltsFormatDec181f,
     [100 * Rslts.runCoeff]) + '%');
   S.Add(' ');
   S.Add(' ');
@@ -516,6 +495,8 @@ begin
   S.Add(tempList.Text);
   S.Add('');
   S.SaveToFile(filePath);
+  S.Free;
+  OutfallLines.Free;
 end;
 
 end.
