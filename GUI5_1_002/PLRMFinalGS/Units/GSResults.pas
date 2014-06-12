@@ -32,11 +32,17 @@ function catchStatSummaryByLuse(catchName: String; catchLuseList: TStringList;
 // This function reads in a PLRM grid of annual volumes and loads of influent and effluent
 // and returns a stringlist of summary statistics. Stringlist objects include:
 var
-  I, J: Integer;
+  I, J, K, tempIndex: Integer;
   tempSL: TStringList;
   tempStr, tempLine1: String;
   Tab: String;
+  lusePositionCheckList: TStringList;
+  loadsByLuseCombined: PLRMGridDataDbl;
 begin
+
+  lusePositionCheckList := TStringList.Create();
+  SetLength(loadsByLuseCombined, Length(loadsByLuse), Length(loadsByLuse[0])+1);
+
   if Uglobals.TabDelimited then
     Tab := #9
   else
@@ -49,14 +55,44 @@ begin
     Result := tempSL;
     exit;
   end;
+
+  // loop through and combine entries with the same land use
+  K := 0;
+  tempIndex := -1;
   for I := 0 to High(loadsByLuse) do
   begin
+    // check if landuse exists in the checklist, if so retrieve its position otherwise add it
     tempStr := getLandUseLabel(catchLuseList[I]);
-    tempLine1 := Format(rsltsFormatStrLft, [tempStr]) +
-      Format(rsltsFormatDec181f, [loadsByLuse[I, 0] * CONVMGALTOACFT]);
-    for J := 1 to High(loadsByLuse[0]) do
+    tempIndex := lusePositionCheckList.IndexOf(tempStr);
+    if (tempIndex = -1) then
     begin
-      tempLine1 := tempLine1 + Format(rsltsFormatDec181f, [loadsByLuse[I, J]]);
+      lusePositionCheckList.Add(tempStr);
+      for J := 0 to High(loadsByLuse[0]) do
+      begin
+        loadsByLuseCombined[I, J] := loadsByLuse[I, J];
+      end;
+      inc(K);
+    end
+    else
+    begin
+      for J := 0 to High(loadsByLuse[0]) do
+      begin
+        loadsByLuseCombined[tempIndex, J] := loadsByLuseCombined[tempIndex, J] +
+          loadsByLuse[I, J];
+      end;
+    end;
+  end;
+  SetLength(loadsByLuseCombined, K, Length(loadsByLuse[0]));
+
+  for I := 0 to High(loadsByLuseCombined) do
+  begin
+    //tempStr := getLandUseLabel(catchLuseList[I]);
+    tempLine1 := Format(rsltsFormatStrLft, [lusePositionCheckList[I]]) +
+      Format(rsltsFormatDec181f, [loadsByLuseCombined[I, 0] * CONVMGALTOACFT]);
+
+    for J := 1 to High(loadsByLuseCombined[0]) do
+    begin
+      tempLine1 := tempLine1 + Format(rsltsFormatDec181f, [loadsByLuseCombined[I, J]]);
     end;
     tempSL.Add(tempLine1);
   end;
@@ -476,8 +512,10 @@ begin
     [areaFactor * percoltn / Rslts.numYrsSimulated]));
   S.Add('  Continuity Error..........    ' + Format(rsltsFormatDec172f,
     [(100 * (precip - (sysDischarge + percoltn + et)) / precip)]) + '%');
+  {S.Add('  Percent Surface Runoff....    ' + Format(rsltsFormatDec181f,
+    [100 * Rslts.runCoeff]) + '%'); }
   S.Add('  Percent Surface Runoff....    ' + Format(rsltsFormatDec181f,
-    [100 * Rslts.runCoeff]) + '%');
+    [100*sysDischarge / precip]) + '%');
   S.Add(' ');
   S.Add(' ');
 

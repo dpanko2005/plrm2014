@@ -160,8 +160,8 @@ object MainForm: TMainForm
   TextHeight = 15
   object Splitter1: TSplitter
     Left = 173
-    Top = 108
-    Height = 311
+    Top = 82
+    Height = 337
     Beveled = True
     Color = clBtnShadow
     ParentColor = False
@@ -179,7 +179,6 @@ object MainForm: TMainForm
     ParentBackground = False
     ParentColor = True
     TabOrder = 1
-    ExplicitWidth = 1092
     object ProgressBar: TProgressBar
       Left = 267
       Top = -2
@@ -193,14 +192,14 @@ object MainForm: TMainForm
     Left = 0
     Top = 0
     Width = 1176
-    Height = 108
+    Height = 82
     Align = alTop
     AutoSize = True
     DrawingStyle = dsGradient
     TabOrder = 2
     object StdToolBar: TToolBar
       Left = 262
-      Top = 80
+      Top = 54
       Width = 428
       Height = 22
       DrawingStyle = dsGradient
@@ -612,7 +611,6 @@ object MainForm: TMainForm
     TabOrder = 3
     Transparent = True
     Wrapable = False
-    ExplicitWidth = 1092
     object StatusHint: TToolButton
       Left = 0
       Top = 0
@@ -727,21 +725,22 @@ object MainForm: TMainForm
   end
   object BrowserPageControl: TPageControl
     Left = 0
-    Top = 108
+    Top = 82
     Width = 173
-    Height = 311
+    Height = 337
     ActivePage = BrowserDataPage
     Align = alLeft
     DoubleBuffered = False
     ParentDoubleBuffered = False
     TabOrder = 0
     OnResize = BrowserPageControlResize
+    ExplicitTop = 108
+    ExplicitHeight = 311
     object BrowserDataPage: TTabSheet
       Caption = 'Project'
-      ExplicitHeight = 307
       object BrowserDataSplitter: TSplitter
         Left = 0
-        Top = 80
+        Top = 106
         Width = 165
         Height = 3
         Cursor = crVSplit
@@ -753,14 +752,13 @@ object MainForm: TMainForm
       end
       object ItemsPanel: TPanel
         Left = 0
-        Top = 83
+        Top = 109
         Width = 165
         Height = 198
         Align = alBottom
         BevelOuter = bvNone
         ParentBackground = False
         TabOrder = 1
-        ExplicitTop = 109
         object ItemsLabel: TLabel
           Left = 0
           Top = 22
@@ -875,7 +873,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 165
-        Height = 80
+        Height = 106
         Align = alClient
         AutoExpand = True
         Ctl3D = True
@@ -954,22 +952,23 @@ object MainForm: TMainForm
           000000000000000000010D540069006D00650020005000610074007400650072
           006E007300320000000900000009000000FFFFFFFFFFFFFFFF00000000000000
           0000000000010A4D006100700020004C006100620065006C007300}
-        ExplicitHeight = 106
       end
     end
     object BrowserMapPage: TTabSheet
       Caption = 'Map'
       ImageIndex = 1
+      ExplicitHeight = 281
       object MapScrollBox: TScrollBox
         Left = 0
         Top = 0
         Width = 165
-        Height = 281
+        Height = 307
         Align = alClient
         BorderStyle = bsNone
         Ctl3D = False
         ParentCtl3D = False
         TabOrder = 0
+        ExplicitHeight = 281
         object MapThemesBox: TGroupBox
           Left = 5
           Top = 8
@@ -1206,14 +1205,11 @@ object MainForm: TMainForm
   end
   object ControlBar2: TControlBar
     Left = 1138
-    Top = 108
+    Top = 82
     Width = 38
-    Height = 311
+    Height = 337
     Align = alRight
     TabOrder = 4
-    ExplicitLeft = 1054
-    ExplicitTop = 82
-    ExplicitHeight = 337
     object ToolBar1: TToolBar
       Left = 11
       Top = 2
@@ -1797,7 +1793,7 @@ object MainForm: TMainForm
     Left = 408
     Top = 160
     Bitmap = {
-      494C0101060014027C0210001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010106001402800210001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -2150,7 +2146,7 @@ object MainForm: TMainForm
     Left = 408
     Top = 104
     Bitmap = {
-      494C01012600BC01240210001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01012600BC01280210001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       000000000000360000002800000040000000A0000000010020000000000000A0
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -3497,7 +3493,7 @@ object MainForm: TMainForm
     Left = 408
     Top = 216
     Bitmap = {
-      494C010104005801C00110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010104005801C40110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -3778,7 +3774,7 @@ object MainForm: TMainForm
     Left = 408
     Top = 48
     Bitmap = {
-      494C01011700D800400110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011700D800440110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000006000000001002000000000000060
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -4581,7 +4577,7 @@ object MainForm: TMainForm
     Left = 544
     Top = 80
     Bitmap = {
-      494C010111001800400010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010111001800440010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000005000000001002000000000000050
       000000000000000000000000000000000000FFFFFFFF1D1D1DFF080808FFBABA
       BAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF

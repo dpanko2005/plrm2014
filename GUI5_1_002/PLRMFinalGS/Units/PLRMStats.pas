@@ -76,8 +76,8 @@ const
 
 var
   Topics, emptyTopics: array [0 .. 13] of Integer;
-  TopicStart,emptyTopicStart: array [0 .. 13] of Integer;
-  TopicSize,emptyTopicSize: array [0 .. 13] of Integer;
+  TopicStart, emptyTopicStart: array [0 .. 13] of Integer;
+  TopicSize, emptyTopicSize: array [0 .. 13] of Integer;
   TopicHeaderLines: array [0 .. 13, 0 .. 3] of String;
   CopiedHeaders: array [0 .. 3] of String;
   ColHeaders: array of String;
@@ -969,13 +969,13 @@ begin
   PLRMResults.projectName := PLRMObj.projUserName;
   PLRMResults.wrkDir := PLRMObj.wrkDir + '\';
 
-  //clear topics arrays
-  //implemented as global variables in SWMM function we copied into this unit so
-  //need to clear them for back to back rans in order for  GetResultsForTopic to work properly
-   Topics:= emptyTopics;
-   TopicStart:= emptyTopicStart;
-   TopicSize:= emptyTopicSize;
-  //TopicHeaderLines: array [0 .. 13, 0 .. 3] of String; }
+  // clear topics arrays
+  // implemented as global variables in SWMM function we copied into this unit so
+  // need to clear them for back to back rans in order for  GetResultsForTopic to work properly
+  Topics := emptyTopics;
+  TopicStart := emptyTopicStart;
+  TopicSize := emptyTopicSize;
+  // TopicHeaderLines: array [0 .. 13, 0 .. 3] of String; }
   // 2014 Locate report topics in the SWMM report file
   FindTopicsInReportFile;
   // Convert from index of available topics to absolute topic index
@@ -1008,12 +1008,13 @@ begin
     SetLength(catOut.AnnLoads, 1, NUMCATCHRSLTS);
 
     Z := 0;
+    catOut.AnnLoads[0, 0] := 0;
     // compute catchment annual volumes from Subcatment runoff summary
     for J := 0 to High(catchRunoffSmryArr) do
     begin
       if ((Pos(tempCatch.name, catchRunoffSmryArr[J, 0]) > 0) and
         (Pos('ToInfCa', catchRunoffSmryArr[J, 0]) = 0) and
-        (Pos('ToIDspCa', catchRunoffSmryArr[J, 0]) = 0)) then
+        (Pos('ToDspCa', catchRunoffSmryArr[J, 0]) = 0)) then
       begin
         // save catchment and landuse name
         catOut.vollandUses.Add(catchRunoffSmryArr[J, 0]);
@@ -1032,27 +1033,33 @@ begin
     SetLength(catOut.annLoadsLUse, catOut.vollandUses.Count, NUMCATCHRSLTS);
 
     Z := 0;
+    // zero out loads from previous catchments
+    for K := 1 to High(catchWashoffSmryArr[J]) do
+    begin
+      catOut.AnnLoads[0, K] := 0;
+    end;
+
     // compute catchment annual loads from Subcatment washoff summary
     for J := 0 to High(catchWashoffSmryArr) do
     begin
       if ((Pos(tempCatch.name, catchWashoffSmryArr[J, 0]) > 0) and
         (Pos('ToInfCa', catchWashoffSmryArr[J, 0]) = 0) and
-        (Pos('ToIDspCa', catchWashoffSmryArr[J, 0]) = 0)) then
+        (Pos('ToDspCa', catchWashoffSmryArr[J, 0]) = 0)) then
       begin
         // save catchment and landuse name
         catOut.loadLandUses.Add(catchWashoffSmryArr[J, 0]);
         // 0-index is string names so cannot be converted to floats
-        for K := 1 to Length(catchWashoffSmryArr[J]) - 1 do
+        for K := 1 to High(catchWashoffSmryArr[J]) do
         begin
-        //TO be completed - for screeening out non-reported pollutants
-          {if ((Pos('TSS', Project.PollutNames[K-1]) = 0) and
+          // TO be completed - for screeening out non-reported pollutants
+          { if ((Pos('TSS', Project.PollutNames[K-1]) = 0) and
             (Pos('SRP', Project.PollutNames[K-1]) = 0) and
             (Pos('DIN', Project.PollutNames[K-1]) = 0)) then
-          begin }
-            tempDbl := StrToFloat(catchWashoffSmryArr[J, K]) / numSimYears;
-            catOut.annLoadsLUse[Z, K] := tempDbl;
-            catOut.AnnLoads[0, K] := catOut.AnnLoads[0, K] + tempDbl;
-          {end; }
+            begin }
+          tempDbl := StrToFloat(catchWashoffSmryArr[J, K]) / numSimYears;
+          catOut.annLoadsLUse[Z, K] := tempDbl;
+          catOut.AnnLoads[0, K] := catOut.AnnLoads[0, K] + tempDbl;
+          { end; }
         end;
         inc(Z);
       end;
@@ -1112,11 +1119,12 @@ begin
         SetLength(PLRMResults.outfallLoads, NUMOUTFALLRSLTS,
           Project.Lists[Outfall].Count - 1);
 
-      for J := 4 to High(tempLoads[0]) - 1 do
+      for J := 4 to High(tempLoads[0]) do
       begin
-        PLRMResults.outfallLoads[J - 4, I] := StrToFloat(tempLoads[0, J]);
+        PLRMResults.outfallLoads[J - 4, I] := StrToFloat(tempLoads[0, J]) /
+          numSimYears;
       end;
-      PLRMResults.runCoeff := 1;
+      // PLRMResults.runCoeff := 1;
       // PLRMResults.runCoeff := PLRMResults.runCoeff + PLRMResults.outfallLoads
       // [0, I] / PLRMResults.totPPT_cf;
     end;
@@ -1124,7 +1132,7 @@ begin
 
   resultsToTextFile(PLRMResults, PLRMObj.wrkDir + '\' + 'swmm.prpt', 0);
   resultsToTextFile(PLRMResults, PLRMObj.wrkDir + '\' + 'swmmDetailed.prpt', 1);
-  //ShowMessage('All Results Collected!');
+  // ShowMessage('All Results Collected!');
 
   // plrm 2014 moved reloadUserHydro fxn call to fmain to separate concerns
   // reloadUserHydro();

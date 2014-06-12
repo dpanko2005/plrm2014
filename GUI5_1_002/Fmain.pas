@@ -2891,11 +2891,6 @@ procedure TMainForm.btnViewRptClick(Sender: TObject);
 // Displays a run's Status Report when Report|Status is selected.
 // -----------------------------------------------------------------------------
 begin
-  // dp 2014 TODO delete for testing only
-  //open native swmm summary report and hide it, then copy the contents of its grid
-  MnuReportSummaryClick(Sender);
-
-
   // PLRM Edit Jan 2010 edit added to track whether user working with scenario see #233
   getProjManagerWithMsg();
   if PLRMObj.hasActvScn = False then
