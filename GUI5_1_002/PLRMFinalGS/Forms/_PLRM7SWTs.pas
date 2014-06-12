@@ -365,6 +365,8 @@ var
   numRows: Integer;
   begin
   Inf := 0.0;
+  Area1 := 0.0;
+  TotDepth1:= 0.0;
     case SWTNum of
        1: //Detention
        begin
