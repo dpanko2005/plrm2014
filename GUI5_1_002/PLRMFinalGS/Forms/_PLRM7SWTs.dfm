@@ -5070,6 +5070,10 @@ object SWTs: TSWTs
     object TabSheet7: TTabSheet
       Caption = 'Flow Divider'
       ImageIndex = 6
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object gbFlowDividers: TGroupBox
         Left = 3
         Top = 1

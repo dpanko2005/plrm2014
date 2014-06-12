@@ -403,8 +403,8 @@ begin
     sgVeg.Cells[3, 0] := '50';
 
     // Othr grid also has only one row so different
-    J := High(sgs);
-    prcnt := 100;
+    //J := High(sgs);
+    //prcnt := 100;
     sgOthr.Cells[0, 0] := '100';
     sgOthr.Cells[1, 0] := FormatFloat('0.##',
       (PLRMObj.currentCatchment.othrArea));
@@ -538,8 +538,8 @@ begin
       ((100 - prcnt) * curImpPrctVals[J] * curAcVals[J] / 100 / 100));
 
     // Othr grid also has only one row so different
-    J := High(sgs);
-    prcnt := 100;
+    //J := High(sgs);
+    //prcnt := 100;
     sgOthr.Cells[0, 0] := '100';
     sgOthr.Cells[1, 0] := FormatFloat('0.##',
       (PLRMObj.currentCatchment.othrArea));

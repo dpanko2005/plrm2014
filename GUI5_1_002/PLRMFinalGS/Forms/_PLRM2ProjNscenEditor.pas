@@ -241,7 +241,7 @@ var
   S:TstringList;
   tempInt :integer;
   prjID : String;
-  prjIdx: Integer;
+ // prjIdx: Integer;
   scnID : String;
 
   begin
@@ -269,7 +269,7 @@ var
 
       PLRMObj.projUserName := ProjScenMangerFrm.activeNode.Parent.Text;
       prjID := PLRMTree.getPrjIDFromUserName(PLRMObj.projUserName);
-      prjIdx := PLRMTree.PID.IndexOf(prjID);
+      //prjIdx := PLRMTree.PID.IndexOf(prjID);
       scnID := PLRMTree.getScenIDFromUserName(prjID, PLRMObj.scenarioName);
 
       Screen.Cursor := crHourglass;  // because database query may take time

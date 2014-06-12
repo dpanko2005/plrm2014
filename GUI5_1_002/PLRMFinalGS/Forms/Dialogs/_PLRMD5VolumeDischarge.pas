@@ -92,7 +92,7 @@ begin
  //calculate new drawdown time and average infiltration rate
   DDTInc := 0;
  //InfInc := 0;
-  InfSum := 0;
+ // InfSum := 0;
  SetLength(InfInc,sgVolDischarge.RowCount-2);
  for I := 1 to sgVolDischarge.RowCount-2 do
    begin

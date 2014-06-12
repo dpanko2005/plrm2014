@@ -174,7 +174,8 @@ begin
     else
       Result := nil;
    except
-      ShowMessage('Connection to the database failed, Please close all applications and try again')
+      ShowMessage('Connection to the database failed, Please close all applications and try again') ;
+      Result := nil;
    end;
    //Result := nil;
 end;
@@ -272,6 +273,7 @@ var
   ADOConn : TADOConnection;
   ADOTbl: TADOTable;
 begin
+    Result := nil;
     ADOConn := TADOConnection.Create(application);
     ADOConn.ConnectionString := connstr;
     ADOConn.Open();
@@ -285,7 +287,6 @@ begin
       ADOTbl.First;
       Result := ADOTbl;
     end;
-    Result := nil;
 end;
 
 function getEvap(Var S:TStringList; conn:TADOConnection) :TStringList;

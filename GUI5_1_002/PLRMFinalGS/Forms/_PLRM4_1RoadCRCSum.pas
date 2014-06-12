@@ -59,9 +59,9 @@ var
   jdx :Integer;
   secStrtRowNum :Integer;
   FrmRoadCRCs: TRoadCRCs;
-  Rslts : TPLRMRdCondsData;
+//  Rslts : TPLRMRdCondsData;
   tempInt : Integer;
-  crcSums : array[0..1, 0..5] of Double;
+//  crcSums : array[0..1, 0..5] of Double;
 begin
     FrmRoadCRCs := TRoadCRCs.Create(Application);
     secStrtRowNum := 3;
@@ -102,9 +102,9 @@ var
     //RdCRC is array[1..3, 1..6] of String;
 begin
    // Cycle through rows (iLoop) and colums (jLoop)
-    if RdType = 1 then; //Road type is Primary
+    if RdType = 1 then //Road type is Primary
       strtRow := 1;
-    if RdType = 2 then; //Road type is Secondary
+    if RdType = 2 then //Road type is Secondary
       strtRow := 3;
 
     for iLoop := 1 to 3 do
@@ -125,9 +125,9 @@ var
     strtRow : Integer;
     sCRCs : TStringList;
 begin
-    if RdType = 1 then; //Road type is Primary
+    if RdType = 1 then //Road type is Primary
       strtRow := 1;
-    if RdType = 2 then; //Road type is Secondary
+    if RdType = 2 then //Road type is Secondary
       strtRow := 2;
 
     sCRCs := TStringList.Create;

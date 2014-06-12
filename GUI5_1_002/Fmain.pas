@@ -1928,8 +1928,8 @@ procedure TMainForm.plrmDrawObjButtonHelper(Sender: TObject; ObjType: Integer;
 // -----------------------------------------------------------------------------
 // Helper function for PLRM object buttons used to draw objects on the canvas.
 // -----------------------------------------------------------------------------
-var
-  I: Integer;
+//var
+//  I: Integer;
 begin
   // PLRM Edit - Jan 2010 edit added to track whether user working with scenario see #233
   getProjManagerWithMsg();

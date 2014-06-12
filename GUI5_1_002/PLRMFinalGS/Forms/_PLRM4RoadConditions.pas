@@ -203,9 +203,9 @@ function getRoadCondition(createNewFlag:Boolean; var cbx:TComboBox; conditionNam
   //Check if condition already exists, if so load it to be edited, else load form
 // for it to be created.
 function getRoadCondition(Schm:TPLRMRdCondsScheme; curRdLuseInpt : String): TPLRMRdCondsScheme;overload;
-  var
-    PLRMRoadConds: TPLRMRoadConditions;
-    tempInt : Integer;
+ // var
+    //PLRMRoadConds: TPLRMRoadConditions;
+//    tempInt : Integer;
   begin
     curRdLuseCodes := TStringList.Create;
     //Set global land use codes
@@ -215,10 +215,10 @@ function getRoadCondition(Schm:TPLRMRdCondsScheme; curRdLuseInpt : String): TPLR
        curRdLuseCodes := GSIO.getCodes('63%',0);
 
     FrmScheme := Schm;
-    PLRMRoadConds := TPLRMRoadConditions.Create(Application);
+    TPLRMRoadConditions.Create(Application);
 
     try
-      tempInt := PLRMRoadConds.ShowModal;
+      //tempInt := PLRMRoadConds.ShowModal;
       Result := FrmScheme;
     finally
       curRdLuseCodes.Free;
@@ -228,8 +228,8 @@ function getRoadCondition(Schm:TPLRMRdCondsScheme; curRdLuseInpt : String): TPLR
   function getRoadConditionSilent(Schm:TPLRMRdCondsScheme; curRdLuseInpt : String): TPLRMRdCondsScheme;
   var
     PLRMRoadConds: TPLRMRoadConditions;
-    tempInt : Integer;
-    Sender:TObject;
+    //tempInt : Integer;
+    //Sender:TObject;
   begin
     curRdLuseCodes := TStringList.Create;
     //Set global land use codes
@@ -515,9 +515,9 @@ procedure TPLRMRoadConditions.sgRdShouldrSetEditText(Sender: TObject; ACol, ARow
   var
     tempSum : double;
     tempVal:String;
-    tempTxt:String;
+    //tempTxt:String;
   I: Integer;
-  strStart:AnsiString;
+  //strStart:AnsiString;
 begin
     tempSum := 0;
     curGridContents := sgRdShouldr.Cells[ACol, ARow];

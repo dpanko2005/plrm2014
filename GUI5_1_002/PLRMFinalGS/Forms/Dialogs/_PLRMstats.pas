@@ -75,17 +75,17 @@ procedure TfrmPLRMStats.BtnOKClick(Sender: TObject);
 //-----------------------------------------------------------------------------
 //  OnClick handler for the OK button.
 //-----------------------------------------------------------------------------
-var
-  ObjName        : String;           // SWMM ID name of object being analyzed
-  tempSWTs : TStringList;
-  tempNode : TPLRMNode;
-  tempSWMMNode : TNode;
-  AnnualLoads : TStringList;
-  swtOut : TswtResults;
-  SWTData : PLRMGridDataDbl;
-  SWTNum : Integer;
-  SWTDataSL : TStringList; //  1-Detention, 2-Infiltration, 3-WetBasin, 4-Bed Filter, 5-Cartridge Filter, 6-Treatment Vault
-  I,J: Integer;
+//var
+//  ObjName        : String;           // SWMM ID name of object being analyzed
+//  tempSWTs : TStringList;
+//  tempNode : TPLRMNode;
+//  tempSWMMNode : TNode;
+//  AnnualLoads : TStringList;
+//  swtOut : TswtResults;
+//  SWTData : PLRMGridDataDbl;
+//  SWTNum : Integer;
+//  SWTDataSL : TStringList; //  1-Detention, 2-Infiltration, 3-WetBasin, 4-Bed Filter, 5-Cartridge Filter, 6-Treatment Vault
+//  I,J: Integer;
 begin
 // Place form's selections into a StatsSelection data structure
  Hide;
@@ -93,8 +93,8 @@ begin
 end;
 
 procedure TfrmPLRMStats.Button1Click(Sender: TObject);
-var
-PLRMLink : TLink;
+//var
+//PLRMLink : TLink;
 
 begin
   dlgOpenOutputFile.Filter := 'SWMM Output files (*.out)|*.out|All files (*.*)|*.*';

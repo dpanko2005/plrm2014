@@ -157,7 +157,7 @@ end;
 
 procedure TPLRMScenComps.genericExportGridToTxt(Sender: TObject; sg:TStringGrid; strFilter:String; fileName:String);
 var
-  tempStr :String;
+//  tempStr :String;
   colLabels, rowLabels:TStringList;
   I:Integer;
 begin
@@ -189,7 +189,7 @@ end;
 
 procedure TPLRMScenComps.genericExportGridToTxt(Sender: TObject; sg:TStringGrid; sg2:TStringGrid; strFilter:String; fileName:String);
 var
-  tempStr :String;
+//  tempStr :String;
   colLabels, rowLabels:TStringList;
   I:Integer;
 begin
@@ -236,7 +236,7 @@ end;
 
 procedure TPLRMScenComps.btnToLeftClick(Sender: TObject);
 var
-  I,tempInt:integer;
+  I:integer;
   tempStrLst:TStrings;
 begin
   if (lbxScnRight.SelCount = 0) then
@@ -392,8 +392,8 @@ end;
 procedure TPLRMScenComps.upDateRsltGrids();
 var
   I,J: Integer;
-  tempStr,scnDirname:String;
-  tempStrLst:TStrings;
+//  scnDirname:String;
+//  tempStrLst:TStrings;
  // curRowIdx:Integer;
 begin
   if sgAbslut.Rowcount < 2 then exit;
@@ -414,11 +414,11 @@ end;
 
 procedure TPLRMScenComps.FormCreate(Sender: TObject);
 var
-  data:PLRMGridData;
+//  data:PLRMGridData;
   S,filesList,PrjNames:TStringList;
   I:Integer;
 begin
-  S := TStringList.Create();
+//  S := TStringList.Create();
   If not DirectoryExists(defaultPrjDir) then
   begin
     ShowMessage(defaultPrjDir + ' folder not found. Now exiting');
