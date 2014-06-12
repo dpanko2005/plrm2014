@@ -203,8 +203,8 @@ function getRoadCondition(createNewFlag:Boolean; var cbx:TComboBox; conditionNam
   //Check if condition already exists, if so load it to be edited, else load form
 // for it to be created.
 function getRoadCondition(Schm:TPLRMRdCondsScheme; curRdLuseInpt : String): TPLRMRdCondsScheme;overload;
- // var
-    //PLRMRoadConds: TPLRMRoadConditions;
+  var
+    PLRMRoadConds: TPLRMRoadConditions;
 //    tempInt : Integer;
   begin
     curRdLuseCodes := TStringList.Create;
@@ -215,10 +215,10 @@ function getRoadCondition(Schm:TPLRMRdCondsScheme; curRdLuseInpt : String): TPLR
        curRdLuseCodes := GSIO.getCodes('63%',0);
 
     FrmScheme := Schm;
-    TPLRMRoadConditions.Create(Application);
+    PLRMRoadConds := TPLRMRoadConditions.Create(Application);
 
     try
-      //tempInt := PLRMRoadConds.ShowModal;
+      PLRMRoadConds.ShowModal;
       Result := FrmScheme;
     finally
       curRdLuseCodes.Free;

@@ -483,7 +483,7 @@ procedure TProjNscenManager.TreeView1DblClick(Sender: TObject);
        tbxWrkDir.Enabled := false;//True;
        tbxWrkDir.Color := cl3DLight;
 
-      ProjNscenEditorFrm.ShowModal;
+      tempInt := ProjNscenEditorFrm.ShowModal;
       if tempInt = mrCancel then exit;
 
      finally
@@ -501,6 +501,7 @@ I,J: Integer;
 finished : Boolean;
 matchCount : Integer;
 begin
+  finished := False;
     //Read in the name of all siblings and look for Project*, if found, increment to next available number
   J := 0; //New project number counter
   repeat
