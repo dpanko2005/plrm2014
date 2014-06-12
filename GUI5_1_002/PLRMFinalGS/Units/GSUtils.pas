@@ -1175,6 +1175,7 @@ var
   irow : integer;
   icol : integer;
 begin
+  Result := False;
    if data <> nil then
     if High(data) = sg.RowCount - (1+strtRow) then
       if data[0] <> nil then
@@ -1185,7 +1186,7 @@ begin
               sg.Cells[icol,irow] := data[irow-strtRow,icol-strtCol]; //yes grid index is col first and then row
           Result := True;
         end;
-   Result := False
+
 end;
 function copyInvertedPLRMGridToStrGrid(const data:PLRMGridData; const strtCol:integer; strtRow:integer; var sg :TStringGrid): Boolean;
 var
@@ -1193,6 +1194,7 @@ var
   icol : integer;
   //chk : integer;
 begin
+  Result := False;
    if data <> nil then
    //chk:=High(data);
     if High(data) = sg.ColCount - (1+strtCol) then
@@ -1204,7 +1206,7 @@ begin
               sg.Cells[icol,irow] := data[icol-strtCol,irow-strtRow];
           Result := True;
         end;
-   Result := False
+
 end;
 
 function copyContentsToGridNChk( const data:PLRMGridData; const strtCol:integer; strtRow:integer; var sg :TStringGrid): Boolean;
@@ -1212,6 +1214,7 @@ var
   irow : integer;
   icol : integer;
 begin
+  Result := False;
   sg.RowCount := High(data) + 1+ strtRow;
    if data <> nil then
       if data[0] <> nil then
@@ -1221,7 +1224,7 @@ begin
               sg.Cells[icol,irow] := data[irow-strtRow,icol-strtCol]; //yes grid index is col first and then row
         Result := True;
       end;
-   Result := False
+
 end;
 function copyContentsToGridAddRows( const data:PLRMGridData; const strtCol:integer; strtRow:integer; var sg :TStringGrid): Boolean;
 //var
@@ -1635,7 +1638,7 @@ var
   tempStr : String;
   tempPrjName : String; //temporary user name for project
   SearchRec  : TSearchRec;
-  prjIdx, scnIdx, tempInt:Integer;
+  prjIdx, tempInt:Integer;
   projNames :TStringList; //stores project names on tree used with projFolders list below to facilitate deletion
   projFolders :TStringList; //stores project folder names corresponding to project names on tree to facilitate deletion
   scenFolders : TStringList; //stores scenario folder names corresponding to scenario names on tree to facilitate deletion
@@ -1680,7 +1683,7 @@ begin
             scenFolders.Add(scenPath + '\' + scenSL[j]);
             tempInt := scenFilePaths.Add(scenPath + '\' + scenSL[j] + '\' + SearchRec.Name);
             tempStr := getUserProjectOrScenName(scenFilePaths[tempInt], 'ScenName');
-            scnIdx := scenNames.Add(tempStr + projNames[prjIdx]);
+            scenNames.Add(tempStr + projNames[prjIdx]);
             TV.Items.AddChild(tempNode,tempStr);
             scenSL2.Add(tempStr);
           end;
@@ -1699,8 +1702,8 @@ begin
   FreeAndNil(scenNames);
   FreeAndNil(projSL);
 
-  scenSL := nil; //Memory release via prjNames when tree destroyed
-  scenSL2 := nil; //Memory release via prjNames when tree destroyed
+  //scenSL := nil; //Memory release via prjNames when tree destroyed
+  //scenSL2 := nil; //Memory release via prjNames when tree destroyed
 
 end;
 

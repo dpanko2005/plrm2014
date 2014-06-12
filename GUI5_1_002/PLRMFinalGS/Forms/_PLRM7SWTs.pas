@@ -364,6 +364,7 @@ var
   I : Integer;
   numRows: Integer;
   begin
+  Inf := 0.0;
     case SWTNum of
        1: //Detention
        begin
@@ -619,8 +620,8 @@ begin
 end;
 
 procedure TSWTs.btnCancelClick(Sender: TObject);
-var
-tempInt:Integer;
+//var
+//tempInt:Integer;
 begin
   renameSWT(tempSWTName);
   ModalResult := mrCancel;
@@ -763,7 +764,7 @@ begin
       tempNode := (PLRMObj.nodes.Objects[I] as TPLRMNode);
       if tempNode.SWTType = swtType then tempNodeList.AddObject(tempNode.userName, tempNode);
     end;
-    tempNode := nil;
+    //tempNode := nil;
    getSWTTypeNodes := tempNodeList;
 end;
 
@@ -780,7 +781,7 @@ begin
       if tempNode <> PLRMObj.currentNode then
         tempNodeList.AddObject(tempNode.userName,PLRMObj.nodes.Objects[I]);
      end;
-     tempNode := nil;
+     //tempNode := nil;
     getAllExceptCurrentNode := tempNodeList;
 end;
 
@@ -1725,10 +1726,10 @@ begin
    PLRMObj.currentNode.outNode1 := dwnNode;
    btnApplyClick(Sender);
    PLRMObj.currentNode := tempNode;
-   downLink := nil;
-   upNode := nil;
-   dwnNode := nil;
-   tempNode := nil;
+   //downLink := nil;
+   //upNode := nil;
+   //dwnNode := nil;
+   //tempNode := nil;
 end;
 
 procedure TSWTs.cbxFldHighFlowNodeOnChange(Sender: TObject);
@@ -1767,10 +1768,10 @@ begin
     PLRMObj.currentNode.outNode2 := dwnNode;
     btnApplyClick(Sender);
     PLRMObj.currentNode := tempNode;
-    downLink := nil;
-    upNode := nil;
-    dwnNode := nil;
-    tempNode := nil;
+    //downLink := nil;
+    //upNode := nil;
+    //dwnNode := nil;
+    //tempNode := nil;
 end;
 
 

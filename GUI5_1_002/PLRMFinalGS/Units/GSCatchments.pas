@@ -546,7 +546,7 @@ end;
 procedure TPLRMHydPropsScheme.readSchemeXML(iNode: IXMLNode);
 var
   hydProps: dbReturnFields;
-  gaProps: dbReturnFields;
+//  gaProps: dbReturnFields;
 begin
   hydProps := GSIO.getDefaults('"6%"');
 
@@ -1434,7 +1434,7 @@ begin
             tempNodeList[J].Attributes['width'] :=
               FormatFloat('0.0', tempWidth);
           end;
-          tempWidth := 0;
+          //tempWidth := 0;
 
           // calc hsc footprint area and width
           if J = 0 then
@@ -1457,7 +1457,7 @@ begin
             tempNodeList[J].Attributes['hscWidth'] :=
               FormatFloat('0.000', tempWidth);
           end;
-          tempWidth := 0;
+          //tempWidth := 0;
           tempNode2.ChildNodes.Add(tempNodeList[J]);
         end;
         tempNode2.Resync;
@@ -1504,7 +1504,7 @@ var
   I: Integer;
   tempNode: IXMLNode;
   tempDrnGridArr: array [0 .. 6] of PLRMGridData;
-  tempId: array [0 .. 2] of Integer;
+//  tempId: array [0 .. 2] of Integer;
 begin
   luseTagList := TStringList.Create;
   soilsTagList := TStringList.Create;

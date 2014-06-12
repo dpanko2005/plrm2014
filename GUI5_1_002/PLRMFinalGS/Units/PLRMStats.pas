@@ -82,17 +82,17 @@ var
   CopiedHeaders: array [0 .. 3] of String;
   ColHeaders: array of String;
   ColSorted: array of Integer;
-  SortedCol: Integer;
+//  SortedCol: Integer;
   CurrentTopic: Integer;
   LineCount: Integer;
   UpdateCount: Boolean;
   F: TextFile;
 
 function FindAllSWTs(SWTNum: Integer): TStringList;
-var
-  I: Integer;
+//var
+//  I: Integer;
 begin
-  PLRMObj.getSWTTypeNodes(SWTNum)
+  Result := PLRMObj.getSWTTypeNodes(SWTNum)
 end;
 
 function GetAveAnnualLoadsForJuncOrLink(JuncObjName: String;
@@ -122,7 +122,7 @@ function GetSWTVolResultsFromStatRpt(const tempNode: TPLRMNode;
   var perCap: Double; sourceTble: PLRMGridData; simLength: Double)
   : PLRMGridDataDbl;
 var
-  SWTs: TStringList;
+//  SWTs: TStringList;
   inJuncID: String; // Inflow junction name
   outJuncID: String; // Outflow junction name
   trJuncID: String; // Treated junction (downstream of treatment node)
@@ -137,8 +137,8 @@ var
   // 2-d array of loads for all junctions associated w/ SWTName
   SWTLoads: PLRMGridDataDbl;
 
-  tempInt, I: Integer;
-  L: TLink;
+  I: Integer;
+//  L: TLink;
 begin
   inJuncID := tempNode.userName + '_InJu';
   outJuncID := tempNode.userName + '_OuJu';
@@ -267,7 +267,7 @@ function GetSWTLoadResultsFromStatRpt(const tempNode: TPLRMNode;
   var perCap: Double; sourceTble: PLRMGridData; simLength: Double)
   : PLRMGridDataDbl;
 var
-  SWTs: TStringList;
+//  SWTs: TStringList;
   InLinkID: String; // Inflow link name
   ByLinkID: String; // Bypass link name
   TrLinkID: String; // Treated link (downstream of treatment node)
@@ -279,8 +279,8 @@ var
   // 2-d array of loads for all links associated w/ SWTName
   SWTLoads: PLRMGridDataDbl;
 
-  tempInt, I: Integer;
-  L: TLink;
+  I: Integer;
+//  L: TLink;
 
 begin
   InLinkID := tempNode.userName + '_InCo';
@@ -606,7 +606,7 @@ function GetResultsForTopic(intTopic: Integer; reportFilePath: String)
 var
   I, J, intTopicNumber, N: Integer;
   Line: String;
-  Caption: String;
+//  Caption: String;
   Tokens: TStringList;
   arrResults: PLRMGridData;
 begin
@@ -991,7 +991,7 @@ begin
   outfallLoadSmryArr := GetResultsForTopic(8, TempReportFile);
 
   // Get catchment results
-  totArea := 0;
+  //totArea := 0;
   SetLength(PLRMResults.catchData, PLRMObj.catchments.Count); // set
 
   for I := 0 to PLRMObj.catchments.Count - 1 do
@@ -1034,7 +1034,7 @@ begin
 
     Z := 0;
     // zero out loads from previous catchments
-    for K := 1 to High(catchWashoffSmryArr[J]) do
+    for K := 1 to High(catchWashoffSmryArr[0]) do
     begin
       catOut.AnnLoads[0, K] := 0;
     end;
@@ -1142,7 +1142,7 @@ begin
   linkLoadSmryArr := nil;
   outfallLoadSmryArr := nil;
   tempLoads := nil;
-  tempSWTs := nil;
+  FreeAndNil(tempSWTs);
   Finalize(PLRMResults);
 end;
 

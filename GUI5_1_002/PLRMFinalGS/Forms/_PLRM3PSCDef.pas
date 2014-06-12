@@ -626,12 +626,12 @@ end;
 procedure getSCandDrngXtrstcsInput(catchID: String);//: TDrngXtsData;
   var
     PLRMDrngXts: TPLRMPCSDef;
-    tempInt : Integer;
+    //tempInt : Integer;
   begin
     initCatchID := catchID;
     PLRMDrngXts := TPLRMPCSDef.Create(Application);
     try
-      tempInt := PLRMDrngXts.ShowModal;
+      PLRMDrngXts.ShowModal;
     finally
       PLRMDrngXts.Free;
     end;
@@ -687,6 +687,7 @@ procedure TPLRMPCSDef.sgBMPImplSetEditText(Sender: TObject; ACol, ARow: Integer;
     tempSum : double;
     idx: Integer;
 begin
+tempSum := 0.0;
     if sgBMPImpl.Cells[ACol, ARow] <> '' then
     begin
       for idx := 1 to 2 do
@@ -733,6 +734,7 @@ procedure TPLRMPCSDef.sgRdRiskCatSetEditText(Sender: TObject; ACol, ARow: Intege
     tempSum : double;
     idx: Integer;
 begin
+tempSum := 0.0;
     if sgRdRiskCat.Cells[ACol, ARow] <> '' then
     begin
       for idx := 1 to 2 do

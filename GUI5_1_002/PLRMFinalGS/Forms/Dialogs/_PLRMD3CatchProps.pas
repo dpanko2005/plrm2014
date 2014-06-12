@@ -75,13 +75,13 @@ uses
   FPropEd, UBrowser;
 
 procedure getCatchProps(catchID: String);
-var
-  tempInt: Integer;
+//var
+  //tempInt: Integer;
 begin
   initCatchID := catchID;
   CatchPropsFrm := TCatchProps.Create(Application);
   try
-    tempInt := CatchPropsFrm.ShowModal;
+    CatchPropsFrm.ShowModal;
   finally
     CatchPropsFrm.Free;
   end;
@@ -258,6 +258,7 @@ begin
         ('The object name you have provided is already in use. Please try another name');
       edtCatchName.Text := PLRMObj.currentCatchment.name;
       Result := false;
+      exit;
     end
     else
     begin
@@ -365,7 +366,7 @@ end;
 procedure TCatchProps.FormCreate(Sender: TObject);
 var
   tempInt: Integer;
-  flag: Boolean;
+//  flag: Boolean;
   data: PLRMGridData;
 begin
   statBar.SimpleText := PLRMVERSION;
@@ -393,7 +394,7 @@ begin
       end;
 
     data := physclProps;
-    flag := copyContentsToGrid(data, 0, 1, sgProps);
+    copyContentsToGrid(data, 0, 1, sgProps);
     sgProps.Cells[0, 0] := 'Parameters';
     sgProps.Cells[1, 0] := 'Values';
     sgProps.Cells[2, 0] := 'Units';

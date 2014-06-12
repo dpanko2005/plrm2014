@@ -313,8 +313,8 @@ end;
 
   //sType -0 - to outlet, 1 - to infiltration, 2 - to pervious dispersion
 function getSDrngXtsScheme(var Schm:TPLRMHydPropsScheme; isRoad:Boolean; sType:Integer): TPLRMHydPropsScheme;
-  var
-    Sender:TObject;
+//  var
+//    Sender:TObject;
   begin
     if isRoad = true then
       initSnowPackIdx := 0

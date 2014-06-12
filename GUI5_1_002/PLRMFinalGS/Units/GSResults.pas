@@ -58,7 +58,7 @@ begin
 
   // loop through and combine entries with the same land use
   K := 0;
-  tempIndex := -1;
+  //tempIndex := -1;
   for I := 0 to High(loadsByLuse) do
   begin
     // check if landuse exists in the checklist, if so retrieve its position otherwise add it
@@ -127,9 +127,9 @@ function catchStatSummary(catchName: String; annLoads: PLRMGridDataDbl)
 // This function reads in a PLRM grid of annual volumes and loads of influent and effluent
 // and returns a stringlist of summary statistics. Stringlist objects include:
 var
-  I, J: Integer;
+  I: Integer;
   tempSL: TStringList;
-  tempStr, tempLine1: String;
+  tempLine1: String;
   Tab: String;
 begin
   if Uglobals.TabDelimited then
@@ -160,7 +160,7 @@ function getOutfallStatSummary(annLoads: PLRMGridDataDbl): TStringList;
 var
   I, J: Integer;
   tempSL: TStringList;
-  tempStr, tempLine1: String;
+  tempLine1: String;
   tempSWMMNode: TNode;
   totLoads: PLRMGridDataDbl;
   Tab: String;
@@ -214,12 +214,13 @@ function SWTStatSummary(SWTType: Integer; swtName: String;
 
 // swtData[I,K] structure: I's are volumes and loads, K's are link numbers
 var
-  inVol, comboVol, trVol, byVol, pDif, inLd, efLd, pRed, perCapt: Double;
+  inVol, comboVol, trVol, byVol, pDif, perCapt: Double;
   I, J: Integer;
   tempSL: TStringList;
   tempStr, tempLine1, tempLine2, tempLine3, tempLine4, tempLine5, tempLine6,
     tempLine7: String;
 begin
+comboVol := 0.0;
   // if Uglobals.TabDelimited then Tab := #9 else Tab := ' ';
   tempSL := TStringList.Create;
   tempStr := Format(rsltsFormatStrLft, [swtName]) + Format(rsltsFormatStrRgt,
@@ -236,7 +237,7 @@ begin
   byVol := swtDataVols[0, 1] * CONVMGALTOACFT;
   trVol := swtDataVols[0, 2] * CONVMGALTOACFT;
   pDif := 0;
-  perCapt := 0;
+  //perCapt := 0;
 
   case SWTType of
     1, 3, 4, 5, 6:
@@ -329,6 +330,7 @@ var
   areaFactor, infiltration: Double;
 begin
   S := TStringList.Create;
+  outfallInfloSum := 0.0;
   undrlnStr :=
     '-----------------------------------------------------------------------------------------------------------------------------------------------------------------';
   // save pollutants header for reuse
@@ -336,7 +338,7 @@ begin
     pollsHdr := pollsHdr + Format(rsltsFormatStrRgt,
       [Project.PollutNames[I] + '(lbs/yr)']);
 
-  // plrm 2014 add program name and version number
+  // plrm 2014 add program name and version number  last 3 digits match support swmm engine last 3 digits
   S.Add('*******************************************************************');
   S.Add('POLLUTTANT LOAD REDUCTION MODEL (PLRM) - VERSION 2.0 (Build 2.0.006)');
   S.Add('*******************************************************************');

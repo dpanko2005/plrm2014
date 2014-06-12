@@ -327,7 +327,7 @@ function TPLRM.run():Boolean;
     on E : Exception do
     begin
      ShowMessage('An Error occured, Exception message = '+E.Message);
-     Result := false;
+//     Result := false;
     end;
    end;
    Result := true;
@@ -335,8 +335,8 @@ function TPLRM.run():Boolean;
 
   function TPLRM.chkNodesAndCatchs():Boolean;
   var
-    sender:TObject;
-    flag:Boolean;
+//    sender:TObject;
+//    flag:Boolean;
     I:Integer;
     Catch:TPLRMCatch;
     Node:TPLRMNode;
@@ -399,7 +399,7 @@ function TPLRM.plrmToXML():Boolean;
    nodeValidationXMLNode :IXMLNode;
    I :Integer;
   begin
-    Result := false;
+    //Result := false;
 
     //Step 1 - first make swmm save user inp file as swmm.inp
     makeSWMMSaveInpFile(userSWMMInptFilePath, userSWMMRptFilePath);
@@ -572,7 +572,7 @@ function TPLRM.writeInitProjectToXML(filePath:String; scnName:String = ''):Boole
    xmlDoc : IXMLDocument;
    iNode : IXMLNode;
   begin
-    Result := false;
+//    Result := false;
     Try
 
       xmlDoc := TXMLDocument.Create(nil) ;
@@ -978,8 +978,8 @@ procedure TPLRM.addSubCatch(S:Uproject.TSubCatch; ObjIndex:Integer);
                 (nodes.Objects[K] as TPLRMNode).outNode2 := nil;
           end;
           if assigned(tempNode) then FreeAndNil(tempNode);
-          foundFlag := true;
-          foundIndex := I;
+          //foundFlag := true;
+          //foundIndex := I;
           J:=I;
           //now that it is found decrement the indexes of all nodes of the same type that are larger
           while J < nodes.Count do
@@ -1090,7 +1090,7 @@ begin
       tempNode := (PLRMObj.nodes.Objects[I] as TPLRMNode);
       if tempNode.SWTType = swtType then tempNodeList.AddObject(tempNode.userName, tempNode);
     end;
-    tempNode := nil;
+    //tempNode := nil;
     //let calling fxn free tempNodeList := nill;
    getSWTTypeNodes := tempNodeList;
 end;

@@ -48,15 +48,15 @@ var
   idx :Integer;
   jdx :Integer;
   kdx :Integer;
-  nextSetRowInc :Integer;
+//  nextSetRowInc :Integer;
   FrmParcelsCRCs: TParcelCRCs;
-  Rslts : TPLRMRdCondsData;
+//  Rslts : TPLRMRdCondsData;
   tempInt : Integer;
-  crcSums : array[0..1, 0..4] of Double;
+  //crcSums : array[0..1, 0..4] of Double;
   crcs : dbReturnFields; //array[0..1] of TStringList;
 begin
   FrmParcelsCRCs := TParcelCRCs.Create(Application);
-  nextSetRowInc := 3;
+  //nextSetRowInc := 3;
 
   crcs := GSIO.lookUpParcelCRCs();
   kdx := 0;

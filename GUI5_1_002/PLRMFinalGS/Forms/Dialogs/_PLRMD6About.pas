@@ -25,12 +25,12 @@ implementation
 {$R *.dfm}
 
 procedure getAbout();
-  var
-    tempInt : Integer;
+//  var
+//    tempInt : Integer;
   begin
     AboutForm := TAbout.Create(Application);
     try
-      tempInt := AboutForm.ShowModal;
+      AboutForm.ShowModal;
     finally
       AboutForm.Free;
     end;
