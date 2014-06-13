@@ -261,7 +261,7 @@ end;
 
 function TPLRM.run():Boolean;
   var
-    sender:TObject;
+//    sender:TObject;
     flag:Boolean;
     I:Integer;
     Catch:TPLRMCatch;
@@ -319,7 +319,8 @@ function TPLRM.run():Boolean;
     //Step 2 - transform main xml file into swmm file
     transformXMLToSwmm(defaultXslPath,scenarioXMLFilePath,curSWMMInptFilePath);
     //Step 3 - open temporarily generated PLRM swmm input file
-    MainForm.OpenFile(sender,curSWMMInptFilePath);
+    MainForm.OpenFile(nil,curSWMMInptFilePath);
+//    MainForm.OpenFile(sender,curSWMMInptFilePath);
     currentRptFilePath :=  userSWMMRptFilePath; //used in Fmain to copy tempfile to scenario directory
 
     //run outside this routine in fmain

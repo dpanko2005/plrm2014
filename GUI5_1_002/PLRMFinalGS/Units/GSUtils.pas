@@ -1,4 +1,5 @@
 unit GSUtils;
+{$WARN SYMBOL_PLATFORM OFF}
 
 interface
 
@@ -498,7 +499,7 @@ var
   XMLDoc: IXMLDocument;
   rootNode: IXMLNode;
   outFilePath: String;
-  Sender: TObject;
+  // Sender: TObject;
 begin
   XMLDoc := TXMLDocument.Create(nil);
   XMLDoc.loadFromFile(xmlFilePath);
@@ -506,7 +507,7 @@ begin
   outFilePath := rootNode.ChildNodes['UserSWMMInpt'].Text;
   if fileExists(outFilePath) then
   begin
-    Mainform.OpenFile(Sender, outFilePath);
+    Mainform.OpenFile(nil, outFilePath);
     Result := true;
     exit;
   end;
@@ -582,7 +583,8 @@ function loadXMLDlg(): String;
 var
   opnFileDlg: TOpenDialog;
 begin
-  opnFileDlg := TOpenDialog.Create(opnFileDlg);
+  // opnFileDlg := TOpenDialog.Create(opnFileDlg);
+  opnFileDlg := TOpenDialog.Create(nil);
   opnFileDlg.InitialDir := GetCurrentDir;
   opnFileDlg.Options := [ofFileMustExist];
   opnFileDlg.Filter := 'PLRM Scheme Files|*.xml';
@@ -1203,14 +1205,14 @@ begin
   if (Key = #8) or (Key = #13) or (Key = '.') then
     exit;
 
-  //if (Key in [' ', '"', ';']) then
+  // if (Key in [' ', '"', ';']) then
   if (CharInSet(Key, [' ', '"', ';'])) then
     exit;
-    Key := #0; // ignore spaces
+  Key := #0; // ignore spaces
 
   // allow 0 - 9 and numpad 0 to numpad 9
-  if (not(CharInSet(Key,[#48 .. #57]))) then
-  //if (not(Key in [#48 .. #57])) then
+  if (not(CharInSet(Key, [#48 .. #57]))) then
+    // if (not(Key in [#48 .. #57])) then
     Key := #0;
 
   with Sender as TStringGrid do
@@ -1721,6 +1723,7 @@ procedure sgSelectCellWthNonEditCol(Sender: TObject; ACol, ARow: Integer;
 var
   sg: TStringGrid;
 begin
+  sg := TStringGrid(Sender);
   if ((ACol = colNum1) or (ACol = colNum2) or (ACol = colNum3)) then
   begin
     sg.Options := sg.Options - [goEditing];
@@ -1738,6 +1741,7 @@ procedure sgSelectCellWthNonEditColNRow(Sender: TObject; ACol, ARow: Integer;
 var
   sg: TStringGrid;
 begin
+  sg := TStringGrid(Sender);
   if ((ACol = colNum) and (ARow = rowNum)) then
   begin
     sg.Options := sg.Options - [goEditing];

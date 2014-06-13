@@ -384,9 +384,6 @@
 			<DCCReference Include="PLRMFinalGS\Forms\_PLRM3PSCDef.pas">
 				<Form>PLRMPCSDef</Form>
 			</DCCReference>
-			<DCCReference Include="PLRMFinalGS\Forms\_PLRM4_1RoadCRCSum.pas">
-				<Form>RoadCRCs</Form>
-			</DCCReference>
 			<DCCReference Include="PLRMFinalGS\Forms\_PLRM4_2ParcelCRCSumary.pas">
 				<Form>ParcelCRCs</Form>
 			</DCCReference>
@@ -482,13 +479,13 @@
 					<Platform value="Win32">True</Platform>
 				</Platforms>
 				<Deployment>
-					<DeployFile Class="ProjectOutput" Configuration="Release" LocalName="Epaswmm5.exe">
-						<Platform Name="Win32"/>
-					</DeployFile>
 					<DeployFile Class="DebugSymbols" Configuration="Release" LocalName="Epaswmm5.rsm">
 						<Platform Name="Win32">
 							<RemoteName>Epaswmm5.rsm</RemoteName>
 						</Platform>
+					</DeployFile>
+					<DeployFile Class="ProjectOutput" Configuration="Release" LocalName="Epaswmm5.exe">
+						<Platform Name="Win32"/>
 					</DeployFile>
 					<DeployClass Name="ProjectOutput" Required="true">
 						<Platform Name="OSX32">

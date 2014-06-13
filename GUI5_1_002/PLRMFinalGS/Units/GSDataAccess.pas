@@ -247,8 +247,8 @@ var
   ADOConn: TADOConnection;
   DS: TADODataSet;
 begin
-    ADOConn := TADOConnection.Create(application);
-    DS := TADODataSet.Create(application);
+  ADOConn := TADOConnection.Create(application);
+  DS := TADODataSet.Create(application);
   try
     ADOConn.ConnectionString := connStr;
     ADOConn.Open();
@@ -294,11 +294,12 @@ function getDbDataset(tableName: String; conn: TADOConnection; sqlStr: String;
 var
   DS: TADODataSet;
 begin
+  if (conn.Connected = True) then
+    DS := TADODataSet.Create(application)
+  else
+    Exit;
   try
-
     begin
-      if (conn.Connected = True) then
-        DS := TADODataSet.Create(application);
       DS.Connection := conn;
       DS.CommandText := sqlStr;
       DS.Active := True;

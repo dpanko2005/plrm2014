@@ -322,7 +322,7 @@ var
   S, OutfallLines: TStringList;
   I, tempInt0, tempInt1, tempInt2: Integer;
   pollsHdr, tempStr, tempStr1: String;
-  tempStr2, tempStr3, uprZoneEt1, uprZoneEt2, lowrZoneEt1, lowrZoneEt2,
+  tempDbl2, tempDbl3, uprZoneEt1, uprZoneEt2, lowrZoneEt1, lowrZoneEt2,
     percToGW, outfallInfloSum: Double;
   precip, sysDischarge, percoltn, et, initGWStor, finalGWStor, initSnow,
     finSnow, chngDepStor: Double;
@@ -331,6 +331,9 @@ var
 begin
   S := TStringList.Create;
   outfallInfloSum := 0.0;
+  tempDbl3 := 0.0;
+  tempDbl2 := 0.0;
+  et:= 0.0;
   undrlnStr :=
     '-----------------------------------------------------------------------------------------------------------------------------------------------------------------';
   // save pollutants header for reuse
@@ -460,9 +463,9 @@ begin
       (I <> (tempInt1 + 4))) then
     begin
       tempStr1 := AnsiLeftStr(Rslts.nativeSWMMRpt[I], 29);
-      tempStr2 := StrToFloat(AnsiMidStr(Rslts.nativeSWMMRpt[I], 29, 15)) /
+      tempDbl2 := StrToFloat(AnsiMidStr(Rslts.nativeSWMMRpt[I], 29, 15)) /
         Rslts.numYrsSimulated;
-      tempStr3 := StrToFloat(AnsiMidStr(Rslts.nativeSWMMRpt[I], 44, 14)) /
+      tempDbl3 := StrToFloat(AnsiMidStr(Rslts.nativeSWMMRpt[I], 44, 14)) /
         Rslts.numYrsSimulated;
 
       // calculate combined evaporation loss
@@ -470,28 +473,28 @@ begin
       begin
         et := (StrToFloat(AnsiMidStr(Rslts.nativeSWMMRpt[I], 29, 15)) +
           uprZoneEt1 + lowrZoneEt1);
-        tempStr2 := et / Rslts.numYrsSimulated;
-        tempStr3 := (StrToFloat(AnsiMidStr(Rslts.nativeSWMMRpt[I], 44, 14)) +
+        tempDbl2 := et / Rslts.numYrsSimulated;
+        tempDbl3 := (StrToFloat(AnsiMidStr(Rslts.nativeSWMMRpt[I], 44, 14)) +
           uprZoneEt2 + lowrZoneEt2) / Rslts.numYrsSimulated;
       end;
 
       // calculate combined infiltration loss
       if (I = (tempInt1 + 3)) then
       begin
-        tempStr2 := (StrToFloat(AnsiMidStr(Rslts.nativeSWMMRpt[I], 29, 15)) -
+        tempDbl2 := (StrToFloat(AnsiMidStr(Rslts.nativeSWMMRpt[I], 29, 15)) -
           (StrToFloat(AnsiMidStr(Rslts.nativeSWMMRpt[I - 1], 29, 15)) +
           uprZoneEt1 + lowrZoneEt1)) / Rslts.numYrsSimulated;
-        tempStr3 := (StrToFloat(AnsiMidStr(Rslts.nativeSWMMRpt[I], 44, 14)) -
+        tempDbl3 := (StrToFloat(AnsiMidStr(Rslts.nativeSWMMRpt[I], 44, 14)) -
           (StrToFloat(AnsiMidStr(Rslts.nativeSWMMRpt[I - 1], 44, 14)) +
           uprZoneEt2 + lowrZoneEt2)) / Rslts.numYrsSimulated;
       end;
-      S.Add(tempStr1 + '   ' + Format(rsltsFormatDec181f, [tempStr2]) + '   ' +
-        Format(rsltsFormatDec181f, [tempStr3]));
+      S.Add(tempStr1 + '   ' + Format(rsltsFormatDec181f, [tempDbl2]) + '   ' +
+        Format(rsltsFormatDec181f, [tempDbl3]));
     end;
   end;
 
   // calculate factor for converting from ac-ft to in
-  areaFactor := tempStr3 / tempStr2;
+  areaFactor := tempDbl3 / tempDbl2;
   // extract values from outfall summary
   tempInt1 := 8 + Rslts.nativeSWMMRpt.IndexOf('  Outfall Loading Summary');
   OutfallLines := TStringList.Create();
