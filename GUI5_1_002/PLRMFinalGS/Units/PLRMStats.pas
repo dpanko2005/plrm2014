@@ -82,15 +82,15 @@ var
   CopiedHeaders: array [0 .. 3] of String;
   ColHeaders: array of String;
   ColSorted: array of Integer;
-//  SortedCol: Integer;
+  // SortedCol: Integer;
   CurrentTopic: Integer;
   LineCount: Integer;
   UpdateCount: Boolean;
   F: TextFile;
 
 function FindAllSWTs(SWTNum: Integer): TStringList;
-//var
-//  I: Integer;
+// var
+// I: Integer;
 begin
   Result := PLRMObj.getSWTTypeNodes(SWTNum)
 end;
@@ -115,14 +115,14 @@ begin
     end;
   end;
   SetLength(AnnualLoads, J, Length(sourceTbl[0]));
-  result := AnnualLoads;
+  Result := AnnualLoads;
 end;
 
 function GetSWTVolResultsFromStatRpt(const tempNode: TPLRMNode;
   var perCap: Double; sourceTble: PLRMGridData; simLength: Double)
   : PLRMGridDataDbl;
 var
-//  SWTs: TStringList;
+  // SWTs: TStringList;
   inJuncID: String; // Inflow junction name
   outJuncID: String; // Outflow junction name
   trJuncID: String; // Treated junction (downstream of treatment node)
@@ -138,7 +138,7 @@ var
   SWTLoads: PLRMGridDataDbl;
 
   I: Integer;
-//  L: TLink;
+  // L: TLink;
 begin
   inJuncID := tempNode.userName + '_InJu';
   outJuncID := tempNode.userName + '_OuJu';
@@ -156,6 +156,14 @@ begin
     for I := 0 to Length(AnnLoads) - 1 do
       SWTLoads[I, 0] := StrToFloat(AnnLoads[I, 7]) / simLength;
 
+  // row-1 Get annual bypass loads
+  AnnLoads := GetAveAnnualLoadsForJuncOrLink(outJuncID, sourceTble);
+  AnnLoads2 := GetAveAnnualLoadsForJuncOrLink(trJuncID, sourceTble);
+  if (Assigned(AnnLoads) and Assigned(AnnLoads2)) then
+    for I := 0 to Length(AnnLoads) - 1 do
+      SWTLoads[I, 1] := (StrToFloat(AnnLoads[I, 7]) - StrToFloat(AnnLoads2[I, 7]
+        )) / simLength;
+
   // row-2 Get annual bypass loads
   AnnLoads := GetAveAnnualLoadsForJuncOrLink(trJuncID, sourceTble);
   if (Assigned(AnnLoads)) then
@@ -163,15 +171,12 @@ begin
       SWTLoads[I, 2] := StrToFloat(AnnLoads[I, 7]) / simLength;
 
   // row-3 Get annual treated loads
-  // AnnLoads:= Nil;
   AnnLoads := GetAveAnnualLoadsForJuncOrLink(outJuncID, sourceTble);
   if (Assigned(AnnLoads)) then
     for I := 0 to Length(AnnLoads) - 1 do
       SWTLoads[I, 3] := StrToFloat(AnnLoads[I, 7]) / simLength;
 
   // row-4 Get annual effluent loads
-  // AnnLoads:= Nil;
-  // AnnLoads2:= Nil;
   AnnLoads := GetAveAnnualLoadsForJuncOrLink(inJuncID, sourceTble);
   AnnLoads2 := GetAveAnnualLoadsForJuncOrLink(outJuncID, sourceTble);
   if (Assigned(AnnLoads) and Assigned(AnnLoads2)) then
@@ -184,65 +189,40 @@ begin
     SWTLoads[I, 5] := (SWTLoads[I, 0] - SWTLoads[I, 3]) / SWTLoads[I, 0];
 
   case tempNode.SWTType of
-    1, 4, 5, 6:
-      // Detention, Bed Filter,Cartridge Filter bed, Hydrodynamic device
-      begin
-        // AnnLoads:= Nil;
-        // AnnLoads2:= Nil;
-        AnnLoads := GetAveAnnualLoadsForJuncOrLink(outJuncID, sourceTble);
-        AnnLoads2 := GetAveAnnualLoadsForJuncOrLink(trJuncID, sourceTble);
-        // row-0 same as for others see above before case stmnt
-        // row-1 Get annual bypass loads
-        if (Assigned(AnnLoads) and Assigned(AnnLoads2)) then
-          for I := 0 to Length(AnnLoads) - 1 do
-            SWTLoads[I, 1] :=
-              (StrToFloat(AnnLoads[I, 7]) - StrToFloat(AnnLoads2[I, 7])) /
-              simLength;
-        // row-2,3,4 default see above before case stmnt
-      end;
-
     2: // Infiltration
       begin
-        // AnnLoads:= Nil;
-        // AnnLoads2:= Nil;
         AnnLoads := GetAveAnnualLoadsForJuncOrLink(outJuncID, sourceTble);
         AnnLoads2 := GetAveAnnualLoadsForJuncOrLink(inJuncID, sourceTble);
         // row-0 same as for others see above before case stmnt
         // row-1 Get annual bypass loads
         if (Assigned(AnnLoads) and Assigned(AnnLoads2)) then
           for I := 0 to Length(AnnLoads) - 1 do
+          //TODO check with brent about reversed eqn
             SWTLoads[I, 1] :=
-              (StrToFloat(AnnLoads[I, 7]) - StrToFloat(AnnLoads2[I, 7])) /
+              (-StrToFloat(AnnLoads[I, 7]) + StrToFloat(AnnLoads2[I, 7])) /
               simLength;
-        // row-2 annual treated loads = 0.0
+
         for I := 0 to Length(AnnLoads) - 1 do
           SWTLoads[I, 2] := 0.0;
-        // row-3,4 default see above before case stmnt
       end;
     3: // WetBasin
       begin
-        // resets
-        // SetLength(AnnLoads,0,0);
-        // AnnLoads:= Nil;
-        // AnnLoads2:= Nil;
-        // AnnLoads3:= Nil;
-
         AnnLoads2 := GetAveAnnualLoadsForJuncOrLink(tr2JuncID, sourceTble);
         AnnLoads3 := GetAveAnnualLoadsForJuncOrLink(tr3JuncID, sourceTble);
         AnnLoads4 := GetAveAnnualLoadsForJuncOrLink(outJuncID, sourceTble);
 
         // row-0 same as for others see above before case stmnt
         // row-1 Get annual bypass loads
-        if (Assigned(AnnLoads) and Assigned(AnnLoads2) and Assigned(AnnLoads3))
+        if (Assigned(AnnLoads2) and Assigned(AnnLoads3) and Assigned(AnnLoads4))
         then
-          for I := 0 to Length(AnnLoads4) - 1 do
+          for I := 0 to Length(AnnLoads2) - 1 do
             SWTLoads[I, 1] :=
               (StrToFloat(AnnLoads4[I, 7]) - StrToFloat(AnnLoads2[I, 7]) -
               StrToFloat(AnnLoads3[I, 7])) / simLength;
         // row-2 annual treated loads = 0.0
-        if (Assigned(AnnLoads) and Assigned(AnnLoads2) and Assigned(AnnLoads3))
+        if (Assigned(AnnLoads2) and Assigned(AnnLoads3))
         then
-          for I := 0 to Length(AnnLoads4) - 1 do
+          for I := 0 to Length(AnnLoads2) - 1 do
             SWTLoads[I, 2] :=
               (StrToFloat(AnnLoads2[I, 7]) + StrToFloat(AnnLoads3[I, 7])) /
               simLength;
@@ -260,16 +240,17 @@ begin
   AnnLoads3 := nil;
   AnnLoads4 := nil;
 
-  result := SWTLoads;
+  Result := SWTLoads;
 end;
 
 function GetSWTLoadResultsFromStatRpt(const tempNode: TPLRMNode;
   var perCap: Double; sourceTble: PLRMGridData; simLength: Double)
   : PLRMGridDataDbl;
 var
-//  SWTs: TStringList;
+  // SWTs: TStringList;
   InLinkID: String; // Inflow link name
   ByLinkID: String; // Bypass link name
+  ByCoLinkID:String; // Bypass link for cartridge and treat vaultls
   TrLinkID: String; // Treated link (downstream of treatment node)
   // Treated link from permanent pool basin for wet basins
   Tr2LinkID, DsLinkID: String;
@@ -280,21 +261,21 @@ var
   SWTLoads: PLRMGridDataDbl;
 
   I: Integer;
-//  L: TLink;
+  // L: TLink;
 
 begin
   InLinkID := tempNode.userName + '_InCo';
   ByLinkID := tempNode.userName + '_ByWe';
+  ByCoLinkID := tempNode.userName + '_ByCo';
   TrLinkID := tempNode.userName + '_OtCo';
   DsLinkID := tempNode.userName + '_DsCo';
   AnnLoads := GetAveAnnualLoadsForJuncOrLink(InLinkID, sourceTble);
 
   // StringList of annual loads for Link
-  // tempInt := AnnLoads.Count;
   SetLength(SWTLoads, Length(AnnLoads[0]), 6);
 
   // column-0 Get annual influent loads for links
-  AnnLoads := GetAveAnnualLoadsForJuncOrLink(InLinkID, sourceTble);
+  //AnnLoads := GetAveAnnualLoadsForJuncOrLink(InLinkID, sourceTble);
   if (Assigned(AnnLoads)) then
     for I := 1 to Length(AnnLoads[0]) - 1 do
       SWTLoads[I, 0] := StrToFloat(AnnLoads[0, I]) / simLength;
@@ -304,6 +285,12 @@ begin
   if (Assigned(AnnLoads)) then
     for I := 1 to Length(AnnLoads[0]) - 1 do
       SWTLoads[I, 1] := StrToFloat(AnnLoads[0, I]) / simLength;
+
+  // column-2 Get annual treated loads for links
+  AnnLoads := GetAveAnnualLoadsForJuncOrLink(TrLinkID, sourceTble);
+  if (Assigned(AnnLoads)) then
+    for I := 1 to Length(AnnLoads[0]) - 1 do
+      SWTLoads[I, 2] := StrToFloat(AnnLoads[0, I]) / simLength;
 
   // column-3 Get annual effluent loads for links
   AnnLoads := GetAveAnnualLoadsForJuncOrLink(DsLinkID, sourceTble);
@@ -320,19 +307,10 @@ begin
     SWTLoads[I, 5] := (SWTLoads[I, 4] / SWTLoads[I, 0]) / simLength;
 
   case tempNode.SWTType of
-    1, 4, 5, 6: // Dry Detention Basin, Bed Filter,
-      begin
-        // column-2 Get annual bypassed loads for links
-        AnnLoads := GetAveAnnualLoadsForJuncOrLink(TrLinkID, sourceTble);
-        if (Assigned(AnnLoads)) then
-          for I := 1 to Length(AnnLoads[0]) - 1 do
-            SWTLoads[I, 2] := StrToFloat(AnnLoads[0, I]) / simLength;
-      end;
-
     2: // Infiltration
       begin
         for I := 1 to Length(AnnLoads) - 1 do
-          SWTLoads[I, 4] := 0.0;
+          SWTLoads[I, 2] := 0.0;
       end;
     3: // WetBasin
       begin
@@ -349,13 +327,21 @@ begin
               (StrToFloat(AnnLoads[0, I]) - StrToFloat(AnnLoads2[0, I])) /
               simLength;
       end;
+    5, 6: // Cartridge Filter, Treatment Vault (bypass only)
+      begin
+        // column-2 Get annual bypassed loads for links
+        AnnLoads := GetAveAnnualLoadsForJuncOrLink(ByCoLinkID, sourceTble);
+        if (Assigned(AnnLoads)) then
+          for I := 1 to Length(AnnLoads[0]) - 1 do
+            SWTLoads[I, 1] := StrToFloat(AnnLoads[0, I]) / simLength;
+      end;
   end;
 
   if SWTLoads[0, 0] = 0 then
     perCap := 0
   else
     perCap := (1 - (SWTLoads[0, 1] / SWTLoads[0, 0])) * 100;
-  result := SWTLoads;
+  Result := SWTLoads;
 end;
 
 function GetStatsSelection(var Stats: TStatsSelection; ObjID: String;
@@ -365,7 +351,7 @@ function GetStatsSelection(var Stats: TStatsSelection; ObjID: String;
 // Places user's selections into a TStatsSelection data structure
 // -----------------------------------------------------------------------------
 begin
-  result := False;
+  Result := False;
   with Stats do
   begin
     ObjectType := ObjType;
@@ -386,10 +372,10 @@ begin
       (Uoutput.GetObject(ObjectType, ObjectID) = nil) then
       MessageDlg(TXT_NO_OBJECT_SELECTED, mtError, [mbOK], 0)
     else
-      result := TRUE;
+      Result := TRUE;
 
   end;
-  if result = TRUE then
+  if Result = TRUE then
     GetVariableTypes(Stats);
 end;
 
@@ -586,12 +572,12 @@ function GetNewTopic(Line: String; Topic: Integer;
 var
   I: Integer;
 begin
-  result := -1;
+  Result := -1;
   for I := Topic + 1 to High(TopicLabels) do
   begin
     if ContainsText(Line, TopicLabels[I] + ' Summary') then
     begin
-      result := I;
+      Result := I;
       break;
     end;
   end;
@@ -606,7 +592,7 @@ function GetResultsForTopic(intTopic: Integer; reportFilePath: String)
 var
   I, J, intTopicNumber, N: Integer;
   Line: String;
-//  Caption: String;
+  // Caption: String;
   Tokens: TStringList;
   arrResults: PLRMGridData;
 begin
@@ -654,7 +640,7 @@ begin
       CloseFile(F);
     end;
   end;
-  result := arrResults;
+  Result := arrResults;
 end;
 
 procedure SetColHeaders(Topic: Integer);
@@ -991,7 +977,7 @@ begin
   outfallLoadSmryArr := GetResultsForTopic(8, TempReportFile);
 
   // Get catchment results
-  //totArea := 0;
+  // totArea := 0;
   SetLength(PLRMResults.catchData, PLRMObj.catchments.Count); // set
 
   for I := 0 to PLRMObj.catchments.Count - 1 do
