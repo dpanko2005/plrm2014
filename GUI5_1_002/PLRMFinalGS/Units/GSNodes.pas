@@ -17,7 +17,9 @@ uses
   allNodeindex:Integer;  //sequential number in order of creation starting from 0 for all nodes used with nodes list
 
   userName : String;
-  SWTType : Integer;    //7 - its not swt 1 - detention, 2 - infiltration etc
+
+  //7 - its not swt 1 - detention, 2 - infiltration 3-wetbasin 4-bedfilter 5-cartridge filter 6-treatment vault
+  SWTType : Integer;
   ObjType:Integer; //SWMM ObjectType for retrieval from Project.Lists
   ObjIndex:Integer; //SWMM ObjectIndex for retrieval from Project.Lists
   qryStrCode:String; //matches SWT_Code in database 500-Detention, 501-WetBasin etc

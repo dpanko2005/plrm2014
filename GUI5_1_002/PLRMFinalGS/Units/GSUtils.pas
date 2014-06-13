@@ -188,14 +188,15 @@ const { ID num for accessing Icons for treeview from  imagelist }
   plrmFileExt = '.xml';
   ramScoreConst1 = 1974.5;
   ramScoreConst2 = -0.69;
-  rsltsFormatStrLft = '%-25s';
+  rsltsFormatStrLft = '%-26s';
   rsltsFormatStrRgt = '%18s';
   rsltsFormatDec183f = '%18.3f';
   rsltsFormatDec182f = '%18.2f';
   rsltsFormatDec181f = '%18.1f';
   rsltsFormatDec180f = '%18.0f';
   rsltsFormatDec172f = '%17.2f';
-  rsltsFormatDec171f = '%17.2f';
+  rsltsFormatDec171f = '%17.1f';
+  rsltsFormatDec170f = '%17.0f';
 
 var
   defaultXslPath: String;
@@ -1207,12 +1208,11 @@ begin
 
   // if (Key in [' ', '"', ';']) then
   if (CharInSet(Key, [' ', '"', ';'])) then
-    exit;
-  Key := #0; // ignore spaces
+    Key := #0; // ignore spaces
 
   // allow 0 - 9 and numpad 0 to numpad 9
-  if (not(CharInSet(Key, [#48 .. #57]))) then
-    // if (not(Key in [#48 .. #57])) then
+  // if (not(CharInSet(Key, [#48 .. #57]))) then
+  if (not(Key in [#48 .. #57])) then
     Key := #0;
 
   with Sender as TStringGrid do

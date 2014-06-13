@@ -41,7 +41,8 @@ var
 begin
 
   lusePositionCheckList := TStringList.Create();
-  SetLength(loadsByLuseCombined, Length(loadsByLuse), Length(loadsByLuse[0])+1);
+  SetLength(loadsByLuseCombined, Length(loadsByLuse),
+    Length(loadsByLuse[0]) + 1);
 
   if Uglobals.TabDelimited then
     Tab := #9
@@ -58,7 +59,7 @@ begin
 
   // loop through and combine entries with the same land use
   K := 0;
-  //tempIndex := -1;
+  // tempIndex := -1;
   for I := 0 to High(loadsByLuse) do
   begin
     // check if landuse exists in the checklist, if so retrieve its position otherwise add it
@@ -86,16 +87,27 @@ begin
 
   for I := 0 to High(loadsByLuseCombined) do
   begin
-    //tempStr := getLandUseLabel(catchLuseList[I]);
+    // tempStr := getLandUseLabel(catchLuseList[I]);
     tempLine1 := Format(rsltsFormatStrLft, [lusePositionCheckList[I]]) +
       Format(rsltsFormatDec181f, [loadsByLuseCombined[I, 0] * CONVMGALTOACFT]);
 
     for J := 1 to High(loadsByLuseCombined[0]) do
     begin
-      tempLine1 := tempLine1 + Format(rsltsFormatDec181f, [loadsByLuseCombined[I, J]]);
+      tempLine1 := tempLine1 + Format(rsltsFormatDec181f,
+        [loadsByLuseCombined[I, J]]);
     end;
     tempSL.Add(tempLine1);
   end;
+
+  {// add catchment totals
+  tempLine1 := Format(rsltsFormatStrLft, [catchName + ' Total']) +
+    Format(rsltsFormatDec181f, [loadsByLuseCombined[I, 0] * CONVMGALTOACFT]);
+  for J := 1 to High(loadsByLuseCombined[0]) do
+  begin
+    tempLine1 := tempLine1 + Format(rsltsFormatDec181f,
+      [loadsByLuseCombined[I, J]]);
+  end; }
+  tempSL.Add(tempLine1);
   Result := tempSL;
 end;
 
@@ -108,8 +120,8 @@ begin
 
   for I := 0 to luseDBData[0].Count - 1 do
   begin
-    if (Pos(LowerCase('_' + luseDBData[0][I]), LowerCase(catchmentAndLusName)
-      ) > 0) then
+    if (Pos(LowerCase('_' + luseDBData[0][I]), LowerCase(catchmentAndLusName))
+      > 0) then
     begin
       Result := luseDBData[1][I];
       exit;
@@ -220,7 +232,7 @@ var
   tempStr, tempLine1, tempLine2, tempLine3, tempLine4, tempLine5, tempLine6,
     tempLine7: String;
 begin
-comboVol := 0.0;
+  comboVol := 0.0;
   // if Uglobals.TabDelimited then Tab := #9 else Tab := ' ';
   tempSL := TStringList.Create;
   tempStr := Format(rsltsFormatStrLft, [swtName]) + Format(rsltsFormatStrRgt,
@@ -231,13 +243,13 @@ comboVol := 0.0;
       [Project.PollutNames[J] + '(lbs/yr)']);
   tempSL.Add(tempStr);
   tempSL.Add
-    ('-----------------------------------------------------------------------------------------------------------------------------------------------------------------');
+    ('-------------------------  ----------------       -----------       -----------        ----------       -----------        -----------      -----------');
 
   inVol := swtDataVols[0, 0] * CONVMGALTOACFT; // total inflow volume
   byVol := swtDataVols[0, 1] * CONVMGALTOACFT;
   trVol := swtDataVols[0, 2] * CONVMGALTOACFT;
   pDif := 0;
-  //perCapt := 0;
+  // perCapt := 0;
 
   case SWTType of
     1, 3, 4, 5, 6:
@@ -271,9 +283,9 @@ comboVol := 0.0;
     Format(rsltsFormatDec181f, [(inVol - comboVol)]);
 
   tempLine6 := Format(rsltsFormatStrLft, ['%Change(Removed/Influent)']) +
-    Format(rsltsFormatDec181f, [pDif]) + '%';
+    Format(rsltsFormatDec170f, [pDif]) + '%';
   tempLine7 := Format(rsltsFormatStrLft, ['%Capture(1-Bypass/Influent)']) +
-    Format(rsltsFormatDec181f, [perCapt]) + '%';
+    Format(rsltsFormatDec170f, [perCapt]) + '%';
 
   for I := 1 to High(swtDataLoads) do
   begin
@@ -297,7 +309,7 @@ comboVol := 0.0;
     tempLine3 := tempLine3 + Format(rsltsFormatDec181f, [trVol]);
     tempLine4 := tempLine4 + Format(rsltsFormatDec181f, [comboVol]);
     tempLine5 := tempLine5 + Format(rsltsFormatDec181f, [(inVol - comboVol)]);
-    tempLine6 := tempLine6 + Format(rsltsFormatDec171f, [pDif]) + '%';
+    tempLine6 := tempLine6 + Format(rsltsFormatDec170f, [pDif]) + '%';
     pDif := 0;
   end;
   if (mode = 1) then
@@ -315,8 +327,8 @@ end;
 
 // mode = 0 => summary report - low detail
 // mode = 1 => supplemental report - high detail
-function resultsToTextFile(Rslts: TPLRMResults; filePath: string;
-  mode: Integer): Boolean;
+function resultsToTextFile(Rslts: TPLRMResults; filePath: string; mode: Integer)
+  : Boolean;
 var
   tempList: TStringList;
   S, OutfallLines: TStringList;
@@ -333,7 +345,7 @@ begin
   outfallInfloSum := 0.0;
   tempDbl3 := 0.0;
   tempDbl2 := 0.0;
-  et:= 0.0;
+  et := 0.0;
   undrlnStr :=
     '-----------------------------------------------------------------------------------------------------------------------------------------------------------------';
   // save pollutants header for reuse
@@ -371,7 +383,7 @@ begin
     tempStr := Format(rsltsFormatStrLft, ['Catchment Name']) +
       Format(rsltsFormatStrRgt, ['Volume(ac-ft/yr)']);
     S.Add(tempStr + pollsHdr);
-    S.Add(undrlnStr);
+    S.Add('--------------------       ----------------       -----------       -----------        ----------       -----------        -----------      -----------');
   end;
 
   if (mode = 0) then
@@ -395,13 +407,19 @@ begin
         Format(rsltsFormatStrRgt, ['Volume(ac-ft/yr)']);
 
       S.Add(tempStr + pollsHdr);
-      S.Add(undrlnStr);
+      S.Add('--------------------       ----------------       -----------       -----------        ----------       -----------        -----------      -----------');
       // plrm 2014 added if statement to check for nil
       if (Length(Rslts.catchData) > 0) then
       begin
         tempList := catchStatSummaryByLuse(Rslts.catchData[I].catchName,
           Rslts.catchData[I].loadLandUses, Rslts.catchData[I].annLoadsLuse);
         S.AddStrings(tempList);
+
+        //add totals for the current catchment
+        //S.Add('--------------------       ----------------       -----------       -----------        ----------       -----------        -----------      -----------');
+        tempList := catchStatSummary(Rslts.catchData[I].catchName + ' Total',
+          Rslts.catchData[I].annLoads);
+        S.Add(tempList[0]);
       end;
       S.Add(' ');
       S.Add(' ');
@@ -429,18 +447,18 @@ begin
   S.Add('****************');
   S.Add(' ');
   S.Add('Average Annual Hydrology              acre-feet/yr            inches/yr');
-  S.Add('-----------------------------------------------------------------------');
+  S.Add('----------------------------          ------------            ---------');
   // get upperzone et from Ground water continuity
   tempInt0 := 4 + Rslts.nativeSWMMRpt.IndexOf
     ('  Groundwater Continuity         acre-feet        inches');
-  initGWStor := StrToFloat
-    (AnsiMidStr(Rslts.nativeSWMMRpt[tempInt0 - 2], 29, 15));
+  initGWStor := StrToFloat(AnsiMidStr(Rslts.nativeSWMMRpt[tempInt0 - 2],
+    29, 15));
   uprZoneEt1 := StrToFloat(AnsiMidStr(Rslts.nativeSWMMRpt[tempInt0], 29, 15));
   uprZoneEt2 := StrToFloat(AnsiMidStr(Rslts.nativeSWMMRpt[tempInt0], 44, 14));
   lowrZoneEt1 := StrToFloat
     (AnsiMidStr(Rslts.nativeSWMMRpt[tempInt0 + 1], 29, 15));
-  lowrZoneEt2 := StrToFloat
-    (AnsiMidStr(Rslts.nativeSWMMRpt[tempInt0 + 1], 44, 14));
+  lowrZoneEt2 := StrToFloat(AnsiMidStr(Rslts.nativeSWMMRpt[tempInt0 + 1],
+    44, 14));
   finalGWStor := StrToFloat
     (AnsiMidStr(Rslts.nativeSWMMRpt[tempInt0 + 4], 29, 15));
 
@@ -515,12 +533,12 @@ begin
   S.Add('  Percolation to Groundwater    ' + Format(rsltsFormatDec181f,
     [percoltn / Rslts.numYrsSimulated]) + '   ' + Format(rsltsFormatDec181f,
     [areaFactor * percoltn / Rslts.numYrsSimulated]));
-  S.Add('  Continuity Error..........    ' + Format(rsltsFormatDec172f,
+  S.Add('  Continuity Error..........    ' + Format(rsltsFormatDec170f,
     [(100 * (precip - (sysDischarge + percoltn + et)) / precip)]) + '%');
-  {S.Add('  Percent Surface Runoff....    ' + Format(rsltsFormatDec181f,
+  { S.Add('  Percent Surface Runoff....    ' + Format(rsltsFormatDec181f,
     [100 * Rslts.runCoeff]) + '%'); }
-  S.Add('  Percent Surface Runoff....    ' + Format(rsltsFormatDec181f,
-    [100*sysDischarge / precip]) + '%');
+  S.Add('  Percent Surface Runoff....    ' + Format(rsltsFormatDec170f,
+    [100 * sysDischarge / precip]) + '%');
   S.Add(' ');
   S.Add(' ');
 
@@ -533,7 +551,7 @@ begin
     tempStr := tempStr + Format(rsltsFormatStrRgt,
       [Project.PollutNames[I] + '(lbs/yr)']);
   S.Add(tempStr);
-  S.Add(undrlnStr);
+  S.Add('--------------------       ----------------       -----------       -----------        ----------       -----------        ----------       -----------');
   tempList := getOutfallStatSummary(Rslts.outfallLoads);
   S.Add(tempList.Text);
   S.Add('');
