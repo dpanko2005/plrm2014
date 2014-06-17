@@ -358,6 +358,8 @@ type
     ControlBar2: TControlBar;
     btnViewRpt: TToolButton;
     btnViewRptDetailed: TToolButton;
+    plrm48x48ImageList: TImageList;
+    plrm32x32ImageList: TImageList;
 
     procedure FormCreate(Sender: TObject);
     procedure FormActivate(Sender: TObject);
