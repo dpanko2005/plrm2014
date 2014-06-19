@@ -767,8 +767,14 @@ begin
   // PLRM addition
   // plrm 2014 MnuStdToolbar.Checked := False;
   // PLRM Additions
-
+  // PLRM 2014 additions to manipulate inteface
+  MainForm.Menu := nil;
+  MainForm.StatusBar.Visible := False;
+  // MainForm.MDIChildren[0].SetBounds(100,100,100,100);
+  MainForm.MDIChildren[0].WindowState := wsMaximized;
+  MainForm.Enabled := False;
   getProjManager(1);
+  //MainForm.Enabled := True;
 end;
 
 procedure TMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -1932,8 +1938,8 @@ procedure TMainForm.plrmDrawObjButtonHelper(Sender: TObject; ObjType: Integer;
 // -----------------------------------------------------------------------------
 // Helper function for PLRM object buttons used to draw objects on the canvas.
 // -----------------------------------------------------------------------------
-//var
-//  I: Integer;
+// var
+// I: Integer;
 begin
   // PLRM Edit - Jan 2010 edit added to track whether user working with scenario see #233
   getProjManagerWithMsg();
@@ -2704,8 +2710,8 @@ end;
 /// /PLRM Addition
 procedure TMainForm.btnAboutClick(Sender: TObject);
 begin
- // getAbout();
- with TAboutPLRMBoxForm.Create(Self) do
+  // getAbout();
+  with TAboutPLRMBoxForm.Create(Self) do
     try
       ShowModal;
     finally
@@ -2761,6 +2767,8 @@ end;
 // PLRM Addition
 procedure TMainForm.btnPrjMgrClick(Sender: TObject);
 begin
+//plrm 2014
+  MainForm.Enabled := False;
   if PLRMObj.hasActvScn = False then
     getProjManager(1)
   else
@@ -2908,7 +2916,8 @@ begin
 
   // Check if Status Report form already exists
   if FormExists('StatusForm') then
-    Exit;
+    // Exit;
+    StatusForm.Close();
 
   // Otherwise create it
   StatusForm := TStatusForm.Create(Self);
@@ -2946,7 +2955,8 @@ begin
 
   // Check if Status Report form already exists
   if FormExists('StatusForm') then
-    Exit;
+    // Exit;
+    StatusForm.Close();
 
   // Otherwise create it
   StatusForm := TStatusForm.Create(Self);
@@ -2964,7 +2974,6 @@ begin
     finally
     end;
 end;
-
 
 procedure TMainForm.Button1Click(Sender: TObject);
 begin
@@ -3752,7 +3761,7 @@ procedure TMainForm.HideProgressBar;
 begin
   ProgressBar.Visible := False;
   ProgressPanel.Visible := False;
-  //PLRM 2014 StatusBar.Visible := True;
+  // PLRM 2014 StatusBar.Visible := True;
   StatusBar.Visible := False;
   // StatusBar.Refresh;
 end;
