@@ -107,7 +107,7 @@ begin
     tempLine1 := tempLine1 + Format(rsltsFormatDec181f,
     [loadsByLuseCombined[I, J]]);
     end; }
-  tempSL.Add(tempLine1);
+  //tempSL.Add(tempLine1);
   Result := tempSL;
 end;
 

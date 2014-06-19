@@ -596,6 +596,7 @@ begin
 
   ProjScenMangerFrm := TProjNscenManager.Create(Application);
   // tempInt := ProjScenMangerFrm.ShowModal;
+  // plrm 2014 ProjScenMangerFrm.Show;
   ProjScenMangerFrm.Show;
   // ProjScenMangerFrm.ShowModal;
 end;

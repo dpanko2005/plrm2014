@@ -328,6 +328,7 @@ var
       MainForm.StatusBar.Visible := False;
       //MainForm.MDIChildren[0].SetBounds(100,100,100,100);
       MainForm.MDIChildren[0].WindowState := wsMaximized;
+      MainForm.Enabled := True;
       //MainForm.WindowState := wsMaximized;
 
       ProjNscenEditorFrm.CloseModal;
