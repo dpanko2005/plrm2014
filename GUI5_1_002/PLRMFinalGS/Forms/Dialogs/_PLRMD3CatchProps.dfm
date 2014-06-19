@@ -1,6 +1,7 @@
 object CatchProps: TCatchProps
   Left = 0
   Top = 0
+  BorderIcons = []
   Caption = 'Catchment Properties Editor'
   ClientHeight = 619
   ClientWidth = 368

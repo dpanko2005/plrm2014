@@ -1,6 +1,7 @@
 object ProjNscenEditor: TProjNscenEditor
   Left = 0
   Top = 0
+  BorderIcons = []
   ClientHeight = 649
   ClientWidth = 563
   Color = clWindow

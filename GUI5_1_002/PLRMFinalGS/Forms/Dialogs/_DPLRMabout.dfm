@@ -1,6 +1,7 @@
 object PLRMAboutBoxForm: TPLRMAboutBoxForm
   Left = 240
   Top = 126
+  BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'About EPA SWMM'
   ClientHeight = 282
@@ -34,7 +35,7 @@ object PLRMAboutBoxForm: TPLRMAboutBoxForm
   object Label1: TLabel
     Left = 77
     Top = 156
-    Width = 182
+    Width = 181
     Height = 14
     Caption = 'U.S. Environmental Protection Agency'
     Font.Charset = ANSI_CHARSET
@@ -90,7 +91,7 @@ object PLRMAboutBoxForm: TPLRMAboutBoxForm
   object BackTitle: TLabel
     Left = 145
     Top = 24
-    Width = 160
+    Width = 157
     Height = 34
     Caption = 'EPA SWMM'
     Font.Charset = ANSI_CHARSET
@@ -104,7 +105,7 @@ object PLRMAboutBoxForm: TPLRMAboutBoxForm
   object ForeTitle: TLabel
     Left = 143
     Top = 21
-    Width = 160
+    Width = 157
     Height = 34
     Caption = 'EPA SWMM'
     Font.Charset = ANSI_CHARSET
@@ -118,7 +119,7 @@ object PLRMAboutBoxForm: TPLRMAboutBoxForm
   object Version: TLabel
     Left = 181
     Top = 60
-    Width = 85
+    Width = 84
     Height = 19
     Alignment = taCenter
     Caption = 'Version 5.0'

@@ -491,7 +491,10 @@ procedure TMapForm.FormResize(Sender: TObject);
 begin
   if Assigned(Map) then
   try
-    Map.Resize(Rect(0,0,ClientWidth,ClientHeight));
+  //PLRM 2014 replacement to make map maximized at all times
+    //Map.Resize(Rect(0,0,ClientWidth,ClientHeight));
+    Self.WindowState := wsMaximized; //PLRM 2014
+
     if RedrawOnResize then
     begin
       Map.Rescale;

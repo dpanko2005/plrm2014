@@ -1,6 +1,7 @@
 object PLRMPCSDef: TPLRMPCSDef
   Left = 0
   Top = 0
+  BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'Land Use Conditions Editor'
   ClientHeight = 614

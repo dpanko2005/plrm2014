@@ -108,7 +108,7 @@ var
   tempInt, buttonSelected: Integer;
   msg: String;
 begin
-  if btnDefHydProps.Enabled then
+  {if btnDefHydProps.Enabled then
   begin
     msg := 'Warning!' + #13 + #13 +
       'Viewing or editing Land Uses will require you to reconfirm ' + #13 +
@@ -118,7 +118,7 @@ begin
     buttonSelected := MessageDlg(msg, mtCustom, [mbYes, mbNo, mbCancel], 0);
     if buttonSelected <> mrYes then
       Exit;
-  end;
+  end; }
   btnApplyClick(Sender);
   tempInt := getCatchLuseInput(PLRMObj.currentCatchment.name);
   if tempInt = mrOK then
@@ -152,7 +152,7 @@ var
   msg: String;
 begin
   // 2014 addition to warn user that ksat values will be overwritten
-  if btnDefHydProps.Enabled then
+  {if btnDefHydProps.Enabled then
   begin
     msg := 'Warning!' + #13 + #13 +
       'Viewing or editing soils will ovewrite any custom ' + #13 +
@@ -162,7 +162,7 @@ begin
     buttonSelected := MessageDlg(msg, mtCustom, [mbYes, mbNo, mbCancel], 0);
     if buttonSelected <> mrYes then
       Exit;
-  end;
+  end;  }
 
   btnApplyClick(Sender);
   tempInt := getCatchSoilsInput(PLRMObj.currentCatchment.name);

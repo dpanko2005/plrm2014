@@ -1,6 +1,7 @@
 object SWTs: TSWTs
   Left = 0
   Top = 0
+  BorderIcons = []
   Caption = 'Storm Water Treatment BMPs'
   ClientHeight = 700
   ClientWidth = 579
@@ -2288,6 +2289,10 @@ object SWTs: TSWTs
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       DesignSize = (
         556
         542)
@@ -2755,6 +2760,10 @@ object SWTs: TSWTs
       Font.Style = []
       ImageIndex = 1
       ParentFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       DesignSize = (
         556
         542)
@@ -3222,6 +3231,10 @@ object SWTs: TSWTs
     object TabSheet3: TTabSheet
       Caption = 'Wet Basin'
       ImageIndex = 4
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       DesignSize = (
         556
         542)
@@ -3684,6 +3697,10 @@ object SWTs: TSWTs
     object TabSheet4: TTabSheet
       Caption = 'Bed Filter'
       ImageIndex = 6
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       DesignSize = (
         556
         542)
@@ -4144,6 +4161,10 @@ object SWTs: TSWTs
     object TabSheet5: TTabSheet
       Caption = 'Cartridge Filter'
       ImageIndex = 3
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       DesignSize = (
         556
         542)
@@ -4595,6 +4616,10 @@ object SWTs: TSWTs
     object TabSheet6: TTabSheet
       Caption = 'Treatment Vault'
       ImageIndex = 2
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       DesignSize = (
         556
         542)
@@ -5447,6 +5472,10 @@ object SWTs: TSWTs
     object TabSheet8: TTabSheet
       Caption = 'Junction'
       ImageIndex = 7
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object gbJunctions: TGroupBox
         Left = 3
         Top = 9
@@ -5797,6 +5826,10 @@ object SWTs: TSWTs
     object TabSheet9: TTabSheet
       Caption = 'Outfall'
       ImageIndex = 8
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object gbOutfalls: TGroupBox
         Left = 0
         Top = 3

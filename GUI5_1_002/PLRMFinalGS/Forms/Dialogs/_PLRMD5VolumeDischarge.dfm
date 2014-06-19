@@ -1,6 +1,7 @@
 object VolumeDischargeForm: TVolumeDischargeForm
   Left = 412
   Top = 135
+  BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'Volume-Discharge Curve Editor'
   ClientHeight = 371

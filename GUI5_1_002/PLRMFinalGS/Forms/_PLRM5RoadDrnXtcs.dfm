@@ -1,6 +1,7 @@
 object PLRMDrainageConditions: TPLRMDrainageConditions
   Left = 0
   Top = 0
+  BorderIcons = []
   Caption = 'Drainage Conditions Editor'
   ClientHeight = 738
   ClientWidth = 879
@@ -4852,10 +4853,6 @@ object PLRMDrainageConditions: TPLRMDrainageConditions
       Font.Style = []
       ImageIndex = 1
       ParentFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object GroupBox2: TGroupBox
         Left = 3
         Top = 4

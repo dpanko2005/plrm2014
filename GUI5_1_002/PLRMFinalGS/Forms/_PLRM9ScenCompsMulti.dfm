@@ -1,6 +1,7 @@
 object PLRMScenComps: TPLRMScenComps
   Left = 0
   Top = 0
+  BorderIcons = []
   Caption = 'Scenario Comparisons'
   ClientHeight = 642
   ClientWidth = 639
@@ -2440,10 +2441,6 @@ object PLRMScenComps: TPLRMScenComps
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object Panel15: TPanel
           Left = 151
           Top = 3

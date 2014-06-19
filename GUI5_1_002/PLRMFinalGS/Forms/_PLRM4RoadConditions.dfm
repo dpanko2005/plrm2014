@@ -1,6 +1,7 @@
 object PLRMRoadConditions: TPLRMRoadConditions
   Left = 0
   Top = 0
+  BorderIcons = []
   Caption = 'Road Conditions Editor'
   ClientHeight = 619
   ClientWidth = 790

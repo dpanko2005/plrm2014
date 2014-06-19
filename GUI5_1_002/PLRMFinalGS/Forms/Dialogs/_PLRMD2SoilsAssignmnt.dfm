@@ -1,6 +1,7 @@
 object PLRMD2SoilsAssignmnt: TPLRMD2SoilsAssignmnt
   Left = 0
   Top = 0
+  BorderIcons = []
   Caption = 'Catchment Soils'
   ClientHeight = 667
   ClientWidth = 755

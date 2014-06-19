@@ -1,6 +1,7 @@
 object ProjNscenManager: TProjNscenManager
   Left = 0
   Top = 0
+  BorderIcons = []
   Caption = 'Project and Scenario Manager'
   ClientHeight = 563
   ClientWidth = 563

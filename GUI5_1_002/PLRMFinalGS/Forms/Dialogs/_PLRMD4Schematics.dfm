@@ -1,6 +1,7 @@
 object DetSchm: TDetSchm
   Left = 0
   Top = 0
+  BorderIcons = []
   Caption = 'Detention Basin Schematic Representation'
   ClientHeight = 589
   ClientWidth = 751
@@ -2939,6 +2940,10 @@ object DetSchm: TDetSchm
       Font.Style = []
       ImageIndex = 1
       ParentFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Image3: TImage
         Left = 3
         Top = 22
@@ -13953,6 +13958,10 @@ object DetSchm: TDetSchm
     object TabSheet2: TTabSheet
       Caption = 'Treatment Vault'
       ImageIndex = 2
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Image4: TImage
         Left = 19
         Top = 14
@@ -18058,6 +18067,10 @@ object DetSchm: TDetSchm
     object TabSheet3: TTabSheet
       Caption = 'Cartridge Filter'
       ImageIndex = 3
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Image5: TImage
         Left = 3
         Top = 14
@@ -22363,6 +22376,10 @@ object DetSchm: TDetSchm
     object TabSheet4: TTabSheet
       Caption = 'Wet Basin'
       ImageIndex = 4
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Image6: TImage
         Left = 3
         Top = 14
@@ -30614,6 +30631,10 @@ object DetSchm: TDetSchm
     object TabSheet5: TTabSheet
       Caption = 'Bed Filter'
       ImageIndex = 5
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Image7: TImage
         Left = 3
         Top = 14

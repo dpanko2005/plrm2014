@@ -1,6 +1,7 @@
 object PLRMDrngXtsDetail: TPLRMDrngXtsDetail
   Left = 0
   Top = 0
+  BorderIcons = []
   Caption = 'Hydrologic Source Control Editor'
   ClientHeight = 389
   ClientWidth = 632
@@ -5132,10 +5133,6 @@ object PLRMDrngXtsDetail: TPLRMDrngXtsDetail
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object Label3: TLabel
           Left = 5
           Top = 2

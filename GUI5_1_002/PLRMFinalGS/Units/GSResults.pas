@@ -10,7 +10,7 @@ uses
 
 { function SWTStatSummary(SWTType: Integer; swtName: String;
   swtData: PLRMGridDataDbl): TStringList; }
-function catchStatSummary(catchName: String; annLoads: PLRMGridDataDbl)
+function catchStatSummary(catchName: String; annLoads: PLRMGridDataDbl; mode: Integer)
   : TStringList;
 // function resultsToTextFile(Rslts: TPLRMResults; filePath: string): Boolean;
 function resultsToTextFile(Rslts: TPLRMResults; filePath: string;
@@ -134,7 +134,7 @@ begin
   end;
 end;
 
-function catchStatSummary(catchName: String; annLoads: PLRMGridDataDbl)
+function catchStatSummary(catchName: String; annLoads: PLRMGridDataDbl; mode: Integer)
   : TStringList;
 // This function reads in a PLRM grid of annual volumes and loads of influent and effluent
 // and returns a stringlist of summary statistics. Stringlist objects include:
@@ -162,7 +162,7 @@ begin
   // convert vol to ac-ft
   for I := 1 to High(annLoads[0]) do
     // exclude TSS, SRP, DIN
-    if ((I <> 1) and (I <> 3) and (I <> 5)) then
+    if ((mode = 1) or ((I <> 1) and (I <> 4) and (I <> 6))) then
     begin
       tempLine1 := tempLine1 + Format(rsltsFormatDec180f, [annLoads[0, I]]);
     end;
@@ -202,7 +202,7 @@ begin
       for J := 1 to High(annLoads) do
       begin
         // exclude TSS,SRP, DIN for summary report
-        if ((mode = 0) and ((J <> 1) and (J <> 3) and (J <> 5))) then
+        if ((mode = 0) and ((J <> 1) and (J <> 4 ) and (J <> 6))) then
           tempLine1 := tempLine1 + Format(rsltsFormatDec180f, [annLoads[J, I]])
         else if (mode = 1) then
           tempLine1 := tempLine1 + Format(rsltsFormatDec181f, [annLoads[J, I]]);
@@ -219,7 +219,7 @@ begin
   for I := 1 to High(totLoads) do
   begin
     // exclude TSS,SRP, DIN for summary report
-    if ((mode = 0) and ((I <> 1) and (I <> 3) and (I <> 5))) then
+    if ((mode = 0) and ((I <> 1) and (I <> 4) and (I <> 6))) then
       tempLine1 := tempLine1 + Format(rsltsFormatDec180f, [totLoads[I, 0]])
     else if (mode = 1) then
       tempLine1 := tempLine1 + Format(rsltsFormatDec181f, [totLoads[I, 0]])
@@ -262,7 +262,7 @@ begin
 
   for J := 0 to Project.PollutNames.Count - 1 do
   begin
-    if ((mode = 0) and ((J = 2) or (J = 3) or (J = 5))) then
+    if ((mode = 0) and ((J = 0) or (J = 3) or (J = 5))) then
       // skip TSS,SRP,DIN
     else
       tempStr := tempStr + Format(rsltsFormatStrRgt,
@@ -317,7 +317,7 @@ begin
   tempLine6 := Format(rsltsFormatStrLft, ['%Change(Removed/Influent)']) +
     Format(rsltsFormatDec170f, [pDif]) + '%';
   tempLine7 := Format(rsltsFormatStrLft, ['%Capture(1-Bypass/Influent)']) +
-    Format(rsltsFormatDec170f, [perCapt]) + '%';
+    Format(rsltsFormatDec160f, [perCapt]) + '%';
 
   for I := 1 to High(swtDataLoads) do
   begin
@@ -335,7 +335,7 @@ begin
     end;
     if (inVol <> 0) then
       pDif := ((inVol - comboVol) / inVol) * 100;
-    if ((mode = 0) and ((I = 2) or (I = 3) or (I = 5))) then
+    if ((mode = 0) and ((I = 1) or (I = 4) or (I = 6))) then
       // skip TSS,SRP,DIN
     else
     begin
@@ -390,7 +390,7 @@ begin
     pollsHdrDetailed := pollsHdrDetailed + Format(rsltsFormatStrRgt,
       [Project.PollutNames[I] + '(lbs/yr)']);
     // exclude TSS, SRP, DIN
-    if ((I <> 1) and (I <> 3) and (I <> 5)) then
+    if ((I <> 0) and (I <> 3) and (I <> 5)) then
     begin
       pollsHdr := pollsHdr + Format(rsltsFormatStrRgt,
         [Project.PollutNames[I] + '(lbs/yr)']);
@@ -438,7 +438,7 @@ begin
       if (Length(Rslts.catchData) > 0) then
       begin
         tempList := catchStatSummary(Rslts.catchData[I].catchName,
-          Rslts.catchData[I].annLoads);
+          Rslts.catchData[I].annLoads, mode);
         S.Add(tempList[0]);
       end;
     end;
@@ -462,7 +462,7 @@ begin
         // add totals for the current catchment
         // S.Add('--------------------       ----------------       -----------       -----------        ----------       -----------        -----------      -----------');
         tempList := catchStatSummary(Rslts.catchData[I].catchName + ' Total',
-          Rslts.catchData[I].annLoads);
+          Rslts.catchData[I].annLoads, mode);
         S.Add(tempList[0]);
       end;
       S.Add(' ');
@@ -593,7 +593,7 @@ begin
     ['Volume(ac-ft/yr)']);
   for I := 0 to Project.PollutNames.Count - 1 do
   begin
-    if ((mode = 0) and ((I = 2) or (I = 3) or (I = 5))) then
+    if ((mode = 0) and ((I = 0) or (I = 3) or (I = 5))) then
       // skip TSS,SRP,DIN
     else
       tempStr := tempStr + Format(rsltsFormatStrRgt,

@@ -1,6 +1,7 @@
 object PLRMLandUse: TPLRMLandUse
   Left = 0
   Top = 0
+  BorderIcons = []
   Caption = 'Catchment Land Uses'
   ClientHeight = 746
   ClientWidth = 738

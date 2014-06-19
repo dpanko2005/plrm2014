@@ -1,6 +1,7 @@
 object ParcelCRCs: TParcelCRCs
   Left = 0
   Top = 0
+  BorderIcons = []
   Caption = 'Pollutant Source Control Effort Summary - Roads'
   ClientHeight = 548
   ClientWidth = 870

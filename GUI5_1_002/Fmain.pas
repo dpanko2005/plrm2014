@@ -347,7 +347,6 @@ type
     tbPLRMCatch: TToolButton;
     tbPLRMJunction: TToolButton;
     tbPLRMOutfall: TToolButton;
-    ToolbarButton9716: TToolButton;
     tbPLRMFlowsplitr: TToolButton;
     tbPLRMDetn: TToolButton;
     tbPLRMInfilt: TToolButton;
@@ -360,6 +359,8 @@ type
     btnViewRptDetailed: TToolButton;
     plrm48x48ImageList: TImageList;
     plrm32x32ImageList: TImageList;
+    plrm32x32ObjImageList: TImageList;
+    plrmSWMMImgList32: TImageList;
 
     procedure FormCreate(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -591,7 +592,7 @@ uses
   Dbackdim, Dtools1, Ubrowser, Uinifile, Umap, Uimport, Uexport, Uoutput,
   Utools, Uupdate, Dreporting, Dproselect, Dtimeplot,
   _PLRM1ProjNscenManger, GSPLRM, GSUtils, _PLRMstats, PLRMStats,
-  _PLRM9ScenCompsMulti, _PLRMD6About, // PLRM additions
+  _PLRM9ScenCompsMulti, _PLRMDAbout, // PLRM additions
   UEdit; // plrm 2014 edit
 
 // ============================================================================
@@ -766,6 +767,7 @@ begin
   // PLRM addition
   // plrm 2014 MnuStdToolbar.Checked := False;
   // PLRM Additions
+
   getProjManager(1);
 end;
 
@@ -2702,7 +2704,13 @@ end;
 /// /PLRM Addition
 procedure TMainForm.btnAboutClick(Sender: TObject);
 begin
-  getAbout();
+ // getAbout();
+ with TAboutPLRMBoxForm.Create(Self) do
+    try
+      ShowModal;
+    finally
+      Free;
+    end;
 end;
 
 procedure TMainForm.btnPLRMRunClick(Sender: TObject);
@@ -3744,7 +3752,8 @@ procedure TMainForm.HideProgressBar;
 begin
   ProgressBar.Visible := False;
   ProgressPanel.Visible := False;
-  StatusBar.Visible := True;
+  //PLRM 2014 StatusBar.Visible := True;
+  StatusBar.Visible := False;
   // StatusBar.Refresh;
 end;
 
