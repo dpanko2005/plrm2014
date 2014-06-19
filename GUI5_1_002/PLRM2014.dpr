@@ -100,7 +100,6 @@ uses
   Dgweqn in 'Dgweqn.pas' {GWEqnForm},
   Dtimeplot in 'Dtimeplot.pas' {TimePlotForm},
   Dproselect in 'Dproselect.pas' {ProfileSelectForm},
-  _DPLRMabout in 'PLRMFinalGS\Forms\Dialogs\_DPLRMabout.pas' {PLRMAboutBoxForm},
   _PLRMD1LandUseAssignmnt2 in 'PLRMFinalGS\Forms\Dialogs\_PLRMD1LandUseAssignmnt2.pas' {PLRMLandUse},
   _PLRMD2SoilsAssignmnt in 'PLRMFinalGS\Forms\Dialogs\_PLRMD2SoilsAssignmnt.pas' {PLRMD2SoilsAssignmnt},
   _PLRMD3CatchProps in 'PLRMFinalGS\Forms\Dialogs\_PLRMD3CatchProps.pas' {CatchProps},
@@ -133,7 +132,8 @@ uses
   PLRMStats in 'PLRMFinalGS\Units\PLRMStats.pas',
   _PLRM6DrngXtsDetail in 'PLRMFinalGS\Forms\_PLRM6DrngXtsDetail.pas' {PLRMDrngXtsDetail},
   _PLRM7SWTs in 'PLRMFinalGS\Forms\_PLRM7SWTs.pas' {SWTs},
-  _PLRM9ScenCompsMulti in 'PLRMFinalGS\Forms\_PLRM9ScenCompsMulti.pas' {PLRMScenComps};
+  _PLRM9ScenCompsMulti in 'PLRMFinalGS\Forms\_PLRM9ScenCompsMulti.pas' {PLRMScenComps},
+  _PLRMDAbout in 'PLRMFinalGS\Forms\Dialogs\_PLRMDAbout.pas' {AboutPLRMBoxForm};
 
 {$R *.RES}
 

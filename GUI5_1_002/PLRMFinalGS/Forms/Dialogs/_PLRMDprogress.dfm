@@ -1,6 +1,7 @@
 object plrmProgress: TplrmProgress
   Left = 227
   Top = 108
+  BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'Generating Meterological Data'
   ClientHeight = 179

@@ -323,6 +323,13 @@ var
       PLRMObj.hasActvScn := true;
       ModalResult := mrOK;
 
+      //PLRM 2014 additions to manipulate inteface
+      MainForm.Menu := nil;
+      MainForm.StatusBar.Visible := False;
+      //MainForm.MDIChildren[0].SetBounds(100,100,100,100);
+      MainForm.MDIChildren[0].WindowState := wsMaximized;
+      //MainForm.WindowState := wsMaximized;
+
       ProjNscenEditorFrm.CloseModal;
       ProjScenMangerFrm.Close;
       FreeAndNil(S);

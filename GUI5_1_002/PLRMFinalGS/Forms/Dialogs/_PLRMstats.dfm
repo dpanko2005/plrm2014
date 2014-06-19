@@ -1,7 +1,7 @@
 object frmPLRMStats: TfrmPLRMStats
   Left = 281
   Top = 104
-  BorderIcons = [biSystemMenu, biMinimize]
+  BorderIcons = []
   BorderStyle = bsSingle
   Caption = 'Statistics Selection'
   ClientHeight = 449

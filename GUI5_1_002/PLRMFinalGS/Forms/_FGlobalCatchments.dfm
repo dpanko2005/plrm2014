@@ -1,34 +1,43 @@
 object FGlobalCatch: TFGlobalCatch
   Left = 0
   Top = 0
-  ClientHeight = 608
-  ClientWidth = 974
+  BorderIcons = []
+  ClientHeight = 465
+  ClientWidth = 745
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -14
+  Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
-  PixelsPerInch = 120
-  TextHeight = 17
+  PixelsPerInch = 96
+  TextHeight = 13
   object GroupBox3: TGroupBox
-    Left = 3
-    Top = 21
-    Width = 971
-    Height = 242
+    Left = 2
+    Top = 16
+    Width = 743
+    Height = 185
+    Margins.Left = 2
+    Margins.Top = 2
+    Margins.Right = 2
+    Margins.Bottom = 2
     Caption = 'Catchment Parameters'
     TabOrder = 0
     object DBGrid1: TDBGrid
-      Left = 18
-      Top = 42
-      Width = 950
-      Height = 157
+      Left = 14
+      Top = 32
+      Width = 726
+      Height = 120
+      Margins.Left = 2
+      Margins.Top = 2
+      Margins.Right = 2
+      Margins.Bottom = 2
       DataSource = DataSource1
       TabOrder = 0
       TitleFont.Charset = DEFAULT_CHARSET
       TitleFont.Color = clWindowText
-      TitleFont.Height = -14
+      TitleFont.Height = -11
       TitleFont.Name = 'Tahoma'
       TitleFont.Style = []
       Columns = <
@@ -71,34 +80,50 @@ object FGlobalCatch: TFGlobalCatch
     end
   end
   object Button2: TButton
-    Left = 845
-    Top = 562
-    Width = 119
-    Height = 32
+    Left = 646
+    Top = 430
+    Width = 91
+    Height = 24
+    Margins.Left = 2
+    Margins.Top = 2
+    Margins.Right = 2
+    Margins.Bottom = 2
     Caption = 'Save and Exit'
     TabOrder = 1
   end
   object btnCloseFrm: TButton
-    Left = 744
-    Top = 562
-    Width = 93
-    Height = 32
+    Left = 569
+    Top = 430
+    Width = 71
+    Height = 24
+    Margins.Left = 2
+    Margins.Top = 2
+    Margins.Right = 2
+    Margins.Bottom = 2
     Caption = 'Cancel'
     TabOrder = 2
   end
   object btnHelp: TButton
-    Left = 675
-    Top = 562
-    Width = 61
-    Height = 32
+    Left = 516
+    Top = 430
+    Width = 47
+    Height = 24
+    Margins.Left = 2
+    Margins.Top = 2
+    Margins.Right = 2
+    Margins.Bottom = 2
     Caption = 'Help'
     TabOrder = 3
   end
   object Button1: TButton
-    Left = 675
-    Top = 522
-    Width = 289
-    Height = 32
+    Left = 516
+    Top = 399
+    Width = 221
+    Height = 25
+    Margins.Left = 2
+    Margins.Top = 2
+    Margins.Right = 2
+    Margins.Bottom = 2
     Caption = 'Define Source Controls'
     TabOrder = 4
   end
