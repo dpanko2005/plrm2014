@@ -166,7 +166,9 @@ FRMSWTCRTFILTR = 'Cartridge Filter Editor';
 FRMSWTTRTVAULT = 'Hydrodynamic Device Editor';
 //Form titles
 //PLRMVERSION = 'Tahoe Pollutant Load Reduction Model - v1.0';
-PLRMVERSION = 'Lake Tahoe PLRM v2.0  ';
+//2014 PLRMVERSION = 'Lake Tahoe PLRM v2.0  ';
+PLRMVERSION = 'PLRM v2.0  ';
+
 PLRM0_WIZTITLE = 'PLRM Wizard';
 PLRM1_TITLE = 'Project and Scenario Manager';
 PLRM2_TITLE = 'Scenario Editor';

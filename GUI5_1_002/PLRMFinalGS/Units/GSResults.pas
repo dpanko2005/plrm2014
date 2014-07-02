@@ -314,9 +314,9 @@ begin
   tempLine5 := Format(rsltsFormatStrLft, ['Volume/Load Removed']) +
     Format(rsltsFormatDec181f, [(inVol - comboVol)]);
 
-  tempLine6 := Format(rsltsFormatStrLft, ['%Change(Removed/Influent)']) +
+  tempLine6 := Format(rsltsFormatStrLft, ['%Removed']) +
     Format(rsltsFormatDec170f, [pDif]) + '%';
-  tempLine7 := Format(rsltsFormatStrLft, ['%Capture(1-Bypass/Influent)']) +
+  tempLine7 := Format(rsltsFormatStrLft, ['%Treated']) +
     Format(rsltsFormatDec160f, [perCapt]) + '%';
 
   for I := 1 to High(swtDataLoads) do
