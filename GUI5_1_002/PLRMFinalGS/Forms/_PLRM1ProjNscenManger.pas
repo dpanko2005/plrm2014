@@ -22,6 +22,7 @@ type
     f1BtnNwPrj: TButton;
     lblPrjPath: TLabel;
     statBar: TStatusBar;
+    btnExitPlrm: TButton;
 
     procedure FormCreate(Sender: TObject);
     procedure f1BtnCpyClick(Sender: TObject);
@@ -31,6 +32,7 @@ type
     procedure f1BtnNwScnClick(Sender: TObject);
     procedure f1BtnNwPrjClick(Sender: TObject);
     procedure TreeView1Click(Sender: TObject);
+    procedure btnExitPlrmClick(Sender: TObject);
   private
     function GetNextPrjID(): String;
     function GetNextScnID(prjNode: TTreeNode): String;
@@ -53,6 +55,11 @@ uses
   Fmain, GSFileManage, Fmap;
 
 {$R *.dfm}
+
+procedure TProjNscenManager.btnExitPlrmClick(Sender: TObject);
+begin
+  MainForm.Close();
+end;
 
 procedure TProjNscenManager.f1BtnCnclClick(Sender: TObject);
 begin

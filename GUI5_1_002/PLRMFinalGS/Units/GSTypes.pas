@@ -183,11 +183,17 @@ PLRM7_TITLE = 'Storm Water Treatment BMPs';
 PLRM8_TITLE = 'Scenario Comparisons';
 PLRM9_TITLE = 'Scenario Comparisons';
 //D-form titles
-PLRMD1_TITLE = 'Land Use Editor';
+{PLRMD1_TITLE = 'Land Use Editor';
 PLRMD2_TITLE = 'Soil Editor';
 PLRMD3_TITLE = 'Catchment Properties Editor';
 PLRMD4_TITLE = 'Define Road Conditions';
-PLRMD5_TITLE = 'Volume-Discharge Curve Editor';
+PLRMD5_TITLE = 'Volume-Discharge Curve Editor'; }
+PLRMD1_TITLE = 'Catchment Properties';
+PLRMD2_TITLE = 'Step 2 of 6: Land Uses';
+PLRMD3_TITLE = 'Step 3 of 6: Soils';
+PLRMD4_TITLE = 'Step 4 of 6: Road Pollutants';
+PLRMD5_TITLE = 'Step 5 of 6: Road Drainage';
+PLRMD6_TITLE = 'Step 6 of 6: Parcel Drainage & BMPs';
 
 PLRMD4Det_TITLE = 'Dry Basin Schematic Representation';
 PLRMD4Inf_TITLE = 'Infiltration Basin Schematic Representation';

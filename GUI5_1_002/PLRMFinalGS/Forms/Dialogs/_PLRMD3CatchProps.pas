@@ -29,6 +29,9 @@ type
     GroupBox3: TGroupBox;
     Image2: TImage;
     btnDefHydProps: TButton;
+    btnDefRoadPolls: TButton;
+    btnShowRoadDrainageEditor: TButton;
+    btnShowParcelDrainageAndBMPEditor: TButton;
     procedure FormCreate(Sender: TObject);
     procedure sgPropsDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect;
       State: TGridDrawState);
@@ -50,6 +53,9 @@ type
     function checkDupCatchName(): Boolean;
     procedure edtCatchNameExit(Sender: TObject);
     procedure edtCatchNameEnter(Sender: TObject);
+    procedure btnDefRoadPollsClick(Sender: TObject);
+    procedure btnShowRoadDrainageEditorClick(Sender: TObject);
+    procedure btnShowParcelDrainageAndBMPEditorClick(Sender: TObject);
 
   private
     { Private declarations }
@@ -70,8 +76,8 @@ implementation
 
 uses
   GSIO, GSUtils, GSPLRM, GSNodes, GSCatchments, UProject, UGlobals,
-  Uvalidate, _PLRMD1LandUseAssignmnt2,
-  _PLRMD2SoilsAssignmnt, _PLRM3PSCDef,
+  Uvalidate, _PLRMD1LandUseAssignmnt2, _PLRMD4RoadPollutants,
+  _PLRMD2SoilsAssignmnt, _PLRM3PSCDef, _PLRMD5RoadDrainageEditor, _PLRMD6ParcelDrainageAndBMPs,
   FPropEd, UBrowser;
 
 procedure getCatchProps(catchID: String);
@@ -127,6 +133,7 @@ begin
     btnDefLuseConds.Enabled := false;
     btnDefHydProps.Enabled := false;
     btnOk.Enabled := false;
+    Self.btnDefSoilsClick(Sender);
   end;
   // if tempInt = mrOK then btnDefSoils.Enabled := true;
   // btnDefHydProps.Enabled := PLRMObj.currentCatchment.hasDefDrnXtcs;
@@ -144,6 +151,22 @@ begin
   getSCandDrngXtrstcsInput(PLRMObj.currentCatchment.name);
   btnDefHydProps.Enabled := true;
   btnOk.Enabled := false;
+  btnDefHydPropsClick(Sender);
+end;
+
+procedure TCatchProps.btnDefRoadPollsClick(Sender: TObject);
+var
+  tempInt, buttonSelected: Integer;
+  msg: String;
+begin
+  btnApplyClick(Sender);
+  tempInt := showRoadPollutantsDialog(PLRMObj.currentCatchment.name);
+  if tempInt = mrOK then
+  begin
+    btnDefHydProps.Enabled := false;
+    btnOk.Enabled := false;
+    Self.btnDefSoilsClick(Sender);
+  end;
 end;
 
 procedure TCatchProps.btnDefSoilsClick(Sender: TObject);
@@ -167,7 +190,10 @@ begin
   btnApplyClick(Sender);
   tempInt := getCatchSoilsInput(PLRMObj.currentCatchment.name);
   if tempInt = mrOK then
+  begin
     btnDefLuseConds.Enabled := true;
+    btnDefLuseCondsClick(Sender);
+  end;
   btnOk.Enabled := btnDefHydProps.Enabled;
   btnOk.Enabled := btnDefHydProps.Enabled;
 end;
@@ -196,6 +222,35 @@ begin
     PLRMObj.updateCurCatchProps(name, edtCatchName.Text, physclProps, outNode);
   end;
 
+end;
+
+procedure TCatchProps.btnShowParcelDrainageAndBMPEditorClick(Sender: TObject);
+var
+  tempInt: Integer;
+  msg: String;
+begin
+  btnApplyClick(Sender);
+  tempInt := showPLRMParcelDrngAndBMPsDialog(PLRMObj.currentCatchment.name);
+  if tempInt = mrOK then
+  begin
+    btnOk.Enabled := false;
+    Self.btnDefSoilsClick(Sender);
+  end;
+end;
+
+
+procedure TCatchProps.btnShowRoadDrainageEditorClick(Sender: TObject);
+var
+  tempInt: Integer;
+  msg: String;
+begin
+  btnApplyClick(Sender);
+  tempInt := showRoadRoadDrainageEditorDialog(PLRMObj.currentCatchment.name);
+  if tempInt = mrOK then
+  begin
+    btnOk.Enabled := false;
+    Self.btnDefSoilsClick(Sender);
+  end;
 end;
 
 procedure TCatchProps.Button5Click(Sender: TObject);

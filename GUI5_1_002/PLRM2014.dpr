@@ -108,15 +108,9 @@ uses
   _PLRMD6About in 'PLRMFinalGS\Forms\Dialogs\_PLRMD6About.pas' {About},
   _PLRMDprogress in 'PLRMFinalGS\Forms\Dialogs\_PLRMDprogress.pas' {plrmProgress},
   _PLRMstats in 'PLRMFinalGS\Forms\Dialogs\_PLRMstats.pas' {frmPLRMStats},
-  _FCatchParam in 'PLRMFinalGS\Forms\_FCatchParam.pas' {FCatchParam},
-  _FCatchProp in 'PLRMFinalGS\Forms\_FCatchProp.pas' {FcatchProp},
-  _FGlobalCatchments in 'PLRMFinalGS\Forms\_FGlobalCatchments.pas' {FGlobalCatch},
-  _FSWTParam in 'PLRMFinalGS\Forms\_FSWTParam.pas' {Form7},
-  _PLRM0Wizard in 'PLRMFinalGS\Forms\_PLRM0Wizard.pas' {PLRMWiz},
   _PLRM1ProjNscenManger in 'PLRMFinalGS\Forms\_PLRM1ProjNscenManger.pas' {ProjNscenManager},
   _PLRM2ProjNscenEditor in 'PLRMFinalGS\Forms\_PLRM2ProjNscenEditor.pas' {ProjNscenEditor},
   _PLRM3PSCDef in 'PLRMFinalGS\Forms\_PLRM3PSCDef.pas' {PLRMPCSDef},
-  _PLRM4_2ParcelCRCSumary in 'PLRMFinalGS\Forms\_PLRM4_2ParcelCRCSumary.pas' {ParcelCRCs},
   _PLRM4RoadConditions in 'PLRMFinalGS\Forms\_PLRM4RoadConditions.pas' {PLRMRoadConditions},
   _PLRM5RoadDrnXtcs in 'PLRMFinalGS\Forms\_PLRM5RoadDrnXtcs.pas' {PLRMDrainageConditions},
   GSCatchments in 'PLRMFinalGS\Units\GSCatchments.pas',
@@ -133,7 +127,10 @@ uses
   _PLRM6DrngXtsDetail in 'PLRMFinalGS\Forms\_PLRM6DrngXtsDetail.pas' {PLRMDrngXtsDetail},
   _PLRM7SWTs in 'PLRMFinalGS\Forms\_PLRM7SWTs.pas' {SWTs},
   _PLRM9ScenCompsMulti in 'PLRMFinalGS\Forms\_PLRM9ScenCompsMulti.pas' {PLRMScenComps},
-  _PLRMDAbout in 'PLRMFinalGS\Forms\Dialogs\_PLRMDAbout.pas' {AboutPLRMBoxForm};
+  _PLRMDAbout in 'PLRMFinalGS\Forms\Dialogs\_PLRMDAbout.pas' {AboutPLRMBoxForm},
+  _PLRMD4RoadPollutants in 'PLRMFinalGS\Forms\Dialogs\_PLRMD4RoadPollutants.pas' {PLRMRoadPollutants},
+  _PLRMD5RoadDrainageEditor in 'PLRMFinalGS\Forms\Dialogs\_PLRMD5RoadDrainageEditor.pas' {PLRMRoadDrainageEditor},
+  _PLRMD6ParcelDrainageAndBMPs in 'PLRMFinalGS\Forms\Dialogs\_PLRMD6ParcelDrainageAndBMPs.pas' {PLRMParcelDrngAndBMPs};
 
 {$R *.RES}
 
@@ -143,6 +140,9 @@ begin
   Application.Title := 'SWMM 5';
   Application.HelpFile := '';
   Application.CreateForm(TMainForm, MainForm);
+  //Application.CreateForm(TPLRMRoadPollutants, PLRMRoadPollutants);
+  //Application.CreateForm(TPLRMRoadDrainageEditor, PLRMRoadDrainageEditor);
+  //Application.CreateForm(TPLRMParcelDrngAndBMPs, PLRMParcelDrngAndBMPs);
   //Application.CreateForm(TplrmProgress, plrmProgress);
   //Application.CreateForm(TfrmPLRMStats, frmPLRMStats);
   {Application.CreateForm(TForm1, Form1);
