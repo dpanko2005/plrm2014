@@ -3,8 +3,8 @@ object CatchProps: TCatchProps
   Top = 0
   BorderIcons = []
   Caption = 'Catchment Properties Editor'
-  ClientHeight = 619
-  ClientWidth = 368
+  ClientHeight = 645
+  ClientWidth = 375
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -2273,7 +2273,7 @@ object CatchProps: TCatchProps
     Left = 4
     Top = 105
     Width = 356
-    Height = 458
+    Height = 487
     Caption = 'Catchment Properties'
     Ctl3D = True
     Font.Charset = DEFAULT_CHARSET
@@ -2286,7 +2286,7 @@ object CatchProps: TCatchProps
     TabOrder = 1
     DesignSize = (
       356
-      458)
+      487)
     object Label8: TLabel
       Left = 15
       Top = 34
@@ -2329,7 +2329,7 @@ object CatchProps: TCatchProps
     end
     object Image2: TImage
       Left = 287
-      Top = 13
+      Top = 16
       Width = 66
       Height = 56
       Anchors = []
@@ -2598,13 +2598,13 @@ object CatchProps: TCatchProps
       Left = 16
       Top = 304
       Width = 323
-      Height = 151
+      Height = 180
       Caption = 'Additional Attributes'
       TabOrder = 1
       object btnDefLuseConds: TButton
-        Left = 8
+        Left = 9
         Top = 90
-        Width = 297
+        Width = 153
         Height = 25
         Caption = 'Step 4: Define Land Use Conditions'
         Enabled = False
@@ -2622,7 +2622,7 @@ object CatchProps: TCatchProps
         Top = 59
         Width = 297
         Height = 25
-        Caption = 'Step 3: Define Soils                       '
+        Caption = 'Step 3: Soils                            '
         Enabled = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -2635,10 +2635,10 @@ object CatchProps: TCatchProps
       end
       object btnDefLuse: TButton
         Left = 8
-        Top = 30
+        Top = 28
         Width = 297
         Height = 25
-        Caption = 'Step 2: Define Land Uses               '
+        Caption = 'Step 2: Land Uses                    '
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
@@ -2649,9 +2649,9 @@ object CatchProps: TCatchProps
         OnClick = btnDefLuseClick
       end
       object btnDefHydProps: TButton
-        Left = 8
+        Left = 9
         Top = 121
-        Width = 297
+        Width = 153
         Height = 25
         Caption = 'Step 5: Define Drainage Conditions'
         Enabled = False
@@ -2726,10 +2726,37 @@ object CatchProps: TCatchProps
       OnExit = edtCatchNameExit
       OnKeyPress = edtCatchNameKeyPress
     end
+    object btnDefRoadPolls: TButton
+      Left = 184
+      Top = 392
+      Width = 137
+      Height = 25
+      Caption = 'Step 4: Road Pollutants'
+      TabOrder = 5
+      OnClick = btnDefRoadPollsClick
+    end
+    object btnShowRoadDrainageEditor: TButton
+      Left = 183
+      Top = 425
+      Width = 138
+      Height = 25
+      Caption = 'Step 5: Road Drainage'
+      TabOrder = 6
+      OnClick = btnShowRoadDrainageEditorClick
+    end
+    object btnShowParcelDrainageAndBMPEditor: TButton
+      Left = 24
+      Top = 456
+      Width = 297
+      Height = 25
+      Caption = 'Step 6: Parcel Drainage and BMPs'
+      TabOrder = 7
+      OnClick = btnShowParcelDrainageAndBMPEditorClick
+    end
   end
   object btnOk: TButton
     Left = 295
-    Top = 569
+    Top = 598
     Width = 65
     Height = 25
     Caption = 'Ok'
@@ -2744,15 +2771,15 @@ object CatchProps: TCatchProps
   end
   object statBar: TStatusBar
     Left = 0
-    Top = 600
-    Width = 368
+    Top = 626
+    Width = 375
     Height = 19
     Panels = <>
     SimplePanel = True
   end
   object btnApply: TButton
     Left = 153
-    Top = 566
+    Top = 598
     Width = 65
     Height = 25
     Caption = 'Apply'
@@ -2768,7 +2795,7 @@ object CatchProps: TCatchProps
   end
   object Button5: TButton
     Left = 224
-    Top = 566
+    Top = 598
     Width = 65
     Height = 25
     Caption = 'Cancel'

@@ -2361,7 +2361,7 @@ object ProjNscenManager: TProjNscenManager
     end
     object f1BtnLoad: TButton
       Left = 407
-      Top = 284
+      Top = 165
       Width = 122
       Height = 53
       Caption = 'Load Existing Scenario ...'
@@ -2390,6 +2390,21 @@ object ProjNscenManager: TProjNscenManager
       ParentFont = False
       TabOrder = 5
       OnClick = f1BtnNwPrjClick
+    end
+    object btnExitPlrm: TButton
+      Left = 407
+      Top = 312
+      Width = 122
+      Height = 25
+      Caption = 'Exit PLRM'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -15
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 6
+      OnClick = btnExitPlrmClick
     end
   end
   object f1BtnNxt: TButton

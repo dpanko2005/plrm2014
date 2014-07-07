@@ -2,7 +2,7 @@ object PLRMD2SoilsAssignmnt: TPLRMD2SoilsAssignmnt
   Left = 0
   Top = 0
   BorderIcons = []
-  Caption = 'Catchment Soils'
+  Caption = 'Step 3 of 6: Soils'
   ClientHeight = 667
   ClientWidth = 755
   Color = clWindow
@@ -2511,7 +2511,7 @@ object PLRMD2SoilsAssignmnt: TPLRMD2SoilsAssignmnt
     Top = 610
     Width = 65
     Height = 25
-    Caption = 'OK'
+    Caption = 'Next >>'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13

@@ -1,11 +1,10 @@
-object ParcelCRCs: TParcelCRCs
+object PLRMRoadDrainageEditor: TPLRMRoadDrainageEditor
   Left = 0
   Top = 0
-  BorderIcons = []
-  Caption = 'Pollutant Source Control Effort Summary - Roads'
-  ClientHeight = 548
-  ClientWidth = 870
-  Color = clWindow
+  Caption = 'PLRMRoadDrainageEditor'
+  ClientHeight = 562
+  ClientWidth = 621
+  Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -15,10 +14,10 @@ object ParcelCRCs: TParcelCRCs
   PixelsPerInch = 96
   TextHeight = 13
   object Image1: TImage
-    Left = 0
-    Top = 0
-    Width = 869
-    Height = 104
+    Left = -366
+    Top = -3
+    Width = 850
+    Height = 102
     Picture.Data = {
       0A544A504547496D61676569120100FFD8FFE000104A46494600010100000100
       010000FFDB004300010101010101010101010101010101010101010101010101
@@ -2216,314 +2215,316 @@ object ParcelCRCs: TParcelCRCs
       171F7EEBFE05FF00A2E8A288F4FF000BFF00D3B4C6FE1F9C7FF484668FF551FF
       00C03FF46542BF7A5FFB63FCA6A28AEA7F14BFEE1FE4871F8BFEDD5F9448E2FB
       D37FD743FC851451593DFE51FC91C7D65FE297FE94CFFFD9}
-    Stretch = True
   end
-  object sgParcelCRCAdj: TStringGrid
-    Left = 312
-    Top = 177
-    Width = 550
-    Height = 320
-    BevelEdges = []
-    BevelInner = bvNone
-    BevelOuter = bvNone
-    ColCount = 6
-    DefaultColWidth = 90
-    Enabled = False
-    FixedCols = 0
-    RowCount = 12
-    FixedRows = 0
+  object lblCatchArea: TLabel
+    Left = 8
+    Top = 115
+    Width = 61
+    Height = 13
+    Caption = 'lblCatchArea'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = cl3DDkShadow
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsItalic]
+    ParentFont = False
+  end
+  object lblCatchImprv: TLabel
+    Left = 8
+    Top = 134
+    Width = 66
+    Height = 13
+    Caption = 'lblCatchImprv'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = cl3DDkShadow
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsItalic]
+    ParentFont = False
+    Visible = False
+  end
+  object Label1: TLabel
+    Left = 17
+    Top = 192
+    Width = 30
+    Height = 18
+    Caption = 'ICIA'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = -11
+    Font.Height = -15
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 0
-    RowHeights = (
-      24
-      24
-      24
-      24
-      24
-      24
-      24
-      24
-      24
-      24
-      24
-      24)
   end
-  object Panel6: TPanel
-    Left = 8
-    Top = 177
-    Width = 298
-    Height = 320
-    BevelOuter = bvNone
-    Color = cl3DLight
+  object Label2: TLabel
+    Left = 17
+    Top = 205
+    Width = 87
+    Height = 26
+    Caption = 'Draining Indirectly to outlet'
+    WordWrap = True
+  end
+  object Label3: TLabel
+    Left = 129
+    Top = 205
+    Width = 87
+    Height = 26
+    Caption = 'Draining Indirectly to outlet'
+    WordWrap = True
+  end
+  object Label4: TLabel
+    Left = 129
+    Top = 192
+    Width = 34
+    Height = 18
+    Caption = 'DCIA'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = -17
+    Font.Height = -15
     Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentBackground = False
+    Font.Style = []
     ParentFont = False
+  end
+  object Label5: TLabel
+    Left = 233
+    Top = 205
+    Width = 87
+    Height = 26
+    Caption = 'Draining Indirectly to outlet'
+    WordWrap = True
+  end
+  object Label6: TLabel
+    Left = 233
+    Top = 192
+    Width = 34
+    Height = 18
+    Caption = 'DINF'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -15
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+  end
+  object Label7: TLabel
+    Left = 377
+    Top = 202
+    Width = 87
+    Height = 26
+    Caption = 'Draining Indirectly to outlet'
+    WordWrap = True
+  end
+  object Label8: TLabel
+    Left = 377
+    Top = 189
+    Width = 37
+    Height = 18
+    Caption = 'DPCH'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -15
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+  end
+  object Label17: TLabel
+    Left = 17
+    Top = 160
+    Width = 276
+    Height = 13
+    Caption = 'Ave Annual Infiltration Rate for All Road Shoulders (in/hr)'
+    WordWrap = True
+  end
+  object Edit1: TEdit
+    Left = 17
+    Top = 240
+    Width = 88
+    Height = 21
+    TabOrder = 0
+    Text = '50'
+  end
+  object Edit2: TEdit
+    Left = 129
+    Top = 240
+    Width = 88
+    Height = 21
     TabOrder = 1
-    object Label5: TLabel
-      Left = 7
-      Top = 0
-      Width = 230
-      Height = 18
-      Caption = 'Single Family Residential (No BMPs)'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -15
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
-    object Label4: TLabel
-      Left = 7
-      Top = 25
-      Width = 278
-      Height = 18
-      Caption = 'Single Family Residential (Source Ctrl Cert.)'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -15
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
-    object Label12: TLabel
-      Left = 7
-      Top = 50
-      Width = 237
-      Height = 18
-      Caption = 'Single Family Residential (BMP Cert.)'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -15
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
-    object Label16: TLabel
-      Left = 7
-      Top = 125
-      Width = 230
-      Height = 18
-      Caption = 'Multi-Family Residential (BMP Cert.)'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -15
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
-    object Label17: TLabel
-      Left = 7
-      Top = 100
-      Width = 271
-      Height = 18
-      Caption = 'Multi-Family Residential (Source Ctrl Cert.)'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -15
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
-    object Label18: TLabel
-      Left = 7
-      Top = 75
-      Width = 223
-      Height = 18
-      Caption = 'Multi-Family Residential (No BMPs)'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -15
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
-    object Label3: TLabel
-      Left = 7
-      Top = 225
-      Width = 176
-      Height = 18
-      Caption = 'Vegetated Turf (No BMPs)'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -15
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
-    object Label11: TLabel
-      Left = 7
-      Top = 150
-      Width = 110
-      Height = 18
-      Caption = 'CICU (No BMPs)'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -15
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
-    object Label13: TLabel
-      Left = 7
-      Top = 175
-      Width = 158
-      Height = 18
-      Caption = 'CICU (Source Ctrl Cert.)'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -15
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
-    object Label14: TLabel
-      Left = 7
-      Top = 200
-      Width = 117
-      Height = 18
-      Caption = 'CICU (BMP Cert.)'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -15
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
-    object Label15: TLabel
-      Left = 7
-      Top = 250
-      Width = 224
-      Height = 18
-      Caption = 'Vegetated Turf (Source Ctrl Cert.)'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -15
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
-    object Label19: TLabel
-      Left = 7
-      Top = 276
-      Width = 183
-      Height = 18
-      Caption = 'Vegetated Turf (BMP Cert.)'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -15
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
+    Text = '50'
+  end
+  object Edit3: TEdit
+    Left = 232
+    Top = 237
+    Width = 129
+    Height = 21
+    TabOrder = 2
+    Text = '0'
+  end
+  object Edit4: TEdit
+    Left = 376
+    Top = 237
+    Width = 130
+    Height = 21
+    TabOrder = 3
+    Text = '0'
   end
   object Panel1: TPanel
-    Left = 312
-    Top = 109
-    Width = 550
-    Height = 62
-    BevelOuter = bvNone
-    Color = clWindow
-    ParentBackground = False
-    TabOrder = 2
-    object Label1: TLabel
-      Left = 32
-      Top = 43
-      Width = 28
-      Height = 21
-      Caption = 'TSS'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -17
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
+    Left = 232
+    Top = 264
+    Width = 129
+    Height = 201
+    TabOrder = 4
+    object Label10: TLabel
+      Left = 12
+      Top = 122
+      Width = 108
+      Height = 26
+      Caption = 'Ave Annual Infiltration Rate (in/hr)'
+      WordWrap = True
     end
-    object Label2: TLabel
-      Left = 112
-      Top = 43
-      Width = 58
-      Height = 21
-      Caption = 'FineSed'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -17
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
-    object Label6: TLabel
-      Left = 312
-      Top = 43
-      Width = 21
-      Height = 21
-      Caption = 'DP'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -17
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
-    object Label7: TLabel
-      Left = 400
-      Top = 43
-      Width = 21
-      Height = 21
-      Caption = 'TN'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -17
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
-    object Label8: TLabel
-      Left = 491
-      Top = 43
-      Width = 23
-      Height = 21
-      Caption = 'DN'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -17
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
+    object Label11: TLabel
+      Left = 12
+      Top = 63
+      Width = 68
+      Height = 26
+      Caption = 'Total Storage (cu.ft)'
+      WordWrap = True
     end
     object Label9: TLabel
-      Left = 219
-      Top = 43
-      Width = 19
-      Height = 21
-      Caption = 'TP'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -17
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
+      Left = 8
+      Top = 5
+      Width = 93
+      Height = 26
+      Caption = 'Total Surface Area (sq.ft)'
+      WordWrap = True
     end
-    object Label10: TLabel
-      Left = 16
-      Top = 14
-      Width = 469
+    object Edit5: TEdit
+      Left = 9
+      Top = 154
+      Width = 88
       Height = 21
-      Caption = 'Adjusted Characteristics Runoff Concentrations (CRCs) in mg/L'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -17
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
+      TabOrder = 0
+      Text = '0.5'
     end
+    object Edit6: TEdit
+      Left = 7
+      Top = 90
+      Width = 88
+      Height = 21
+      TabOrder = 1
+      Text = '0'
+    end
+    object Edit7: TEdit
+      Left = 9
+      Top = 36
+      Width = 88
+      Height = 21
+      TabOrder = 2
+      Text = '0'
+    end
+  end
+  object Panel2: TPanel
+    Left = 377
+    Top = 264
+    Width = 129
+    Height = 201
+    TabOrder = 5
+    object Label12: TLabel
+      Left = 12
+      Top = 122
+      Width = 108
+      Height = 26
+      Caption = 'Ave Annual Infiltration Rate (in/hr)'
+      WordWrap = True
+    end
+    object Label13: TLabel
+      Left = 12
+      Top = 63
+      Width = 48
+      Height = 26
+      Caption = 'Average Slope (%)'
+      WordWrap = True
+    end
+    object Label14: TLabel
+      Left = 8
+      Top = 20
+      Width = 52
+      Height = 13
+      Caption = 'Length (ft)'
+      WordWrap = True
+    end
+    object Label15: TLabel
+      Left = 71
+      Top = 17
+      Width = 47
+      Height = 13
+      Caption = 'Width (ft)'
+      WordWrap = True
+    end
+    object Label16: TLabel
+      Left = 71
+      Top = 63
+      Width = 51
+      Height = 26
+      Caption = 'Storage Depth (%)'
+      WordWrap = True
+    end
+    object Edit8: TEdit
+      Left = 9
+      Top = 154
+      Width = 112
+      Height = 21
+      TabOrder = 0
+      Text = '0.5'
+    end
+    object Edit9: TEdit
+      Left = 9
+      Top = 95
+      Width = 48
+      Height = 21
+      TabOrder = 1
+      Text = '0'
+    end
+    object Edit10: TEdit
+      Left = 9
+      Top = 36
+      Width = 48
+      Height = 21
+      TabOrder = 2
+      Text = '0'
+    end
+    object Edit11: TEdit
+      Left = 71
+      Top = 36
+      Width = 48
+      Height = 21
+      TabOrder = 3
+      Text = '0'
+    end
+    object Edit12: TEdit
+      Left = 71
+      Top = 95
+      Width = 48
+      Height = 21
+      TabOrder = 4
+      Text = '0'
+    end
+  end
+  object Edit13: TEdit
+    Left = 394
+    Top = 162
+    Width = 112
+    Height = 21
+    TabOrder = 6
+    Text = '0.5'
+  end
+  object statBar: TStatusBar
+    Left = 0
+    Top = 543
+    Width = 621
+    Height = 19
+    Panels = <>
+    SimplePanel = True
+    ExplicitTop = 626
+    ExplicitWidth = 483
   end
 end

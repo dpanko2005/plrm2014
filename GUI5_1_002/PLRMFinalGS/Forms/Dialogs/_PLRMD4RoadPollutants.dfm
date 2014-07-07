@@ -1,23 +1,24 @@
-object RoadCRCs: TRoadCRCs
+object PLRMRoadPollutants: TPLRMRoadPollutants
   Left = 0
   Top = 0
-  Caption = 'Pollutant Source Control Effort Summary - Roads'
-  ClientHeight = 471
-  ClientWidth = 870
-  Color = clWindow
+  Caption = 'Step 4 of 6: Road Pollutants'
+  ClientHeight = 562
+  ClientWidth = 483
+  Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object Image1: TImage
-    Left = 0
-    Top = 0
-    Width = 869
-    Height = 104
+    Left = -366
+    Top = -3
+    Width = 850
+    Height = 102
     Picture.Data = {
       0A544A504547496D61676569120100FFD8FFE000104A46494600010100000100
       010000FFDB004300010101010101010101010101010101010101010101010101
@@ -2215,400 +2216,339 @@ object RoadCRCs: TRoadCRCs
       171F7EEBFE05FF00A2E8A288F4FF000BFF00D3B4C6FE1F9C7FF484668FF551FF
       00C03FF46542BF7A5FFB63FCA6A28AEA7F14BFEE1FE4871F8BFEDD5F9448E2FB
       D37FD743FC851451593DFE51FC91C7D65FE297FE94CFFFD9}
-    Stretch = True
   end
-  object sgRdCRCAdj: TStringGrid
-    Left = 291
-    Top = 177
-    Width = 550
-    Height = 154
-    BevelEdges = []
-    BevelInner = bvNone
-    BevelOuter = bvNone
-    ColCount = 6
-    DefaultColWidth = 90
-    FixedCols = 0
-    RowCount = 6
-    FixedRows = 0
+  object lblCatchArea: TLabel
+    Left = 8
+    Top = 124
+    Width = 61
+    Height = 13
+    Caption = 'lblCatchArea'
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
+    Font.Color = cl3DDkShadow
     Font.Height = -11
     Font.Name = 'Tahoma'
-    Font.Style = []
+    Font.Style = [fsItalic]
     ParentFont = False
-    TabOrder = 0
-    RowHeights = (
-      24
-      24
-      24
-      24
-      24
-      24)
   end
-  object Panel6: TPanel
-    Left = 24
-    Top = 177
-    Width = 261
-    Height = 154
-    BevelOuter = bvNone
-    Color = cl3DLight
+  object lblCatchID: TLabel
+    Left = 8
+    Top = 105
+    Width = 49
+    Height = 13
+    Caption = 'lblCatchID'
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -17
+    Font.Color = cl3DDkShadow
+    Font.Height = -11
     Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentBackground = False
+    Font.Style = [fsItalic]
     ParentFont = False
-    TabOrder = 1
-    object Label5: TLabel
-      Left = 7
-      Top = 1
-      Width = 192
-      Height = 21
-      Caption = 'Primary Roads (Low Risk)'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -17
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
-    object Label4: TLabel
-      Left = 7
-      Top = 26
-      Width = 232
-      Height = 21
-      Caption = 'Primary Roads (Moderate Risk)'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -17
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
-    object Label12: TLabel
-      Left = 7
-      Top = 51
-      Width = 195
-      Height = 21
-      Caption = 'Primary Roads (High Risk)'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -17
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
-    object Label16: TLabel
-      Left = 7
-      Top = 126
-      Width = 215
-      Height = 21
-      Caption = 'Secondary Roads (High Risk)'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -17
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
-    object Label17: TLabel
-      Left = 7
-      Top = 101
-      Width = 252
-      Height = 21
-      Caption = 'Secondary Roads (Moderate Risk)'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -17
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
-    object Label18: TLabel
-      Left = 7
-      Top = 76
-      Width = 212
-      Height = 21
-      Caption = 'Secondary Roads (Low Risk)'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -17
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
   end
   object Panel1: TPanel
-    Left = 291
-    Top = 109
-    Width = 550
-    Height = 62
+    Left = 8
+    Top = 163
+    Width = 467
+    Height = 73
     BevelOuter = bvNone
-    Color = clWindow
+    Color = clSkyBlue
     ParentBackground = False
-    TabOrder = 2
+    TabOrder = 1
     object Label1: TLabel
-      Left = 32
-      Top = 43
-      Width = 28
-      Height = 21
-      Caption = 'TSS'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -17
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
+      Left = 136
+      Top = 11
+      Width = 38
+      Height = 13
+      Caption = 'Erodible'
     end
     object Label2: TLabel
-      Left = 112
-      Top = 43
-      Width = 58
-      Height = 21
-      Caption = 'FineSed'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -17
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
+      Left = 224
+      Top = 11
+      Width = 47
+      Height = 13
+      Caption = 'Protected'
     end
-    object Label6: TLabel
-      Left = 312
-      Top = 43
-      Width = 21
-      Height = 21
-      Caption = 'DP'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -17
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
+    object Label3: TLabel
+      Left = 304
+      Top = 11
+      Width = 30
+      Height = 13
+      Caption = 'Stable'
     end
-    object Label7: TLabel
-      Left = 400
-      Top = 43
-      Width = 21
-      Height = 21
-      Caption = 'TN'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -17
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
+    object Label4: TLabel
+      Left = 367
+      Top = 11
+      Width = 90
+      Height = 13
+      Caption = 'Stable && Protected'
     end
-    object Label8: TLabel
-      Left = 491
-      Top = 43
-      Width = 23
-      Height = 21
-      Caption = 'DN'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -17
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
+    object Label5: TLabel
+      Left = 2
+      Top = 38
+      Width = 109
+      Height = 13
+      Caption = '% of Shoulder Length:'
     end
-    object Label9: TLabel
-      Left = 219
-      Top = 43
-      Width = 19
-      Height = 21
-      Caption = 'TP'
+    object sgRoadShoulderPercents: TStringGrid
+      Left = 120
+      Top = 30
+      Width = 339
+      Height = 27
+      Margins.Left = 6
+      BevelEdges = []
+      BevelInner = bvNone
+      BevelOuter = bvNone
+      ColCount = 4
+      DefaultColWidth = 82
+      DefaultRowHeight = 23
+      FixedColor = cl3DLight
+      FixedCols = 0
+      RowCount = 1
+      FixedRows = 0
       Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -17
+      Font.Color = clDefault
+      Font.Height = -11
       Font.Name = 'Tahoma'
       Font.Style = []
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing]
       ParentFont = False
-    end
-    object Label10: TLabel
-      Left = 16
-      Top = 14
-      Width = 469
-      Height = 21
-      Caption = 'Adjusted Characteristics Runoff Concentrations (CRCs) in mg/L'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -17
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
+      ScrollBars = ssNone
+      TabOrder = 0
+      OnDrawCell = sgRoadShoulderPercentsDrawCell
+      OnKeyPress = sgRoadShoulderPercentsKeyPress
+      OnKeyUp = sgRoadShoulderPercentsKeyUp
+      OnSelectCell = sgRoadShoulderPercentsSelectCell
+      OnSetEditText = sgRoadShoulderPercentsSetEditText
     end
   end
-  object sgRdCRCWtd: TStringGrid
-    Left = 291
-    Top = 401
-    Width = 550
-    Height = 53
+  object Panel12: TPanel
+    Left = 8
+    Top = 143
+    Width = 467
+    Height = 21
     BevelEdges = []
-    BevelInner = bvNone
     BevelOuter = bvNone
-    Color = clMoneyGreen
-    ColCount = 6
-    DefaultColWidth = 90
-    FixedCols = 0
-    RowCount = 2
-    FixedRows = 0
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 3
-    Visible = False
-    RowHeights = (
-      24
-      24)
+    BorderWidth = 1
+    Color = cl3DLight
+    ParentBackground = False
+    TabOrder = 0
+    object Label21: TLabel
+      Left = 0
+      Top = 3
+      Width = 126
+      Height = 13
+      Alignment = taCenter
+      Caption = 'Road Shoulder Erosion'
+      Color = clHighlight
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+      WordWrap = True
+    end
   end
   object Panel2: TPanel
-    Left = 24
-    Top = 401
-    Width = 261
-    Height = 53
+    Left = 8
+    Top = 273
+    Width = 180
+    Height = 224
     BevelOuter = bvNone
-    Color = cl3DLight
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -17
-    Font.Name = 'Tahoma'
-    Font.Style = []
+    Color = clMoneyGreen
     ParentBackground = False
-    ParentFont = False
-    TabOrder = 4
-    Visible = False
-    object Label3: TLabel
-      Left = 7
-      Top = 1
-      Width = 107
-      Height = 21
-      Caption = 'Primary Roads'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -17
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
+    TabOrder = 2
+    object Label6: TLabel
+      Left = 11
+      Top = 11
+      Width = 50
+      Height = 13
+      Caption = '% of Area'
     end
-    object Label19: TLabel
-      Left = 7
-      Top = 26
-      Width = 127
-      Height = 21
-      Caption = 'Secondary Roads'
+    object Label7: TLabel
+      Left = 92
+      Top = 9
+      Width = 75
+      Height = 13
+      Caption = 'Condition Score'
+    end
+    object sgRoadConditions: TStringGrid
+      Left = 4
+      Top = 30
+      Width = 173
+      Height = 51
+      Margins.Left = 6
+      BevelEdges = []
+      BevelInner = bvNone
+      BevelOuter = bvNone
+      BorderStyle = bsNone
+      ColCount = 2
+      DefaultColWidth = 70
+      DefaultRowHeight = 23
+      FixedColor = cl3DLight
+      FixedCols = 0
+      RowCount = 2
+      FixedRows = 0
       Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -17
+      Font.Color = clDefault
+      Font.Height = -11
       Font.Name = 'Tahoma'
       Font.Style = []
+      Options = [goFixedVertLine, goFixedHorzLine, goHorzLine, goRangeSelect, goEditing]
       ParentFont = False
+      ScrollBars = ssVertical
+      TabOrder = 0
+      OnDrawCell = sgRoadConditionsDrawCell
+      OnKeyPress = sgRoadConditionsKeyPress
+      OnKeyUp = sgRoadConditionsKeyUp
+      OnSelectCell = sgRoadConditionsSelectCell
+      OnSetEditText = sgRoadConditionsSetEditText
     end
   end
   object Panel3: TPanel
-    Left = 291
-    Top = 337
-    Width = 550
-    Height = 62
+    Left = 8
+    Top = 246
+    Width = 180
+    Height = 30
+    BevelEdges = []
     BevelOuter = bvNone
-    Color = clWindow
+    BorderWidth = 1
+    Color = cl3DLight
+    ParentBackground = False
+    TabOrder = 3
+    object Label11: TLabel
+      Left = 9
+      Top = 8
+      Width = 91
+      Height = 13
+      Alignment = taCenter
+      Caption = 'Road Conditions'
+      Color = clHighlight
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+      WordWrap = True
+    end
+  end
+  object Panel4: TPanel
+    Left = 216
+    Top = 273
+    Width = 259
+    Height = 224
+    BevelOuter = bvNone
+    Color = clMoneyGreen
+    ParentBackground = False
+    TabOrder = 4
+    object Label8: TLabel
+      Left = 35
+      Top = 11
+      Width = 18
+      Height = 13
+      Caption = 'FSP'
+    end
+    object Label9: TLabel
+      Left = 116
+      Top = 11
+      Width = 12
+      Height = 13
+      Caption = 'TP'
+    end
+    object Label12: TLabel
+      Left = 203
+      Top = 11
+      Width = 13
+      Height = 13
+      Caption = 'TN'
+    end
+    object sgCRCs: TStringGrid
+      Left = 4
+      Top = 30
+      Width = 246
+      Height = 51
+      Margins.Left = 6
+      BevelEdges = []
+      BevelInner = bvNone
+      BevelOuter = bvNone
+      BorderStyle = bsNone
+      Color = clMoneyGreen
+      ColCount = 4
+      DefaultColWidth = 82
+      DefaultRowHeight = 23
+      Enabled = False
+      FixedColor = cl3DLight
+      FixedCols = 0
+      RowCount = 2
+      FixedRows = 0
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clDefault
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      GradientEndColor = clMoneyGreen
+      GradientStartColor = clMoneyGreen
+      ParentFont = False
+      ScrollBars = ssVertical
+      TabOrder = 0
+      OnDrawCell = sgCRCsDrawCell
+      OnKeyPress = sgCRCsKeyPress
+    end
+  end
+  object Panel5: TPanel
+    Left = 216
+    Top = 246
+    Width = 259
+    Height = 29
+    BevelEdges = []
+    BevelOuter = bvNone
+    BorderWidth = 1
+    Color = cl3DLight
     ParentBackground = False
     TabOrder = 5
-    Visible = False
-    object Label20: TLabel
-      Left = 32
-      Top = 43
-      Width = 28
-      Height = 21
-      Caption = 'TSS'
+    object Label10: TLabel
+      Left = 9
+      Top = 8
+      Width = 242
+      Height = 13
+      Alignment = taCenter
+      Caption = 'Characteristic Runoff Concentrations (mgl)'
+      Color = clHighlight
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -17
+      Font.Height = -11
       Font.Name = 'Tahoma'
-      Font.Style = []
+      Font.Style = [fsBold]
+      ParentColor = False
       ParentFont = False
+      WordWrap = True
     end
-    object Label21: TLabel
-      Left = 112
-      Top = 43
-      Width = 58
-      Height = 21
-      Caption = 'FineSed'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -17
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
-    object Label22: TLabel
-      Left = 312
-      Top = 43
-      Width = 21
-      Height = 21
-      Caption = 'DP'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -17
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
-    object Label23: TLabel
-      Left = 400
-      Top = 43
-      Width = 21
-      Height = 21
-      Caption = 'TN'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -17
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
-    object Label24: TLabel
-      Left = 491
-      Top = 43
-      Width = 23
-      Height = 21
-      Caption = 'DN'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -17
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
-    object Label25: TLabel
-      Left = 219
-      Top = 43
-      Width = 19
-      Height = 21
-      Caption = 'TP'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -17
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
-    object Label28: TLabel
-      Left = 66
-      Top = 14
-      Width = 384
-      Height = 21
-      Caption = 'Area-Weighted Characteristics Runoff CRCs in mg/L'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -17
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
+  end
+  object btnOk: TButton
+    Left = 400
+    Top = 503
+    Width = 75
+    Height = 25
+    Caption = 'Next >>'
+    TabOrder = 6
+    OnClick = btnOkClick
+  end
+  object Button2: TButton
+    Left = 8
+    Top = 503
+    Width = 75
+    Height = 25
+    Caption = 'Edit'
+    TabOrder = 7
+  end
+  object statBar: TStatusBar
+    Left = 0
+    Top = 543
+    Width = 483
+    Height = 19
+    Panels = <>
+    SimplePanel = True
+    ExplicitTop = 680
   end
 end

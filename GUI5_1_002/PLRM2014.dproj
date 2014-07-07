@@ -357,21 +357,6 @@
 			<DCCReference Include="PLRMFinalGS\Forms\Dialogs\_PLRMstats.pas">
 				<Form>frmPLRMStats</Form>
 			</DCCReference>
-			<DCCReference Include="PLRMFinalGS\Forms\_FCatchParam.pas">
-				<Form>FCatchParam</Form>
-			</DCCReference>
-			<DCCReference Include="PLRMFinalGS\Forms\_FCatchProp.pas">
-				<Form>FcatchProp</Form>
-			</DCCReference>
-			<DCCReference Include="PLRMFinalGS\Forms\_FGlobalCatchments.pas">
-				<Form>FGlobalCatch</Form>
-			</DCCReference>
-			<DCCReference Include="PLRMFinalGS\Forms\_FSWTParam.pas">
-				<Form>Form7</Form>
-			</DCCReference>
-			<DCCReference Include="PLRMFinalGS\Forms\_PLRM0Wizard.pas">
-				<Form>PLRMWiz</Form>
-			</DCCReference>
 			<DCCReference Include="PLRMFinalGS\Forms\_PLRM1ProjNscenManger.pas">
 				<Form>ProjNscenManager</Form>
 			</DCCReference>
@@ -380,9 +365,6 @@
 			</DCCReference>
 			<DCCReference Include="PLRMFinalGS\Forms\_PLRM3PSCDef.pas">
 				<Form>PLRMPCSDef</Form>
-			</DCCReference>
-			<DCCReference Include="PLRMFinalGS\Forms\_PLRM4_2ParcelCRCSumary.pas">
-				<Form>ParcelCRCs</Form>
 			</DCCReference>
 			<DCCReference Include="PLRMFinalGS\Forms\_PLRM4RoadConditions.pas">
 				<Form>PLRMRoadConditions</Form>
@@ -412,6 +394,18 @@
 			</DCCReference>
 			<DCCReference Include="PLRMFinalGS\Forms\Dialogs\_PLRMDAbout.pas">
 				<Form>AboutPLRMBoxForm</Form>
+			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\Dialogs\_PLRMD4RoadPollutants.pas">
+				<Form>PLRMRoadPollutants</Form>
+				<FormType>dfm</FormType>
+			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\Dialogs\_PLRMD5RoadDrainageEditor.pas">
+				<Form>PLRMRoadDrainageEditor</Form>
+				<FormType>dfm</FormType>
+			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\Dialogs\_PLRMD6ParcelDrainageAndBMPs.pas">
+				<Form>PLRMParcelDrngAndBMPs</Form>
+				<FormType>dfm</FormType>
 			</DCCReference>
 			<None Include="objprops.txt"/>
 			<None Include="viewvars.txt"/>
@@ -479,13 +473,13 @@
 					<Platform value="Win32">True</Platform>
 				</Platforms>
 				<Deployment>
-					<DeployFile Class="ProjectOutput" Configuration="Release" LocalName="Epaswmm5.exe">
-						<Platform Name="Win32"/>
-					</DeployFile>
 					<DeployFile Class="DebugSymbols" Configuration="Release" LocalName="Epaswmm5.rsm">
 						<Platform Name="Win32">
 							<RemoteName>Epaswmm5.rsm</RemoteName>
 						</Platform>
+					</DeployFile>
+					<DeployFile Class="ProjectOutput" Configuration="Release" LocalName="Epaswmm5.exe">
+						<Platform Name="Win32"/>
 					</DeployFile>
 					<DeployClass Name="ProjectOutput" Required="true">
 						<Platform Name="OSX32">

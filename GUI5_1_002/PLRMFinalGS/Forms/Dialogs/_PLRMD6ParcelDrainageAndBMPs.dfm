@@ -1,74 +1,22 @@
-object PLRMLandUse: TPLRMLandUse
+object PLRMParcelDrngAndBMPs: TPLRMParcelDrngAndBMPs
   Left = 0
   Top = 0
-  BorderIcons = []
-  Caption = 'Step 2 of 6: Land Uses'
-  ClientHeight = 746
-  ClientWidth = 738
-  Color = clWindow
+  Caption = 'Step 6 of 6: Parcel Drainage & BMPs'
+  ClientHeight = 404
+  ClientWidth = 758
+  Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  Icon.Data = {
-    0000010001001414000001000800080600001600000028000000140000002800
-    0000010008000000000000000000000000000000000000000000000000000000
-    000003030300060807000A0E0C000D0F0E000F0F0F001115120015151500161C
-    1800171717001A1A1A001B1E1C00202623002323230028272800292E2B00313C
-    340039483E00444444004B4B4B004C6253004D6B56004F6456005C5C5C005E6B
-    63005F706500606060006F6F6F00798B7F007CAE8C007D7D7D0081A68D0094CA
-    A5009595950099BCA40099CAA900ADADAD00AFAFAF00BAFFCE00BEBEBE00C1FB
-    D400C1FFD400C2C2C200C4FFD600C7FFD900C8FFDA00C8FFE500C9FFDA00C9FF
-    DB00CAFFDB00CBCBCB00CBFFDD00CEFFDF00D0FFE100D1FFE000D2FFEA00D3D4
-    D300D4D4D400D4FFE200D5FFE300D5FFF700D6FFE400D7FFE400D8F9D800D8FF
-    E500D8FFEB00D9B17600D9FFE600DAFFE700DAFFE800DBFAE200DBFFE700DBFF
-    E800DCDCDC00DCFBE800DDFFE900DDFFED00DEDEDE00DFFFEA00DFFFED00E0FF
-    EC00E1E1E100E1E5C800E1FFF200E2FFED00E2FFEF00E2FFF600E44E0000E4FF
-    F300E4FFF500E4FFF600E5540000E5550000E5560000E5570000E5580000E5FF
-    EE00E5FFF300E65A0000E65B0000E65C0000E65D0200E65F0A00E6AB7400E764
-    0C00E7E7E700E7FFF600E7FFF700E8671300E9712100E9A46B00EAFFF500EAFF
-    F900EBFFFC00EC834300EC864200ECECEC00ED864300ED874300ED8A4A00ED8B
-    4900ED8C4C00ED8D4D00ED8D4E00EF8D2E00EF943700F0943400F09F6900F1A7
-    7500F1A77600F2AD7F00F2AE8000F3912B00F39D3600F39D3700F3B48A00F49E
-    3700F5A43A00F5BE9900F5C2A100F6C2A200F6C3A100F6C3A200F6C4A300F6C4
-    A400F6C5A300F6C5A500F6C6A600F6C9AA00F7CCAF00F7CCB000F7CDB100F8B6
-    4C00F8CFB400F8D1B800F8D2B900F9B84C00F9D7C100F9DBC700FAB84D00FADF
-    CD00FBC15300FBE2D100FBE3D300FBE4D500FBE6D800FBE7D900FBE7DA00FBE8
-    DA00FCC65700FCEEE400FDF2EA00FDF3EB00FDF3EC00FED46700FEF7F300FEF9
-    F600FEFBF900FFD96C00FFDF7300FFE07400FFE17500FFE27600FFE37500FFE6
-    7900FFFDFB00FFFFFF0000000000000000000000000000000000000000000000
-    0000000000000000000000000000000000000000000000000000000000000000
-    0000000000000000000000000000000000000000000000000000000000000000
-    0000000000000000000000000000000000000000000000000000000000000000
-    0000000000000000000000000000000000000000000000000000000000000000
-    0000000000000000000000000000000000000000000000000000000000000000
-    0000000000000000000000000000000000000000000000000000000000000000
-    0000000000000000000000000000000000000000000000000000000000000000
-    000000000000000000000000000000000000000000000000000000000000BA9A
-    7A9DA27A8EBA7977BABABABA001D004DBABABA8A64935D5F5CBA625EBABABA17
-    2026151EBABABA8A64785BBA5E5F635EBABABA09302B2800BABABA99767391BA
-    A8757672BABA130033312D1F51BABABABABABABABABABABABA24103D3A3A3634
-    0038BABAA3A3BABAA7A39EBABA004F434744403B220EBABA6464A06C657BBABA
-    2A0C4E565A59504B191ABABA64649796625BAABA2100617CA9A167540069BABA
-    92928D909BA6BABA026F7186B3B37E6A181BBABABABABABABABABABA1C606EB8
-    B3B385700B27BABA8C8F8F8F8F94690055587DB5B3B398700432BABA5D638082
-    828739064852B4B3B3B39C6B0F25BABA5E64ABBABABA49033E4AB6B3B3B38953
-    00BABABA6668ACBABABABA004541B7B3B3B3AE460074BABABABABABABABABABA
-    004C3C9FB3B3B23F00BABAB19595B0BABABABABA0708354288B284370DBABAAD
-    64647F81838BBABABA5100112F2E2C330ABABAAD6464A5AF6D6457ADBABABA05
-    161429231BBABAB9A0A0A0A0A4AABABABABABABABA120001BABABABABABABABA
-    BABABABABABABABABABABABABABA000000000000000000000000000000000000
-    0000000000000000000000000000000000000000000000000000000000000000
-    000000000000000000000000000000000000000000000000000000000000}
   OldCreateOrder = False
-  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object Image1: TImage
-    Left = -107
+    Left = -366
     Top = -3
-    Width = 837
+    Width = 874
     Height = 102
     Picture.Data = {
       0A544A504547496D61676569120100FFD8FFE000104A46494600010100000100
@@ -2268,189 +2216,78 @@ object PLRMLandUse: TPLRMLandUse
       00C03FF46542BF7A5FFB63FCA6A28AEA7F14BFEE1FE4871F8BFEDD5F9448E2FB
       D37FD743FC851451593DFE51FC91C7D65FE297FE94CFFFD9}
   end
-  object Label7: TLabel
+  object lblCatchArea: TLabel
     Left = 8
-    Top = 707
-    Width = 126
-    Height = 14
-    Caption = 'Note: Press F1 for help'
+    Top = 115
+    Width = 61
+    Height = 13
+    Caption = 'lblCatchArea'
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clGradientActiveCaption
-    Font.Height = -12
+    Font.Color = cl3DDkShadow
+    Font.Height = -11
     Font.Name = 'Tahoma'
-    Font.Style = [fsUnderline]
+    Font.Style = [fsItalic]
+    ParentFont = False
+  end
+  object lblCatchImprv: TLabel
+    Left = 8
+    Top = 134
+    Width = 66
+    Height = 13
+    Caption = 'lblCatchImprv'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = cl3DDkShadow
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsItalic]
     ParentFont = False
     Visible = False
   end
-  object btnCancel: TButton
-    Left = 640
-    Top = 682
-    Width = 65
-    Height = 25
-    Caption = 'Cancel'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -13
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 0
-    OnClick = btnCancelClick
-  end
-  object btnOk: TButton
-    Left = 559
-    Top = 682
-    Width = 65
-    Height = 25
-    Caption = 'Next >>'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -13
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
+  object Panel1: TPanel
+    Left = 494
+    Top = 191
+    Width = 257
+    Height = 138
+    BevelOuter = bvNone
+    Color = clSkyBlue
+    ParentBackground = False
     TabOrder = 1
-    OnClick = btnOkClick
-  end
-  object GroupBox1: TGroupBox
-    Left = 8
-    Top = 128
-    Width = 697
-    Height = 537
-    Caption = 'Catchment Land Uses'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -12
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 2
-    object Label2: TLabel
-      Left = 62
-      Top = 283
-      Width = 55
-      Height = 14
-      Alignment = taCenter
-      Caption = 'Land Use'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -12
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
-      WordWrap = True
-    end
-    object Label4: TLabel
-      Left = 583
-      Top = 282
-      Width = 33
-      Height = 14
-      Alignment = taCenter
-      Caption = 'Acres'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -12
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
-      WordWrap = True
-    end
     object Label1: TLabel
-      Left = 434
-      Top = 87
-      Width = 117
-      Height = 14
-      Caption = 'Selected Land Uses'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -12
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
+      Left = 24
+      Top = 11
+      Width = 41
+      Height = 13
+      Caption = 'No BMPs'
+    end
+    object Label2: TLabel
+      Left = 112
+      Top = 11
+      Width = 47
+      Height = 13
+      Caption = 'DCIA (%)'
     end
     object Label3: TLabel
-      Left = 41
-      Top = 87
-      Width = 119
-      Height = 14
-      Caption = 'Available Land Uses'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -12
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
-    end
-    object Label5: TLabel
-      Left = 279
-      Top = 282
-      Width = 134
-      Height = 14
-      Alignment = taCenter
-      Caption = '% of Catchment Area'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -12
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
-      WordWrap = True
-    end
-    object Label6: TLabel
-      Left = 427
-      Top = 282
-      Width = 86
-      Height = 14
-      Alignment = taCenter
-      Caption = '% Impervious'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -12
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
-      WordWrap = True
-    end
-    object Label8: TLabel
-      Left = 561
-      Top = 17
-      Width = 98
-      Height = 14
-      Caption = 'Select Catchment'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -12
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      Visible = False
-    end
-    object lblCatchArea: TLabel
-      Left = 17
-      Top = 45
-      Width = 61
+      Left = 192
+      Top = 11
+      Width = 55
       Height = 13
-      Caption = 'lblCatchArea'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = cl3DDkShadow
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = [fsItalic]
-      ParentFont = False
+      Caption = 'KSat (in/hr)'
     end
-    object sgLuse: TStringGrid
-      Left = 17
-      Top = 302
-      Width = 664
-      Height = 219
+    object sgRoadShoulderPercents: TStringGrid
+      Left = 5
+      Top = 30
+      Width = 246
+      Height = 99
+      Margins.Left = 6
       BevelEdges = []
       BevelInner = bvNone
       BevelOuter = bvNone
-      ColCount = 4
-      DefaultColWidth = 130
+      ColCount = 3
+      DefaultColWidth = 82
       DefaultRowHeight = 23
+      FixedColor = cl3DLight
       FixedCols = 0
-      RowCount = 2
+      RowCount = 4
       FixedRows = 0
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clDefault
@@ -2458,132 +2295,218 @@ object PLRMLandUse: TPLRMLandUse
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      ScrollBars = ssNone
       TabOrder = 0
-      OnDrawCell = sgLuseDrawCell
-      OnKeyPress = sgLuseKeyPress
-      OnKeyUp = sgLuseKeyUp
-      OnSelectCell = sgLuseSelectCell
-      OnSetEditText = sgLuseSetEditText
     end
-    object lbxLuseFrom: TListBox
-      Left = 17
-      Top = 106
-      Width = 287
-      Height = 135
-      DragMode = dmAutomatic
-      ItemHeight = 14
-      TabOrder = 1
-    end
-    object btnToRight: TButton
-      Left = 321
-      Top = 108
-      Width = 50
-      Height = 20
-      Caption = '>'
+  end
+  object Panel12: TPanel
+    Left = 494
+    Top = 164
+    Width = 257
+    Height = 32
+    BevelEdges = []
+    BevelOuter = bvNone
+    BorderWidth = 1
+    Color = cl3DLight
+    ParentBackground = False
+    TabOrder = 0
+    object Label21: TLabel
+      Left = 0
+      Top = 5
+      Width = 252
+      Height = 65
+      Alignment = taCenter
+      Caption = 'Drainage Conditions for Area Without BMPs'
+      Color = clHighlight
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
       Font.Name = 'Tahoma'
       Font.Style = [fsBold]
+      ParentColor = False
       ParentFont = False
-      TabOrder = 2
-      OnClick = btnToRightClick
+      WordWrap = True
     end
-    object btnToLeft: TButton
-      Left = 321
-      Top = 134
-      Width = 50
-      Height = 20
-      Caption = '<'
-      Enabled = False
+  end
+  object Panel2: TPanel
+    Left = 311
+    Top = 191
+    Width = 177
+    Height = 138
+    BevelOuter = bvNone
+    Color = clSkyBlue
+    ParentBackground = False
+    TabOrder = 2
+    object Label4: TLabel
+      Left = 24
+      Top = 11
+      Width = 41
+      Height = 13
+      Caption = 'No BMPs'
+    end
+    object Label5: TLabel
+      Left = 112
+      Top = 11
+      Width = 47
+      Height = 13
+      Caption = 'DCIA (%)'
+    end
+    object StringGrid1: TStringGrid
+      Left = 5
+      Top = 30
+      Width = 166
+      Height = 99
+      Margins.Left = 6
+      BevelEdges = []
+      BevelInner = bvNone
+      BevelOuter = bvNone
+      ColCount = 2
+      DefaultColWidth = 82
+      DefaultRowHeight = 23
+      FixedColor = cl3DLight
+      FixedCols = 0
+      RowCount = 4
+      FixedRows = 0
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clDefault
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      ScrollBars = ssNone
+      TabOrder = 0
+    end
+  end
+  object Panel3: TPanel
+    Left = 311
+    Top = 164
+    Width = 177
+    Height = 32
+    BevelEdges = []
+    BevelOuter = bvNone
+    BorderWidth = 1
+    Color = cl3DLight
+    ParentBackground = False
+    TabOrder = 3
+    object Label7: TLabel
+      Left = 0
+      Top = 5
+      Width = 129
+      Height = 26
+      Alignment = taCenter
+      Caption = 'Functioning BMPs     (% Land Use Area)'
+      Color = clHighlight
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
       Font.Name = 'Tahoma'
       Font.Style = [fsBold]
+      ParentColor = False
       ParentFont = False
-      TabOrder = 3
-      OnClick = btnToLeftClick
+      WordWrap = True
     end
-    object btnAllToRight: TButton
-      Left = 321
-      Top = 173
-      Width = 50
-      Height = 20
-      Caption = '>>'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
-      TabOrder = 4
-      OnClick = btnAllToRightClick
+  end
+  object Panel4: TPanel
+    Left = 0
+    Top = 195
+    Width = 305
+    Height = 135
+    BevelOuter = bvNone
+    Color = clSkyBlue
+    ParentBackground = False
+    TabOrder = 4
+    object Label6: TLabel
+      Left = 151
+      Top = 8
+      Width = 67
+      Height = 13
+      Caption = 'Total Acreage'
     end
-    object btnAllToLeft: TButton
-      Left = 321
-      Top = 199
-      Width = 50
-      Height = 20
-      Caption = '<<'
-      Enabled = False
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
-      TabOrder = 5
-      OnClick = btnAllToLeftClick
+    object Label8: TLabel
+      Left = 239
+      Top = 8
+      Width = 48
+      Height = 13
+      Caption = 'Imp Acres'
     end
-    object lbxLuseTo: TListBox
-      Left = 394
+    object Label10: TLabel
+      Left = 7
+      Top = 35
+      Width = 120
+      Height = 13
+      Caption = 'Single Family Residential:'
+    end
+    object Label11: TLabel
+      Left = 7
+      Top = 54
+      Width = 115
+      Height = 13
+      Caption = 'Multi-Family Residential:'
+    end
+    object Label12: TLabel
+      Left = 7
+      Top = 83
+      Width = 29
+      Height = 13
+      Caption = 'CICU:'
+    end
+    object Label13: TLabel
+      Left = 7
       Top = 107
-      Width = 287
-      Height = 135
-      DragMode = dmAutomatic
-      ItemHeight = 14
-      TabOrder = 6
+      Width = 77
+      Height = 13
+      Caption = 'Vegetated Turf:'
     end
+    object StringGrid2: TStringGrid
+      Left = 132
+      Top = 27
+      Width = 166
+      Height = 99
+      Margins.Left = 6
+      BevelEdges = []
+      BevelInner = bvNone
+      BevelOuter = bvNone
+      ColCount = 2
+      DefaultColWidth = 82
+      DefaultRowHeight = 23
+      FixedColor = cl3DLight
+      FixedCols = 0
+      RowCount = 4
+      FixedRows = 0
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clDefault
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      ScrollBars = ssNone
+      TabOrder = 0
+    end
+  end
+  object Button1: TButton
+    Left = 8
+    Top = 352
+    Width = 89
+    Height = 25
+    Caption = 'Edit BMP Sizing'
+    TabOrder = 5
+  end
+  object Button2: TButton
+    Left = 676
+    Top = 354
+    Width = 75
+    Height = 25
+    Caption = 'OK'
+    TabOrder = 6
   end
   object statBar: TStatusBar
     Left = 0
-    Top = 727
-    Width = 738
+    Top = 385
+    Width = 758
     Height = 19
     Panels = <>
     SimplePanel = True
-  end
-  object cbxGlobalSpecfc: TComboBox
-    Left = 559
-    Top = 173
-    Width = 137
-    Height = 24
-    Style = csDropDownList
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -13
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 4
-    Visible = False
-    OnChange = cbxGlobalSpecfcChange
-  end
-  object btnApply: TButton
-    Left = 488
-    Top = 682
-    Width = 65
-    Height = 25
-    Caption = 'Apply'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -13
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 5
-    Visible = False
-    OnClick = btnApplyClick
+    ExplicitTop = 405
+    ExplicitWidth = 483
   end
 end
