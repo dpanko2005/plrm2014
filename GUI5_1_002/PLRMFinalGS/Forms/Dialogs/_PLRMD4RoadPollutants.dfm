@@ -2474,7 +2474,7 @@ object PLRMRoadPollutants: TPLRMRoadPollutants
       BevelOuter = bvNone
       BorderStyle = bsNone
       Color = clMoneyGreen
-      ColCount = 4
+      ColCount = 3
       DefaultColWidth = 82
       DefaultRowHeight = 23
       Enabled = False
@@ -2549,6 +2549,5 @@ object PLRMRoadPollutants: TPLRMRoadPollutants
     Height = 19
     Panels = <>
     SimplePanel = True
-    ExplicitTop = 680
   end
 end
