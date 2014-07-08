@@ -164,19 +164,19 @@ begin
       SWTLoads[I, 1] := (StrToFloat(AnnLoads[I, 7]) - StrToFloat(AnnLoads2[I, 7]
         )) / simLength;
 
-  // row-2 Get annual bypass loads
+  // row-2 Get annual treated loads
   AnnLoads := GetAveAnnualLoadsForJuncOrLink(trJuncID, sourceTble);
   if (Assigned(AnnLoads)) then
     for I := 0 to Length(AnnLoads) - 1 do
       SWTLoads[I, 2] := StrToFloat(AnnLoads[I, 7]) / simLength;
 
-  // row-3 Get annual treated loads
+  // row-3 Get annual effluent loads
   AnnLoads := GetAveAnnualLoadsForJuncOrLink(outJuncID, sourceTble);
   if (Assigned(AnnLoads)) then
     for I := 0 to Length(AnnLoads) - 1 do
       SWTLoads[I, 3] := StrToFloat(AnnLoads[I, 7]) / simLength;
 
-  // row-4 Get annual effluent loads
+  // row-4 Get annual volume loads removed
   AnnLoads := GetAveAnnualLoadsForJuncOrLink(inJuncID, sourceTble);
   AnnLoads2 := GetAveAnnualLoadsForJuncOrLink(outJuncID, sourceTble);
   if (Assigned(AnnLoads) and Assigned(AnnLoads2)) then
@@ -316,6 +316,7 @@ begin
       begin
         InLinkID := tempNode.userName + '_InCo';
         ByLinkID := tempNode.userName + '_SurByWe'; // surcharge bypass outlet
+        //ByLinkID := tempNode.userName + '_ByWe'; // surcharge bypass outlet
         TrLinkID := tempNode.userName + '_SurOtCo'; // surcharge treated outlet
         Tr2LinkID := tempNode.userName + '_WetOtCo';
 
@@ -324,7 +325,7 @@ begin
         if (Assigned(AnnLoads) and Assigned(AnnLoads2)) then
           for I := 1 to Length(AnnLoads[0]) - 1 do
             SWTLoads[I, 2] :=
-              (StrToFloat(AnnLoads[0, I]) - StrToFloat(AnnLoads2[0, I])) /
+              (StrToFloat(AnnLoads[0, I]) + StrToFloat(AnnLoads2[0, I])) /
               simLength;
       end;
     5, 6: // Cartridge Filter, Treatment Vault (bypass only)
