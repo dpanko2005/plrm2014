@@ -149,6 +149,10 @@ type
     cicuSchm: TPLRMHydPropsScheme;
     vegTSchm: TPLRMHydPropsScheme;
 
+    //2014 _PLRMD6ParcelDrainageAndBMPs
+    sgBMPImplData: PLRMGridData;
+    sgNoBMPsData: PLRMGridData;
+
     secRdSchms: array [0 .. 2] of TPLRMHydPropsScheme;
     primRdSchms: array [0 .. 2] of TPLRMHydPropsScheme;
     sfrSchms: array [0 .. 2] of TPLRMHydPropsScheme;
