@@ -122,7 +122,6 @@ uses
   GSResults in 'PLRMFinalGS\Units\GSResults.pas',
   GSTypes in 'PLRMFinalGS\Units\GSTypes.pas',
   GSUtils in 'PLRMFinalGS\Units\GSUtils.pas',
-  GSXML in 'PLRMFinalGS\Units\GSXML.pas',
   PLRMStats in 'PLRMFinalGS\Units\PLRMStats.pas',
   _PLRM6DrngXtsDetail in 'PLRMFinalGS\Forms\_PLRM6DrngXtsDetail.pas' {PLRMDrngXtsDetail},
   _PLRM7SWTs in 'PLRMFinalGS\Forms\_PLRM7SWTs.pas' {SWTs},

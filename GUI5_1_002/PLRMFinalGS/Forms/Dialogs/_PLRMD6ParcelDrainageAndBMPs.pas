@@ -476,12 +476,11 @@ begin
   Self.Caption := PLRM3_TITLE;
   SetLength(FrmLuseConds.luseAreaNImpv, High(frmsLuses) + 1, 2);
 
-
   lblCatchArea.Caption := 'Catchment ID: ' + PLRMObj.currentCatchment.swmmCatch.
     ID + '   [ Area: ' + PLRMObj.currentCatchment.swmmCatch.Data
     [UProject.SUBCATCH_AREA_INDEX] + 'ac ]';
 
-    initFormContents(initCatchID); // also calls updateAreas
+  initFormContents(initCatchID); // also calls updateAreas
   restoreFormContents(PLRMObj.currentCatchment);
 end;
 

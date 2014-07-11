@@ -99,8 +99,8 @@ type
     hasDefSoils: boolean;
     hasDefPSCs: boolean;
     hasDefDrnXtcs: boolean;
-    //2014 new property added to detect if change was made in soils so ksat can be recalculated
-    hasChangedSoils:boolean;
+    // 2014 new property added to detect if change was made in soils so ksat can be recalculated
+    hasChangedSoils: boolean;
 
     swmmCatch: Uproject.TSubCatch;
     swmmCatchDefProps: PLRMGridData;
@@ -149,7 +149,7 @@ type
     cicuSchm: TPLRMHydPropsScheme;
     vegTSchm: TPLRMHydPropsScheme;
 
-    //2014 _PLRMD6ParcelDrainageAndBMPs
+    // 2014 _PLRMD6ParcelDrainageAndBMPs
     sgBMPImplData: PLRMGridData;
     sgNoBMPsData: PLRMGridData;
 
@@ -261,6 +261,39 @@ var
     'outSchmID',
     'infSchmID',
     'dspSchmID'
+  );
+
+  // 2014 new tags added to support new forms
+  // 1. Step 4 of 6 Road Pollutants  [PLRMFinalGS\Forms\Dialogs\_PLRMD4RoadPollutants.pas] tags
+  roadPollutantsRdShoulderTags: array [0 .. 3] of string = (
+    'erodible',
+    'protectd',
+    'stable',
+    'stableAndProtectd'
+  );
+  roadPollutantsRdConditionTags: array [0 .. 3] of string = (
+    'percentArea',
+    'conditionScore'
+  );
+  roadPollutantsCRCsTags: array [0 .. 5] of String = runoffConcsXMLTags;
+
+  // 2014 new tags added to support new forms
+  // 2. Step 5 of 6 Road Drainage Editor  [PLRMFinalGS\Forms\Dialogs\_PLRMD5RoadDrainageEditor.pas] tags
+
+  // 2014 new tags added to support new forms
+  // 3. Step 6 of 6 Parcel Drainage and BMPs Editor  [PLRMFinalGS\Forms\Dialogs\_PLRMD6ParcelDrainageAndBMPs.pas] tags
+  parcelDrainageAndBMPsWithBMPSTags: array [0 .. 1] of string = (
+    'percentBMPs',
+    'percentSrcCtrls'
+  );
+  parcelDrainageAndBMPsWithBMPTags: array [0 .. 1] of string = (
+    'percentBMPs',
+    'percentSrcCtrls'
+  );
+  parcelDrainageAndBMPsNoBMPTags: array [0 .. 2] of string = (
+    'percentNoBMPs',
+    'percentDCIA',
+    'ksat'
   );
 
 implementation
@@ -550,7 +583,7 @@ end;
 procedure TPLRMHydPropsScheme.readSchemeXML(iNode: IXMLNode);
 var
   hydProps: dbReturnFields;
-//  gaProps: dbReturnFields;
+  // gaProps: dbReturnFields;
 begin
   hydProps := GSIO.getDefaults('"6%"');
 
@@ -1312,7 +1345,7 @@ begin
               else
                 tempNode2.Attributes[drngSchmTypeXMLAttribTags[2]] := '-1';
             end;
-          1:  // Secondary Roads
+          1: // Secondary Roads
             begin
               if (secRdSchms[0] <> nil) then
                 tempNode2.Attributes[drngSchmTypeXMLAttribTags[0]] :=
@@ -1340,7 +1373,7 @@ begin
                 tempNode2.Attributes[drngSchmTypeXMLAttribTags[2]] := '-1';
             end;
 
-          2: //SFR
+          2: // SFR
             begin
               if (sfrSchms[0] <> nil) then
                 tempNode2.Attributes[drngSchmTypeXMLAttribTags[0]] :=
@@ -1359,7 +1392,7 @@ begin
                 tempNode2.Attributes[drngSchmTypeXMLAttribTags[1]] := '-1';
               tempNode2.Attributes[drngSchmTypeXMLAttribTags[2]] := '-1';
             end;
-          3:   //MFR
+          3: // MFR
             begin
               if (mfrSchms[0] <> nil) then
                 tempNode2.Attributes[drngSchmTypeXMLAttribTags[0]] :=
@@ -1378,7 +1411,7 @@ begin
                 tempNode2.Attributes[drngSchmTypeXMLAttribTags[1]] := '-1';
               tempNode2.Attributes[drngSchmTypeXMLAttribTags[2]] := '-1';
             end;
-          4:    //CICU
+          4: // CICU
             begin
               if (cicuSchms[0] <> nil) then
                 tempNode2.Attributes[drngSchmTypeXMLAttribTags[0]] :=
@@ -1397,7 +1430,7 @@ begin
                 tempNode2.Attributes[drngSchmTypeXMLAttribTags[1]] := '-1';
               tempNode2.Attributes[drngSchmTypeXMLAttribTags[2]] := '-1';
             end;
-          5:    //VegT
+          5: // VegT
             begin
               if (vegTSchms[0] <> nil) then
                 tempNode2.Attributes[drngSchmTypeXMLAttribTags[0]] :=
@@ -1407,7 +1440,7 @@ begin
               tempNode2.Attributes[drngSchmTypeXMLAttribTags[1]] := '-1';
               tempNode2.Attributes[drngSchmTypeXMLAttribTags[2]] := '-1';
             end;
-          6:  //Othr
+          6: // Othr
             begin
               if (othrSchms[0] <> nil) then
                 tempNode2.Attributes[drngSchmTypeXMLAttribTags[0]] :=
@@ -1438,7 +1471,7 @@ begin
             tempNodeList[J].Attributes['width'] :=
               FormatFloat('0.0', tempWidth);
           end;
-          //tempWidth := 0;
+          // tempWidth := 0;
 
           // calc hsc footprint area and width
           if J = 0 then
@@ -1461,7 +1494,7 @@ begin
             tempNodeList[J].Attributes['hscWidth'] :=
               FormatFloat('0.000', tempWidth);
           end;
-          //tempWidth := 0;
+          // tempWidth := 0;
           tempNode2.ChildNodes.Add(tempNodeList[J]);
         end;
         tempNode2.Resync;
@@ -1508,7 +1541,7 @@ var
   I: Integer;
   tempNode: IXMLNode;
   tempDrnGridArr: array [0 .. 6] of PLRMGridData;
-//  tempId: array [0 .. 2] of Integer;
+  // tempId: array [0 .. 2] of Integer;
 begin
   luseTagList := TStringList.Create;
   soilsTagList := TStringList.Create;
