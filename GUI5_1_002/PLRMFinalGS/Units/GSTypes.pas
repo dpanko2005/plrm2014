@@ -149,6 +149,7 @@ CONVMGALTOACFT = 3.06888;
 ZERODP = '#0';
 ONEDP = '#0.0';
 TWODP = '#0.00';
+THREEDP = '#0.000';
 
 //SWT names
 SWTDETBASIN = 'DryBasin';

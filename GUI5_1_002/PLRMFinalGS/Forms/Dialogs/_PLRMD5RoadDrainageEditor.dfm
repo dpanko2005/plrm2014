@@ -3,7 +3,7 @@ object PLRMRoadDrainageEditor: TPLRMRoadDrainageEditor
   Top = 0
   Caption = 'PLRMRoadDrainageEditor'
   ClientHeight = 562
-  ClientWidth = 621
+  ClientWidth = 519
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -11,6 +11,7 @@ object PLRMRoadDrainageEditor: TPLRMRoadDrainageEditor
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object Image1: TImage
@@ -2267,9 +2268,9 @@ object PLRMRoadDrainageEditor: TPLRMRoadDrainageEditor
   object Label3: TLabel
     Left = 129
     Top = 205
-    Width = 87
+    Width = 81
     Height = 26
-    Caption = 'Draining Indirectly to outlet'
+    Caption = 'Draining Directly to outlet'
     WordWrap = True
   end
   object Label4: TLabel
@@ -2335,37 +2336,47 @@ object PLRMRoadDrainageEditor: TPLRMRoadDrainageEditor
     Caption = 'Ave Annual Infiltration Rate for All Road Shoulders (in/hr)'
     WordWrap = True
   end
-  object Edit1: TEdit
+  object edtICIA: TEdit
     Left = 17
     Top = 240
     Width = 88
     Height = 21
+    Enabled = False
     TabOrder = 0
     Text = '50'
   end
-  object Edit2: TEdit
+  object edtDCIA: TEdit
     Left = 129
     Top = 240
     Width = 88
     Height = 21
     TabOrder = 1
     Text = '50'
+    OnClick = edtDCIAClick
+    OnKeyPress = edtDCIAKeyPress
+    OnKeyUp = edtDCIAKeyUp
   end
-  object Edit3: TEdit
+  object edtDINF: TEdit
     Left = 232
     Top = 237
     Width = 129
     Height = 21
     TabOrder = 2
     Text = '0'
+    OnClick = edtDINFClick
+    OnKeyPress = edtDINFKeyPress
+    OnKeyUp = edtDINFKeyUp
   end
-  object Edit4: TEdit
+  object edtDPCH: TEdit
     Left = 376
     Top = 237
     Width = 130
     Height = 21
     TabOrder = 3
     Text = '0'
+    OnClick = edtDPCHClick
+    OnKeyPress = edtDPCHKeyPress
+    OnKeyUp = edtDPCHKeyUp
   end
   object Panel1: TPanel
     Left = 232
@@ -2397,29 +2408,32 @@ object PLRMRoadDrainageEditor: TPLRMRoadDrainageEditor
       Caption = 'Total Surface Area (sq.ft)'
       WordWrap = True
     end
-    object Edit5: TEdit
+    object edtDINFAveAnnInf: TEdit
       Left = 9
       Top = 154
       Width = 88
       Height = 21
       TabOrder = 0
       Text = '0.5'
+      OnKeyPress = edtDINFAveAnnInfKeyPress
     end
-    object Edit6: TEdit
+    object edtDINFTotStorage: TEdit
       Left = 7
       Top = 90
       Width = 88
       Height = 21
       TabOrder = 1
       Text = '0'
+      OnKeyPress = edtDINFTotStorageKeyPress
     end
-    object Edit7: TEdit
+    object edtDINFTotSurfArea: TEdit
       Left = 9
       Top = 36
       Width = 88
       Height = 21
       TabOrder = 2
       Text = '0'
+      OnKeyPress = edtDINFTotSurfAreaKeyPress
     end
   end
   object Panel2: TPanel
@@ -2468,63 +2482,76 @@ object PLRMRoadDrainageEditor: TPLRMRoadDrainageEditor
       Caption = 'Storage Depth (%)'
       WordWrap = True
     end
-    object Edit8: TEdit
+    object edtDPCHAveAnnInf: TEdit
       Left = 9
       Top = 154
       Width = 112
       Height = 21
       TabOrder = 0
       Text = '0.5'
+      OnKeyPress = edtDPCHAveAnnInfKeyPress
     end
-    object Edit9: TEdit
+    object edtDPCHAveSlope: TEdit
       Left = 9
       Top = 95
       Width = 48
       Height = 21
       TabOrder = 1
       Text = '0'
+      OnKeyPress = edtDPCHAveSlopeKeyPress
     end
-    object Edit10: TEdit
+    object edtDPCHLen: TEdit
       Left = 9
       Top = 36
       Width = 48
       Height = 21
       TabOrder = 2
       Text = '0'
+      OnKeyPress = edtDPCHLenKeyPress
     end
-    object Edit11: TEdit
+    object edtDPCHWidth: TEdit
       Left = 71
       Top = 36
       Width = 48
       Height = 21
       TabOrder = 3
       Text = '0'
+      OnKeyPress = edtDPCHWidthKeyPress
     end
-    object Edit12: TEdit
+    object edtDPCHStorDepth: TEdit
       Left = 71
       Top = 95
       Width = 48
       Height = 21
       TabOrder = 4
       Text = '0'
+      OnKeyPress = edtDPCHStorDepthKeyPress
     end
   end
-  object Edit13: TEdit
+  object edtShoulderAveAnnInfRate: TEdit
     Left = 394
     Top = 162
     Width = 112
     Height = 21
     TabOrder = 6
     Text = '0.5'
+    OnKeyUp = edtShoulderAveAnnInfRateKeyUp
   end
   object statBar: TStatusBar
     Left = 0
     Top = 543
-    Width = 621
+    Width = 519
     Height = 19
     Panels = <>
     SimplePanel = True
-    ExplicitTop = 626
-    ExplicitWidth = 483
+  end
+  object btnOK: TButton
+    Left = 431
+    Top = 488
+    Width = 75
+    Height = 25
+    Caption = 'Next >>'
+    TabOrder = 8
+    OnClick = btnOKClick
   end
 end

@@ -2372,10 +2372,10 @@ object PLRMRoadPollutants: TPLRMRoadPollutants
       Caption = 'Condition Score'
     end
     object sgRoadConditions: TStringGrid
-      Left = 4
+      Left = 2
       Top = 30
       Width = 173
-      Height = 51
+      Height = 163
       Margins.Left = 6
       BevelEdges = []
       BevelInner = bvNone
@@ -2467,7 +2467,7 @@ object PLRMRoadPollutants: TPLRMRoadPollutants
       Left = 4
       Top = 30
       Width = 246
-      Height = 51
+      Height = 163
       Margins.Left = 6
       BevelEdges = []
       BevelInner = bvNone

@@ -7,6 +7,36 @@ uses
   msxmldom, XMLDoc,
   StdCtrls, ComCtrls, Grids, GSUtils, GSTypes, Uproject, Math, GSNodes;
 
+// 2014 added data structures for infiltration facility parameters
+type
+  GSInfiltrationFacility = record
+    totSurfaceArea: double; // in sq.ft
+    totStorage: double; // cu.ft
+    aveAnnInfiltrationRate: double; // in/hr
+  end;
+
+  // 2014 added data structure for Pervious Channel facility parameter
+type
+  GSPervChannelFacility = record
+    length: double; // ft
+    width: double; // ft
+    aveSlope: double; // %
+    storageDepth: double; // in
+    aveAnnInfiltrationRate: double; // in/hr
+  end;
+
+type
+  GSRoadDrainageInput = record
+    DCIA: double;
+    ICIA: double;
+    DINF: double;
+    DPCH: double;
+    shoulderAveAnnInfRate: double;
+    INFFacility: GSInfiltrationFacility;
+    PervChanFacility: GSPervChannelFacility;
+    isAssigned: boolean; // sentinel flag for know when populated
+  end;
+
 type
   TPLRMHydPropsScheme = class
     // flags
@@ -80,13 +110,13 @@ type
     // temporarily holds node name when read in from xml till actual node is linked
     outNode: TPLRMNode;
     mySWMMIndex: Integer;
-    area: Double;
-    slope: Double;
-    width: Double;
-    widthFactor: Double; // multiplied by area in width calculation
-    widthPower: Double; // exponent of area is width calculation
-    maxFloLength: Double; // max width is area calculation
-    defInfStorDepth: Double; // Default infiltration facility depth
+    area: double;
+    slope: double;
+    width: double;
+    widthFactor: double; // multiplied by area in width calculation
+    widthPower: double; // exponent of area is width calculation
+    maxFloLength: double; // max width is area calculation
+    defInfStorDepth: double; // Default infiltration facility depth
     physclProps: PLRMGridData;
     ObjType: Integer;
     // Swmm assigned type used to retrieve obj in project lists
@@ -124,9 +154,9 @@ type
 
     rdRiskCats: PLRMGridData;
     bmpImpl: PLRMGridData;
-    othrArea: Double;
-    othrPrcntToOut: Double;
-    othrPrcntImpv: Double;
+    othrArea: double;
+    othrPrcntToOut: double;
+    othrPrcntImpv: double;
 
     // _PLRM4RoadConditions
     secRdRcSchm: TPLRMRdCondsScheme;
@@ -149,9 +179,17 @@ type
     cicuSchm: TPLRMHydPropsScheme;
     vegTSchm: TPLRMHydPropsScheme;
 
+    // 2014
+    frm4of6SgRoadShoulderData: PLRMGridData;
+    frm4of6SgRoadConditionData: PLRMGridData;
+    frm4of6SgRoadCRCsData: PLRMGridData;
+
+    // 2014 road drainage editior inputs
+    frm5of6RoadDrainageEditorData: GSRoadDrainageInput;
+
     // 2014 _PLRMD6ParcelDrainageAndBMPs
-    sgBMPImplData: PLRMGridData;
-    sgNoBMPsData: PLRMGridData;
+    frm6of6SgBMPImplData: PLRMGridData;
+    frm6of6SgNoBMPsData: PLRMGridData;
 
     secRdSchms: array [0 .. 2] of TPLRMHydPropsScheme;
     primRdSchms: array [0 .. 2] of TPLRMHydPropsScheme;
@@ -170,11 +208,11 @@ type
 
     constructor Create;
     destructor Destroy; override;
-    function getKSat(typeFlag: Integer): Double;
-    function getKSatPerv(typeFlag: Integer): Double;
-    function getKSatBMP(typeFlag: Integer): Double;
-    function getIMD(): Double;
-    function getSuct(): Double;
+    function getKSat(typeFlag: Integer): double;
+    function getKSatPerv(typeFlag: Integer): double;
+    function getKSatBMP(typeFlag: Integer): double;
+    function getIMD(): double;
+    function getSuct(): double;
     procedure updateSWMM();
     function catchToXML(projectLuseNames: TStringList;
       ProjectLuseCodes: TStringList): IXMLNode;
@@ -271,21 +309,25 @@ var
     'stable',
     'stableAndProtectd'
   );
-  roadPollutantsRdConditionTags: array [0 .. 3] of string = (
+  roadPollutantsRdConditionTags: array [0 .. 1] of string = (
     'percentArea',
     'conditionScore'
   );
-  roadPollutantsCRCsTags: array [0 .. 5] of String = runoffConcsXMLTags;
+  roadPollutantsRdCRCTags: array [0 .. 5] of string = (
+    'TSS',
+    'FSP',
+    'TP',
+    'SRP',
+    'TN',
+    'DIN'
+  );
+  // roadPollutantsCRCsTags: array [0 .. 5] of String = runoffConcsXMLTags;
 
   // 2014 new tags added to support new forms
   // 2. Step 5 of 6 Road Drainage Editor  [PLRMFinalGS\Forms\Dialogs\_PLRMD5RoadDrainageEditor.pas] tags
 
   // 2014 new tags added to support new forms
   // 3. Step 6 of 6 Parcel Drainage and BMPs Editor  [PLRMFinalGS\Forms\Dialogs\_PLRMD6ParcelDrainageAndBMPs.pas] tags
-  parcelDrainageAndBMPsWithBMPSTags: array [0 .. 1] of string = (
-    'percentBMPs',
-    'percentSrcCtrls'
-  );
   parcelDrainageAndBMPsWithBMPTags: array [0 .. 1] of string = (
     'percentBMPs',
     'percentSrcCtrls'
@@ -1115,9 +1157,13 @@ var
   rdRiskTagList: TStringList;
   bmpImplTagList: TStringList;
   parcelAndRdMethTagList: TStringList;
+  roadPollutantsRdShoulderTagList, roadPollutantsRdConditionTagList,
+    parcelDrainageAndBMPsWithBMPTagList, parcelDrainageAndBMPsNoBMPTagList,
+    roadPollutantsRdCRCTagList, rdShouldrCondsXMLTagList: TStringList;
 
   tempList: TStringList;
   tempList2: TStringList;
+  tempList3: TStringList;
   tempListDrng0: TStringList;
   tempListDrng1: TStringList;
   tempListDrng2: TStringList;
@@ -1125,14 +1171,15 @@ var
   tempTextListDrng0: TStringList;
   tempTextListDrng1: TStringList;
   tempTextListDrng2: TStringList;
+  runoffConcsTags: TStringList;
 
   I, J: Integer;
   schmIDs: array [0 .. 1] of Integer;
   tempDrnGridArr: array [0 .. 6] of PLRMGridData;
   tempListDrngArr: array [0 .. 6] of TStringList;
   tempTextListDrngArr: array [0 .. 6] of TStringList;
-  tempArea, tempHscDepth, tempWidth, tempFloLength: Double;
-  tempHSCParam: array [0 .. 2] of Double;
+  tempArea, tempHscDepth, tempWidth, tempFloLength: double;
+  tempHSCParam: array [0 .. 2] of double;
 begin
   try
     // write catchment info to swmm
@@ -1144,8 +1191,18 @@ begin
     bmpImplTagList := TStringList.Create;
     parcelAndRdMethTagList := TStringList.Create;
 
+    // 2014 new tags for new form modifications
+    roadPollutantsRdShoulderTagList := TStringList.Create;
+    roadPollutantsRdConditionTagList := TStringList.Create;
+    roadPollutantsRdCRCTagList := TStringList.Create;
+
+    parcelDrainageAndBMPsWithBMPTagList := TStringList.Create;
+    parcelDrainageAndBMPsNoBMPTagList := TStringList.Create;
+
     tempList := TStringList.Create;
     tempList2 := TStringList.Create;
+    tempList3 := TStringList.Create;
+    runoffConcsTags := TStringList.Create;
     tempListDrng0 := TStringList.Create;
     tempListDrng1 := TStringList.Create;
     tempListDrng2 := TStringList.Create;
@@ -1196,6 +1253,24 @@ begin
     for I := 0 to High(parcelAndRdMethXMLTags) do
       parcelAndRdMethTagList.Add(parcelAndRdMethXMLTags[I]);
 
+    // begin 2014 additions
+    for I := 0 to High(roadPollutantsRdShoulderTags) do
+      roadPollutantsRdShoulderTagList.Add(roadPollutantsRdShoulderTags[I]);
+
+    for I := 0 to High(roadPollutantsRdConditionTags) do
+      roadPollutantsRdConditionTagList.Add(roadPollutantsRdConditionTags[I]);
+
+    for I := 0 to High(roadPollutantsRdCRCTags) do
+      roadPollutantsRdCRCTagList.Add(roadPollutantsRdCRCTags[I]);
+
+    for I := 0 to High(parcelDrainageAndBMPsWithBMPTags) do
+      parcelDrainageAndBMPsWithBMPTagList.Add
+        (parcelDrainageAndBMPsWithBMPTags[I]);
+
+    for I := 0 to High(parcelDrainageAndBMPsNoBMPTags) do
+      parcelDrainageAndBMPsNoBMPTagList.Add(parcelDrainageAndBMPsNoBMPTags[I]);
+    // end 2014 additions
+
     luseCodeList := lookUpCodeFrmName(landUseData, 0, projectLuseNames,
       ProjectLuseCodes);
     // write all land uses info
@@ -1221,6 +1296,95 @@ begin
       tempNode.Resync;
     end;
 
+    // push parcel land uses into utilty list for use below
+    tempList2.Add(frmsLuseCodes[2]);
+    tempList2.Add(frmsLuseCodes[3]);
+    tempList2.Add(frmsLuseCodes[4]);
+    tempList2.Add(frmsLuseCodes[5]);
+    tempList2.Add(frmsLuseCodes[6]);
+
+    // 2014 write step 4of6 Road Pollutants form contents
+    // push parcel land uses into utilty list for use below
+    if (assigned(frm4of6SgRoadShoulderData)) then
+    begin
+      // create parent tag
+      tempNode := iNode.AddChild('frm4of6RoadPollutants', '');
+
+      // create no Road Conditions child node
+      // tempList3   is convenience function to allow reuse of same xml functions. Contents not needed
+      for I := 0 to High(frm4of6SgRoadConditionData) do
+        tempList3.Add(intToStr(I));
+      GSUtils.createAndAttachChildNode(tempNode, 'rdConditions', 'rdCondition',
+        frm4of6SgRoadConditionData, roadPollutantsRdConditionTagList,
+        tempList3);
+
+      // create Road Shoulder Erosion child node
+      // tempList3   is convenience function to allow reuse of same xml functions. Contents not needed
+      GSUtils.createAndAttachChildNode(tempNode, 'rdShoulderErosionPrcnts',
+        'rdShoulderErosionPrcnt', frm4of6SgRoadShoulderData,
+        roadPollutantsRdShoulderTagList, tempList3);
+
+      // create no Road CRCs child node
+      // tempList3   is convenience function to allow reuse of same xml functions. Contents not needed
+      tempList3 := TStringList.Create();
+      for I := 0 to High(frm4of6SgRoadCRCsData) do
+        tempList3.Add(intToStr(I));
+      GSUtils.createAndAttachChildNode(tempNode, 'rdCRCs', 'rdCRC',
+        frm4of6SgRoadCRCsData, roadPollutantsRdCRCTagList, tempList3);
+    end;
+
+    // 2014 write step 5of6 Raod Drainage Editor form inputs
+    // create parent tag
+    tempNode := iNode.AddChild('frm5of6RoadDrainageEditor', '');
+
+    // DCIA  - directly connected impervious area
+    tempNode2 := tempNode.AddChild('DCIA', '');
+    tempNode2.Attributes['areaPrcnt'] := frm5of6RoadDrainageEditorData.DCIA;
+
+    // ICIA   - indirectly connected impervious area
+    tempNode2 := tempNode.AddChild('ICIA', '');
+    tempNode2.Attributes['areaPrcnt'] := frm5of6RoadDrainageEditorData.ICIA;
+
+    // DINF   - infiltration facility
+    tempNode2 := tempNode.AddChild('DINF', '');
+    tempNode2.Attributes['areaPrcnt'] := frm5of6RoadDrainageEditorData.DINF;
+    tempNode2.Attributes['totSurfArea'] :=
+      frm5of6RoadDrainageEditorData.INFFacility.totSurfaceArea;
+    tempNode2.Attributes['totStorage'] :=
+      frm5of6RoadDrainageEditorData.INFFacility.totStorage;
+    tempNode2.Attributes['aveAnnInfRate'] :=
+      frm5of6RoadDrainageEditorData.INFFacility.aveAnnInfiltrationRate;
+
+    // DPCH   - pervious drainage channel
+    tempNode2 := tempNode.AddChild('DPCH', '');
+    tempNode2.Attributes['areaPrcnt'] := frm5of6RoadDrainageEditorData.DPCH;
+    tempNode2.Attributes['length'] :=
+      frm5of6RoadDrainageEditorData.PervChanFacility.length;
+    tempNode2.Attributes['width'] :=
+      frm5of6RoadDrainageEditorData.PervChanFacility.width;
+    tempNode2.Attributes['aveSlope'] :=
+      frm5of6RoadDrainageEditorData.PervChanFacility.aveSlope;
+    tempNode2.Attributes['storageDepth'] :=
+      frm5of6RoadDrainageEditorData.PervChanFacility.storageDepth;
+    tempNode2.Attributes['aveAnnInfRate'] :=
+      frm5of6RoadDrainageEditorData.PervChanFacility.aveAnnInfiltrationRate;
+
+    // 2014 write step 6of6 Parcel Drainage and BMPs form contents
+    if (assigned(frm6of6SgBMPImplData) and assigned(frm6of6SgNoBMPsData)) then
+    begin
+      // create parent tag
+      tempNode := iNode.AddChild('frm6of6ParcelDrainageAndBMPs', '');
+
+      // create functioning BMPs child node
+      GSUtils.createAndAttachChildNode(tempNode, 'functioningBMPs',
+        'functioningBMP', frm6of6SgBMPImplData,
+        parcelDrainageAndBMPsWithBMPTagList, tempList2);
+
+      // create no BMPs child node
+      GSUtils.createAndAttachChildNode(tempNode, 'noBMPs', 'noBMP',
+        frm6of6SgNoBMPsData, parcelDrainageAndBMPsNoBMPTagList, tempList2);
+    end;
+
     // write road risk categories
     if (assigned(rdRiskCats)) then
     begin
@@ -1244,11 +1408,11 @@ begin
     // write bmp implementation
     if (assigned(bmpImpl)) then
     begin
-      tempList2.Add(frmsLuseCodes[2]);
-      tempList2.Add(frmsLuseCodes[3]);
-      tempList2.Add(frmsLuseCodes[4]);
-      tempList2.Add(frmsLuseCodes[5]);
-      tempList2.Add(frmsLuseCodes[6]);
+      { tempList2.Add(frmsLuseCodes[2]);
+        tempList2.Add(frmsLuseCodes[3]);
+        tempList2.Add(frmsLuseCodes[4]);
+        tempList2.Add(frmsLuseCodes[5]);
+        tempList2.Add(frmsLuseCodes[6]); }
       tempNodeList := GSUtils.plrmGridDataToXML('BmpImpl', bmpImpl,
         bmpImplTagList, tempList2);
       tempNode := iNode.AddChild('BmpImplementation', '');
@@ -1511,6 +1675,9 @@ begin
     rdRiskTagList.Free;
     bmpImplTagList.Free;
     parcelAndRdMethTagList.Free;
+    roadPollutantsRdShoulderTagList.Free;
+    roadPollutantsRdConditionTagList.Free;
+
     tempList.Free;
     tempList2.Free;
     FreeAndNil(tempListDrng0);
@@ -1538,8 +1705,11 @@ var
   rdRiskTagList: TStringList;
   bmpImplTagList: TStringList;
   parcelAndRdMethTagList: TStringList;
+  roadPollutantsRdShoulderTagList, roadPollutantsRdConditionTagList,
+    parcelDrainageAndBMPsWithBMPTagList, parcelDrainageAndBMPsNoBMPTagList,
+    roadPollutantsRdCRCTagList, rdShouldrCondsXMLTagList: TStringList;
   I: Integer;
-  tempNode: IXMLNode;
+  tempNode, tempNode2: IXMLNode;
   tempDrnGridArr: array [0 .. 6] of PLRMGridData;
   // tempId: array [0 .. 2] of Integer;
 begin
@@ -1548,6 +1718,14 @@ begin
   rdRiskTagList := TStringList.Create;
   bmpImplTagList := TStringList.Create;
   parcelAndRdMethTagList := TStringList.Create;
+
+  // 2014 new tags for new form modifications
+  roadPollutantsRdShoulderTagList := TStringList.Create;
+  roadPollutantsRdConditionTagList := TStringList.Create;
+  roadPollutantsRdCRCTagList := TStringList.Create;
+
+  parcelDrainageAndBMPsWithBMPTagList := TStringList.Create;
+  parcelDrainageAndBMPsNoBMPTagList := TStringList.Create;
 
   id := iNode.Attributes['id']; // represents index of object in swmm
   name := iNode.Attributes['name'];
@@ -1581,6 +1759,23 @@ begin
 
   for I := 0 to High(parcelAndRdMethXMLTags) do
     parcelAndRdMethTagList.Add(parcelAndRdMethXMLTags[I]);
+  // begin 2014 additions
+  for I := 0 to High(roadPollutantsRdShoulderTags) do
+    roadPollutantsRdShoulderTagList.Add(roadPollutantsRdShoulderTags[I]);
+
+  for I := 0 to High(roadPollutantsRdConditionTags) do
+    roadPollutantsRdConditionTagList.Add(roadPollutantsRdConditionTags[I]);
+
+  for I := 0 to High(roadPollutantsRdCRCTags) do
+    roadPollutantsRdCRCTagList.Add(roadPollutantsRdCRCTags[I]);
+
+  for I := 0 to High(parcelDrainageAndBMPsWithBMPTags) do
+    parcelDrainageAndBMPsWithBMPTagList.Add
+      (parcelDrainageAndBMPsWithBMPTags[I]);
+
+  for I := 0 to High(parcelDrainageAndBMPsNoBMPTags) do
+    parcelDrainageAndBMPsNoBMPTagList.Add(parcelDrainageAndBMPsNoBMPTags[I]);
+  // end 2014 additions
 
   // read land uses info
   landUseData := xmlAttribToPlrmGridData(iNode.ChildNodes['LandUses'],
@@ -1592,6 +1787,84 @@ begin
     soilsTagList);
   for I := 0 to High(soilsMapUnitData) do
     soilsMapUnitNames.Add(soilsMapUnitData[I, 0]);
+
+  // 2014 read step 4of6 Road Pollutants form contents
+  // access parent tag
+  tempNode := iNode.ChildNodes['frm4of6RoadPollutants'];
+  if (assigned(tempNode)) then
+  begin
+
+    // create Road Shoulder Erosion child node
+    GSUtils.xmlAttachedChildNodesToPLRMGridData(tempNode,
+      'rdShoulderErosionPrcnts', 'rdShoulderErosionPrcnt',
+      frm4of6SgRoadShoulderData, roadPollutantsRdShoulderTagList);
+
+    // create no Road Conditions child node
+    GSUtils.xmlAttachedChildNodesToPLRMGridData(tempNode, 'rdConditions',
+      'rdCondition', frm4of6SgRoadConditionData,
+      roadPollutantsRdConditionTagList);
+
+    // create no Road CRCs child node
+    GSUtils.xmlAttachedChildNodesToPLRMGridData(tempNode, 'rdCRCs', 'rdCRC',
+      frm4of6SgRoadCRCsData, roadPollutantsRdCRCTagList);
+  end;
+
+  // 2014 write step 5of6 Raod Drainage Editor form inputs
+  // create parent tag
+  tempNode := iNode.ChildNodes['frm5of6RoadDrainageEditor'];
+  if (assigned(tempNode)) then
+  begin
+    // DCIA  - directly connected impervious area
+    tempNode2 := tempNode.ChildNodes['DCIA'];
+    frm5of6RoadDrainageEditorData.DCIA :=
+      StrToFloat(tempNode2.Attributes['areaPrcnt']);
+
+    // ICIA   - indirectly connected impervious area
+    tempNode2 := tempNode.ChildNodes['ICIA'];
+    frm5of6RoadDrainageEditorData.ICIA :=
+      StrToFloat(tempNode2.Attributes['areaPrcnt']);
+
+    // DINF   - infiltration facility
+    tempNode2 := tempNode.ChildNodes['DINF'];
+    frm5of6RoadDrainageEditorData.DINF :=
+      StrToFloat(tempNode2.Attributes['areaPrcnt']);
+    frm5of6RoadDrainageEditorData.INFFacility.totSurfaceArea :=
+      StrToFloat(tempNode2.Attributes['totSurfArea']);
+    frm5of6RoadDrainageEditorData.INFFacility.totStorage :=
+      StrToFloat(tempNode2.Attributes['totStorage']);
+    frm5of6RoadDrainageEditorData.INFFacility.aveAnnInfiltrationRate :=
+      StrToFloat(tempNode2.Attributes['aveAnnInfRate']);
+
+    // DPCH   - pervious drainage channel
+    tempNode2 := tempNode.ChildNodes['DPCH'];
+    frm5of6RoadDrainageEditorData.DPCH :=
+      StrToFloat(tempNode2.Attributes['areaPrcnt']);
+    frm5of6RoadDrainageEditorData.PervChanFacility.length :=
+      StrToFloat(tempNode2.Attributes['length']);
+    frm5of6RoadDrainageEditorData.PervChanFacility.width :=
+      StrToFloat(tempNode2.Attributes['width']);
+    frm5of6RoadDrainageEditorData.PervChanFacility.aveSlope :=
+      StrToFloat(tempNode2.Attributes['aveSlope']);
+    frm5of6RoadDrainageEditorData.PervChanFacility.storageDepth :=
+      StrToFloat(tempNode2.Attributes['storageDepth']);
+    frm5of6RoadDrainageEditorData.PervChanFacility.aveAnnInfiltrationRate :=
+      StrToFloat(tempNode2.Attributes['aveAnnInfRate']);
+  end;
+  // 2014 read step 6of6 Parcel Drainage and BMPs form contents
+  // access parent tag
+  tempNode := iNode.ChildNodes['frm6of6ParcelDrainageAndBMPs'];
+  if (assigned(tempNode)) then
+  begin
+    // create functioning BMPs child node
+    GSUtils.xmlAttachedChildNodesToPLRMGridData(tempNode, 'functioningBMPs',
+      'functioningBMP', frm6of6SgBMPImplData,
+      parcelDrainageAndBMPsWithBMPTagList);
+
+    // create no BMPs child node
+    GSUtils.xmlAttachedChildNodesToPLRMGridData(tempNode, 'noBMPs', 'noBMP',
+      frm6of6SgNoBMPsData, parcelDrainageAndBMPsNoBMPTagList);
+  end;
+
   // read road risk categories
   if assigned(iNode.ChildNodes['RoadRiskCategories']) then
   begin
@@ -1629,7 +1902,7 @@ begin
 end;
 
 // Typeflag = 0 - drng area ksat, 1 - bmp ksat
-function TPLRMCatch.getKSat(typeFlag: Integer): Double;
+function TPLRMCatch.getKSat(typeFlag: Integer): double;
 begin
   if typeFlag = 0 then
     Result := StrToFloat(soilsInfData[0][0])
@@ -1637,22 +1910,22 @@ begin
     Result := StrToFloat(soilsInfData[0][1])
 end;
 
-function TPLRMCatch.getKSatPerv(typeFlag: Integer): Double;
+function TPLRMCatch.getKSatPerv(typeFlag: Integer): double;
 begin
   Result := StrToFloat(soilsInfData[0][0])
 end;
 
-function TPLRMCatch.getKSatBMP(typeFlag: Integer): Double;
+function TPLRMCatch.getKSatBMP(typeFlag: Integer): double;
 begin
   Result := StrToFloat(soilsInfData[0][1])
 end;
 
-function TPLRMCatch.getIMD(): Double;
+function TPLRMCatch.getIMD(): double;
 begin
   Result := StrToFloat(soilsInfData[0][3]);
 end;
 
-function TPLRMCatch.getSuct(): Double;
+function TPLRMCatch.getSuct(): double;
 begin
   Result := StrToFloat(soilsInfData[0][4]);
 end;

@@ -2317,8 +2317,8 @@ object PLRMParcelDrngAndBMPs: TPLRMParcelDrngAndBMPs
     object Label21: TLabel
       Left = 56
       Top = 5
-      Width = 153
-      Height = 27
+      Width = 135
+      Height = 26
       Alignment = taCenter
       Caption = 'Drainage Conditions for Area Without BMPs'
       Color = clHighlight
@@ -2344,9 +2344,9 @@ object PLRMParcelDrngAndBMPs: TPLRMParcelDrngAndBMPs
     object Label4: TLabel
       Left = 24
       Top = 11
-      Width = 41
+      Width = 20
       Height = 13
-      Caption = 'No BMPs'
+      Caption = 'BMP'
     end
     object Label5: TLabel
       Left = 96
@@ -2479,8 +2479,6 @@ object PLRMParcelDrngAndBMPs: TPLRMParcelDrngAndBMPs
     Height = 19
     Panels = <>
     SimplePanel = True
-    ExplicitTop = 385
-    ExplicitWidth = 758
   end
   object Panel7: TPanel
     Left = 133
