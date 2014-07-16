@@ -6,10 +6,12 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics, Math,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Grids, Vcl.ExtCtrls,
-  Vcl.Imaging.jpeg, Vcl.ComCtrls, GSTypes, GSUtils, GSPLRM, GSIO, UProject;
+  Vcl.Imaging.jpeg, Vcl.ComCtrls, GSTypes, GSUtils, GSPLRM, GSIO, GSCatchments,
+  _PLRMD5RoadDrainageEditor, UProject;
 
 const
   defaultPollutantCount = 5;
+  defaultVisiblePollutantCount = 3;
   defaultCondScore = 2.5;
   lowCondScore = 0.1;
   highCondScore = 5.0;
@@ -46,7 +48,10 @@ type
     btnOk: TButton;
     Button2: TButton;
     statBar: TStatusBar;
+
     procedure FormCreate(Sender: TObject);
+    procedure restoreFormContents(catch: TPLRMCatch);
+    procedure initFormContents(catch: String);
     procedure sgRoadShoulderPercentsDrawCell(Sender: TObject;
       ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
     procedure sgCRCsDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect;
@@ -94,11 +99,12 @@ var
   PLRMRoadPollutants: TPLRMRoadPollutants;
   catchArea: Double;
   initCatchID: String;
-  sgs: array [0 .. 6] of TStringGrid;
+  // sgs: array [0 .. 6] of TStringGrid;
   curAcVals: array [0 .. 6] of Double;
   curImpPrctVals: array [0 .. 6] of Double;
   prevGridValue: String;
-  tblCRCs: PLRMGridDataDbl;
+  tblDbCRCParams: PLRMGridDataDbl;
+  tblCRCsCalculated: PLRMGridData;
 
 implementation
 
@@ -150,7 +156,7 @@ end;
 function calcRoadConditionConc(coeff: Double; exponent: Double;
   conditionScore: Double): Double;
 begin
-  Result := coeff * Exp(conditionScore*exponent);
+  Result := coeff * Exp(conditionScore * exponent);
 end;
 
 // compute crcs based on road shoulder concs and road condition concs
@@ -171,15 +177,16 @@ begin
 
   SetLength(rslts, sgRdConditions.RowCount, defaultPollutantCount);
 
-  //subtracting 2 below because last row not populated shown to let user know grid will grow
+  // subtracting 2 below because last row not populated shown to let user know grid will grow
   // as new rows are entered
   lastRow := sgRdConditions.RowCount - 2;
   for iRow := 0 to lastRow do
   begin
     rdCondScore := StrToFloat(sgRdConditions.Cells[1, iRow]);
-    rdShoulderConc := calcRoadShoulderConcs(iRow, tblCRCs, erodible, protectd,
-      stable, stableProtected);
-    rdConditionConc := calcRoadConditionConcs(iRow, tblCRCs, rdCondScore);
+    rdShoulderConc := calcRoadShoulderConcs(iRow, tblDbCRCParams, erodible,
+      protectd, stable, stableProtected);
+    rdConditionConc := calcRoadConditionConcs(iRow, tblDbCRCParams,
+      rdCondScore);
 
     for idx := 0 to defaultPollutantCount - 1 do
     begin
@@ -193,20 +200,38 @@ end;
 procedure TPLRMRoadPollutants.updateCRCs();
 var
   rslts: PLRMGridDataDbl;
-  iRow, jCol: longInt;
+  iRow, jCol, j: longInt;
 begin
   rslts := calcCRCs(sgRoadShoulderPercents, sgRoadConditions);
+  // in delphi tstringgrid indexes are column first then row
+  // SetLength(tblCRCsCalculated, High(rslts[0]) + 1, High(rslts) + 1);
+  SetLength(tblCRCsCalculated, High(rslts) + 1, High(rslts[0]) + 1);
 
-  //subtracting 2 below because last row not populated shown to let user know grid will grow
-  // as new rows are entered
-  for iRow := 0 to sgCRCs.RowCount - 2 do
-    for jCol := 0 to sgCRCs.ColCount - 1 do
+  for iRow := 0 to High(rslts) do
+    for jCol := 0 to High(rslts[0]) do
     begin
-    //in delphi tstringgrid indexes are column first then row
-      sgCRCs.Cells[jCol,iRow] := FormatFloat(ONEDP, rslts[iRow, jCol]);
+      // in delphi tstringgrid indexes are column first then row
+      tblCRCsCalculated[iRow, jCol] := FormatFloat(THREEDP, rslts[iRow, jCol]);
     end;
-end;
 
+  // subtracting 2 below because last row not populated shown to let user know grid will grow
+  // as new rows are entered
+
+  for iRow := 0 to sgCRCs.RowCount - 2 do
+  begin
+    j := 0;
+    for jCol := 0 to High(rslts[0]) do
+    begin
+      // in delphi tstringgrid indexes are column first then row
+      // only copy over values for FSP, TP and TN
+      if ((jCol = 1) or (jCol = 2) or (jCol = 4)) then
+      begin
+        sgCRCs.Cells[j, iRow] := FormatFloat(ONEDP, rslts[iRow, jCol]);
+        j := j + 1;
+      end;
+    end;
+  end;
+end;
 
 function showRoadPollutantsDialog(CatchID: String): Integer;
 var
@@ -224,27 +249,38 @@ end;
 
 procedure TPLRMRoadPollutants.btnOkClick(Sender: TObject);
 begin
-  // validate road shoulder assignments
-  if (StrToFloat(sgRoadShoulderPercents.Cells[0, 0]) <> 100) then
-  begin
+  { // validate road shoulder assignments
+    if (StrToFloat(sgRoadShoulderPercents.Cells[0, 0]) <> 100) then
+    begin
     ShowMessage('% of Road shoulder length" assignments must add up to 100%');
     Exit;
-  end;
+    end;
 
-  // validate road shoulder assignments
-  if (StrToFloat(sgRoadConditions.Cells[0, 0]) <> 100) then
-  begin
+    // validate road shoulder assignments
+    if (StrToFloat(sgRoadConditions.Cells[0, 0]) <> 100) then
+    begin
     ShowMessage('% of Road conditions assignments must add up to 100%');
     Exit;
-  end;
+    end; }
 
-  ModalResult := mrOK;
+  // save grid data to current catchment and exit form
+  GSPLRM.PLRMObj.currentCatchment.frm4of6SgRoadShoulderData :=
+    GSUtils.copyGridContents(0, 0, sgRoadShoulderPercents);
+
+  GSPLRM.PLRMObj.currentCatchment.frm4of6SgRoadConditionData :=
+    GSUtils.copyGridContents(0, 0, sgRoadConditions);
+
+  GSPLRM.PLRMObj.currentCatchment.frm4of6SgRoadCRCsData := tblCRCsCalculated;
+
+  // launch next form
+  showRoadRoadDrainageEditorDialog(PLRMObj.currentCatchment.name);
+
+  ModalResult := mrOk;
 end;
 
 procedure TPLRMRoadPollutants.FormCreate(Sender: TObject);
 var
-  idx, jdx: Integer;
-  tempTbl: PLRMGridData;
+
   I: Integer;
 begin
   // default form labels and other info
@@ -256,16 +292,58 @@ begin
     StrToFloat(PLRMObj.currentCatchment.swmmCatch.Data
     [UProject.SUBCATCH_AREA_INDEX])) + ' ac';
 
+  initFormContents(initCatchID);
+  updateCRCs();
+  restoreFormContents(PLRMObj.currentCatchment);
+end;
+
+procedure TPLRMRoadPollutants.restoreFormContents(catch: TPLRMCatch);
+var
+  I, j, iRow, jCol: Integer;
+begin
+
+  copyContentsToGrid(PLRMObj.currentCatchment.frm4of6SgRoadShoulderData, 0, 0,
+    sgRoadShoulderPercents);
+
+  copyContentsToGridAddRows(PLRMObj.currentCatchment.frm4of6SgRoadConditionData,
+    0, 0, sgRoadConditions);
+
+  // fxns above wont skip rows, so manually copy over the three visible pollutant CRCs FSP, TP and TN
+  sgCRCs.RowCount :=  High(PLRMObj.currentCatchment.frm4of6SgRoadCRCsData) + 1;
+  for iRow := 0 to High(PLRMObj.currentCatchment.frm4of6SgRoadCRCsData) do
+  begin
+    j := 0;
+    for jCol := 0 to High(PLRMObj.currentCatchment.frm4of6SgRoadCRCsData[0]) do
+    begin
+      // in delphi tstringgrid indexes are column first then row
+      // only copy over values for FSP, TP and TN
+      if ((jCol = 1) or (jCol = 2) or (jCol = 4)) then
+      begin
+        sgCRCs.Cells[j, iRow] := PLRMObj.currentCatchment.frm4of6SgRoadCRCsData
+          [iRow, jCol];
+        j := j + 1;
+      end;
+    end;
+  end;
+end;
+
+procedure TPLRMRoadPollutants.initFormContents(catch: String);
+var
+  idx, jdx: Integer;
+  tempTbl: PLRMGridData;
+begin
+
   // road shoulder erosion grid defaults
   sgRoadShoulderPercents.Cells[0, 0] := '100'; // 'Percent Erodible';
   sgRoadShoulderPercents.Cells[1, 0] := '0'; // 'Percent Protected Only';
   sgRoadShoulderPercents.Cells[2, 0] := '0'; // 'Percent Stabilized Only';
-  sgRoadShoulderPercents.Cells[3, 0] := '1';
+  sgRoadShoulderPercents.Cells[3, 0] := '0';
   // 'Percent Stabilized and Protected';
 
   // road conditions grid defaults
   sgRoadConditions.Cells[0, 0] := '100'; // 'Percent Erodible';
-  sgRoadConditions.Cells[1, 0] := FloatToStr(defaultCondScore); // 'Percent Protected Only';
+  sgRoadConditions.Cells[1, 0] := FloatToStr(defaultCondScore);
+  // 'Percent Protected Only';
 
   sgRoadConditions.Cells[0, 1] := ''; // 'Percent Erodible';
   sgRoadConditions.Cells[1, 1] := ''; // 'Percent Protected Only';
@@ -276,14 +354,12 @@ begin
 
   // columns are 2 less cause 1'st column contains poll codes and 2nd col contains poll names
   // we only want actual parameter values so start reading from column index 2
-  SetLength(tblCRCs, High(tempTbl) + 1, High(tempTbl[0]) - 1);
+  SetLength(tblDbCRCParams, High(tempTbl) + 1, High(tempTbl[0]) - 1);
   for idx := 0 to High(tempTbl) do
     for jdx := 2 to High(tempTbl[0]) do
     begin
-      tblCRCs[idx, jdx - 2] := StrToFloat(tempTbl[idx, jdx]);
+      tblDbCRCParams[idx, jdx - 2] := StrToFloat(tempTbl[idx, jdx]);
     end;
-
-  updateCRCs();
 end;
 
 // Begin CRCs Grid Handlers

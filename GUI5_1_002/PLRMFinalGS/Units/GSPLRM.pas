@@ -486,6 +486,7 @@ begin
         .catchToXML(projectLandUseNames, projectLandUseCodes);
     end;
 
+    //Prep nodes
     SetLength(tempNodeArry2, nodes.count);
     for I := 0 to nodes.count - 1 do
     begin

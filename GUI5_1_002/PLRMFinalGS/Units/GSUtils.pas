@@ -8,7 +8,7 @@ uses
   SysUtils, Windows, Messages, Classes, Graphics, Controls, Forms, Dialogs,
   xmldom, XMLIntf, msxmldom, XMLDoc,
   StdCtrls, ComCtrls, Menus, ImgList, ShlObj, ShellApi, Registry,
-  ExtCtrls, Grids, GSTypes, StrUtils, MSXML;
+  ExtCtrls, Grids, GSTypes, StrUtils, MSXML,Variants;
 
 type
   TCopyDataProc = procedure(oldnode, newnode: TTreenode);
@@ -35,8 +35,11 @@ function copyContentsToGridAddRows(const data: PLRMGridData;
   const strtCol: Integer; strtRow: Integer; var sg: TStringGrid): boolean;
 function copyContentsToGridNChk(const data: PLRMGridData;
   const strtCol: Integer; strtRow: Integer; var sg: TStringGrid): boolean;
+
 function dbFields2ToPLRMGridData(data: dbReturnFields2; strtRowIdx: Integer = 0)
   : PLRMGridData;
+function PLRMGridDblToPLRMGridData(data: PLRMGridDataDbl; strtRowIdx: Integer = 0;formatStr:String = THREEDP)
+  :PLRMGridData ;
 function dbFields3ToPLRMGridData(data: dbReturnFields3; strtRowIdx: Integer = 0)
   : PLRMGridData;
 procedure DefaultCopyDataProc(oldnode, newnode: TTreenode);
@@ -100,6 +103,11 @@ procedure exportGridToTxt(delimiter: String; sg: TStringGrid; sg2: TStringGrid;
   colLables: TStringList; rowLabels: TStringList; filePath: String); overload;
 
 // XML Routines
+function xmlToPlrmGridData(iNode: IXMLNode; tags: TStringList;
+  colStart: Integer): PLRMGridData; overload;
+function xmlAttachedChildNodesToPLRMGridData(parentNode: IXMLNode;
+  childTagName: string; rowName: String; var data: PLRMGridData;
+  tags: TStringList): PLRMGridData;
 function cdataTextToXML(txt: String; nodeName: String): IXMLNode;
 function checkNCreateDirectory(folderPath: String): boolean;
 procedure copyCbxObjects(inCbx: TCombobox; var outLst: TStringList);
@@ -114,6 +122,9 @@ function makeSWMMSaveInpFile(inputFilePath: String;
 function openAndLoadSWMMInptFilefromXML(xmlFilePath: String): boolean;
 function plrmGridDataToXML(nodeName: String; data: PLRMGridData;
   tags: TStringList; valColNum: Integer): IXMLNodeList; overload;
+function createAndAttachChildNode(var parentNode: IXMLNode;
+  childTagName: string; rowName: String; data: PLRMGridData; tags: TStringList;
+  txtList: TStringList): IXMLNode;
 function plrmGridDataToXML(nodeName: String; data: PLRMGridData;
   tags: TStringList; txtList: TStringList): IXMLNodeList; overload;
 function plrmGridDataToXML3(nodeName: String; rowNodeName: String;
@@ -170,7 +181,8 @@ function Split(const delimiter: Char; Input: string;
   var ResultStrings: TStrings): TStrings;
 procedure transformXMLToSwmm(xslFilePath: String; inXMLFilePath: String;
   outFilePath: String);
-function xmlToPlrmGridData(iNode: IXMLNode; tags: TStringList): PLRMGridData;
+function xmlToPlrmGridData(iNode: IXMLNode; tags: TStringList)
+  : PLRMGridData; overload;
 function xmlAttribToPlrmGridData(iNode: IXMLNode; tags: TStringList)
   : PLRMGridData;
 function lookUpCodeFrmName(const searchNames: PLRMGridData; searchCol: Integer;
@@ -1034,6 +1046,44 @@ begin
   Result := root;
 end;
 
+// 2014 utility function that takes plrmgriddata and creates child xml nodes
+// attached to parent passed in
+function createAndAttachChildNode(var parentNode: IXMLNode;
+  childTagName: string; rowName: String; data: PLRMGridData; tags: TStringList;
+  txtList: TStringList): IXMLNode;
+var
+  I: Integer;
+  tempNode: IXMLNode;
+  tempNodeList: IXMLNodeList;
+begin
+  tempNode := parentNode.AddChild(childTagName, '');
+  tempNodeList := GSUtils.plrmGridDataToXML(rowName, data, tags, txtList);
+  for I := 0 to tempNodeList.Count - 1 do
+  begin
+    tempNode.ChildNodes.add(tempNodeList[I]);
+  end;
+  tempNode.Resync;
+end;
+
+// 2014 utility function that takes xml parent node and reads plrmgriddata
+// attached to parent passed in
+function xmlAttachedChildNodesToPLRMGridData(parentNode: IXMLNode;
+  childTagName: string; rowName: String; var data: PLRMGridData;
+  tags: TStringList): PLRMGridData;
+var
+  I: Integer;
+  tempNode: IXMLNode;
+  tempNodeList: IXMLNodeList;
+  // tempData: PLRMGridData;
+begin
+  tempNode := parentNode.ChildNodes[childTagName];
+  if (assigned(tempNode)) then
+  begin
+    data := xmlToPlrmGridData(tempNode, tags, 0);
+  end;
+  Result := data;
+end;
+
 function plrmGridDataToXML3(nodeName: String; rowNodeName: String;
   data: PLRMGridData; attribTags: TStringList; txtValColumn: Integer): IXMLNode;
 var
@@ -1078,6 +1128,27 @@ begin
       tempNode.Attributes[tags[J]] := data[I][J];
   end;
   Result := root.ChildNodes;
+end;
+
+function xmlToPlrmGridData(iNode: IXMLNode; tags: TStringList;
+  colStart: Integer): PLRMGridData;
+var
+  I, J: Integer;
+  data: PLRMGridData;
+  numCols, numRows: Integer;
+begin
+  numRows := iNode.ChildNodes.Count; // includes text as column
+  numCols := tags.Count; // includes text as column
+
+  SetLength(data, numRows, numCols); // includes text as column
+  for I := 0 to iNode.ChildNodes.Count - 1 do
+  begin
+    data[I][0] := iNode.ChildNodes[I].Text;
+    for J := colStart to numCols - 1 do // High(data[0]) do
+      if ((iNode.ChildNodes[I].Attributes[tags[J]]) <> Null) then
+        data[I][J] := iNode.ChildNodes[I].Attributes[tags[J]];
+  end;
+  Result := data;
 end;
 
 function xmlToPlrmGridData(iNode: IXMLNode; tags: TStringList): PLRMGridData;
@@ -1215,10 +1286,6 @@ begin
   // if (not(CharInSet(Key, [#48 .. #57]))) then
   if (not(Key in [#48 .. #57])) then
     Key := #0;
-
-  with Sender as TStringGrid do
-  begin
-  end;
 end;
 
 procedure gsEditKeyPressNoSpace(Sender: TObject; var Key: Char;
@@ -1824,6 +1891,19 @@ begin
   for I := strtRowIdx to data[0].Count - 1 do
     for J := 0 to High(rslt[0]) do
       rslt[I - strtRowIdx][J] := data[J][I];
+  Result := rslt;
+end;
+
+function PLRMGridDblToPLRMGridData(data: PLRMGridDataDbl; strtRowIdx: Integer = 0;formatStr:String = THREEDP)
+  : PLRMGridData;
+ var
+  I, J: Integer;
+  rslt: PLRMGridData;
+begin
+  SetLength(rslt, (High(data[0]) - strtRowIdx + 1), High(data) + 1);
+  for I := strtRowIdx to High(data[0]) do
+    for J := 0 to High(rslt[0]) do
+      rslt[I - strtRowIdx][J] := FormatFloat(formatStr, data[J][I]);
   Result := rslt;
 end;
 

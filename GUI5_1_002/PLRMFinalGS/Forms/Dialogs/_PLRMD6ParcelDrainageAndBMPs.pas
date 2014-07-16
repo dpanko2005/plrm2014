@@ -222,9 +222,12 @@ begin
     sgNoBMPs.Cells[1, I] := '50';
 
     // default ksat vals  8/14/09 apply ksat reduction factors from database
+    if(assigned(PLRMObj.currentCatchment.soilsInfData))then
+    begin
     sgNoBMPs.Cells[2, I] := FormatFloat('0.##',
       (StrToFloat(PLRMObj.currentCatchment.soilsInfData[0, 1]) *
       StrToFloat(kSatMultplrs[0][I + luseOffset])));
+    end;
   end;
 
   // clear old numbers for new numbers
@@ -239,8 +242,10 @@ end;
 
 procedure TPLRMParcelDrngAndBMPs.restoreFormContents(catch: TPLRMCatch);
 begin
-  copyContentsToGridNChk(PLRMObj.currentCatchment.primRdDrng, 0, 0, sgBMPImpl);
-  copyContentsToGridNChk(PLRMObj.currentCatchment.primRdDrng, 0, 0, sgNoBMPs);
+  copyContentsToGridNChk(PLRMObj.currentCatchment.frm6of6SgBMPImplData, 0, 0,
+    sgBMPImpl);
+  copyContentsToGridNChk(PLRMObj.currentCatchment.frm6of6SgNoBMPsData, 0, 0,
+    sgNoBMPs);
 end;
 
 // Note: current catchment should be set prior to calling try of this routine
@@ -462,10 +467,10 @@ end;
 procedure TPLRMParcelDrngAndBMPs.btnOKClick(Sender: TObject);
 begin
   // save grid data to current catchment and exit form
-  GSPLRM.PLRMObj.currentCatchment.sgBMPImplData :=
+  GSPLRM.PLRMObj.currentCatchment.frm6of6SgBMPImplData :=
     GSUtils.copyGridContents(0, 0, sgBMPImpl);
-  GSPLRM.PLRMObj.currentCatchment.sgNoBMPsData := GSUtils.copyGridContents(0, 0,
-    sgNoBMPs);
+  GSPLRM.PLRMObj.currentCatchment.frm6of6SgNoBMPsData :=
+    GSUtils.copyGridContents(0, 0, sgNoBMPs);
   ModalResult := mrOk;
 end;
 
@@ -481,7 +486,7 @@ begin
     [UProject.SUBCATCH_AREA_INDEX] + 'ac ]';
 
   initFormContents(initCatchID); // also calls updateAreas
-  restoreFormContents(PLRMObj.currentCatchment);
+  //restoreFormContents(PLRMObj.currentCatchment);
 end;
 
 end.
