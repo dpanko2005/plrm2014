@@ -217,7 +217,7 @@ begin
   // subtracting 2 below because last row not populated shown to let user know grid will grow
   // as new rows are entered
 
-  for iRow := 0 to sgCRCs.RowCount - 2 do
+  for iRow := 0 to sgCRCs.RowCount - 1 do
   begin
     j := 0;
     for jCol := 0 to High(rslts[0]) do

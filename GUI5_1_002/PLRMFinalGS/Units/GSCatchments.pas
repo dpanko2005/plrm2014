@@ -1331,11 +1331,16 @@ begin
         tempList3.Add(intToStr(I));
       GSUtils.createAndAttachChildNode(tempNode, 'rdCRCs', 'rdCRC',
         frm4of6SgRoadCRCsData, roadPollutantsRdCRCTagList, tempList3);
+      tempNode.Resync;
     end;
 
     // 2014 write step 5of6 Raod Drainage Editor form inputs
     // create parent tag
     tempNode := iNode.AddChild('frm5of6RoadDrainageEditor', '');
+
+    // Ave annual inf rate for all road shoulders
+    tempNode.Attributes['shoulderAveAnnInfRate'] :=
+      frm5of6RoadDrainageEditorData.shoulderAveAnnInfRate;
 
     // DCIA  - directly connected impervious area
     tempNode2 := tempNode.AddChild('DCIA', '');
@@ -1368,6 +1373,7 @@ begin
       frm5of6RoadDrainageEditorData.PervChanFacility.storageDepth;
     tempNode2.Attributes['aveAnnInfRate'] :=
       frm5of6RoadDrainageEditorData.PervChanFacility.aveAnnInfiltrationRate;
+    tempNode.Resync;
 
     // 2014 write step 6of6 Parcel Drainage and BMPs form contents
     if (assigned(frm6of6SgBMPImplData) and assigned(frm6of6SgNoBMPsData)) then
@@ -1814,6 +1820,11 @@ begin
   tempNode := iNode.ChildNodes['frm5of6RoadDrainageEditor'];
   if (assigned(tempNode)) then
   begin
+
+    // Ave annual inf rate for all road shoulders
+    frm5of6RoadDrainageEditorData.shoulderAveAnnInfRate :=
+      StrToFloat(tempNode.Attributes['shoulderAveAnnInfRate']);
+
     // DCIA  - directly connected impervious area
     tempNode2 := tempNode.ChildNodes['DCIA'];
     frm5of6RoadDrainageEditorData.DCIA :=
@@ -1849,6 +1860,9 @@ begin
       StrToFloat(tempNode2.Attributes['storageDepth']);
     frm5of6RoadDrainageEditorData.PervChanFacility.aveAnnInfiltrationRate :=
       StrToFloat(tempNode2.Attributes['aveAnnInfRate']);
+
+    // sentinel
+    frm5of6RoadDrainageEditorData.isAssigned := true;
   end;
   // 2014 read step 6of6 Parcel Drainage and BMPs form contents
   // access parent tag
