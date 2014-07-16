@@ -131,123 +131,6 @@ implementation
 
 uses GSIO;
 
-function showPLRMParcelDrngAndBMPsDialog(CatchID: String): Integer;
-var
-  Frm: TPLRMParcelDrngAndBMPs;
-  tempInt: Integer;
-begin
-  initCatchID := CatchID;
-  Frm := TPLRMParcelDrngAndBMPs.Create(Application);
-  try
-    tempInt := Frm.ShowModal;
-  finally
-    Frm.Free;
-  end;
-end;
-
-procedure TPLRMParcelDrngAndBMPs.initFormContents(catch: String);
-var
-  idx, I: Integer;
-  jdx: Integer;
-  tempInt: Integer;
-  tempLst: TStringList;
-  tempLst2: TStrings;
-  // Schm: TPLRMRdCondsScheme;
-  // hydProps: dbReturnFields;
-  kSatMultplrs: dbReturnFields;
-begin
-
-  // edtSecRdArea.Text := '0';
-  // edtprimRdArea.Text := '0';
-  edtTotSfrArea.Text := '0';
-  edtTotMfrArea.Text := '0';
-  edtTotCicuArea.Text := '0';
-  edtTotVegTArea.Text := '0';
-  // edtTotOthrArea.Text := '0';
-
-  // edtImpSecRdArea.Text := '0';
-  // edtImpPrimRdArea.Text := '0';
-  edtImpSfrArea.Text := '0';
-  edtImpMfrArea.Text := '0';
-  edtImpCicuArea.Text := '0';
-  // edtImpVegTArea.Text := '0';
-  // edtImpOthrArea.Text := '0';
-
-  { // populate road risk category grid with initial values
-    sgRdRiskCat.Cells[0, 0] := '100';
-    sgRdRiskCat.Cells[0, 1] := '100';
-    sgRdRiskCat.Cells[1, 0] := '0';
-    sgRdRiskCat.Cells[1, 1] := '0';
-    sgRdRiskCat.Cells[2, 0] := '0';
-    sgRdRiskCat.Cells[2, 1] := '0';
-    sgRdRiskCat.Options := sgBMPImpl.Options + [goEditing]; }
-
-  // populate bmp implementation grid with initial values
-  sgBMPImpl.Cells[0, 0] := '0';
-  sgBMPImpl.Cells[0, 1] := '0';
-  sgBMPImpl.Cells[0, 2] := '0';
-  sgBMPImpl.Cells[0, 3] := '0';
-
-  sgBMPImpl.Cells[1, 0] := '0';
-  sgBMPImpl.Cells[1, 1] := '0';
-  sgBMPImpl.Cells[1, 2] := '0';
-  sgBMPImpl.Cells[1, 3] := '0';
-
-  // populate no bmp implementation grid with initial values
-  sgNoBMPs.Cells[0, 0] := '100';
-  sgNoBMPs.Cells[0, 1] := '100';
-  sgNoBMPs.Cells[0, 2] := '100';
-  sgNoBMPs.Cells[0, 3] := '100';
-
-  sgNoBMPs.Cells[1, 0] := '0';
-  sgNoBMPs.Cells[1, 1] := '0';
-  sgNoBMPs.Cells[1, 2] := '0';
-  sgNoBMPs.Cells[1, 3] := '0';
-  // sgBMPImpl.Cells[0, 4] := '100';
-
-  sgBMPImpl.Options := sgBMPImpl.Options + [goEditing];
-
-  tempInt := PLRMObj.getCatchIndex(catch);
-  // cbxGlobalSpecfc.items := PLRMObj.catchments;
-  // loads catchments into combo box
-  // cbxGlobalSpecfc.ItemIndex := tempInt;
-  PLRMObj.currentCatchment := PLRMObj.catchments.Objects[tempInt] as TPLRMCatch;
-
-  // hydProps := GSIO.getDefaults('"6%"');
-  kSatMultplrs := GSIO.getDefaults('"7%"');
-
-  for I := 0 to sgNoBMPs.RowCount - 1 do
-  begin
-    // default dcia
-    sgNoBMPs.Cells[1, I] := '50';
-
-    // default ksat vals  8/14/09 apply ksat reduction factors from database
-    if(assigned(PLRMObj.currentCatchment.soilsInfData))then
-    begin
-    sgNoBMPs.Cells[2, I] := FormatFloat('0.##',
-      (StrToFloat(PLRMObj.currentCatchment.soilsInfData[0, 1]) *
-      StrToFloat(kSatMultplrs[0][I + luseOffset])));
-    end;
-  end;
-
-  // clear old numbers for new numbers
-  for I := 0 to High(FrmLuseConds.luseAreaNImpv) do
-  begin
-    FrmLuseConds.luseAreaNImpv[I, 0] := '0';
-    FrmLuseConds.luseAreaNImpv[I, 1] := '0';
-  end;
-
-  UpdateAreas;
-end;
-
-procedure TPLRMParcelDrngAndBMPs.restoreFormContents(catch: TPLRMCatch);
-begin
-  copyContentsToGridNChk(PLRMObj.currentCatchment.frm6of6SgBMPImplData, 0, 0,
-    sgBMPImpl);
-  copyContentsToGridNChk(PLRMObj.currentCatchment.frm6of6SgNoBMPsData, 0, 0,
-    sgNoBMPs);
-end;
-
 // Note: current catchment should be set prior to calling try of this routine
 procedure TPLRMParcelDrngAndBMPs.UpdateAreas();
 var
@@ -474,6 +357,125 @@ begin
   ModalResult := mrOk;
 end;
 
+
+
+function showPLRMParcelDrngAndBMPsDialog(CatchID: String): Integer;
+var
+  Frm: TPLRMParcelDrngAndBMPs;
+  tempInt: Integer;
+begin
+  initCatchID := CatchID;
+  Frm := TPLRMParcelDrngAndBMPs.Create(Application);
+  try
+    tempInt := Frm.ShowModal;
+  finally
+    Frm.Free;
+  end;
+end;
+
+procedure TPLRMParcelDrngAndBMPs.initFormContents(catch: String);
+var
+  idx, I: Integer;
+  jdx: Integer;
+  tempInt: Integer;
+  tempLst: TStringList;
+  tempLst2: TStrings;
+  // Schm: TPLRMRdCondsScheme;
+  // hydProps: dbReturnFields;
+  kSatMultplrs: dbReturnFields;
+begin
+
+  // edtSecRdArea.Text := '0';
+  // edtprimRdArea.Text := '0';
+  edtTotSfrArea.Text := '0';
+  edtTotMfrArea.Text := '0';
+  edtTotCicuArea.Text := '0';
+  edtTotVegTArea.Text := '0';
+  // edtTotOthrArea.Text := '0';
+
+  // edtImpSecRdArea.Text := '0';
+  // edtImpPrimRdArea.Text := '0';
+  edtImpSfrArea.Text := '0';
+  edtImpMfrArea.Text := '0';
+  edtImpCicuArea.Text := '0';
+  // edtImpVegTArea.Text := '0';
+  // edtImpOthrArea.Text := '0';
+
+  { // populate road risk category grid with initial values
+    sgRdRiskCat.Cells[0, 0] := '100';
+    sgRdRiskCat.Cells[0, 1] := '100';
+    sgRdRiskCat.Cells[1, 0] := '0';
+    sgRdRiskCat.Cells[1, 1] := '0';
+    sgRdRiskCat.Cells[2, 0] := '0';
+    sgRdRiskCat.Cells[2, 1] := '0';
+    sgRdRiskCat.Options := sgBMPImpl.Options + [goEditing]; }
+
+  // populate bmp implementation grid with initial values
+  sgBMPImpl.Cells[0, 0] := '0';
+  sgBMPImpl.Cells[0, 1] := '0';
+  sgBMPImpl.Cells[0, 2] := '0';
+  sgBMPImpl.Cells[0, 3] := '0';
+
+  sgBMPImpl.Cells[1, 0] := '0';
+  sgBMPImpl.Cells[1, 1] := '0';
+  sgBMPImpl.Cells[1, 2] := '0';
+  sgBMPImpl.Cells[1, 3] := '0';
+
+  // populate no bmp implementation grid with initial values
+  sgNoBMPs.Cells[0, 0] := '100';
+  sgNoBMPs.Cells[0, 1] := '100';
+  sgNoBMPs.Cells[0, 2] := '100';
+  sgNoBMPs.Cells[0, 3] := '100';
+
+  sgNoBMPs.Cells[1, 0] := '0';
+  sgNoBMPs.Cells[1, 1] := '0';
+  sgNoBMPs.Cells[1, 2] := '0';
+  sgNoBMPs.Cells[1, 3] := '0';
+  // sgBMPImpl.Cells[0, 4] := '100';
+
+  sgBMPImpl.Options := sgBMPImpl.Options + [goEditing];
+
+  tempInt := PLRMObj.getCatchIndex(catch);
+  // cbxGlobalSpecfc.items := PLRMObj.catchments;
+  // loads catchments into combo box
+  // cbxGlobalSpecfc.ItemIndex := tempInt;
+  PLRMObj.currentCatchment := PLRMObj.catchments.Objects[tempInt] as TPLRMCatch;
+
+  // hydProps := GSIO.getDefaults('"6%"');
+  kSatMultplrs := GSIO.getDefaults('"7%"');
+
+  for I := 0 to sgNoBMPs.RowCount - 1 do
+  begin
+    // default dcia
+    sgNoBMPs.Cells[1, I] := '50';
+
+    // default ksat vals  8/14/09 apply ksat reduction factors from database
+    if (assigned(PLRMObj.currentCatchment.soilsInfData)) then
+    begin
+      sgNoBMPs.Cells[2, I] := FormatFloat('0.##',
+        (StrToFloat(PLRMObj.currentCatchment.soilsInfData[0, 1]) *
+        StrToFloat(kSatMultplrs[0][I + luseOffset])));
+    end;
+  end;
+
+  // clear old numbers for new numbers
+  for I := 0 to High(FrmLuseConds.luseAreaNImpv) do
+  begin
+    FrmLuseConds.luseAreaNImpv[I, 0] := '0';
+    FrmLuseConds.luseAreaNImpv[I, 1] := '0';
+  end;
+
+  UpdateAreas;
+end;
+
+procedure TPLRMParcelDrngAndBMPs.restoreFormContents(catch: TPLRMCatch);
+begin
+  copyContentsToGrid(PLRMObj.currentCatchment.frm6of6SgBMPImplData, 0, 0,
+    sgBMPImpl);
+  copyContentsToGrid(PLRMObj.currentCatchment.frm6of6SgNoBMPsData, 0, 0,
+    sgNoBMPs);
+end;
+
 procedure TPLRMParcelDrngAndBMPs.FormCreate(Sender: TObject);
 begin
   luseOffset := 2;
@@ -486,7 +488,7 @@ begin
     [UProject.SUBCATCH_AREA_INDEX] + 'ac ]';
 
   initFormContents(initCatchID); // also calls updateAreas
-  //restoreFormContents(PLRMObj.currentCatchment);
+  restoreFormContents(PLRMObj.currentCatchment);
 end;
 
 end.

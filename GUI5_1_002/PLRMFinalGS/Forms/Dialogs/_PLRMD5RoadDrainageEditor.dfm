@@ -2414,7 +2414,6 @@ object PLRMRoadDrainageEditor: TPLRMRoadDrainageEditor
       Width = 88
       Height = 21
       TabOrder = 0
-      Text = '0.5'
       OnKeyPress = edtDINFAveAnnInfKeyPress
     end
     object edtDINFTotStorage: TEdit
@@ -2488,7 +2487,6 @@ object PLRMRoadDrainageEditor: TPLRMRoadDrainageEditor
       Width = 112
       Height = 21
       TabOrder = 0
-      Text = '0.5'
       OnKeyPress = edtDPCHAveAnnInfKeyPress
     end
     object edtDPCHAveSlope: TEdit
@@ -2535,6 +2533,8 @@ object PLRMRoadDrainageEditor: TPLRMRoadDrainageEditor
     Height = 21
     TabOrder = 6
     Text = '0.5'
+    OnClick = edtShoulderAveAnnInfRateClick
+    OnKeyPress = edtShoulderAveAnnInfRateKeyPress
     OnKeyUp = edtShoulderAveAnnInfRateKeyUp
   end
   object statBar: TStatusBar

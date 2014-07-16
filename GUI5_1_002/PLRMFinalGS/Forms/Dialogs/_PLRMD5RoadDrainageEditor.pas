@@ -72,6 +72,8 @@ type
     function checkAndUpDatePrcntAreas(): Boolean;
     procedure edtDINFKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure edtDPCHKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure edtShoulderAveAnnInfRateClick(Sender: TObject);
+    procedure edtShoulderAveAnnInfRateKeyPress(Sender: TObject; var Key: Char);
 
   private
     { Private declarations }
@@ -134,6 +136,7 @@ begin
     strToFloat(edtDPCHAveAnnInf.Text);
   FrmData.isAssigned := True;
 
+  PLRMObj.currentCatchment.frm5of6RoadDrainageEditorData := FrmData;
   // launch next form
   showPLRMParcelDrngAndBMPsDialog(PLRMObj.currentCatchment.name);
 
@@ -144,34 +147,34 @@ procedure TPLRMRoadDrainageEditor.restoreFormContents(catch: TPLRMCatch);
 begin
   if (catch.frm5of6RoadDrainageEditorData.isAssigned) then
   begin
-    edtDCIA.Text := FormatFloat(THREEDP,
+    edtDCIA.Text := FormatFloat(ZERODP,
       catch.frm5of6RoadDrainageEditorData.DCIA);
-    edtICIA.Text := FormatFloat(THREEDP,
+    edtICIA.Text := FormatFloat(ZERODP,
       catch.frm5of6RoadDrainageEditorData.ICIA);
-    edtDINF.Text := FormatFloat(THREEDP,
+    edtDINF.Text := FormatFloat(ZERODP,
       catch.frm5of6RoadDrainageEditorData.DINF);
-    edtDPCH.Text := FormatFloat(THREEDP,
+    edtDPCH.Text := FormatFloat(ZERODP,
       catch.frm5of6RoadDrainageEditorData.DPCH);
     edtShoulderAveAnnInfRate.Text :=
-      FormatFloat(THREEDP,
+      FormatFloat(ONEDP,
       catch.frm5of6RoadDrainageEditorData.shoulderAveAnnInfRate);
 
-    edtDINFTotSurfArea.Text := FormatFloat(THREEDP,
+    edtDINFTotSurfArea.Text := FormatFloat(ZERODP,
       catch.frm5of6RoadDrainageEditorData.INFFacility.totSurfaceArea);
-    edtDINFTotStorage.Text := FormatFloat(THREEDP,
+    edtDINFTotStorage.Text := FormatFloat(ZERODP,
       catch.frm5of6RoadDrainageEditorData.INFFacility.totStorage);
-    edtDINFAveAnnInf.Text := FormatFloat(THREEDP,
+    edtDINFAveAnnInf.Text := FormatFloat(ONEDP,
       catch.frm5of6RoadDrainageEditorData.INFFacility.aveAnnInfiltrationRate);
 
-    edtDPCHLen.Text := FormatFloat(THREEDP,
+    edtDPCHLen.Text := FormatFloat(ONEDP,
       catch.frm5of6RoadDrainageEditorData.PervChanFacility.length);
-    edtDPCHWidth.Text := FormatFloat(THREEDP,
+    edtDPCHWidth.Text := FormatFloat(ONEDP,
       catch.frm5of6RoadDrainageEditorData.PervChanFacility.width);
-    edtDPCHAveSlope.Text := FormatFloat(THREEDP,
+    edtDPCHAveSlope.Text := FormatFloat(ONEDP,
       catch.frm5of6RoadDrainageEditorData.PervChanFacility.aveSlope);
-    edtDPCHStorDepth.Text := FormatFloat(THREEDP,
+    edtDPCHStorDepth.Text := FormatFloat(ONEDP,
       catch.frm5of6RoadDrainageEditorData.PervChanFacility.storageDepth);
-    edtDPCHAveAnnInf.Text := FormatFloat(THREEDP,
+    edtDPCHAveAnnInf.Text := FormatFloat(ONEDP,
       catch.frm5of6RoadDrainageEditorData.PervChanFacility.
       aveAnnInfiltrationRate);
   end;
@@ -306,10 +309,22 @@ begin
   gsEditKeyPress(Sender, Key, gemPosNumber);
 end;
 
+procedure TPLRMRoadDrainageEditor.edtShoulderAveAnnInfRateClick(
+  Sender: TObject);
+begin
+  tempEdtSavedVal := edtShoulderAveAnnInfRate.Text;
+end;
+
+procedure TPLRMRoadDrainageEditor.edtShoulderAveAnnInfRateKeyPress(
+  Sender: TObject; var Key: Char);
+begin
+  gsEditKeyPress(Sender, Key, gemPosNumber);
+end;
+
 procedure TPLRMRoadDrainageEditor.edtShoulderAveAnnInfRateKeyUp(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
-  // edtShoulderAveAnnInfRate
+  // TODO - validate inf rate
 end;
 
 procedure TPLRMRoadDrainageEditor.FormCreate(Sender: TObject);
@@ -332,10 +347,13 @@ var
   jdx: Integer;
 begin
   edtDCIA.Text := intToStr(50);
-  edtICIA.Text := intToStr(50);;
-  edtDINF.Text := intToStr(0);;
-  edtDPCH.Text := intToStr(0);;
-  edtShoulderAveAnnInfRate.Text := intToStr(0);;
+  edtICIA.Text := intToStr(50);
+  edtDINF.Text := intToStr(0);
+  edtDPCH.Text := intToStr(0);
+
+  edtShoulderAveAnnInfRate.Text := intToStr(0);
+  edtDINFAveAnnInf.Text := '0.5';
+  edtDPCHAveAnnInf.Text := '0.5';
 end;
 
 end.
