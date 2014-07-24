@@ -6,14 +6,15 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Imaging.jpeg,
-  Vcl.ExtCtrls, Vcl.ComCtrls, UProject, GSUtils, GSTypes, GSPLRM, GSCatchments,
+  Vcl.ExtCtrls, Vcl.ComCtrls, UProject, GSUtils, GSTypes, GSPLRM, GSIO,
+  GSCatchments,
   _PLRMD6ParcelDrainageAndBMPs;
 
 type
   TPLRMRoadDrainageEditor = class(TForm)
     Image1: TImage;
     lblCatchArea: TLabel;
-    lblCatchImprv: TLabel;
+    lblRoadAcres: TLabel;
     edtICIA: TEdit;
     Label1: TLabel;
     Label2: TLabel;
@@ -48,6 +49,7 @@ type
     edtShoulderAveAnnInfRate: TEdit;
     statBar: TStatusBar;
     btnOK: TButton;
+    lblRoadImpervAcres: TLabel;
     procedure edtDCIAClick(Sender: TObject);
     procedure edtDINFClick(Sender: TObject);
     procedure edtDPCHClick(Sender: TObject);
@@ -112,6 +114,7 @@ begin
   finally
     Frm.Free;
   end;
+  Result := tempInt;
 end;
 
 procedure TPLRMRoadDrainageEditor.btnOKClick(Sender: TObject);
@@ -137,8 +140,11 @@ begin
   FrmData.isAssigned := True;
 
   PLRMObj.currentCatchment.frm5of6RoadDrainageEditorData := FrmData;
-  // launch next form
-  showPLRMParcelDrngAndBMPsDialog(PLRMObj.currentCatchment.name);
+
+  if (not(assigned(PLRMObj.currentCatchment.soilsInfData))) then
+    PLRMObj.currentCatchment.soilsInfData :=
+      GSIO.getSoilsProps(PLRMObj.currentCatchment.soilsMapUnitData);
+  GSPLRM.PLRMObj.currentCatchment.hasDefRoadDrainage := True;
 
   ModalResult := mrOk;
 end;
@@ -156,8 +162,8 @@ begin
     edtDPCH.Text := FormatFloat(ZERODP,
       catch.frm5of6RoadDrainageEditorData.DPCH);
     edtShoulderAveAnnInfRate.Text :=
-      FormatFloat(ONEDP,
-      catch.frm5of6RoadDrainageEditorData.shoulderAveAnnInfRate);
+      FormatFloat(ONEDP, catch.frm5of6RoadDrainageEditorData.
+      shoulderAveAnnInfRate);
 
     edtDINFTotSurfArea.Text := FormatFloat(ZERODP,
       catch.frm5of6RoadDrainageEditorData.INFFacility.totSurfaceArea);
@@ -309,14 +315,14 @@ begin
   gsEditKeyPress(Sender, Key, gemPosNumber);
 end;
 
-procedure TPLRMRoadDrainageEditor.edtShoulderAveAnnInfRateClick(
-  Sender: TObject);
+procedure TPLRMRoadDrainageEditor.edtShoulderAveAnnInfRateClick
+  (Sender: TObject);
 begin
   tempEdtSavedVal := edtShoulderAveAnnInfRate.Text;
 end;
 
-procedure TPLRMRoadDrainageEditor.edtShoulderAveAnnInfRateKeyPress(
-  Sender: TObject; var Key: Char);
+procedure TPLRMRoadDrainageEditor.edtShoulderAveAnnInfRateKeyPress
+  (Sender: TObject; var Key: Char);
 begin
   gsEditKeyPress(Sender, Key, gemPosNumber);
 end;
@@ -331,20 +337,27 @@ procedure TPLRMRoadDrainageEditor.FormCreate(Sender: TObject);
 begin
   luseOffset := 2;
   statBar.SimpleText := PLRMVERSION;
-  Self.Caption := PLRM3_TITLE;
+  Self.Caption := PLRMD5_TITLE;
 
   lblCatchArea.Caption := 'Catchment ID: ' + PLRMObj.currentCatchment.swmmCatch.
     ID + '   [ Area: ' + PLRMObj.currentCatchment.swmmCatch.Data
-    [UProject.SUBCATCH_AREA_INDEX] + 'ac ]';
+    [UProject.SUBCATCH_AREA_INDEX] + 'acres ]';
 
   initFormContents(initCatchID); // also calls updateAreas
-  restoreFormContents(PLRMObj.currentCatchment);
+  if PLRMObj.currentCatchment.hasDefRoadDrainage = True then
+    restoreFormContents(PLRMObj.currentCatchment);
+  lblRoadAcres.Caption := 'Road Acres: ' + FormatFloat('#0.0',
+    PLRMObj.currentCatchment.totRoadAcres) + ' acres';
+  lblRoadImpervAcres.Caption := 'Road Impervious Acres: ' +
+    FormatFloat('#0.0', PLRMObj.currentCatchment.totRoadImpervAcres) + ' acres';
 end;
 
 procedure TPLRMRoadDrainageEditor.initFormContents(catch: String);
 var
   idx, I: Integer;
   jdx: Integer;
+  hydProps: dbReturnFields;
+  kSatMultplrs: dbReturnFields;
 begin
   edtDCIA.Text := intToStr(50);
   edtICIA.Text := intToStr(50);
@@ -354,6 +367,17 @@ begin
   edtShoulderAveAnnInfRate.Text := intToStr(0);
   edtDINFAveAnnInf.Text := '0.5';
   edtDPCHAveAnnInf.Text := '0.5';
+
+  hydProps := GSIO.getDefaults('"6%"');
+  kSatMultplrs := GSIO.getDefaults('"7%"');
+
+  if (assigned(PLRMObj.currentCatchment.soilsInfData)) then
+  begin
+    // TODO confirm that area weighting of sec and prim road ksats is not the way to go
+    edtShoulderAveAnnInfRate.Text :=
+      FormatFloat('0.##', (strToFloat(PLRMObj.currentCatchment.soilsInfData[0,
+      1]) * strToFloat(kSatMultplrs[0][1])));
+  end;
 end;
 
 end.

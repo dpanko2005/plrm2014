@@ -10,7 +10,9 @@ uses
   _PLRMD5RoadDrainageEditor, UProject;
 
 const
-  defaultPollutantCount = 5;
+  defaultPollutantCount = 6;
+  crcParamCoeffColNum =  4;
+  crcParamExponColNum =  5;
   defaultVisiblePollutantCount = 3;
   defaultCondScore = 2.5;
   lowCondScore = 0.1;
@@ -48,6 +50,7 @@ type
     btnOk: TButton;
     Button2: TButton;
     statBar: TStatusBar;
+    lblRoadImpervAcres: TLabel;
 
     procedure FormCreate(Sender: TObject);
     procedure restoreFormContents(catch: TPLRMCatch);
@@ -118,11 +121,11 @@ var
   idx: Long;
   rslt: PLRMGridDataDbl;
 begin
-  SetLength(rslt, 1, High(crcParams[0]));
-  for idx := 0 to High(crcParams[0]) - 1 do
+  SetLength(rslt, 1, High(crcParams[0]) + 1);
+  for idx := 0 to High(crcParams[0]) do
   begin
     rslt[0, idx] := calcRoadShoulderConc(errodible, protectd, stable,
-      stableProtected, crcParams[iRow]);
+      stableProtected, crcParams[idx]);
   end;
   Result := rslt;
 end;
@@ -132,8 +135,8 @@ function calcRoadShoulderConc(errodible: Double; protectd: Double;
 var
   A, B, C, D: Double;
 begin
-  Result := errodible * crcParams[0] + protectd * crcParams[1] + stable *
-    crcParams[2] + stableProtected * crcParams[3];
+  Result := (errodible  * crcParams[0] + protectd * crcParams[1] + stable *
+    crcParams[2] + stableProtected * crcParams[3])/100;
 end;
 
 // calculate road condition concentrations based on road travel lane risk score
@@ -146,8 +149,8 @@ begin
   SetLength(rslt, 1, defaultPollutantCount);
   for idx := 0 to defaultPollutantCount - 1 do
   begin
-    rslt[0, idx] := calcRoadConditionConc(crcParams[iRow, 4],
-      crcParams[iRow, 5], conditionScore);
+    rslt[0, idx] := calcRoadConditionConc(crcParams[idx, crcParamCoeffColNum],
+      crcParams[idx, crcParamExponColNum], conditionScore);
   end;
   Result := rslt;
 end;
@@ -245,9 +248,13 @@ begin
   finally
     Frm.Free;
   end;
+  Result := tempInt;
 end;
 
 procedure TPLRMRoadPollutants.btnOkClick(Sender: TObject);
+var
+  I, j: Integer;
+  tempStr: String;
 begin
   { // validate road shoulder assignments
     if (StrToFloat(sgRoadShoulderPercents.Cells[0, 0]) <> 100) then
@@ -263,17 +270,35 @@ begin
     Exit;
     end; }
 
+  // validate condition score assignments
+  // 1. make sure no two condition scores are the same
+  for I := 0 to sgRoadConditions.RowCount-2 do
+  begin
+    tempStr := sgRoadConditions.Cells[1, I];
+    for j := 0 to sgRoadConditions.RowCount-2 do
+    begin
+      if ((tempStr <> '') and (tempStr = sgRoadConditions.Cells[1, j]) and
+        (j <> I)) then
+      begin
+        ShowMessage
+          ('No two assigned road condition scores can be equal. Please check your road condition score assigmentes and try again');
+        exit;
+      end;
+    end;
+  end;
+
   // save grid data to current catchment and exit form
   GSPLRM.PLRMObj.currentCatchment.frm4of6SgRoadShoulderData :=
     GSUtils.copyGridContents(0, 0, sgRoadShoulderPercents);
 
+  // also copies last empty row so delete last row of grid before copying
+  sgRoadConditions.RowCount := sgRoadConditions.RowCount - 1;
   GSPLRM.PLRMObj.currentCatchment.frm4of6SgRoadConditionData :=
     GSUtils.copyGridContents(0, 0, sgRoadConditions);
 
   GSPLRM.PLRMObj.currentCatchment.frm4of6SgRoadCRCsData := tblCRCsCalculated;
 
-  // launch next form
-  showRoadRoadDrainageEditorDialog(PLRMObj.currentCatchment.name);
+  GSPLRM.PLRMObj.currentCatchment.hasDefRoadPolls := true;
 
   ModalResult := mrOk;
 end;
@@ -285,16 +310,20 @@ var
 begin
   // default form labels and other info
   statBar.SimpleText := PLRMVERSION;
-  Self.Caption := PLRM4_TITLE;
+  Self.Caption := PLRMD4_TITLE;
+
   catchArea := PLRMObj.currentCatchment.area;
   lblCatchID.Caption := 'Catchment: ' + PLRMObj.currentCatchment.swmmCatch.ID;
   lblCatchArea.Caption := 'Catchment Area: ' + FormatFloat(ONEDP,
     StrToFloat(PLRMObj.currentCatchment.swmmCatch.Data
     [UProject.SUBCATCH_AREA_INDEX])) + ' ac';
+  lblRoadImpervAcres.Caption := 'Road Impervious Acres: ' +
+    FormatFloat('#0.0', PLRMObj.currentCatchment.totRoadImpervAcres) + ' acres';
 
   initFormContents(initCatchID);
   updateCRCs();
-  restoreFormContents(PLRMObj.currentCatchment);
+  if PLRMObj.currentCatchment.hasDefRoadPolls = true then
+    restoreFormContents(PLRMObj.currentCatchment);
 end;
 
 procedure TPLRMRoadPollutants.restoreFormContents(catch: TPLRMCatch);
@@ -307,9 +336,11 @@ begin
 
   copyContentsToGridAddRows(PLRMObj.currentCatchment.frm4of6SgRoadConditionData,
     0, 0, sgRoadConditions);
+  sgRoadConditions.RowCount := sgRoadConditions.RowCount + 1;
+  // add an additional row to road conditions grid so user knows it grows
 
   // fxns above wont skip rows, so manually copy over the three visible pollutant CRCs FSP, TP and TN
-  sgCRCs.RowCount :=  High(PLRMObj.currentCatchment.frm4of6SgRoadCRCsData) + 1;
+  sgCRCs.RowCount := High(PLRMObj.currentCatchment.frm4of6SgRoadCRCsData) + 1;
   for iRow := 0 to High(PLRMObj.currentCatchment.frm4of6SgRoadCRCsData) do
   begin
     j := 0;
@@ -448,7 +479,7 @@ begin
   begin
     ShowMessage
       ('Cell values must not exceed 100% and the sum of all the values in this row must add up to 100%!');
-    Exit
+    exit
   end;
   updateCRCs();
 end;
@@ -458,8 +489,8 @@ procedure TPLRMRoadPollutants.sgRoadConditionsSelectCell(Sender: TObject;
 var
   sg: TStringGrid;
 begin
-  sg := Sender as TStringGrid;
-  prevGridValue := sg.Cells[ACol, ARow];
+  // sg := Sender as TStringGrid;
+  // prevGridValue := sg.Cells[ACol, ARow];
   GSUtils.sgSelectCellWthNonEditColNRow(Sender, ACol, ARow, CanSelect, 0, 0);
 end;
 
@@ -538,7 +569,7 @@ begin
   begin
     ShowMessage
       ('Cell values must not exceed 100% and the sum of all the values in this row must add up to 100%!');
-    Exit
+    exit
   end;
   updateCRCs();
 end;
@@ -548,8 +579,8 @@ procedure TPLRMRoadPollutants.sgRoadShoulderPercentsSelectCell(Sender: TObject;
 var
   sg: TStringGrid;
 begin
-  sg := Sender as TStringGrid;
-  prevGridValue := sg.Cells[ACol, ARow];
+  // sg := Sender as TStringGrid;
+  // prevGridValue := sg.Cells[ACol, ARow];
   GSUtils.sgSelectCellWthNonEditColNRow(Sender, ACol, ARow, CanSelect, 0, 0);
 end;
 

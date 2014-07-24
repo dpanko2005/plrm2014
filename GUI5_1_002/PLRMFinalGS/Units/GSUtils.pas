@@ -1866,7 +1866,8 @@ begin
   defaultEngnDir := defaultPLRMPath + '\Engine';
   PLRMInitIni := defaultEngnDir + '\swmm.ini';
   defaultDataDir := defaultPLRMPath + '\Data';
-  defaultDBPath := defaultDataDir + '\PLRM_v1.0.accdb';
+  //defaultDBPath := defaultDataDir + '\PLRM_v1.0.accdb';
+  defaultDBPath := defaultDataDir + '\PLRM_v2.0.accdb';
   defaultPrjPath := defaultPrjDir + '\temp.xml';
   defaultGenSWmmInpPath := defaultPrjDir + '\tempSwmm.inp';
   defaultUserSWmmInpPath := defaultPrjDir + '\swmm.inp';

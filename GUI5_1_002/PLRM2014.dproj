@@ -406,6 +406,10 @@
 				<Form>PLRMParcelDrngAndBMPs</Form>
 				<FormType>dfm</FormType>
 			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\Dialogs\_PLRMD6aBMPSizing.pas">
+				<Form>PLRMBMPSizing</Form>
+				<FormType>dfm</FormType>
+			</DCCReference>
 			<None Include="objprops.txt"/>
 			<None Include="viewvars.txt"/>
 			<None Include="Epaswmm5.dpr"/>
