@@ -10,8 +10,8 @@ uses
 
 { function SWTStatSummary(SWTType: Integer; swtName: String;
   swtData: PLRMGridDataDbl): TStringList; }
-function catchStatSummary(catchName: String; annLoads: PLRMGridDataDbl; mode: Integer)
-  : TStringList;
+function catchStatSummary(catchName: String; annLoads: PLRMGridDataDbl;
+  mode: Integer): TStringList;
 // function resultsToTextFile(Rslts: TPLRMResults; filePath: string): Boolean;
 function resultsToTextFile(Rslts: TPLRMResults; filePath: string;
   mode: Integer): Boolean;
@@ -107,7 +107,7 @@ begin
     tempLine1 := tempLine1 + Format(rsltsFormatDec181f,
     [loadsByLuseCombined[I, J]]);
     end; }
-  //tempSL.Add(tempLine1);
+  // tempSL.Add(tempLine1);
   Result := tempSL;
 end;
 
@@ -126,16 +126,17 @@ begin
       Result := luseDBData[1][I];
       exit;
     end;
-
-    Result := 'LU not found-' + catchmentAndLusName;
-    if (Pos('_Othr', catchmentAndLusName) > 0) then
-      Result := 'Other';
-
   end;
+
+  Result := 'LU not found-' + catchmentAndLusName;
+  if (Pos('_Othr', catchmentAndLusName) > 0) then
+    Result := 'Other';
+  if (Pos('_Road', catchmentAndLusName) > 0) then
+    Result := 'Road';
 end;
 
-function catchStatSummary(catchName: String; annLoads: PLRMGridDataDbl; mode: Integer)
-  : TStringList;
+function catchStatSummary(catchName: String; annLoads: PLRMGridDataDbl;
+  mode: Integer): TStringList;
 // This function reads in a PLRM grid of annual volumes and loads of influent and effluent
 // and returns a stringlist of summary statistics. Stringlist objects include:
 var
@@ -202,7 +203,7 @@ begin
       for J := 1 to High(annLoads) do
       begin
         // exclude TSS,SRP, DIN for summary report
-        if ((mode = 0) and ((J <> 1) and (J <> 4 ) and (J <> 6))) then
+        if ((mode = 0) and ((J <> 1) and (J <> 4) and (J <> 6))) then
           tempLine1 := tempLine1 + Format(rsltsFormatDec180f, [annLoads[J, I]])
         else if (mode = 1) then
           tempLine1 := tempLine1 + Format(rsltsFormatDec181f, [annLoads[J, I]]);
