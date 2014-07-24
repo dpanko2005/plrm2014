@@ -11,8 +11,8 @@ uses
 
 const
   defaultPollutantCount = 6;
-  crcParamCoeffColNum =  4;
-  crcParamExponColNum =  5;
+  crcParamCoeffColNum = 4;
+  crcParamExponColNum = 5;
   defaultVisiblePollutantCount = 3;
   defaultCondScore = 2.5;
   lowCondScore = 0.1;
@@ -135,8 +135,8 @@ function calcRoadShoulderConc(errodible: Double; protectd: Double;
 var
   A, B, C, D: Double;
 begin
-  Result := (errodible  * crcParams[0] + protectd * crcParams[1] + stable *
-    crcParams[2] + stableProtected * crcParams[3])/100;
+  Result := (errodible * crcParams[0] + protectd * crcParams[1] + stable *
+    crcParams[2] + stableProtected * crcParams[3]) / 100;
 end;
 
 // calculate road condition concentrations based on road travel lane risk score
@@ -185,16 +185,19 @@ begin
   lastRow := sgRdConditions.RowCount - 2;
   for iRow := 0 to lastRow do
   begin
-    rdCondScore := StrToFloat(sgRdConditions.Cells[1, iRow]);
-    rdShoulderConc := calcRoadShoulderConcs(iRow, tblDbCRCParams, erodible,
-      protectd, stable, stableProtected);
-    rdConditionConc := calcRoadConditionConcs(iRow, tblDbCRCParams,
-      rdCondScore);
-
-    for idx := 0 to defaultPollutantCount - 1 do
+    if (sgRdConditions.Cells[1, iRow] <> '') then
     begin
-      rslts[iRow, idx] := rdShoulderConc[0, idx] + rdConditionConc[0, idx];
-    end
+      rdCondScore := StrToFloat(sgRdConditions.Cells[1, iRow]);
+      rdShoulderConc := calcRoadShoulderConcs(iRow, tblDbCRCParams, erodible,
+        protectd, stable, stableProtected);
+      rdConditionConc := calcRoadConditionConcs(iRow, tblDbCRCParams,
+        rdCondScore);
+
+      for idx := 0 to defaultPollutantCount - 1 do
+      begin
+        rslts[iRow, idx] := rdShoulderConc[0, idx] + rdConditionConc[0, idx];
+      end
+    end;
   end;
   Result := rslts;
 end;
@@ -253,7 +256,7 @@ end;
 
 procedure TPLRMRoadPollutants.btnOkClick(Sender: TObject);
 var
-  I, j: Integer;
+  I, j, K: Integer;
   tempStr: String;
 begin
   { // validate road shoulder assignments
@@ -272,13 +275,14 @@ begin
 
   // validate condition score assignments
   // 1. make sure no two condition scores are the same
-  for I := 0 to sgRoadConditions.RowCount-2 do
+  for I := 0 to sgRoadConditions.RowCount - 2 do
   begin
     tempStr := sgRoadConditions.Cells[1, I];
-    for j := 0 to sgRoadConditions.RowCount-2 do
+    for j := 0 to sgRoadConditions.RowCount - 2 do
     begin
       if ((tempStr <> '') and (tempStr = sgRoadConditions.Cells[1, j]) and
-        (j <> I)) then
+        (j <> I) and (sgRoadConditions.Cells[0, I] <> '0') and
+        (sgRoadConditions.Cells[0, j] <> '0')) then
       begin
         ShowMessage
           ('No two assigned road condition scores can be equal. Please check your road condition score assigmentes and try again');
@@ -292,11 +296,31 @@ begin
     GSUtils.copyGridContents(0, 0, sgRoadShoulderPercents);
 
   // also copies last empty row so delete last row of grid before copying
-  sgRoadConditions.RowCount := sgRoadConditions.RowCount - 1;
-  GSPLRM.PLRMObj.currentCatchment.frm4of6SgRoadConditionData :=
-    GSUtils.copyGridContents(0, 0, sgRoadConditions);
-
+  { sgRoadConditions.RowCount := sgRoadConditions.RowCount - 1;
+    GSPLRM.PLRMObj.currentCatchment.frm4of6SgRoadConditionData :=
+    GSUtils.copyGridContents(0, 0, sgRoadConditions); }
+  SetLength(GSPLRM.PLRMObj.currentCatchment.frm4of6SgRoadConditionData,
+    sgRoadConditions.RowCount, sgRoadConditions.ColCount);
+  // we dont want to copy last row so subtract 2 from row count
+  // we dont want to copy rows with %Area assignments of 0 so filter out
+  K := 0;
+  for I := 0 to sgRoadConditions.RowCount - 1 do
+  begin
+    if (sgRoadConditions.Cells[0, I] <> '0') then
+    begin
+      for j := 0 to sgRoadConditions.ColCount - 1 do
+        GSPLRM.PLRMObj.currentCatchment.frm4of6SgRoadConditionData[I, j] :=
+          sgRoadConditions.Cells[j, I];
+      // yes grid index is col first and then row
+      inc(K);
+    end
+  end;
+  SetLength(GSPLRM.PLRMObj.currentCatchment.frm4of6SgRoadConditionData, K,
+    sgRoadConditions.ColCount);
+  // copy crcs  and truncate to match truncated roadconditions length
   GSPLRM.PLRMObj.currentCatchment.frm4of6SgRoadCRCsData := tblCRCsCalculated;
+  SetLength(GSPLRM.PLRMObj.currentCatchment.frm4of6SgRoadCRCsData, K,
+    High(tblCRCsCalculated[0]) + 1);
 
   GSPLRM.PLRMObj.currentCatchment.hasDefRoadPolls := true;
 
@@ -321,9 +345,9 @@ begin
     FormatFloat('#0.0', PLRMObj.currentCatchment.totRoadImpervAcres) + ' acres';
 
   initFormContents(initCatchID);
-  updateCRCs();
   if PLRMObj.currentCatchment.hasDefRoadPolls = true then
     restoreFormContents(PLRMObj.currentCatchment);
+  updateCRCs();
 end;
 
 procedure TPLRMRoadPollutants.restoreFormContents(catch: TPLRMCatch);

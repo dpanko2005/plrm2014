@@ -2477,7 +2477,7 @@ object PLRMRoadPollutants: TPLRMRoadPollutants
       Caption = 'TN'
     end
     object sgCRCs: TStringGrid
-      Left = 9
+      Left = 5
       Top = 30
       Width = 246
       Height = 163
@@ -2488,7 +2488,7 @@ object PLRMRoadPollutants: TPLRMRoadPollutants
       BorderStyle = bsNone
       Color = clMoneyGreen
       ColCount = 3
-      DefaultColWidth = 82
+      DefaultColWidth = 80
       DefaultRowHeight = 23
       FixedColor = cl3DLight
       FixedCols = 0

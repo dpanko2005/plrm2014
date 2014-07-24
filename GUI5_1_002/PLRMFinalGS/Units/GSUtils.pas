@@ -8,7 +8,7 @@ uses
   SysUtils, Windows, Messages, Classes, Graphics, Controls, Forms, Dialogs,
   xmldom, XMLIntf, msxmldom, XMLDoc,
   StdCtrls, ComCtrls, Menus, ImgList, ShlObj, ShellApi, Registry,
-  ExtCtrls, Grids, GSTypes, StrUtils, MSXML,Variants;
+  ExtCtrls, Grids, GSTypes, StrUtils, MSXML, Variants;
 
 type
   TCopyDataProc = procedure(oldnode, newnode: TTreenode);
@@ -38,8 +38,8 @@ function copyContentsToGridNChk(const data: PLRMGridData;
 
 function dbFields2ToPLRMGridData(data: dbReturnFields2; strtRowIdx: Integer = 0)
   : PLRMGridData;
-function PLRMGridDblToPLRMGridData(data: PLRMGridDataDbl; strtRowIdx: Integer = 0;formatStr:String = THREEDP)
-  :PLRMGridData ;
+function PLRMGridDblToPLRMGridData(data: PLRMGridDataDbl;
+  strtRowIdx: Integer = 0; formatStr: String = THREEDP): PLRMGridData;
 function dbFields3ToPLRMGridData(data: dbReturnFields3; strtRowIdx: Integer = 0)
   : PLRMGridData;
 procedure DefaultCopyDataProc(oldnode, newnode: TTreenode);
@@ -1814,7 +1814,9 @@ begin
   begin
     sg.Options := sg.Options - [goEditing];
     ShowMessage(CELLNOEDIT);
-  end;
+  end
+  else
+    sg.Options := sg.Options + [goEditing];
 end;
 
 // Grays cells in grid if in the specified column and specified row column
@@ -1866,7 +1868,7 @@ begin
   defaultEngnDir := defaultPLRMPath + '\Engine';
   PLRMInitIni := defaultEngnDir + '\swmm.ini';
   defaultDataDir := defaultPLRMPath + '\Data';
-  //defaultDBPath := defaultDataDir + '\PLRM_v1.0.accdb';
+  // defaultDBPath := defaultDataDir + '\PLRM_v1.0.accdb';
   defaultDBPath := defaultDataDir + '\PLRM_v2.0.accdb';
   defaultPrjPath := defaultPrjDir + '\temp.xml';
   defaultGenSWmmInpPath := defaultPrjDir + '\tempSwmm.inp';
@@ -1895,9 +1897,9 @@ begin
   Result := rslt;
 end;
 
-function PLRMGridDblToPLRMGridData(data: PLRMGridDataDbl; strtRowIdx: Integer = 0;formatStr:String = THREEDP)
-  : PLRMGridData;
- var
+function PLRMGridDblToPLRMGridData(data: PLRMGridDataDbl;
+  strtRowIdx: Integer = 0; formatStr: String = THREEDP): PLRMGridData;
+var
   I, J: Integer;
   rslt: PLRMGridData;
 begin
@@ -2368,4 +2370,3 @@ begin
 end;
 
 end.
-
