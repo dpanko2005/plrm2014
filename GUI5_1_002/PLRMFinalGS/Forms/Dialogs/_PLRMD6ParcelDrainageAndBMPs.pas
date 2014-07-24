@@ -10,49 +10,6 @@ uses
   UProject;
 
 type
-  TDrngXtsData = record
-    entity: Integer; // 0 - global, 1 - n for catchments as catchment ID
-    luseAreaNPrcnt: PLRMGridData;
-    luseAreaNImpv: PLRMGridData;
-
-    // catchment break down by % coverage of land uses
-    secRdsPrcnt: Double;
-    primRdsPrcnt: Double;
-    sfrPrcnt: Double;
-    mfrPrcnt: Double;
-    cicuPrcnt: Double;
-    vegTPrcnt: Double;
-    othrPrcnt: Double;
-
-    // catchment break down by area of land uses
-    secRdsArea: Double;
-    primRdsArea: Double;
-    sfrArea: Double;
-    mfrArea: Double;
-    cicuArea: Double;
-    vegTArea: Double;
-    othrArea: Double;
-
-    // % of road as high risk
-    secRdsHighR: Double;
-    primRdsHighR: Double;
-    // % of road as moderate risk
-    secRdsModR: Double;
-    primRdsModR: Double;
-    // % of road as low risk
-    secRdsLowR: Double;
-    primRdsLowR: Double;
-
-    // road land use conditions
-    secRdsLuseScheme: Double;
-    primRdsLuseScheme: Double;
-
-    // road land use drainage characteristics
-    secRdsDrngXtcs: Double;
-    primRdsDrngXtcs: Double;
-  end;
-
-type
   TPLRMParcelDrngAndBMPs = class(TForm)
     Image1: TImage;
     lblCatchArea: TLabel;
@@ -75,7 +32,7 @@ type
     Label11: TLabel;
     Label12: TLabel;
     Label13: TLabel;
-    Button1: TButton;
+    btnEditBMPSize: TButton;
     btnOK: TButton;
     statBar: TStatusBar;
     Panel7: TPanel;
@@ -106,6 +63,7 @@ type
       Rect: TRect; State: TGridDrawState);
     procedure restoreFormContents(catch: TPLRMCatch);
     procedure btnOKClick(Sender: TObject);
+    procedure btnEditBMPSizeClick(Sender: TObject);
 
   private
     { Private declarations }
@@ -129,7 +87,7 @@ implementation
 
 {$R *.dfm}
 
-uses GSIO;
+uses GSIO, _PLRMD6aBMPSizing;
 
 // Note: current catchment should be set prior to calling try of this routine
 procedure TPLRMParcelDrngAndBMPs.UpdateAreas();
@@ -148,6 +106,7 @@ begin
   begin
     tempList.Add(frmsLuses[I]);
   end;
+
   with PLRMObj.currentCatchment do
   begin
     totArea := StrToFloat(swmmCatch.Data[UProject.SUBCATCH_AREA_INDEX]);
@@ -156,10 +115,14 @@ begin
       tempInt := tempList.IndexOf(landUseNames[I]);
       if (tempInt > -1) then
       begin
+        // write total area
         FrmLuseConds.luseAreaNImpv[tempInt, 0] :=
           PLRMObj.currentCatchment.landUseData[I][3];
+        // compute and write impervious acres
         FrmLuseConds.luseAreaNImpv[tempInt, 1] :=
-          PLRMObj.currentCatchment.landUseData[I][2];
+          FormatFloat(THREEDP, StrToFloat(PLRMObj.currentCatchment.landUseData
+          [I][3]) * StrToFloat(PLRMObj.currentCatchment.landUseData[I]
+          [2]) / 100);
       end
       else // lump all other land uses into other areas
       begin
@@ -171,7 +134,7 @@ begin
   end;
   FrmLuseConds.luseAreaNImpv[High(frmsLuses), 0] := FloatToStr(tempOtherArea);
   FrmLuseConds.luseAreaNImpv[High(frmsLuses), 1] :=
-    FloatToStr(tempOtherImpvArea);
+    FloatToStr(tempOtherImpvArea / 100);
   PLRMObj.currentCatchment.othrArea := tempOtherArea;
   PLRMObj.currentCatchment.othrPrcntToOut := 100;
   // entire area drains directly to out
@@ -181,21 +144,6 @@ begin
     PLRMObj.currentCatchment.othrPrcntImpv := tempOtherImpvArea / tempOtherArea;
 
   populateFrm(FrmLuseConds);
-
-  { if PLRMObj.currentCatchment.rdRiskCats <> nil then
-    begin
-    //land uses may have been changed since rdRiskCats last stored. So we check and update numbers in rdRiskCats
-    for I := 0 to sgRdRiskCat.RowCount -1 do
-    begin
-    if FrmLuseConds.luseAreaNImpv[I,0] = '0' then
-    begin
-    PLRMObj.currentCatchment.rdRiskCats[I,0] := '100';
-    PLRMObj.currentCatchment.rdRiskCats[I,1] := '0';
-    PLRMObj.currentCatchment.rdRiskCats[I,2] := '0';
-    end;
-    end;
-    copyContentsToGrid( PLRMObj.currentCatchment.rdRiskCats, 0,0, sgRdRiskCat);
-    end; }
 
   if PLRMObj.currentCatchment.bmpImpl <> nil then
   begin
@@ -215,11 +163,6 @@ end;
 
 procedure TPLRMParcelDrngAndBMPs.populateFrm(var FD: TDrngXtsData);
 begin
-  { if FrmLuseConds.luseAreaNImpv[0, 0] <> '' then
-    edtSecRdArea.Text := FrmLuseConds.luseAreaNImpv[0, 0];
-    if FrmLuseConds.luseAreaNImpv[1, 0] <> '' then
-    edtprimRdArea.Text := FrmLuseConds.luseAreaNImpv[1, 0]; }
-
   if FrmLuseConds.luseAreaNImpv[0 + luseOffset, 0] <> '' then
     edtTotSfrArea.Text := FrmLuseConds.luseAreaNImpv[0 + luseOffset, 0];
   if FrmLuseConds.luseAreaNImpv[1 + luseOffset, 0] <> '' then
@@ -228,13 +171,6 @@ begin
     edtTotCicuArea.Text := FrmLuseConds.luseAreaNImpv[2 + luseOffset, 0];
   if FrmLuseConds.luseAreaNImpv[3 + luseOffset, 0] <> '' then
     edtTotVegTArea.Text := FrmLuseConds.luseAreaNImpv[3 + luseOffset, 0];
-  { if FrmLuseConds.luseAreaNImpv[6, 0] <> '' then
-    edtTotOthrArea.Text := FrmLuseConds.luseAreaNImpv[6, 0]; }
-
-  { if FrmLuseConds.luseAreaNImpv[0, 1] <> '' then
-    edtPrcntSecRdArea.Text := FrmLuseConds.luseAreaNImpv[0, 1];
-    if FrmLuseConds.luseAreaNImpv[1, 1] <> '' then
-    edtPrcntPrimRdArea.Text := FrmLuseConds.luseAreaNImpv[1, 1]; }
 
   if FrmLuseConds.luseAreaNImpv[0 + luseOffset, 1] <> '' then
     edtImpSfrArea.Text := FrmLuseConds.luseAreaNImpv[0 + luseOffset, 1];
@@ -242,10 +178,6 @@ begin
     edtImpMfrArea.Text := FrmLuseConds.luseAreaNImpv[1 + luseOffset, 1];
   if FrmLuseConds.luseAreaNImpv[2 + luseOffset, 1] <> '' then
     edtImpCicuArea.Text := FrmLuseConds.luseAreaNImpv[2 + luseOffset, 1];
-  { if FrmLuseConds.luseAreaNImpv[5, 1] <> '' then
-    edtImpVegTArea.Text := FrmLuseConds.luseAreaNImpv[5, 1];
-    if FrmLuseConds.luseAreaNImpv[6, 1] <> '' then
-    edtImpOthrArea.Text := FrmLuseConds.luseAreaNImpv[6, 1]; }
 end;
 
 procedure TPLRMParcelDrngAndBMPs.sgBMPImplDrawCell(Sender: TObject;
@@ -347,6 +279,11 @@ begin
     end; }
 end;
 
+procedure TPLRMParcelDrngAndBMPs.btnEditBMPSizeClick(Sender: TObject);
+begin
+  showPLRMBMPSizingDialog(PLRMObj.currentCatchment.name);
+end;
+
 procedure TPLRMParcelDrngAndBMPs.btnOKClick(Sender: TObject);
 begin
   // save grid data to current catchment and exit form
@@ -354,10 +291,11 @@ begin
     GSUtils.copyGridContents(0, 0, sgBMPImpl);
   GSPLRM.PLRMObj.currentCatchment.frm6of6SgNoBMPsData :=
     GSUtils.copyGridContents(0, 0, sgNoBMPs);
+  GSPLRM.PLRMObj.currentCatchment.frm6of6AreasData := FrmLuseConds;
+
+  GSPLRM.PLRMObj.currentCatchment.hasDefParcelAndDrainageBMPs := True;
   ModalResult := mrOk;
 end;
-
-
 
 function showPLRMParcelDrngAndBMPsDialog(CatchID: String): Integer;
 var
@@ -371,6 +309,7 @@ begin
   finally
     Frm.Free;
   end;
+  Result := tempInt;
 end;
 
 procedure TPLRMParcelDrngAndBMPs.initFormContents(catch: String);
@@ -380,35 +319,19 @@ var
   tempInt: Integer;
   tempLst: TStringList;
   tempLst2: TStrings;
-  // Schm: TPLRMRdCondsScheme;
-  // hydProps: dbReturnFields;
+
+  hydProps: dbReturnFields;
   kSatMultplrs: dbReturnFields;
 begin
 
-  // edtSecRdArea.Text := '0';
-  // edtprimRdArea.Text := '0';
   edtTotSfrArea.Text := '0';
   edtTotMfrArea.Text := '0';
   edtTotCicuArea.Text := '0';
   edtTotVegTArea.Text := '0';
-  // edtTotOthrArea.Text := '0';
 
-  // edtImpSecRdArea.Text := '0';
-  // edtImpPrimRdArea.Text := '0';
   edtImpSfrArea.Text := '0';
   edtImpMfrArea.Text := '0';
   edtImpCicuArea.Text := '0';
-  // edtImpVegTArea.Text := '0';
-  // edtImpOthrArea.Text := '0';
-
-  { // populate road risk category grid with initial values
-    sgRdRiskCat.Cells[0, 0] := '100';
-    sgRdRiskCat.Cells[0, 1] := '100';
-    sgRdRiskCat.Cells[1, 0] := '0';
-    sgRdRiskCat.Cells[1, 1] := '0';
-    sgRdRiskCat.Cells[2, 0] := '0';
-    sgRdRiskCat.Cells[2, 1] := '0';
-    sgRdRiskCat.Options := sgBMPImpl.Options + [goEditing]; }
 
   // populate bmp implementation grid with initial values
   sgBMPImpl.Cells[0, 0] := '0';
@@ -436,14 +359,11 @@ begin
   sgBMPImpl.Options := sgBMPImpl.Options + [goEditing];
 
   tempInt := PLRMObj.getCatchIndex(catch);
-  // cbxGlobalSpecfc.items := PLRMObj.catchments;
-  // loads catchments into combo box
-  // cbxGlobalSpecfc.ItemIndex := tempInt;
   PLRMObj.currentCatchment := PLRMObj.catchments.Objects[tempInt] as TPLRMCatch;
 
-  // hydProps := GSIO.getDefaults('"6%"');
+  hydProps := GSIO.getDefaults('"6%"');
   kSatMultplrs := GSIO.getDefaults('"7%"');
-
+  PLRMObj.currentCatchment.defaultHydProps := hydProps;
   for I := 0 to sgNoBMPs.RowCount - 1 do
   begin
     // default dcia
@@ -480,7 +400,8 @@ procedure TPLRMParcelDrngAndBMPs.FormCreate(Sender: TObject);
 begin
   luseOffset := 2;
   statBar.SimpleText := PLRMVERSION;
-  Self.Caption := PLRM3_TITLE;
+  Self.Caption := PLRMD6_TITLE;
+
   SetLength(FrmLuseConds.luseAreaNImpv, High(frmsLuses) + 1, 2);
 
   lblCatchArea.Caption := 'Catchment ID: ' + PLRMObj.currentCatchment.swmmCatch.
@@ -488,7 +409,8 @@ begin
     [UProject.SUBCATCH_AREA_INDEX] + 'ac ]';
 
   initFormContents(initCatchID); // also calls updateAreas
-  restoreFormContents(PLRMObj.currentCatchment);
+  if PLRMObj.currentCatchment.hasDefParcelAndDrainageBMPs = True then
+    restoreFormContents(PLRMObj.currentCatchment);
 end;
 
 end.

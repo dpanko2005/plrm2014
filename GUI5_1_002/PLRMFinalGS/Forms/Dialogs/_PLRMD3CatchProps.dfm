@@ -2732,6 +2732,7 @@ object CatchProps: TCatchProps
       Width = 137
       Height = 25
       Caption = 'Step 4: Road Pollutants'
+      Enabled = False
       TabOrder = 5
       OnClick = btnDefRoadPollsClick
     end
@@ -2741,6 +2742,7 @@ object CatchProps: TCatchProps
       Width = 138
       Height = 25
       Caption = 'Step 5: Road Drainage'
+      Enabled = False
       TabOrder = 6
       OnClick = btnShowRoadDrainageEditorClick
     end
@@ -2750,6 +2752,7 @@ object CatchProps: TCatchProps
       Width = 297
       Height = 25
       Caption = 'Step 6: Parcel Drainage and BMPs'
+      Enabled = False
       TabOrder = 7
       OnClick = btnShowParcelDrainageAndBMPEditorClick
     end

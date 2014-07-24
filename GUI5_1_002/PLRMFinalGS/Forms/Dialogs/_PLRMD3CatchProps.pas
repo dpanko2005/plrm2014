@@ -77,12 +77,13 @@ implementation
 uses
   GSIO, GSUtils, GSPLRM, GSNodes, GSCatchments, UProject, UGlobals,
   Uvalidate, _PLRMD1LandUseAssignmnt2, _PLRMD4RoadPollutants,
-  _PLRMD2SoilsAssignmnt, _PLRM3PSCDef, _PLRMD5RoadDrainageEditor, _PLRMD6ParcelDrainageAndBMPs,
+  _PLRMD2SoilsAssignmnt, _PLRM3PSCDef, _PLRMD5RoadDrainageEditor,
+  _PLRMD6ParcelDrainageAndBMPs,
   FPropEd, UBrowser;
 
 procedure getCatchProps(catchID: String);
-//var
-  //tempInt: Integer;
+// var
+// tempInt: Integer;
 begin
   initCatchID := catchID;
   CatchPropsFrm := TCatchProps.Create(Application);
@@ -102,7 +103,7 @@ begin
       GSIO.getSoilsProps(PLRMObj.currentCatchment.soilsMapUnitData);
     allDrxXtcs := getDrngCondsInput(cbxGlobalSpecfc.Text);
     PLRMObj.currentCatchment.hasDefDrnXtcs := true;
-    btnOk.Enabled := btnDefHydProps.Enabled;
+    //btnOk.Enabled := btnDefHydProps.Enabled;
   end
   else
     ShowMessage
@@ -114,17 +115,17 @@ var
   tempInt, buttonSelected: Integer;
   msg: String;
 begin
-  {if btnDefHydProps.Enabled then
-  begin
+  { if btnDefHydProps.Enabled then
+    begin
     msg := 'Warning!' + #13 + #13 +
-      'Viewing or editing Land Uses will require you to reconfirm ' + #13 +
-      'your Land Use Conditions (Step 4) and then reenter' + #13 +
-      'Drainage Conditions (Step 5) for this catchment.' + #13 +
-      'Do you want to proceed to the Land Use Editor (Step 2)?';
+    'Viewing or editing Land Uses will require you to reconfirm ' + #13 +
+    'your Land Use Conditions (Step 4) and then reenter' + #13 +
+    'Drainage Conditions (Step 5) for this catchment.' + #13 +
+    'Do you want to proceed to the Land Use Editor (Step 2)?';
     buttonSelected := MessageDlg(msg, mtCustom, [mbYes, mbNo, mbCancel], 0);
     if buttonSelected <> mrYes then
-      Exit;
-  end; }
+    Exit;
+    end; }
   btnApplyClick(Sender);
   tempInt := getCatchLuseInput(PLRMObj.currentCatchment.name);
   if tempInt = mrOK then
@@ -163,9 +164,9 @@ begin
   tempInt := showRoadPollutantsDialog(PLRMObj.currentCatchment.name);
   if tempInt = mrOK then
   begin
-    btnDefHydProps.Enabled := false;
-    btnOk.Enabled := false;
-    Self.btnDefSoilsClick(Sender);
+    // btnOk.Enabled := true;
+    Self.btnShowRoadDrainageEditorClick(Sender);
+    btnShowRoadDrainageEditor.Enabled := true;
   end;
 end;
 
@@ -175,27 +176,28 @@ var
   msg: String;
 begin
   // 2014 addition to warn user that ksat values will be overwritten
-  {if btnDefHydProps.Enabled then
-  begin
+  { if btnDefHydProps.Enabled then
+    begin
     msg := 'Warning!' + #13 + #13 +
-      'Viewing or editing soils will ovewrite any custom ' + #13 +
-      'Green-Ampt infiltration parameters you may have' + #13 +
-      'previously entered.' + #13 + #13 +
-      'Do you want to proceed to the Soils Editor (Step 5)?';
+    'Viewing or editing soils will ovewrite any custom ' + #13 +
+    'Green-Ampt infiltration parameters you may have' + #13 +
+    'previously entered.' + #13 + #13 +
+    'Do you want to proceed to the Soils Editor (Step 5)?';
     buttonSelected := MessageDlg(msg, mtCustom, [mbYes, mbNo, mbCancel], 0);
     if buttonSelected <> mrYes then
-      Exit;
-  end;  }
+    Exit;
+    end; }
 
   btnApplyClick(Sender);
   tempInt := getCatchSoilsInput(PLRMObj.currentCatchment.name);
   if tempInt = mrOK then
   begin
-    btnDefLuseConds.Enabled := true;
-    btnDefLuseCondsClick(Sender);
+    //btnDefLuseConds.Enabled := true;
+    btnDefRoadPolls.Enabled := true;
+    btnDefRoadPollsClick(Sender);
+    // btnDefLuseCondsClick(Sender);
   end;
-  btnOk.Enabled := btnDefHydProps.Enabled;
-  btnOk.Enabled := btnDefHydProps.Enabled;
+  //btnOk.Enabled := btnDefHydProps.Enabled;
 end;
 
 procedure TCatchProps.btnOkClick(Sender: TObject);
@@ -230,14 +232,16 @@ var
   msg: String;
 begin
   btnApplyClick(Sender);
+  if (not(assigned(PLRMObj.currentCatchment.soilsInfData))) then
+    PLRMObj.currentCatchment.soilsInfData :=
+      GSIO.getSoilsProps(PLRMObj.currentCatchment.soilsMapUnitData);
   tempInt := showPLRMParcelDrngAndBMPsDialog(PLRMObj.currentCatchment.name);
   if tempInt = mrOK then
   begin
-    btnOk.Enabled := false;
-    Self.btnDefSoilsClick(Sender);
+    btnOk.Enabled := true;
+    // Self.btnDefSoilsClick(Sender);
   end;
 end;
-
 
 procedure TCatchProps.btnShowRoadDrainageEditorClick(Sender: TObject);
 var
@@ -245,11 +249,14 @@ var
   msg: String;
 begin
   btnApplyClick(Sender);
+  if (not(assigned(PLRMObj.currentCatchment.soilsInfData))) then
+    PLRMObj.currentCatchment.soilsInfData :=
+      GSIO.getSoilsProps(PLRMObj.currentCatchment.soilsMapUnitData);
   tempInt := showRoadRoadDrainageEditorDialog(PLRMObj.currentCatchment.name);
   if tempInt = mrOK then
   begin
-    btnOk.Enabled := false;
-    Self.btnDefSoilsClick(Sender);
+    Self.btnShowParcelDrainageAndBMPEditorClick(Sender);
+    btnShowParcelDrainageAndBMPEditor.Enabled := true;
   end;
 end;
 
@@ -274,7 +281,7 @@ begin
 
     btnDefLuse.Enabled := true; // always true
     btnDefSoils.Enabled := hasDefLuse; // only true if landuse info provided
-    btnDefLuseConds.Enabled := (hasDefSoils and hasDefLuse);
+    //btnDefLuseConds.Enabled := (hasDefSoils and hasDefLuse);
 
     tempInt := PLRMObj.catchments.IndexOf(name);
     BrowserUpdate(SUBCATCH, tempInt);
@@ -313,7 +320,7 @@ begin
         ('The object name you have provided is already in use. Please try another name');
       edtCatchName.Text := PLRMObj.currentCatchment.name;
       Result := false;
-      exit;
+      Exit;
     end
     else
     begin
@@ -421,11 +428,12 @@ end;
 procedure TCatchProps.FormCreate(Sender: TObject);
 var
   tempInt: Integer;
-//  flag: Boolean;
+  // flag: Boolean;
   data: PLRMGridData;
 begin
   statBar.SimpleText := PLRMVERSION;
-  Self.Caption := PLRMD3_TITLE;
+  Self.Caption := PLRMD0_TITLE;
+
   tempInt := PLRMObj.getCatchIndex(initCatchID);
   PLRMObj.currentCatchment := PLRMObj.catchments.Objects[tempInt] as TPLRMCatch;
   edtCatchName.Text := initCatchID;
@@ -455,9 +463,15 @@ begin
     sgProps.Cells[2, 0] := 'Units';
     btnDefLuse.Enabled := true; // always true
     btnDefSoils.Enabled := hasDefLuse; // only true if landuse info provided
-    btnDefLuseConds.Enabled := (hasDefSoils and hasDefLuse);
-    btnDefHydProps.Enabled := (hasDefSoils and hasDefLuse and hasDefDrnXtcs);
-    btnOk.Enabled := btnDefHydProps.Enabled;
+    //btnDefLuseConds.Enabled := (hasDefSoils and hasDefLuse);
+    //btnDefHydProps.Enabled := (hasDefSoils and hasDefLuse and hasDefDrnXtcs);
+
+    btnDefRoadPolls.Enabled := hasDefRoadPolls;
+    btnShowRoadDrainageEditor.Enabled := hasDefRoadDrainage;
+    btnShowParcelDrainageAndBMPEditor.Enabled := hasDefParcelAndDrainageBMPs;
+
+    //btnOk.Enabled := btnDefHydProps.Enabled;
+    btnOk.Enabled := btnShowParcelDrainageAndBMPEditor.Enabled;
   end;
 end;
 

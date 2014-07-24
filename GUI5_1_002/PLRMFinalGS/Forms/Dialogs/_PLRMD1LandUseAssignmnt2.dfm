@@ -2283,7 +2283,7 @@ object PLRMLandUse: TPLRMLandUse
     Visible = False
   end
   object btnCancel: TButton
-    Left = 640
+    Left = 417
     Top = 682
     Width = 65
     Height = 25
@@ -2295,10 +2295,11 @@ object PLRMLandUse: TPLRMLandUse
     Font.Style = []
     ParentFont = False
     TabOrder = 0
+    Visible = False
     OnClick = btnCancelClick
   end
   object btnOk: TButton
-    Left = 559
+    Left = 640
     Top = 682
     Width = 65
     Height = 25

@@ -129,7 +129,8 @@ uses
   _PLRMDAbout in 'PLRMFinalGS\Forms\Dialogs\_PLRMDAbout.pas' {AboutPLRMBoxForm},
   _PLRMD4RoadPollutants in 'PLRMFinalGS\Forms\Dialogs\_PLRMD4RoadPollutants.pas' {PLRMRoadPollutants},
   _PLRMD5RoadDrainageEditor in 'PLRMFinalGS\Forms\Dialogs\_PLRMD5RoadDrainageEditor.pas' {PLRMRoadDrainageEditor},
-  _PLRMD6ParcelDrainageAndBMPs in 'PLRMFinalGS\Forms\Dialogs\_PLRMD6ParcelDrainageAndBMPs.pas' {PLRMParcelDrngAndBMPs};
+  _PLRMD6ParcelDrainageAndBMPs in 'PLRMFinalGS\Forms\Dialogs\_PLRMD6ParcelDrainageAndBMPs.pas' {PLRMParcelDrngAndBMPs},
+  _PLRMD6aBMPSizing in 'PLRMFinalGS\Forms\Dialogs\_PLRMD6aBMPSizing.pas' {PLRMBMPSizing};
 
 {$R *.RES}
 
@@ -139,17 +140,5 @@ begin
   Application.Title := 'SWMM 5';
   Application.HelpFile := '';
   Application.CreateForm(TMainForm, MainForm);
-  //Application.CreateForm(TPLRMRoadPollutants, PLRMRoadPollutants);
-  //Application.CreateForm(TPLRMRoadDrainageEditor, PLRMRoadDrainageEditor);
-  //Application.CreateForm(TPLRMParcelDrngAndBMPs, PLRMParcelDrngAndBMPs);
-  //Application.CreateForm(TplrmProgress, plrmProgress);
-  //Application.CreateForm(TfrmPLRMStats, frmPLRMStats);
-  {Application.CreateForm(TForm1, Form1);
-  /Application.CreateForm(TDetSchm, DetSchm);
-  Application.CreateForm(TFCatchParam, FCatchParam);
-  Application.CreateForm(TFcatchProp, FcatchProp);
-  Application.CreateForm(TFGlobalCatch, FGlobalCatch);
-  Application.CreateForm(TForm7, Form7);
-  Application.CreateForm(TForm2, Form2);}
   Application.Run;
 end.

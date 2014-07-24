@@ -2219,7 +2219,7 @@ object PLRMRoadDrainageEditor: TPLRMRoadDrainageEditor
   end
   object lblCatchArea: TLabel
     Left = 8
-    Top = 115
+    Top = 105
     Width = 61
     Height = 13
     Caption = 'lblCatchArea'
@@ -2230,19 +2230,18 @@ object PLRMRoadDrainageEditor: TPLRMRoadDrainageEditor
     Font.Style = [fsItalic]
     ParentFont = False
   end
-  object lblCatchImprv: TLabel
+  object lblRoadAcres: TLabel
     Left = 8
-    Top = 134
-    Width = 66
+    Top = 124
+    Width = 62
     Height = 13
-    Caption = 'lblCatchImprv'
+    Caption = 'lblRoadAcres'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = cl3DDkShadow
     Font.Height = -11
     Font.Name = 'Tahoma'
     Font.Style = [fsItalic]
     ParentFont = False
-    Visible = False
   end
   object Label1: TLabel
     Left = 17
@@ -2335,6 +2334,19 @@ object PLRMRoadDrainageEditor: TPLRMRoadDrainageEditor
     Height = 13
     Caption = 'Ave Annual Infiltration Rate for All Road Shoulders (in/hr)'
     WordWrap = True
+  end
+  object lblRoadImpervAcres: TLabel
+    Left = 288
+    Top = 105
+    Width = 96
+    Height = 13
+    Caption = 'lblRoadImpervAcres'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = cl3DDkShadow
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsItalic]
+    ParentFont = False
   end
   object edtICIA: TEdit
     Left = 17
@@ -2476,9 +2488,9 @@ object PLRMRoadDrainageEditor: TPLRMRoadDrainageEditor
     object Label16: TLabel
       Left = 71
       Top = 63
-      Width = 51
+      Width = 48
       Height = 26
-      Caption = 'Storage Depth (%)'
+      Caption = 'Storage Depth (in)'
       WordWrap = True
     end
     object edtDPCHAveAnnInf: TEdit

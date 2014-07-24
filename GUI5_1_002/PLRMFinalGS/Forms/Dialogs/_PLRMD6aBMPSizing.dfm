@@ -1,9 +1,9 @@
-object PLRMParcelDrngAndBMPs: TPLRMParcelDrngAndBMPs
+object PLRMBMPSizing: TPLRMBMPSizing
   Left = 0
   Top = 0
-  Caption = 'Step 6 of 6: Parcel Drainage & BMPs'
-  ClientHeight = 417
-  ClientWidth = 663
+  Caption = 'Step 6 of 6 - Parcel Drainage and BMPs (BMP Sizing Editor)'
+  ClientHeight = 645
+  ClientWidth = 610
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -15,7 +15,7 @@ object PLRMParcelDrngAndBMPs: TPLRMParcelDrngAndBMPs
   PixelsPerInch = 96
   TextHeight = 13
   object Image1: TImage
-    Left = -366
+    Left = -476
     Top = -3
     Width = 1030
     Height = 102
@@ -2244,389 +2244,601 @@ object PLRMParcelDrngAndBMPs: TPLRMParcelDrngAndBMPs
     ParentFont = False
     Visible = False
   end
-  object Panel1: TPanel
-    Left = 407
-    Top = 191
-    Width = 257
-    Height = 138
-    BevelOuter = bvNone
-    Color = clSkyBlue
-    ParentBackground = False
-    TabOrder = 1
-    object Label1: TLabel
-      Left = 24
-      Top = 11
-      Width = 41
-      Height = 13
-      Caption = 'No BMPs'
-    end
-    object Label2: TLabel
-      Left = 112
-      Top = 11
-      Width = 47
-      Height = 13
-      Caption = 'DCIA (%)'
-    end
-    object Label3: TLabel
-      Left = 192
-      Top = 11
-      Width = 55
-      Height = 13
-      Caption = 'KSat (in/hr)'
-    end
-    object sgNoBMPs: TStringGrid
-      Left = 5
-      Top = 30
-      Width = 246
-      Height = 99
-      Margins.Left = 6
-      BevelEdges = []
-      BevelInner = bvNone
-      BevelOuter = bvNone
-      ColCount = 3
-      DefaultColWidth = 75
-      DefaultRowHeight = 23
-      FixedColor = cl3DLight
-      FixedCols = 0
-      RowCount = 4
-      FixedRows = 0
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clDefault
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing]
-      ParentFont = False
-      ScrollBars = ssNone
-      TabOrder = 0
-      OnDrawCell = sgNoBMPsDrawCell
-      OnSetEditText = sgNoBMPsSetEditText
-    end
-  end
-  object Panel12: TPanel
-    Left = 407
-    Top = 164
-    Width = 257
-    Height = 32
-    BevelEdges = []
-    BevelOuter = bvNone
-    BorderWidth = 1
-    Color = cl3DLight
-    ParentBackground = False
-    TabOrder = 0
-    object Label21: TLabel
-      Left = 56
-      Top = 5
-      Width = 135
-      Height = 26
-      Alignment = taCenter
-      Caption = 'Drainage Conditions for Area Without BMPs'
-      Color = clHighlight
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentColor = False
-      ParentFont = False
-      WordWrap = True
-    end
-  end
-  object Panel2: TPanel
-    Left = 224
-    Top = 191
-    Width = 177
-    Height = 138
-    BevelOuter = bvNone
-    Color = clSkyBlue
-    ParentBackground = False
-    TabOrder = 2
-    object Label4: TLabel
-      Left = 24
-      Top = 11
-      Width = 20
-      Height = 13
-      Caption = 'BMP'
-    end
-    object Label5: TLabel
-      Left = 96
-      Top = 5
-      Width = 76
-      Height = 25
-      Alignment = taCenter
-      AutoSize = False
-      Caption = 'Source Controls Only'
-      WordWrap = True
-    end
-    object sgBMPImpl: TStringGrid
-      Left = 2
-      Top = 30
-      Width = 174
-      Height = 99
-      Margins.Left = 6
-      BevelEdges = []
-      BevelInner = bvNone
-      BevelOuter = bvNone
-      ColCount = 2
-      DefaultColWidth = 82
-      DefaultRowHeight = 23
-      FixedColor = cl3DLight
-      FixedCols = 0
-      RowCount = 4
-      FixedRows = 0
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clDefault
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      ScrollBars = ssNone
-      TabOrder = 0
-      OnDrawCell = sgBMPImplDrawCell
-      OnKeyPress = sgBMPImplKeyPress
-      OnSelectCell = sgBMPImplSelectCell
-      OnSetEditText = sgBMPImplSetEditText
-    end
-  end
-  object Panel3: TPanel
-    Left = 224
-    Top = 164
-    Width = 177
-    Height = 32
-    BevelEdges = []
-    BevelOuter = bvNone
-    BorderWidth = 1
-    Color = cl3DLight
-    ParentBackground = False
-    TabOrder = 3
-    object Label7: TLabel
-      Left = 40
-      Top = 6
-      Width = 113
-      Height = 26
-      Alignment = taCenter
-      AutoSize = False
-      Caption = 'BMPs (% Land Use Area)'
-      Color = clHighlight
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentColor = False
-      ParentFont = False
-      WordWrap = True
-    end
-  end
-  object Panel4: TPanel
-    Left = 0
-    Top = 195
-    Width = 211
-    Height = 135
-    BevelOuter = bvNone
-    Color = clSkyBlue
-    ParentBackground = False
-    TabOrder = 4
-    object Label10: TLabel
-      Left = 7
-      Top = 35
-      Width = 120
-      Height = 13
-      Caption = 'Single Family Residential:'
-    end
-    object Label11: TLabel
-      Left = 7
-      Top = 54
-      Width = 115
-      Height = 13
-      Caption = 'Multi-Family Residential:'
-    end
-    object Label12: TLabel
-      Left = 7
-      Top = 83
-      Width = 29
-      Height = 13
-      Caption = 'CICU:'
-    end
-    object Label13: TLabel
-      Left = 7
-      Top = 107
-      Width = 77
-      Height = 13
-      Caption = 'Vegetated Turf:'
-    end
-  end
-  object btnEditBMPSize: TButton
-    Left = 8
-    Top = 352
-    Width = 89
-    Height = 25
-    Caption = 'Edit BMP Sizing'
-    TabOrder = 5
-    OnClick = btnEditBMPSizeClick
-  end
-  object btnOK: TButton
-    Left = 580
-    Top = 352
-    Width = 75
-    Height = 25
-    Caption = 'OK'
-    TabOrder = 6
-    OnClick = btnOKClick
-  end
   object statBar: TStatusBar
     Left = 0
-    Top = 398
-    Width = 663
+    Top = 626
+    Width = 610
     Height = 19
     Panels = <>
     SimplePanel = True
   end
-  object Panel7: TPanel
-    Left = 133
-    Top = 178
-    Width = 85
-    Height = 169
-    BevelOuter = bvNone
-    ParentBackground = False
-    TabOrder = 8
-    object Label28: TLabel
-      Left = 15
-      Top = 16
-      Width = 27
-      Height = 26
-      Alignment = taCenter
-      Caption = 'Total Acres'
+  object PageControl1: TPageControl
+    Left = 8
+    Top = 153
+    Width = 600
+    Height = 142
+    ActivePage = TabSheet1
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -12
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 1
+    object TabSheet1: TTabSheet
+      Caption = 'Single Family Residential'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -11
+      Font.Height = -9
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
-      WordWrap = True
-    end
-    object Label29: TLabel
-      Left = 48
-      Top = 16
-      Width = 27
-      Height = 26
-      Alignment = taCenter
-      Caption = 'Imp  Acres'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      WordWrap = True
-    end
-    object edtTotSfrArea: TEdit
-      Left = 12
-      Top = 47
-      Width = 30
-      Height = 22
-      Enabled = False
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -12
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 0
-    end
-    object edtTotMfrArea: TEdit
-      Left = 12
-      Top = 72
-      Width = 30
-      Height = 22
-      Enabled = False
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -12
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 1
-    end
-    object edtImpMfrArea: TEdit
-      Left = 48
-      Top = 72
-      Width = 30
-      Height = 22
-      Enabled = False
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -12
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 2
-    end
-    object edtImpSfrArea: TEdit
-      Left = 48
-      Top = 47
-      Width = 30
-      Height = 22
-      Enabled = False
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -12
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 3
-    end
-    object edtTotCicuArea: TEdit
-      Left = 12
-      Top = 96
-      Width = 30
-      Height = 22
-      Enabled = False
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -12
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 4
-    end
-    object edtImpCicuArea: TEdit
-      Left = 48
-      Top = 96
-      Width = 30
-      Height = 22
-      Enabled = False
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -12
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 5
-    end
-    object edtTotVegTArea: TEdit
-      Left = 12
-      Top = 120
-      Width = 30
-      Height = 22
-      Enabled = False
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -12
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 6
+      object Label3: TLabel
+        Left = 5
+        Top = 2
+        Width = 49
+        Height = 14
+        Caption = 'Storage'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label9: TLabel
+        Left = 296
+        Top = 2
+        Width = 45
+        Height = 14
+        Caption = 'Default'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label15: TLabel
+        Left = 378
+        Top = 2
+        Width = 31
+        Height = 14
+        Caption = 'Units'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Panel7: TPanel
+        Left = 0
+        Top = -2
+        Width = 593
+        Height = 115
+        Color = clMoneyGreen
+        ParentBackground = False
+        TabOrder = 1
+        object Label34: TLabel
+          Left = 286
+          Top = 5
+          Width = 45
+          Height = 14
+          Caption = 'Default'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Tahoma'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+        object Label35: TLabel
+          Left = 378
+          Top = 5
+          Width = 31
+          Height = 14
+          Caption = 'Units'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Tahoma'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+        object Label36: TLabel
+          Left = 474
+          Top = 5
+          Width = 33
+          Height = 14
+          Caption = 'Value'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Tahoma'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+      end
+      object Panel4: TPanel
+        Left = 5
+        Top = 22
+        Width = 584
+        Height = 91
+        BevelOuter = bvNone
+        Color = clMoneyGreen
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentBackground = False
+        ParentFont = False
+        TabOrder = 0
+        object Label17: TLabel
+          Left = 12
+          Top = 0
+          Width = 230
+          Height = 14
+          Caption = 'Storage Calculated as Precipitation Depth:'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+        end
+        object Label18: TLabel
+          Left = 0
+          Top = 68
+          Width = 296
+          Height = 12
+          Caption = 'Note: Units of storage as inches of runoff / impervious area'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -10
+          Font.Name = 'Tahoma'
+          Font.Style = [fsBold]
+          ParentFont = False
+          Visible = False
+        end
+        object Label5: TLabel
+          Left = 12
+          Top = 34
+          Width = 178
+          Height = 14
+          Caption = 'Average Annual Infiltration Rate:'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+        end
+        object sgSFR: TStringGrid
+          Left = 251
+          Top = 0
+          Width = 295
+          Height = 66
+          BevelEdges = []
+          BevelInner = bvNone
+          BevelOuter = bvNone
+          ColCount = 3
+          DefaultColWidth = 94
+          DefaultRowHeight = 25
+          FixedCols = 0
+          RowCount = 2
+          FixedRows = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 0
+          OnDrawCell = sgSFRDrawCell
+          OnKeyPress = sgSFRKeyPress
+          OnSelectCell = sgSFRSelectCell
+        end
+      end
     end
   end
-  object Panel11: TPanel
-    Left = 226
-    Top = 296
-    Width = 84
-    Height = 24
-    BevelOuter = bvNone
-    Color = clSkyBlue
-    ParentBackground = False
-    TabOrder = 9
+  object PageControl2: TPageControl
+    Left = 8
+    Top = 301
+    Width = 600
+    Height = 142
+    ActivePage = TabSheet2
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -12
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 2
+    object TabSheet2: TTabSheet
+      Caption = 'Multi-Family Residential'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -9
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      object Label1: TLabel
+        Left = 5
+        Top = 2
+        Width = 49
+        Height = 14
+        Caption = 'Storage'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label2: TLabel
+        Left = 296
+        Top = 2
+        Width = 45
+        Height = 14
+        Caption = 'Default'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label4: TLabel
+        Left = 378
+        Top = 2
+        Width = 31
+        Height = 14
+        Caption = 'Units'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Panel1: TPanel
+        Left = 0
+        Top = -2
+        Width = 593
+        Height = 115
+        Color = clMoneyGreen
+        ParentBackground = False
+        TabOrder = 1
+        object Label6: TLabel
+          Left = 3
+          Top = 2
+          Width = 49
+          Height = 14
+          Caption = 'Storage'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Tahoma'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+        object Label7: TLabel
+          Left = 286
+          Top = 5
+          Width = 45
+          Height = 14
+          Caption = 'Default'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Tahoma'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+        object Label8: TLabel
+          Left = 378
+          Top = 5
+          Width = 31
+          Height = 14
+          Caption = 'Units'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Tahoma'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+        object Label10: TLabel
+          Left = 474
+          Top = 5
+          Width = 33
+          Height = 14
+          Caption = 'Value'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Tahoma'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+      end
+      object Panel2: TPanel
+        Left = 3
+        Top = 22
+        Width = 584
+        Height = 91
+        BevelOuter = bvNone
+        Color = clMoneyGreen
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentBackground = False
+        ParentFont = False
+        TabOrder = 0
+        object Label11: TLabel
+          Left = 12
+          Top = 0
+          Width = 230
+          Height = 14
+          Caption = 'Storage Calculated as Precipitation Depth:'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+        end
+        object Label12: TLabel
+          Left = 0
+          Top = 68
+          Width = 296
+          Height = 12
+          Caption = 'Note: Units of storage as inches of runoff / impervious area'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -10
+          Font.Name = 'Tahoma'
+          Font.Style = [fsBold]
+          ParentFont = False
+          Visible = False
+        end
+        object Label13: TLabel
+          Left = 12
+          Top = 34
+          Width = 178
+          Height = 14
+          Caption = 'Average Annual Infiltration Rate:'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+        end
+        object sgMFR: TStringGrid
+          Left = 251
+          Top = 0
+          Width = 295
+          Height = 66
+          BevelEdges = []
+          BevelInner = bvNone
+          BevelOuter = bvNone
+          ColCount = 3
+          DefaultColWidth = 94
+          DefaultRowHeight = 25
+          FixedCols = 0
+          RowCount = 2
+          FixedRows = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 0
+        end
+      end
+    end
+  end
+  object PageControl3: TPageControl
+    Left = 8
+    Top = 449
+    Width = 600
+    Height = 142
+    ActivePage = TabSheet3
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -12
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 3
+    object TabSheet3: TTabSheet
+      Caption = 'CICU'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -9
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      object Label14: TLabel
+        Left = 5
+        Top = 2
+        Width = 49
+        Height = 14
+        Caption = 'Storage'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label16: TLabel
+        Left = 296
+        Top = 2
+        Width = 45
+        Height = 14
+        Caption = 'Default'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label19: TLabel
+        Left = 378
+        Top = 2
+        Width = 31
+        Height = 14
+        Caption = 'Units'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Panel3: TPanel
+        Left = 0
+        Top = -2
+        Width = 593
+        Height = 115
+        Color = clMoneyGreen
+        ParentBackground = False
+        TabOrder = 1
+        object Label21: TLabel
+          Left = 286
+          Top = 5
+          Width = 45
+          Height = 14
+          Caption = 'Default'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Tahoma'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+        object Label22: TLabel
+          Left = 378
+          Top = 5
+          Width = 31
+          Height = 14
+          Caption = 'Units'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Tahoma'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+        object Label23: TLabel
+          Left = 474
+          Top = 5
+          Width = 33
+          Height = 14
+          Caption = 'Value'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Tahoma'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+      end
+      object Panel5: TPanel
+        Left = 3
+        Top = 22
+        Width = 584
+        Height = 91
+        BevelOuter = bvNone
+        Color = clMoneyGreen
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentBackground = False
+        ParentFont = False
+        TabOrder = 0
+        object Label24: TLabel
+          Left = 12
+          Top = 0
+          Width = 230
+          Height = 14
+          Caption = 'Storage Calculated as Precipitation Depth:'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+        end
+        object Label25: TLabel
+          Left = 0
+          Top = 68
+          Width = 296
+          Height = 12
+          Caption = 'Note: Units of storage as inches of runoff / impervious area'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -10
+          Font.Name = 'Tahoma'
+          Font.Style = [fsBold]
+          ParentFont = False
+          Visible = False
+        end
+        object Label26: TLabel
+          Left = 12
+          Top = 34
+          Width = 178
+          Height = 14
+          Caption = 'Average Annual Infiltration Rate:'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+        end
+        object sgCICU: TStringGrid
+          Left = 251
+          Top = 0
+          Width = 295
+          Height = 66
+          BevelEdges = []
+          BevelInner = bvNone
+          BevelOuter = bvNone
+          ColCount = 3
+          DefaultColWidth = 94
+          DefaultRowHeight = 25
+          FixedCols = 0
+          RowCount = 2
+          FixedRows = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 0
+        end
+      end
+    end
+  end
+  object btnOK: TButton
+    Left = 527
+    Top = 597
+    Width = 75
+    Height = 25
+    Caption = 'OK'
+    TabOrder = 4
+    OnClick = btnOKClick
   end
 end

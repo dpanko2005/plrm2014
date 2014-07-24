@@ -1017,7 +1017,7 @@ begin
       end;
     end;
     // reset now that we know actual number of land uses in catchment
-    SetLength(catOut.annLoadsLUse, catOut.vollandUses.Count, NUMCATCHRSLTS);
+    SetLength(catOut.annLoadsLUse, catOut.vollandUses.Count+1, NUMCATCHRSLTS);
 
     Z := 0;
     // zero out loads from previous catchments

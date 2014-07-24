@@ -2243,6 +2243,19 @@ object PLRMRoadPollutants: TPLRMRoadPollutants
     Font.Style = [fsItalic]
     ParentFont = False
   end
+  object lblRoadImpervAcres: TLabel
+    Left = 232
+    Top = 105
+    Width = 96
+    Height = 13
+    Caption = 'lblRoadImpervAcres'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = cl3DDkShadow
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsItalic]
+    ParentFont = False
+  end
   object Panel1: TPanel
     Left = 8
     Top = 163
@@ -2464,7 +2477,7 @@ object PLRMRoadPollutants: TPLRMRoadPollutants
       Caption = 'TN'
     end
     object sgCRCs: TStringGrid
-      Left = 4
+      Left = 9
       Top = 30
       Width = 246
       Height = 163
@@ -2477,7 +2490,6 @@ object PLRMRoadPollutants: TPLRMRoadPollutants
       ColCount = 3
       DefaultColWidth = 82
       DefaultRowHeight = 23
-      Enabled = False
       FixedColor = cl3DLight
       FixedCols = 0
       RowCount = 2

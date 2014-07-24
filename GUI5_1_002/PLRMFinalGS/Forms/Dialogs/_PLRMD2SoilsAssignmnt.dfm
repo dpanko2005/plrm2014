@@ -2507,7 +2507,7 @@ object PLRMD2SoilsAssignmnt: TPLRMD2SoilsAssignmnt
     SimplePanel = True
   end
   object btnOK: TButton
-    Left = 592
+    Left = 682
     Top = 610
     Width = 65
     Height = 25
@@ -2522,8 +2522,8 @@ object PLRMD2SoilsAssignmnt: TPLRMD2SoilsAssignmnt
     OnClick = btnOKClick
   end
   object btnCancel: TButton
-    Left = 682
-    Top = 610
+    Left = 442
+    Top = 617
     Width = 65
     Height = 25
     Caption = 'Cancel'
@@ -2534,6 +2534,7 @@ object PLRMD2SoilsAssignmnt: TPLRMD2SoilsAssignmnt
     Font.Style = []
     ParentFont = False
     TabOrder = 1
+    Visible = False
     OnClick = btnCancelClick
   end
   object btnHelp: TButton

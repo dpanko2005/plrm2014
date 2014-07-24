@@ -5351,7 +5351,7 @@ object PLRMDrainageConditions: TPLRMDrainageConditions
           end
           object sgSFR: TStringGrid
             Left = 3
-            Top = 55
+            Top = 59
             Width = 382
             Height = 50
             BevelEdges = []
