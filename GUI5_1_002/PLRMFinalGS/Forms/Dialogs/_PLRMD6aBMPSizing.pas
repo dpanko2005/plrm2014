@@ -74,7 +74,8 @@ type
     { Public declarations }
   end;
 
-function showPLRMBMPSizingDialog(CatchID: String): Integer;
+  // function showPLRMBMPSizingDialog(CatchID: String): Integer;
+function showPLRMBMPSizingDialog(CatchID: String; silentMode: Boolean): Integer;
 
 var
   PLRMBMPSizing: TPLRMBMPSizing;
@@ -199,13 +200,18 @@ begin
   GSUtils.sgSelectCellWthNonEditCol(Sender, ACol, ARow, CanSelect, 0, 1, 0);
 end;
 
-function showPLRMBMPSizingDialog(CatchID: String): Integer;
+function showPLRMBMPSizingDialog(CatchID: String; silentMode: Boolean): Integer;
 var
   Frm: TPLRMBMPSizing;
   tempInt: Integer;
 begin
   initCatchID := CatchID;
   Frm := TPLRMBMPSizing.Create(Application);
+  if (silentMode) then
+    Frm.Visible := false
+  else
+    Frm.Visible := True;
+
   try
     tempInt := Frm.ShowModal;
   finally
