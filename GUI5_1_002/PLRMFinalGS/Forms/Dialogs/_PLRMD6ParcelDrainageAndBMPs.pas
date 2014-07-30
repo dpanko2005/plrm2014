@@ -281,11 +281,18 @@ end;
 
 procedure TPLRMParcelDrngAndBMPs.btnEditBMPSizeClick(Sender: TObject);
 begin
-  showPLRMBMPSizingDialog(PLRMObj.currentCatchment.name);
+  showPLRMBMPSizingDialog(PLRMObj.currentCatchment.name, false);
 end;
 
 procedure TPLRMParcelDrngAndBMPs.btnOKClick(Sender: TObject);
 begin
+  // silently cll BMP sizing we can get BMP sizing default saved into catchment object if the form was never opened
+  // silent call BMP sizing we can get BMP sizing default saved into catc
+  if (not(PLRMObj.currentCatchment.hasDefCustomBMPSizeData)) then
+  begin
+    showPLRMBMPSizingDialog(PLRMObj.currentCatchment.name, true);
+  end;
+
   // save grid data to current catchment and exit form
   GSPLRM.PLRMObj.currentCatchment.frm6of6SgBMPImplData :=
     GSUtils.copyGridContents(0, 0, sgBMPImpl);
