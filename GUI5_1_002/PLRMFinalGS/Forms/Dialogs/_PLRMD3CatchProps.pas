@@ -498,6 +498,10 @@ begin
   btnDefSoils.Enabled := false;
   btnDefLuseConds.Enabled := false;
   btnDefHydProps.Enabled := false;
+  btnDefRoadPolls.Enabled := false;
+  btnShowRoadDrainageEditor.Enabled := false;
+  btnShowParcelDrainageAndBMPEditor.Enabled := false;
+  btnOk.Enabled := false;
 end;
 
 procedure TCatchProps.sgPropsSelectCell(Sender: TObject; ACol, ARow: Integer;

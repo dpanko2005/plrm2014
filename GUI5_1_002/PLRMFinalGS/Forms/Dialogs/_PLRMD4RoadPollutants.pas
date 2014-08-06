@@ -182,7 +182,7 @@ begin
 
   // subtracting 2 below because last row not populated shown to let user know grid will grow
   // as new rows are entered
-  lastRow := sgRdConditions.RowCount - 2;
+  lastRow := sgRdConditions.RowCount - 1;
   for iRow := 0 to lastRow do
   begin
     if (sgRdConditions.Cells[1, iRow] <> '') then
@@ -222,8 +222,8 @@ begin
 
   // subtracting 2 below because last row not populated shown to let user know grid will grow
   // as new rows are entered
-
-  for iRow := 0 to sgCRCs.RowCount - 1 do
+  // for iRow := 0 to sgCRCs.RowCount - 1 do
+  for iRow := 0 to High(rslts) do
   begin
     j := 0;
     for jCol := 0 to High(rslts[0]) do
@@ -360,8 +360,14 @@ begin
 
   copyContentsToGridAddRows(PLRMObj.currentCatchment.frm4of6SgRoadConditionData,
     0, 0, sgRoadConditions);
-  sgRoadConditions.RowCount := sgRoadConditions.RowCount + 1;
+
   // add an additional row to road conditions grid so user knows it grows
+  // check if row already and added and then add it
+  if sgRoadConditions.Cells[1, sgRoadConditions.RowCount-1] <> '' then
+  begin
+    sgRoadConditions.RowCount :=
+      High(PLRMObj.currentCatchment.frm4of6SgRoadConditionData) + 2;
+  end;
 
   // fxns above wont skip rows, so manually copy over the three visible pollutant CRCs FSP, TP and TN
   sgCRCs.RowCount := High(PLRMObj.currentCatchment.frm4of6SgRoadCRCsData) + 1;
@@ -493,8 +499,9 @@ begin
 
     // validate condition score 0.1<x<5.0
     conditionScore := StrToFloat(sg.Cells[startCol + 1, R]);
-    if ((conditionScore < lowCondScore) or (conditionScore > highCondScore))
-    then
+    // if ((conditionScore < lowCondScore) or (conditionScore > highCondScore))
+    // no longer checking lower lower bound cause side effect does not allow entry of decimals preceded by 0
+    if ((conditionScore < 0) or (conditionScore > highCondScore)) then
       sg.Cells[startCol + 1, R] := FormatFloat(ONEDP, defaultCondScore)
     else
   end;

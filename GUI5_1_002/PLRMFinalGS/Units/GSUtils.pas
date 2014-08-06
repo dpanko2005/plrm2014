@@ -196,6 +196,8 @@ const { ID num for accessing Icons for treeview from  imagelist }
   ISAOpenFolder = 2;
   defaultProjName = 'DefaultProject';
   defaultScnName = 'DefaultScenario';
+  othrLandUseArrIndex = 6;
+  roadLandUseArrIndex = 7;
 
   plrmFileExt = '.xml';
   ramScoreConst1 = 1974.5;
@@ -215,32 +217,36 @@ var
   defaultXslPath: String;
   validateXslPath: String;
   luseNameCodeTable: PLRMGridData;
-  frmsLuses: array [0 .. 6] of string = (
+  frmsLuses: array [0 .. 7] of string = (
     'Primary Road (ROW)',
     'Secondary Road (ROW)',
     'Single Family Residential',
     'Multi Family Residential',
     'CICU',
     'Vegetated Turf',
-    'Other'
+    'Other',
+    'Roads'
   );
-  frmsLuseTags: array [0 .. 6] of string = (
+  frmsLuseTags: array [0 .. 7] of string = (
     'PrimaryRoads',
     'SecondaryRoads',
     'SingleFamilyResidential',
     'MultiFamilyResidential',
     'CICU',
     'Vgt',
-    'othr'
+    'othr',
+    'Roads'
+
   );
-  frmsLuseCodes: array [0 .. 6] of string = (
+  frmsLuseCodes: array [0 .. 7] of string = (
     'Prr',
     'Ser',
     'Sfr',
     'Mfr',
     'Cic',
     'Vgt',
-    'Othr'
+    'Othr',
+    'Road'
   );
   cats: array [0 .. 2] of String = (
     'High',

@@ -51,6 +51,7 @@ type
     procedure sgLuseKeyPress(Sender: TObject; var Key: Char);
     procedure sgLuseSetEditText(Sender: TObject; ACol, ARow: Integer;
       const Value: string);
+    procedure AggregateLandUsesAndUpdateAreas();
 
   private
     { Private declarations }
@@ -67,6 +68,7 @@ var
   initCatchID: String;
   luseDBData: dbReturnFields;
   prevGridVal: String;
+  FrmLuseConds: TDrngXtsData; // global data structure used to store form input
 
 implementation
 
@@ -269,6 +271,72 @@ begin
   ModalResult := mrOK;
 end;
 
+// Note: current catchment is set in onchange event of combobox prior to entry of this routine
+procedure TPLRMLandUse.AggregateLandUsesAndUpdateAreas();
+var
+  tempInt, I: Integer;
+  totArea: Double;
+  tempList: TStringList;
+  tempOtherArea: Double;
+  tempOtherImpvArea: Double;
+begin
+  tempOtherArea := 0;
+  tempOtherImpvArea := 0;
+  tempList := TStringList.Create;
+  // Add Landuses to StringList to allow indexof
+  for I := 0 to High(frmsLuses) do
+  begin
+    tempList.Add(frmsLuses[I]);
+  end;
+  with PLRMObj.currentCatchment do
+  begin
+    totArea := StrToFloat(swmmCatch.Data[UProject.SUBCATCH_AREA_INDEX]);
+    for I := 0 to landUseNames.Count - 1 do
+    begin
+      tempInt := tempList.IndexOf(landUseNames[I]);
+      if (tempInt > -1) then
+      begin
+        FrmLuseConds.luseAreaNPrcnt[tempInt, 0] :=
+          PLRMObj.currentCatchment.landUseData[I][3];
+        // FrmLuseConds.luseAreaNPrcnt[tempInt, 1] :=
+        // FloatToStr(100 * StrToFloat(FrmLuseConds.luseAreaNPrcnt[tempInt, 0])
+        // / totArea);
+        FrmLuseConds.luseAreaNPrcnt[tempInt, 1] :=
+          FloatToStr(StrToFloat(PLRMObj.currentCatchment.landUseData[I][2]) *
+          StrToFloat(PLRMObj.currentCatchment.landUseData[I][3]) / 100);
+      end
+      else // lump all other land uses into other areas
+      begin
+        tempOtherArea := tempOtherArea + StrToFloat(landUseData[I][3]);
+        tempOtherImpvArea := tempOtherImpvArea + StrToFloat(landUseData[I][2]) *
+          StrToFloat(landUseData[I][3]);
+      end;
+    end;
+  end;
+
+  // save Othr and Road areas and imperv to catchment obj
+  if (FrmLuseConds.luseAreaNPrcnt[roadLandUseArrIndex, 0] <> '') then
+  begin
+    PLRMObj.currentCatchment.totRoadAcres :=
+      StrToFloat(FrmLuseConds.luseAreaNPrcnt[roadLandUseArrIndex, 0]);
+    PLRMObj.currentCatchment.totRoadImpervAcres :=
+      StrToFloat(FrmLuseConds.luseAreaNPrcnt[roadLandUseArrIndex, 1]);
+  end;
+
+  FrmLuseConds.luseAreaNPrcnt[othrLandUseArrIndex, 0] :=
+    FloatToStr(tempOtherArea);
+  FrmLuseConds.luseAreaNPrcnt[othrLandUseArrIndex, 1] :=
+    FloatToStr(100 * tempOtherArea / totArea);
+
+  PLRMObj.currentCatchment.othrArea := tempOtherArea;
+  PLRMObj.currentCatchment.othrPrcntToOut := 100;
+  // entire area drains directly to out
+  if tempOtherArea = 0 then
+    PLRMObj.currentCatchment.othrPrcntImpv := 0
+  else
+    PLRMObj.currentCatchment.othrPrcntImpv := tempOtherImpvArea / tempOtherArea;
+end;
+
 procedure TPLRMLandUse.btnApplyClick(Sender: TObject);
 var
   hasLuse: array [0 .. 6] of Boolean;
@@ -279,86 +347,97 @@ begin
     GSPLRM.PLRMObj.currentCatchment.landUseNames, sgLuse, 1, 0);
   GSPLRM.PLRMObj.currentCatchment.hasDefLuse := true;
 
-  // sum up road areas
-  tempRoadArea := 0;
-  tempRoadImpervArea := 0;
-  for I := 0 to High(GSPLRM.PLRMObj.currentCatchment.landUseData) do
-  begin
-    if ((GSPLRM.PLRMObj.currentCatchment.landUseData[I, 0] = 'Primary Road (ROW)') or
-      (GSPLRM.PLRMObj.currentCatchment.landUseData[I, 0] = 'Secondary Road (ROW)')) then
-    begin
-      tempRoadArea := tempRoadArea +
-        StrToFloat(GSPLRM.PLRMObj.currentCatchment.landUseData[I, 3]);
-      tempRoadImpervArea := tempRoadImpervArea +
-        StrToFloat(GSPLRM.PLRMObj.currentCatchment.landUseData[I, 2]) *
-        StrToFloat(GSPLRM.PLRMObj.currentCatchment.landUseData[I, 3]);
-    end;
-  end;
-  GSPLRM.PLRMObj.currentCatchment.totRoadAcres := tempRoadArea;
-  GSPLRM.PLRMObj.currentCatchment.totRoadImpervAcres := tempRoadImpervArea / 100;
+  // Aggregate landuses to create othr land use and poplutae props for other landuses
+  AggregateLandUsesAndUpdateAreas();
 
-  // zero out previously assigned values from screen 5
-  // with PLRMObj.currentCatchment do
-  // begin
-  if (assigned(PLRMObj.currentCatchment.primRdDrng) and
+  // sum up road areas
+  { tempRoadArea := 0;
+    tempRoadImpervArea := 0;
+    for I := 0 to High(GSPLRM.PLRMObj.currentCatchment.landUseData) do
+    begin
+    if ((GSPLRM.PLRMObj.currentCatchment.landUseData[I,
+    0] = 'Primary Road (ROW)') or (GSPLRM.PLRMObj.currentCatchment.landUseData
+    [I, 0] = 'Roads') or (GSPLRM.PLRMObj.currentCatchment.landUseData[I,
+    0] = 'Secondary Road (ROW)')) then
+    begin
+    tempRoadArea := tempRoadArea +
+    StrToFloat(GSPLRM.PLRMObj.currentCatchment.landUseData[I, 3]);
+    tempRoadImpervArea := tempRoadImpervArea +
+    StrToFloat(GSPLRM.PLRMObj.currentCatchment.landUseData[I, 2]) *
+    StrToFloat(GSPLRM.PLRMObj.currentCatchment.landUseData[I, 3]);
+    end;
+    end;
+    GSPLRM.PLRMObj.currentCatchment.totRoadAcres := tempRoadArea;
+    GSPLRM.PLRMObj.currentCatchment.totRoadImpervAcres :=
+    tempRoadImpervArea / 100; }
+
+  { // zero out previously assigned values from screen 5
+    // with PLRMObj.currentCatchment do
+    // begin
+    // Primary Roads land use
+    if (assigned(PLRMObj.currentCatchment.primRdDrng) and
     (PLRMObj.getCurCatchLuseProp(GSUtils.frmsLuses[0], 2, hasLuse[0]) = 0.0))
-  then
-  begin
+    then
+    begin
     PLRMObj.currentCatchment.primRdDrng[0][1] := '0';
     PLRMObj.currentCatchment.primRdDrng[1][1] := '0';
     PLRMObj.currentCatchment.primRdDrng[2][1] := '0';
     PLRMObj.currentCatchment.primRdDrng[0][2] := '0';
     PLRMObj.currentCatchment.primRdDrng[1][2] := '0';
     PLRMObj.currentCatchment.primRdDrng[2][2] := '0';
-  end;
-  if (assigned(PLRMObj.currentCatchment.secRdDrng) And
+    end;
+    // Secondary Roads land use
+    if (assigned(PLRMObj.currentCatchment.secRdDrng) And
     (PLRMObj.getCurCatchLuseProp(GSUtils.frmsLuses[1], 2, hasLuse[1]) = 0)) then
-  begin
+    begin
     PLRMObj.currentCatchment.secRdDrng[0][1] := '0';
     PLRMObj.currentCatchment.secRdDrng[1][1] := '0';
     PLRMObj.currentCatchment.secRdDrng[2][1] := '0';
     PLRMObj.currentCatchment.secRdDrng[0][2] := '0';
     PLRMObj.currentCatchment.secRdDrng[1][2] := '0';
     PLRMObj.currentCatchment.secRdDrng[2][2] := '0';
-  end;
-  if (assigned(PLRMObj.currentCatchment.sfrDrng) And
+    end;
+    // Sfr land use
+    if (assigned(PLRMObj.currentCatchment.sfrDrng) And
     (PLRMObj.getCurCatchLuseProp(GSUtils.frmsLuses[2], 2, hasLuse[2]) = 0)) then
-  begin
+    begin
     PLRMObj.currentCatchment.sfrDrng[0][1] := '0';
     PLRMObj.currentCatchment.sfrDrng[1][1] := '0';
     PLRMObj.currentCatchment.sfrDrng[0][2] := '0';
     PLRMObj.currentCatchment.sfrDrng[1][2] := '0';
-  end;
-  if (assigned(PLRMObj.currentCatchment.mfrDrng) And
+    end;
+    // Mfr land use
+    if (assigned(PLRMObj.currentCatchment.mfrDrng) And
     (PLRMObj.getCurCatchLuseProp(GSUtils.frmsLuses[3], 2, hasLuse[3]) = 0)) then
-  begin
+    begin
     PLRMObj.currentCatchment.mfrDrng[0][1] := '0';
     PLRMObj.currentCatchment.mfrDrng[1][1] := '0';
     PLRMObj.currentCatchment.mfrDrng[0][2] := '0';
     PLRMObj.currentCatchment.mfrDrng[1][2] := '0';
-  end;
-  if (assigned(PLRMObj.currentCatchment.cicuDrng) And
+    end;
+    // CICU land use
+    if (assigned(PLRMObj.currentCatchment.cicuDrng) And
     (PLRMObj.getCurCatchLuseProp(GSUtils.frmsLuses[4], 2, hasLuse[4]) = 0)) then
-  begin
+    begin
     PLRMObj.currentCatchment.cicuDrng[0][1] := '0';
     PLRMObj.currentCatchment.cicuDrng[1][1] := '0';
     PLRMObj.currentCatchment.cicuDrng[0][2] := '0';
     PLRMObj.currentCatchment.cicuDrng[1][2] := '0';
-  end;
-  if (assigned(PLRMObj.currentCatchment.vegTDrng) And
+    end;
+    // VegT land use
+    if (assigned(PLRMObj.currentCatchment.vegTDrng) And
     (PLRMObj.getCurCatchLuseProp(GSUtils.frmsLuses[5], 2, hasLuse[5]) = 0)) then
-  begin
+    begin
     PLRMObj.currentCatchment.vegTDrng[0][1] := '0';
     PLRMObj.currentCatchment.vegTDrng[0][2] := '0';
-  end;
-
-  if (assigned(PLRMObj.currentCatchment.othrDrng) And
+    end;
+    // Othr land use
+    if (assigned(PLRMObj.currentCatchment.othrDrng) And
     (PLRMObj.getCurCatchLuseProp(GSUtils.frmsLuses[6], 2, hasLuse[6]) = 0)) then
-  begin
+    begin
     PLRMObj.currentCatchment.othrDrng[0][1] := '0';
     PLRMObj.currentCatchment.othrDrng[0][2] := '0';
-  end;
-  // end;
+    end; }
 end;
 
 procedure TPLRMLandUse.FormCreate(Sender: TObject);
@@ -386,6 +465,9 @@ begin
   // S := GSIO.getCodes('l1%');
   lbxLuseFrom.Items := S;
   sgLuse.ColWidths[0] := 260;
+  // create space for computation and aggregation of landuses
+  SetLength(FrmLuseConds.luseAreaNPrcnt, High(frmsLuses) + 1, 2);
+
   if PLRMObj.currentCatchment.hasDefLuse = true then
     rePopulateForm(PLRMObj.currentCatchment);
 end;
