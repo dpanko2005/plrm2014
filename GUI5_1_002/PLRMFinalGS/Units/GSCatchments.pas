@@ -1225,11 +1225,15 @@ var
   tempTextListDrngArr: array [0 .. 6] of TStringList;
   tempArea, tempHscDepth, tempWidth, tempFloLength: double;
   tempHSCParam: array [0 .. 2] of double;
-  // tempHSCData:array[0..2] of
+  kSatMultplrs: dbReturnFields;
 begin
   // offset used to exclude primary and secondary roads in land use arrays and lists
+  // now filtering out prim and sec roads in landuse query since replaced by "Roads" so set offset to 0
   luseOffset := 2;
   try
+    // get ksat multipliers - current used to calc ksat for othr landuse
+    kSatMultplrs := GSIO.getDefaults('"7%"');
+
     // write catchment info to swmm
     updateSWMM();
     luseTagList := TStringList.Create;
@@ -1346,7 +1350,7 @@ begin
     tempNode2 := tempNode.AddChild('Smd', '');
     tempNode2.Attributes['default'] := soilsInfData[0, 3];
     tempNode2.Attributes['units'] := 'in';
-    tempNode2.Text := soilsInfData[0, 2];
+    tempNode2.Text := soilsInfData[0, 3];
 
     luseCodeList := lookUpCodeFrmName(landUseData, 0, projectLuseNames,
       ProjectLuseCodes);
@@ -1488,24 +1492,28 @@ begin
     end;
 
     // ICIA   - indirectly connected impervious area
+    // tempArea := frm5of6RoadDrainageEditorData.ICIA * totRoadAcres / 100;
+    // if (tempArea > tempMinArea) then
+    // begin
     tempArea := frm5of6RoadDrainageEditorData.ICIA * totRoadAcres / 100;
-    if (tempArea > tempMinArea) then
-    begin
-      tempNode2 := tempNode.AddChild('ICIA', '');
-      tempNode2.Attributes['name'] := 'ICIA';
-      tempNode2.Attributes['areaPrcnt'] := frm5of6RoadDrainageEditorData.ICIA;
-      tempNode2.Attributes['areaAc'] := tempArea;
-      tempNode2.Attributes['impervArea'] := frm5of6RoadDrainageEditorData.ICIA *
-        totRoadImpervAcres / 100;
+    tempNode2 := tempNode.AddChild('ICIA', '');
+    tempNode2.Attributes['name'] := 'ICIA';
+    tempNode2.Attributes['areaPrcnt'] := frm5of6RoadDrainageEditorData.ICIA;
+    tempNode2.Attributes['areaAc'] := tempArea;
+    tempNode2.Attributes['impervArea'] := frm5of6RoadDrainageEditorData.ICIA *
+      totRoadImpervAcres / 100;
 
-      // calc catchment width
-      tempArea := tempArea * 43560;
-      tempFloLength := Math.Power(tempArea * widthFactor, widthPower);
-      if tempFloLength > maxFloLength then
-        tempFloLength := maxFloLength;
+    // calc catchment width
+    tempArea := tempArea * 43560;
+    tempFloLength := Math.Power(tempArea * widthFactor, widthPower);
+    if tempFloLength > maxFloLength then
+      tempFloLength := maxFloLength;
+    if (tempArea = 0) then
+      tempWidth := 0
+    else
       tempWidth := tempArea / tempFloLength;
-      tempNode2.Attributes['width'] := tempWidth;
-    end;
+    tempNode2.Attributes['width'] := tempWidth;
+    // end;
 
     // DINF   - infiltration facility
     tempArea := frm5of6RoadDrainageEditorData.DINF * totRoadAcres / 100;
@@ -1531,7 +1539,12 @@ begin
       tempFloLength := Math.Power(tempArea * widthFactor, widthPower);
       if tempFloLength > maxFloLength then
         tempFloLength := maxFloLength;
-      tempWidth := tempArea / tempFloLength;
+
+      if tempArea = 0 then
+        tempWidth := 0
+      else
+        tempWidth := tempArea / tempFloLength;
+
       tempNode2.Attributes['hscWidth'] := tempWidth;
 
       tempNode2.Attributes['totSurfArea'] :=
@@ -1555,7 +1568,7 @@ begin
 
       // calc catchment width
       tempArea := tempArea * 43560;
-      tempFloLength := Math.Power(tempArea * widthFactor * 43560, widthPower);
+      tempFloLength := Math.Power(tempArea * widthFactor, widthPower);
       if tempFloLength > maxFloLength then
         tempFloLength := maxFloLength;
       tempWidth := tempArea / tempFloLength;
@@ -1564,11 +1577,13 @@ begin
       tempArea := frm5of6RoadDrainageEditorData.PervChanFacility.length *
         frm5of6RoadDrainageEditorData.PervChanFacility.width;
       tempArea := tempArea;
-      tempFloLength := Math.Power(tempArea * widthFactor, widthPower);
-      if tempFloLength > maxFloLength then
+      { tempFloLength := Math.Power(tempArea * widthFactor, widthPower);
+        if tempFloLength > maxFloLength then
         tempFloLength := maxFloLength;
-      tempWidth := tempArea / tempFloLength;
-      tempNode2.Attributes['hscWidth'] := tempWidth;
+        tempWidth := tempArea / tempFloLength;
+        tempNode2.Attributes['hscWidth'] := tempWidth; }
+      tempNode2.Attributes['hscWidth'] :=
+        2 * frm5of6RoadDrainageEditorData.PervChanFacility.width;
 
       tempNode2.Attributes['ftprintlength'] :=
         frm5of6RoadDrainageEditorData.PervChanFacility.length;
@@ -1625,9 +1640,9 @@ begin
       // loop through and build swmm inputs section
       for I := 0 to High(frm6of6SgBMPImplData) do
       begin
-        tempNode3 := tempNode.AddChild('swmmInput', '');
         if (frm6of6AreasData.luseAreaNImpv[I + luseOffset][0] <> '') then
         begin
+          tempNode3 := tempNode.AddChild('swmmInput', '');
           tempArea := StrToFloat(frm6of6AreasData.luseAreaNImpv
             [I + luseOffset][0]);
           if (tempArea > tempMinArea) then
@@ -1643,10 +1658,18 @@ begin
             tempNode3.Attributes['ksat'] := frm6of6SgNoBMPsData[I, 2];
             tempNode3.Attributes['hscArea'] := tempArea *
               StrToFloat(frm6of6SgBMPImplData[I, 0]) / 100;
-            tempNode3.Attributes['hscAveAnnInfRate'] :=
-              tempBMPSizeGridArr[I][1, 0];
-            tempNode3.Attributes['hscStorageDepth'] :=
-              tempBMPSizeGridArr[I][0, 0];
+            // only SFR,MFR,CICU have BMP sizes
+            // if ((I >= luseOffset) and (I-luseOffset <= High(tempBMPSizeGridArr))) then
+            if (I <= High(tempBMPSizeGridArr)) then
+            begin
+              if (assigned(tempBMPSizeGridArr[I])) then
+              begin
+                tempNode3.Attributes['hscAveAnnInfRate'] :=
+                  tempBMPSizeGridArr[I][1, 0];
+                tempNode3.Attributes['hscStorageDepth'] :=
+                  tempBMPSizeGridArr[I][0, 0];
+              end;
+            end;
             tempNode3.Text := tempList2[I];
 
             // calc catchment width
@@ -1684,6 +1707,33 @@ begin
           end;
         end;
       end;
+      // write othr area which is not displayed in the frm5of6 grid to the user but must be modeled in swmm
+      if (othrArea <> 0) then
+      begin
+        tempNode3 := tempNode.AddChild('swmmInput', '');
+        tempNode3.Attributes['percentBMPs'] := '0';
+        tempNode3.Attributes['percentNoBMPs'] := '100';
+        tempNode3.Attributes['percentSrcCtrls'] := '0';
+        tempNode3.Attributes['areaAc'] := othrArea;
+        tempNode3.Attributes['impervArea'] := othrPrcntImpv;
+        tempNode3.Attributes['percentDCIA'] := '0';
+
+        tempNode3.Attributes['ksat'] :=
+          FormatFloat('0.##', (StrToFloat(soilsInfData[0, 1]) *
+          StrToFloat(kSatMultplrs[0][othrLandUseArrIndex])));
+
+        tempNode3.Attributes['hscArea'] := '0';
+        tempNode3.Attributes['hscAveAnnInfRate'] := '0';
+        tempNode3.Attributes['hscStorageDepth'] := '0';
+        tempNode3.Text := 'Othr';
+        tempArea := othrArea * 43560;
+        tempFloLength := Math.Power(tempArea * widthFactor, widthPower);
+        if tempFloLength > maxFloLength then
+          tempFloLength := maxFloLength;
+        tempWidth := tempArea / tempFloLength;
+        tempNode3.Attributes['width'] := tempWidth;
+        tempNode3.Attributes['hscWidth'] := '0';
+      end;
       tempNode.Resync;
     end;
 
@@ -1710,11 +1760,6 @@ begin
     // write bmp implementation
     if (assigned(bmpImpl)) then
     begin
-      { tempList2.Add(frmsLuseCodes[2]);
-        tempList2.Add(frmsLuseCodes[3]);
-        tempList2.Add(frmsLuseCodes[4]);
-        tempList2.Add(frmsLuseCodes[5]);
-        tempList2.Add(frmsLuseCodes[6]); }
       tempNodeList := GSUtils.plrmGridDataToXML('BmpImpl', bmpImpl,
         bmpImplTagList, tempList2);
       tempNode := iNode.AddChild('BmpImplementation', '');
@@ -2002,7 +2047,7 @@ end;
 procedure TPLRMCatch.xmlToCatch(iNode: IXMLNode; hydSchemes: TStringList;
   rcSchemes: TStringList);
 var
-  luseTagList: TStringList;
+  luseTagList, tempList: TStringList;
   soilsTagList: TStringList;
   rdRiskTagList: TStringList;
   bmpImplTagList: TStringList;
@@ -2010,9 +2055,9 @@ var
   roadPollutantsRdShoulderTagList, roadPollutantsRdConditionTagList,
     parcelDrainageAndBMPsWithBMPTagList, parcelDrainageAndBMPsNoBMPTagList,
     roadPollutantsRdCRCTagList, rdShouldrCondsXMLTagList: TStringList;
-  I: Integer;
+  I, tempInt: Integer;
   tempNode, tempNode2: IXMLNode;
-  tempDrnGridArr: array [0 .. 6] of PLRMGridData;
+  tempDrnGridArr: array [0 .. High(GSUtils.frmsLuses)] of PLRMGridData;
   tempBMPSizeGridArr: array [0 .. 2] of PLRMGridData;
   // tempId: array [0 .. 2] of Integer;
 begin
@@ -2238,15 +2283,27 @@ begin
   // loop through and read area and imperv acres from swmm inputs section
   SetLength(frm6of6AreasData.luseAreaNImpv, High(frmsLuseCodes) + 1, 2);
 
+  // setup land use code look up
+  tempList := TStringList.Create;
+  // Add Landuses to StringList to allow indexof
+  for I := 0 to High(frmsLuseCodes) do
+  begin
+    tempList.Add(frmsLuseCodes[I]);
+  end;
+
   for I := 0 to tempNode.ChildNodes.Count - 1 do
   begin
     tempNode2 := tempNode.ChildNodes[I];
     if (tempNode2.Attributes['areaAc'] <> '0') then
     begin
-      frm6of6AreasData.luseAreaNImpv[I + luseOffset][0] := tempNode2.Attributes
-        ['areaAc'];
-      frm6of6AreasData.luseAreaNImpv[I + luseOffset][1] := tempNode2.Attributes
-        ['impervArea'];
+      tempInt := tempList.IndexOf(tempNode2.Text);
+      if (tempInt > -1) then
+      begin
+        frm6of6AreasData.luseAreaNImpv[tempInt][0] := tempNode2.Attributes
+          ['areaAc'];
+        frm6of6AreasData.luseAreaNImpv[tempInt][1] := tempNode2.Attributes
+          ['impervArea'];
+      end;
     end;
   end;
 

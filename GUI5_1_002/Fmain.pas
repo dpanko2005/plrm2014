@@ -2798,7 +2798,7 @@ begin
     end;
     if ((RunFlag = True)) then
     begin
-      MapToolBar.Enabled := False;
+      //2014 MapToolBar.Enabled := False;
       PLRMToolBar.Enabled := False;
       // plrm 2014 ObjectToolBar.Enabled := false;
       PLRMStats.GetAllResults();

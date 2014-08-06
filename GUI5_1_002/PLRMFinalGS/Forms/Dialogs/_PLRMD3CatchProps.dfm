@@ -2602,8 +2602,8 @@ object CatchProps: TCatchProps
       Caption = 'Additional Attributes'
       TabOrder = 1
       object btnDefLuseConds: TButton
-        Left = 9
-        Top = 90
+        Left = 145
+        Top = -3
         Width = 153
         Height = 25
         Caption = 'Step 4: Define Land Use Conditions'
@@ -2615,14 +2615,15 @@ object CatchProps: TCatchProps
         Font.Style = []
         ParentFont = False
         TabOrder = 0
+        Visible = False
         OnClick = btnDefLuseCondsClick
       end
       object btnDefSoils: TButton
         Left = 8
-        Top = 59
+        Top = 57
         Width = 297
         Height = 25
-        Caption = 'Step 3: Soils                            '
+        Caption = 'Step 3: Soils                             '
         Enabled = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -2638,7 +2639,7 @@ object CatchProps: TCatchProps
         Top = 28
         Width = 297
         Height = 25
-        Caption = 'Step 2: Land Uses                    '
+        Caption = 'Step 2: Land Uses                     '
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
@@ -2649,8 +2650,8 @@ object CatchProps: TCatchProps
         OnClick = btnDefLuseClick
       end
       object btnDefHydProps: TButton
-        Left = 9
-        Top = 121
+        Left = 193
+        Top = -3
         Width = 153
         Height = 25
         Caption = 'Step 5: Define Drainage Conditions'
@@ -2662,6 +2663,7 @@ object CatchProps: TCatchProps
         Font.Style = []
         ParentFont = False
         TabOrder = 3
+        Visible = False
         OnClick = btnDefHydPropsClick
       end
     end
@@ -2727,21 +2729,21 @@ object CatchProps: TCatchProps
       OnKeyPress = edtCatchNameKeyPress
     end
     object btnDefRoadPolls: TButton
-      Left = 184
+      Left = 24
       Top = 392
-      Width = 137
+      Width = 297
       Height = 25
-      Caption = 'Step 4: Road Pollutants'
+      Caption = 'Step 4: Road Pollutants                '
       Enabled = False
       TabOrder = 5
       OnClick = btnDefRoadPollsClick
     end
     object btnShowRoadDrainageEditor: TButton
-      Left = 183
+      Left = 24
       Top = 425
-      Width = 138
+      Width = 297
       Height = 25
-      Caption = 'Step 5: Road Drainage'
+      Caption = 'Step 5: Road Drainage                 '
       Enabled = False
       TabOrder = 6
       OnClick = btnShowRoadDrainageEditorClick
@@ -2751,7 +2753,7 @@ object CatchProps: TCatchProps
       Top = 456
       Width = 297
       Height = 25
-      Caption = 'Step 6: Parcel Drainage and BMPs'
+      Caption = 'Step 6: Parcel Drainage and BMPs  '
       Enabled = False
       TabOrder = 7
       OnClick = btnShowParcelDrainageAndBMPEditorClick

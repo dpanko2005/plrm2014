@@ -119,24 +119,31 @@ end;
 
 procedure TPLRMRoadDrainageEditor.btnOKClick(Sender: TObject);
 begin
+  // Begin validation
+  if (StrToFloat(edtDPCHAveSlope.Text) < 0.001) then
+  begin
+    showMessage('Pervious dispersion channel slope must not be zero');
+    exit;
+  end;
+
   // save form inputs
-  FrmData.DCIA := strToFloat(edtDCIA.Text);
-  FrmData.ICIA := strToFloat(edtICIA.Text);
-  FrmData.DINF := strToFloat(edtDINF.Text);
-  FrmData.DPCH := strToFloat(edtDPCH.Text);
-  FrmData.shoulderAveAnnInfRate := strToFloat(edtShoulderAveAnnInfRate.Text);
+  FrmData.DCIA := StrToFloat(edtDCIA.Text);
+  FrmData.ICIA := StrToFloat(edtICIA.Text);
+  FrmData.DINF := StrToFloat(edtDINF.Text);
+  FrmData.DPCH := StrToFloat(edtDPCH.Text);
+  FrmData.shoulderAveAnnInfRate := StrToFloat(edtShoulderAveAnnInfRate.Text);
 
-  FrmData.INFFacility.totSurfaceArea := strToFloat(edtDINFTotSurfArea.Text);
-  FrmData.INFFacility.totStorage := strToFloat(edtDINFTotStorage.Text);
+  FrmData.INFFacility.totSurfaceArea := StrToFloat(edtDINFTotSurfArea.Text);
+  FrmData.INFFacility.totStorage := StrToFloat(edtDINFTotStorage.Text);
   FrmData.INFFacility.aveAnnInfiltrationRate :=
-    strToFloat(edtDINFAveAnnInf.Text);
+    StrToFloat(edtDINFAveAnnInf.Text);
 
-  FrmData.PervChanFacility.length := strToFloat(edtDPCHLen.Text);
-  FrmData.PervChanFacility.width := strToFloat(edtDPCHWidth.Text);
-  FrmData.PervChanFacility.aveSlope := strToFloat(edtDPCHAveSlope.Text);
-  FrmData.PervChanFacility.storageDepth := strToFloat(edtDPCHStorDepth.Text);
+  FrmData.PervChanFacility.length := StrToFloat(edtDPCHLen.Text);
+  FrmData.PervChanFacility.width := StrToFloat(edtDPCHWidth.Text);
+  FrmData.PervChanFacility.aveSlope := StrToFloat(edtDPCHAveSlope.Text);
+  FrmData.PervChanFacility.storageDepth := StrToFloat(edtDPCHStorDepth.Text);
   FrmData.PervChanFacility.aveAnnInfiltrationRate :=
-    strToFloat(edtDPCHAveAnnInf.Text);
+    StrToFloat(edtDPCHAveAnnInf.Text);
   FrmData.isAssigned := True;
 
   PLRMObj.currentCatchment.frm5of6RoadDrainageEditorData := FrmData;
@@ -201,24 +208,24 @@ function TPLRMRoadDrainageEditor.checkAndUpDatePrcntAreas(): Boolean;
 var
   DCIA, ICIA, DINF, DPCH: Double;
 begin
-  DCIA := strToFloat(edtDCIA.Text);
-  ICIA := strToFloat(edtICIA.Text);
-  DINF := strToFloat(edtDINF.Text);
-  DPCH := strToFloat(edtDPCH.Text);
+  DCIA := StrToFloat(edtDCIA.Text);
+  ICIA := StrToFloat(edtICIA.Text);
+  DINF := StrToFloat(edtDINF.Text);
+  DPCH := StrToFloat(edtDPCH.Text);
 
   // update DCIA and then validate for accepted range of 0 - 100
   ICIA := 100 - (DCIA + DINF + DPCH);
 
   if ((DCIA + ICIA + DINF + DPCH) <> 100) then
   begin
-    ShowMessage('Sum of DCIA, ICIA, DINF and DPCH must equal 100%');
+    showMessage('Sum of DCIA, ICIA, DINF and DPCH must equal 100%');
     Result := False;
   end;
 
   if ((DCIA > 100) or (ICIA > 100) or (DINF > 100) or (DPCH > 100) or (DCIA < 0)
     or (ICIA < 0) or (DINF < 0) or (DPCH < 0)) then
   begin
-    ShowMessage
+    showMessage
       ('Valid values for DCIA, ICIA, DINF and DPCH are integers between 1 and 0');
     Result := False;
   end;
@@ -367,16 +374,16 @@ begin
   edtShoulderAveAnnInfRate.Text := intToStr(0);
   edtDINFAveAnnInf.Text := '0.5';
   edtDPCHAveAnnInf.Text := '0.5';
+  edtDPCHAveSlope.Text := '1.0';
 
   hydProps := GSIO.getDefaults('"6%"');
   kSatMultplrs := GSIO.getDefaults('"7%"');
 
   if (assigned(PLRMObj.currentCatchment.soilsInfData)) then
   begin
-    // TODO confirm that area weighting of sec and prim road ksats is not the way to go
     edtShoulderAveAnnInfRate.Text :=
-      FormatFloat('0.##', (strToFloat(PLRMObj.currentCatchment.soilsInfData[0,
-      1]) * strToFloat(kSatMultplrs[0][1])));
+      FormatFloat('0.##', (StrToFloat(PLRMObj.currentCatchment.soilsInfData[0,
+      1]) * StrToFloat(kSatMultplrs[0][1])));
   end;
 end;
 

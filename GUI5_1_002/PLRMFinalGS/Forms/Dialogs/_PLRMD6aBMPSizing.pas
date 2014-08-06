@@ -208,9 +208,18 @@ begin
   initCatchID := CatchID;
   Frm := TPLRMBMPSizing.Create(Application);
   if (silentMode) then
-    Frm.Visible := false
-  else
-    Frm.Visible := True;
+  begin
+    Frm.Hide;
+    // Frm.Show;
+    Frm.initFormContents(PLRMObj.currentCatchment.swmmCatch.ID);
+    Frm.btnOKClick(Application);
+    // also calls updateAreas
+    Result := 1;
+    Frm.Close;
+    Exit;
+  end;
+  // else
+  // Frm.Visible := True;
 
   try
     tempInt := Frm.ShowModal;

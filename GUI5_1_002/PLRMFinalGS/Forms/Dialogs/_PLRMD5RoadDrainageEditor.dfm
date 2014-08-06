@@ -3,7 +3,7 @@ object PLRMRoadDrainageEditor: TPLRMRoadDrainageEditor
   Top = 0
   Caption = 'PLRMRoadDrainageEditor'
   ClientHeight = 562
-  ClientWidth = 519
+  ClientWidth = 517
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,7 +17,7 @@ object PLRMRoadDrainageEditor: TPLRMRoadDrainageEditor
   object Image1: TImage
     Left = -366
     Top = -3
-    Width = 850
+    Width = 883
     Height = 102
     Picture.Data = {
       0A544A504547496D61676569120100FFD8FFE000104A46494600010100000100
@@ -2216,11 +2216,12 @@ object PLRMRoadDrainageEditor: TPLRMRoadDrainageEditor
       171F7EEBFE05FF00A2E8A288F4FF000BFF00D3B4C6FE1F9C7FF484668FF551FF
       00C03FF46542BF7A5FFB63FCA6A28AEA7F14BFEE1FE4871F8BFEDD5F9448E2FB
       D37FD743FC851451593DFE51FC91C7D65FE297FE94CFFFD9}
+    Stretch = True
   end
   object lblCatchArea: TLabel
     Left = 8
     Top = 105
-    Width = 61
+    Width = 137
     Height = 13
     Caption = 'lblCatchArea'
     Font.Charset = DEFAULT_CHARSET
@@ -2233,7 +2234,7 @@ object PLRMRoadDrainageEditor: TPLRMRoadDrainageEditor
   object lblRoadAcres: TLabel
     Left = 8
     Top = 124
-    Width = 62
+    Width = 137
     Height = 13
     Caption = 'lblRoadAcres'
     Font.Charset = DEFAULT_CHARSET
@@ -2338,7 +2339,7 @@ object PLRMRoadDrainageEditor: TPLRMRoadDrainageEditor
   object lblRoadImpervAcres: TLabel
     Left = 288
     Top = 105
-    Width = 96
+    Width = 196
     Height = 13
     Caption = 'lblRoadImpervAcres'
     Font.Charset = DEFAULT_CHARSET
@@ -2552,10 +2553,11 @@ object PLRMRoadDrainageEditor: TPLRMRoadDrainageEditor
   object statBar: TStatusBar
     Left = 0
     Top = 543
-    Width = 519
+    Width = 517
     Height = 19
     Panels = <>
     SimplePanel = True
+    ExplicitWidth = 519
   end
   object btnOK: TButton
     Left = 431

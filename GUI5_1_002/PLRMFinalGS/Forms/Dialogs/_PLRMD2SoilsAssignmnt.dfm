@@ -2369,7 +2369,7 @@ object PLRMD2SoilsAssignmnt: TPLRMD2SoilsAssignmnt
     object lblCatchArea: TLabel
       Left = 24
       Top = 34
-      Width = 61
+      Width = 297
       Height = 13
       Caption = 'lblCatchArea'
       Font.Charset = DEFAULT_CHARSET

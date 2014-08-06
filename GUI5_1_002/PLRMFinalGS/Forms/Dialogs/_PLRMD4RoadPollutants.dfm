@@ -2220,7 +2220,7 @@ object PLRMRoadPollutants: TPLRMRoadPollutants
   object lblCatchArea: TLabel
     Left = 8
     Top = 124
-    Width = 61
+    Width = 161
     Height = 13
     Caption = 'lblCatchArea'
     Font.Charset = DEFAULT_CHARSET
@@ -2233,7 +2233,7 @@ object PLRMRoadPollutants: TPLRMRoadPollutants
   object lblCatchID: TLabel
     Left = 8
     Top = 105
-    Width = 49
+    Width = 161
     Height = 13
     Caption = 'lblCatchID'
     Font.Charset = DEFAULT_CHARSET

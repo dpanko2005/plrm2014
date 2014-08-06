@@ -2327,8 +2327,8 @@ object PLRMLandUse: TPLRMLandUse
     ParentFont = False
     TabOrder = 2
     object Label2: TLabel
-      Left = 62
-      Top = 283
+      Left = 63
+      Top = 291
       Width = 55
       Height = 14
       Alignment = taCenter
@@ -2342,8 +2342,8 @@ object PLRMLandUse: TPLRMLandUse
       WordWrap = True
     end
     object Label4: TLabel
-      Left = 583
-      Top = 282
+      Left = 584
+      Top = 290
       Width = 33
       Height = 14
       Alignment = taCenter
@@ -2357,8 +2357,8 @@ object PLRMLandUse: TPLRMLandUse
       WordWrap = True
     end
     object Label1: TLabel
-      Left = 434
-      Top = 87
+      Left = 428
+      Top = 55
       Width = 117
       Height = 14
       Caption = 'Selected Land Uses'
@@ -2371,7 +2371,7 @@ object PLRMLandUse: TPLRMLandUse
     end
     object Label3: TLabel
       Left = 41
-      Top = 87
+      Top = 55
       Width = 119
       Height = 14
       Caption = 'Available Land Uses'
@@ -2383,8 +2383,8 @@ object PLRMLandUse: TPLRMLandUse
       ParentFont = False
     end
     object Label5: TLabel
-      Left = 279
-      Top = 282
+      Left = 280
+      Top = 290
       Width = 134
       Height = 14
       Alignment = taCenter
@@ -2398,8 +2398,8 @@ object PLRMLandUse: TPLRMLandUse
       WordWrap = True
     end
     object Label6: TLabel
-      Left = 427
-      Top = 282
+      Left = 428
+      Top = 290
       Width = 86
       Height = 14
       Alignment = taCenter
@@ -2428,8 +2428,8 @@ object PLRMLandUse: TPLRMLandUse
     end
     object lblCatchArea: TLabel
       Left = 17
-      Top = 45
-      Width = 61
+      Top = 18
+      Width = 248
       Height = 13
       Caption = 'lblCatchArea'
       Font.Charset = DEFAULT_CHARSET
@@ -2441,7 +2441,7 @@ object PLRMLandUse: TPLRMLandUse
     end
     object sgLuse: TStringGrid
       Left = 17
-      Top = 302
+      Top = 310
       Width = 664
       Height = 219
       BevelEdges = []
@@ -2468,9 +2468,9 @@ object PLRMLandUse: TPLRMLandUse
     end
     object lbxLuseFrom: TListBox
       Left = 17
-      Top = 106
+      Top = 75
       Width = 287
-      Height = 135
+      Height = 210
       DragMode = dmAutomatic
       ItemHeight = 14
       TabOrder = 1
@@ -2539,9 +2539,9 @@ object PLRMLandUse: TPLRMLandUse
     end
     object lbxLuseTo: TListBox
       Left = 394
-      Top = 107
+      Top = 75
       Width = 287
-      Height = 135
+      Height = 209
       DragMode = dmAutomatic
       ItemHeight = 14
       TabOrder = 6
@@ -2556,8 +2556,8 @@ object PLRMLandUse: TPLRMLandUse
     SimplePanel = True
   end
   object cbxGlobalSpecfc: TComboBox
-    Left = 559
-    Top = 173
+    Left = 552
+    Top = 162
     Width = 137
     Height = 24
     Style = csDropDownList

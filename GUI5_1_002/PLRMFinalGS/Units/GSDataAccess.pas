@@ -55,7 +55,7 @@ const
     + 'Switch(<P2>="ND",tad.ND3,<P2>="NA",tad.NA3), Switch(<P2>="ND",tad.ND4,<P2>="NA",tad.NA4), Switch(<P2>="ND",tad.ND5,<P2>="NA",tad.NA5), '
     + 'Switch(<P2>="ND",tad.ND6,<P2>="NA",tad.NA6), Switch(<P2>="ND",tad.ND7,<P2>="NA",tad.NA7), Switch(<P2>="ND",tad.ND8,<P2>="NA",tad.NA8), Switch(<P2>="ND",tad.ND9,<P2>="NA",tad.NA9), "na1", "na2" '
     + 'FROM ArealDepletion as tad',
-    'SELECT * FROM Codes WHERE (((Codes.code) Like "<CODEPREFIX>"))',
+    'SELECT * FROM Codes WHERE (((Codes.code) Like "<CODEPREFIX>") AND ((Codes.code)<>"100x") AND ((Codes.code)<>"101x"))',
     'SELECT Soils.MU, Soils.MUName FROM Soils');
 
 const
@@ -101,7 +101,7 @@ const
     + 'ORDER BY tpts.Year, tpts.Month, tpts.Day, tpts.Hour;',
     'SELECT <F1> FROM <T1> <W1>;', 'SELECT * FROM BuildupParcels;',
     'SELECT * FROM ParcelCRCs;', 'SELECT * FROM LanduseParcels',
-    'SELECT LandUses.code, LandUses.PLRM_Name, LandUses.name, LandUses.defaultImpervFrac FROM LandUses',
+    'SELECT LandUses.code, LandUses.PLRM_Name, LandUses.name, LandUses.defaultImpervFrac FROM LandUses WHERE (((LandUses.code)<>"100x")) AND (((LandUses.code)<>"101x"))',
     'SELECT t.Parameter, t.Min, t.Max, t.Units, t.Flag, t.Description FROM catchmentValidationRules as t ORDER BY t.DisplayOrder',
     'SELECT t.Parameter, t.Min, t.Max, t.Units, t.Flag, t.Description FROM nodeValidationRules as t ORDER BY t.DisplayOrder',
     'SELECT * FROM RoadCRCs2');
