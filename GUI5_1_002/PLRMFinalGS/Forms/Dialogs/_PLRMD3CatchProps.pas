@@ -236,11 +236,14 @@ begin
     PLRMObj.currentCatchment.soilsInfData :=
       GSIO.getSoilsProps(PLRMObj.currentCatchment.soilsMapUnitData);
   tempInt := showPLRMParcelDrngAndBMPsDialog(PLRMObj.currentCatchment.name);
+
   if tempInt = mrOK then
   begin
     btnOk.Enabled := true;
-    // Self.btnDefSoilsClick(Sender);
   end;
+
+  //Reset property changed trackers
+  PLRMObj.currentCatchment.hasChangedSoils := false;
 end;
 
 procedure TCatchProps.btnShowRoadDrainageEditorClick(Sender: TObject);

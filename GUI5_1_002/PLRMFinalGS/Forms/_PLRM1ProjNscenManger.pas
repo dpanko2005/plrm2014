@@ -614,11 +614,13 @@ begin
   if PLRMObj.hasActvScn = True then
     exit;
   // ShowMessage('You are currently working outside a Project and a Scenario' + #13#10 + 'Please create or load a scenario to proceed');
-  ShowMessage('You are working outside a Project and a Scenario.' + #13#10 +
+  {ShowMessage('You are working outside a Project and a Scenario.' + #13#10 +
     'Hit OK on this form and you will be returned to the' + #13#10 +
     'Project and Scenario Manager.' + #13#10 +
-    'Please create or load a Scenario to proceed.');
+    'Please create or load a Scenario to proceed.'); }
   getProjManager(1);
 end;
 
 end.
+
+

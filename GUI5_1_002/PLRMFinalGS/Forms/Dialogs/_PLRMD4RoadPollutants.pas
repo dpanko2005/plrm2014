@@ -329,7 +329,6 @@ end;
 
 procedure TPLRMRoadPollutants.FormCreate(Sender: TObject);
 var
-
   I: Integer;
 begin
   // default form labels and other info
@@ -345,8 +344,8 @@ begin
     FormatFloat('#0.0', PLRMObj.currentCatchment.totRoadImpervAcres) + ' acres';
 
   initFormContents(initCatchID);
-  if PLRMObj.currentCatchment.hasDefRoadPolls = true then
-    restoreFormContents(PLRMObj.currentCatchment);
+  // always restore if PLRMObj.currentCatchment.hasDefRoadPolls = true then
+  restoreFormContents(PLRMObj.currentCatchment);
   updateCRCs();
 end;
 
@@ -358,12 +357,24 @@ begin
   copyContentsToGrid(PLRMObj.currentCatchment.frm4of6SgRoadShoulderData, 0, 0,
     sgRoadShoulderPercents);
 
-  copyContentsToGridAddRows(PLRMObj.currentCatchment.frm4of6SgRoadConditionData,
-    0, 0, sgRoadConditions);
+  // copyContentsToGridAddRows fxn does not work when there is just one row
+  // to copy and the sg rowcount is 2 so copy manually
+  if (High(PLRMObj.currentCatchment.frm4of6SgRoadConditionData) = 0) then
+  begin
+    for iRow := 0 to High
+      (PLRMObj.currentCatchment.frm4of6SgRoadConditionData) do
+      for jCol := 0 to sgRoadConditions.ColCount - 1 do
+        sgRoadConditions.Cells[jCol, iRow] :=
+          PLRMObj.currentCatchment.frm4of6SgRoadConditionData[iRow, jCol];
+  end
+  else
+    copyContentsToGridAddRows
+      (PLRMObj.currentCatchment.frm4of6SgRoadConditionData, 0, 0,
+      sgRoadConditions);
 
   // add an additional row to road conditions grid so user knows it grows
   // check if row already and added and then add it
-  if sgRoadConditions.Cells[1, sgRoadConditions.RowCount-1] <> '' then
+  if sgRoadConditions.Cells[1, sgRoadConditions.RowCount - 1] <> '' then
   begin
     sgRoadConditions.RowCount :=
       High(PLRMObj.currentCatchment.frm4of6SgRoadConditionData) + 2;
@@ -467,7 +478,7 @@ end;
 procedure TPLRMRoadPollutants.sgRoadConditionsKeyPress(Sender: TObject;
   var Key: Char);
 begin
-  // gsEditKeyPress(Sender, Key, gemPosNumber);
+  gsEditKeyPress(Sender, Key, gemPosNumber);
 end;
 
 procedure TPLRMRoadPollutants.sgRoadConditionsKeyUp(Sender: TObject;
@@ -484,7 +495,7 @@ begin
   startCol := 0;
   lastRow := sg.RowCount - 1;
 
-  for R := 1 to lastRow do
+  for R := 0 to lastRow do
   begin
     // Sum up %road condition values
     if sg.Cells[startCol, R] = '' then
@@ -505,7 +516,15 @@ begin
       sg.Cells[startCol + 1, R] := FormatFloat(ONEDP, defaultCondScore)
     else
   end;
-  sg.Cells[0, 0] := FormatFloat(ONEDP, 100 - prcntSum);
+  prcntSum := prcntSum - StrToFloat(sg.Cells[0, 0]);
+  // for row zero do not edit percent sum column
+  if (lastRow > 1) then
+  begin
+    sg.Cells[0, 0] := FormatFloat(ONEDP, 100 - prcntSum);
+    // sg.Cells[0, 0] := FormatFloat(ONEDP, StrToFloat(sg.Cells[0, 0]) + 100 -
+    // prcntSum);
+  end;
+
   if (((100 - prcntSum) > 100) or ((100 - prcntSum) < 0)) then
   begin
     ShowMessage
@@ -530,15 +549,14 @@ procedure TPLRMRoadPollutants.sgRoadConditionsSetEditText(Sender: TObject;
 var
   tempInfFootPrintArea: Double;
   tempSum: Double;
-  iRow: Integer;
+  iRow, tempNum: Integer;
   sg: TStringGrid;
 begin
   sg := Sender as TStringGrid;
   if (sg.Cells[ACol, ARow] <> '') then
   begin
-    { // round condition score to 1 dp
-      sg.Cells[ACol, ARow] := FormatFloat(ONEDP,
-      StrToFloat(sg.Cells[ACol, ARow])); }
+    // round condition score to 1 dp
+    // sg.Cells[ACol, ARow] := FormatFloat(ONEDP, StrToFloat(Value));
 
     // if value was entered in last row of grid add one more row
     if ARow = sg.RowCount - 1 then

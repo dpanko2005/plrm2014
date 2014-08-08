@@ -96,7 +96,7 @@ begin
      GSUtils.TransferAllLstBxItems(lbxMapUnitFrom, lbxMapUnitTo);
      updateGrid(catchArea,sgMapUnit);
      //2014 new property added to detect if change was made in soils so ksat can be recalculated
-     GSPLRM.PLRMObj.currentCatchment.hasChangedSoils := true;
+     //GSPLRM.PLRMObj.currentCatchment.hasChangedSoils := true;
 end;
 
 procedure TPLRMD2SoilsAssignmnt.btnAllToRightClick(Sender: TObject);
@@ -108,7 +108,7 @@ begin
         GSUtils.AddGridRow(lbxMapUnitTo.Items[I], sgMapUnit,0);
     updateGrid(catchArea,sgMapUnit);
     //2014 new property added to detech if change was made in soils so ksat can be recalculated
-     GSPLRM.PLRMObj.currentCatchment.hasChangedSoils := true;
+    // GSPLRM.PLRMObj.currentCatchment.hasChangedSoils := true;
 end;
 
 procedure TPLRMD2SoilsAssignmnt.btnApplyClick(Sender: TObject);
@@ -132,7 +132,7 @@ begin
     GSUtils.TransferLstBxItems(lbxMapUnitFrom, lbxMapUnitTo);
     updateGrid(catchArea,sgMapUnit);
     //2014 new property added to detect if change was made in soils so ksat can be recalculated
-     GSPLRM.PLRMObj.currentCatchment.hasChangedSoils := true;
+    // GSPLRM.PLRMObj.currentCatchment.hasChangedSoils := true;
 end;
 
 procedure TPLRMD2SoilsAssignmnt.btnToRightClick(Sender: TObject);
@@ -151,7 +151,7 @@ begin
         GSUtils.AddGridRow(lbxMapUnitTo.Items[I], sgMapUnit,0);
 
      //2014 new property added to detech if change was made in soils so ksat can be recalculated
-     GSPLRM.PLRMObj.currentCatchment.hasChangedSoils := true;
+     //GSPLRM.PLRMObj.currentCatchment.hasChangedSoils := true;
 end;
 
 procedure TPLRMD2SoilsAssignmnt.cbxGlobalSpecfcChange(Sender: TObject);
@@ -270,6 +270,8 @@ end;
 procedure TPLRMD2SoilsAssignmnt.sgMapUnitKeyUp(Sender: TObject; var Key: Word;  Shift: TShiftState);
 begin
       updateGrid(catchArea,sgMapUnit);
+      //2014 new property added to detech if change was made in soils so ksat can be recalculated
+     GSPLRM.PLRMObj.currentCatchment.hasChangedSoils := true;
 end;
 
 procedure TPLRMD2SoilsAssignmnt.sgMapUnitSelectCell(Sender: TObject; ACol, ARow: Integer;  var CanSelect: Boolean);

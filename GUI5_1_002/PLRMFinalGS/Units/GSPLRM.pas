@@ -38,6 +38,7 @@ type
 
     // file paths
     projXMLPath: String;
+    //defaultValidateFilePath: String;
     scenarioXMLFilePath: String;
     curSWMMInptFilePath: String;
     userSWMMInptFilePath: String;
@@ -364,8 +365,11 @@ begin
     // Step 2 - transform main xml file into validation file and display it
     transformXMLToSwmm(validateXslPath, scenarioXMLFilePath,
       defaultValidateFilePath);
+
     // Display result validation html file in browser
-    BrowseURL(defaultValidateFilePath);
+    // 2014 now added a button to trigger this no longer loaded automatically
+    //BrowseURL(defaultValidateFilePath);
+
     // Step 2 - transform main xml file into swmm file
     transformXMLToSwmm(defaultXslPath, scenarioXMLFilePath,
       curSWMMInptFilePath);
@@ -486,7 +490,7 @@ begin
         .catchToXML(projectLandUseNames, projectLandUseCodes);
     end;
 
-    //Prep nodes
+    // Prep nodes
     SetLength(tempNodeArry2, nodes.count);
     for I := 0 to nodes.count - 1 do
     begin

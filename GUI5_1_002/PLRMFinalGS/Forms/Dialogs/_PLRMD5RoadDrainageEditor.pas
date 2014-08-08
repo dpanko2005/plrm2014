@@ -76,6 +76,7 @@ type
     procedure edtDPCHKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure edtShoulderAveAnnInfRateClick(Sender: TObject);
     procedure edtShoulderAveAnnInfRateKeyPress(Sender: TObject; var Key: Char);
+    procedure edtICIAKeyPress(Sender: TObject; var Key: Char);
 
   private
     { Private declarations }
@@ -118,14 +119,41 @@ begin
 end;
 
 procedure TPLRMRoadDrainageEditor.btnOKClick(Sender: TObject);
+var
+  errMsgs: TStringList;
+  errMsg: String;
+  I: Integer;
+  almostZero: Double;
 begin
-  // Begin validation
-  if (StrToFloat(edtDPCHAveSlope.Text) < 0.001) then
-  begin
-    showMessage('Pervious dispersion channel slope must not be zero');
-    exit;
-  end;
+  errMsgs := TStringList.Create();
+  errMsg := '';
+  almostZero := 0.001;
 
+  // Begin validation
+  // 1. check slope
+  if (StrToFloat(edtDPCHAveSlope.Text) < almostZero) then
+    errMsgs.add('Pervious dispersion channel slope must not be zero');
+
+  // 2. if more that 0% draining to inf facility must provide inf size
+  if (StrToFloat(edtDINF.Text) > almostZero) and
+    ((StrToFloat(edtDINFTotSurfArea.Text) < almostZero) or
+    (StrToFloat(edtDINFTotStorage.Text) < almostZero)) then
+    errMsgs.add('Please provide dimensions for infiltration facility');
+
+  // 2. if more that 0% draining to pch facility must provide inf size
+  if (StrToFloat(edtDPCH.Text) > almostZero) and
+    ((StrToFloat(edtDPCHLen.Text) < almostZero) or
+    (StrToFloat(edtDPCHWidth.Text) < almostZero) or
+    (StrToFloat(edtDPCHStorDepth.Text) < almostZero)) then
+    errMsgs.add('Please provide dimensions for pervious channel');
+  if (errMsgs.Count <> 0) then
+  begin
+    for I := 0 to errMsgs.Count - 1 do
+      errMsg := errMsg + errMsgs[I] + sLineBreak;
+
+    ShowMessage(errMsg);
+    Exit;
+  end;
   // save form inputs
   FrmData.DCIA := StrToFloat(edtDCIA.Text);
   FrmData.ICIA := StrToFloat(edtICIA.Text);
@@ -168,9 +196,15 @@ begin
       catch.frm5of6RoadDrainageEditorData.DINF);
     edtDPCH.Text := FormatFloat(ZERODP,
       catch.frm5of6RoadDrainageEditorData.DPCH);
-    edtShoulderAveAnnInfRate.Text :=
-      FormatFloat(ONEDP, catch.frm5of6RoadDrainageEditorData.
-      shoulderAveAnnInfRate);
+
+    // if user assigned a custom infiltration rate use it, however if the soils were changed
+    //then revert to using default inf rate from soils
+    if (PLRMObj.currentCatchment.hasChangedSoils  = false) then
+    begin
+      edtShoulderAveAnnInfRate.Text :=
+        FormatFloat(ONEDP,
+        catch.frm5of6RoadDrainageEditorData.shoulderAveAnnInfRate);
+    end;
 
     edtDINFTotSurfArea.Text := FormatFloat(ZERODP,
       catch.frm5of6RoadDrainageEditorData.INFFacility.totSurfaceArea);
@@ -218,14 +252,14 @@ begin
 
   if ((DCIA + ICIA + DINF + DPCH) <> 100) then
   begin
-    showMessage('Sum of DCIA, ICIA, DINF and DPCH must equal 100%');
+    ShowMessage('Sum of DCIA, ICIA, DINF and DPCH must equal 100%');
     Result := False;
   end;
 
   if ((DCIA > 100) or (ICIA > 100) or (DINF > 100) or (DPCH > 100) or (DCIA < 0)
     or (ICIA < 0) or (DINF < 0) or (DPCH < 0)) then
   begin
-    showMessage
+    ShowMessage
       ('Valid values for DCIA, ICIA, DINF and DPCH are integers between 1 and 0');
     Result := False;
   end;
@@ -322,6 +356,12 @@ begin
   gsEditKeyPress(Sender, Key, gemPosNumber);
 end;
 
+procedure TPLRMRoadDrainageEditor.edtICIAKeyPress(Sender: TObject;
+  var Key: Char);
+begin
+  gsEditKeyPress(Sender, Key, gemPosNumber);
+end;
+
 procedure TPLRMRoadDrainageEditor.edtShoulderAveAnnInfRateClick
   (Sender: TObject);
 begin
@@ -338,6 +378,7 @@ procedure TPLRMRoadDrainageEditor.edtShoulderAveAnnInfRateKeyUp(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
   // TODO - validate inf rate
+
 end;
 
 procedure TPLRMRoadDrainageEditor.FormCreate(Sender: TObject);
