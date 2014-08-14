@@ -1,0 +1,66 @@
+*******************************************************************
+POLLUTTANT LOAD REDUCTION MODEL (PLRM) - VERSION 2.0 (Build 2.0.006)
+*******************************************************************
+*******************
+Global Information
+*******************
+ 
+Project Name:....................  BrentDanTestPrj
+Scenario Name:...................  Scenario1
+Number of years in simulation :..  2
+Met Grid # simulated:............  204
+Working Directory:...............  C:\dev\plrm2014\GUI5_1_002\Projects\Project13\Scenario1\
+Date First Created:..............  5/29/2014 1:57:49 PM
+Date Computed:...................  7/11/2014 2:33:52 PM
+ 
+****************
+Catchments
+****************
+ 
+Catch1                      Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+--------------------       ----------------       -----------       -----------        ----------       -----------        -----------      -----------
+Secondary Road (ROW)                     5.8           10661.1            7413.0              19.4               1.7              62.0               7.9
+Single Family Residential                0.4              52.8              19.0               0.4               0.1               1.6               0.1
+CICU                                     0.9             700.5             441.3               1.7               0.9               5.8               0.7
+Catch1 Total                             7.0             11414              7873                22                 3                69                 9
+ 
+ 
+ 
+**********************
+Storm Water Treatment
+**********************
+ 
+WetBasin1                   Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+-------------------------  ----------------       -----------       -----------        ----------       -----------        -----------      -----------
+Total Influent                           7.0           11412.7            7870.3              21.5               2.7              69.5               8.8
+Bypass Stream                            2.9               0.0               0.0               0.0               0.0               0.0               0.0
+Treated Stream                           4.1             220.0             220.0               2.1               0.6              13.2               2.9
+Total Effluent                           7.0            5018.4            3527.7              11.1               1.8              42.4               6.5
+Volume/Load Removed                      0.1            6394.3            4342.6              10.4               1.0              27.1               2.2
+%Removed                                  1%               56%               55%               48%               35%               39%               25%
+%Treated                                59%
+
+ 
+****************
+Scenario Summary
+****************
+ 
+Average Annual Hydrology              acre-feet/yr            inches/yr
+----------------------------          ------------            ---------
+  Total Precipitation ......                  16.6                 49.7
+  Evaporation Loss .........                   2.5                  7.6
+  System Surface Discharge..                   7.0                 20.9
+  Percolation to Groundwater                   7.1                 21.2
+  Continuity Error..........                    0%
+  Percent Surface Runoff....                   42%
+ 
+ 
+Average Annual Surface Loading
+------------------------------
+ 
+Name                        Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+--------------------       ----------------       -----------       -----------        ----------       -----------        ----------       -----------
+Outfall1                                 7.0            5015.7            3527.5              11.1               1.8              42.4               6.5
+Scenario Total                           7.0            5015.7            3527.5              11.1               1.8              42.4               6.5
+
+

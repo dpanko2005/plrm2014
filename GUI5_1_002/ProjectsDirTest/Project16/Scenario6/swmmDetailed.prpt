@@ -1,0 +1,55 @@
+*******************************************************************
+POLLUTTANT LOAD REDUCTION MODEL (PLRM) - VERSION 2.0 (Build 2.0.006)
+*******************************************************************
+*******************
+Global Information
+*******************
+ 
+Project Name:....................  BrentDanTestPrj
+Scenario Name:...................  Scenario6
+Number of years in simulation :..  2
+Met Grid # simulated:............  204
+Working Directory:...............  C:\dev\plrm2014\GUI5_1_002\Projects\Project13\Scenario6\
+Date First Created:..............  5/29/2014 1:57:49 PM
+Date Computed:...................  7/24/2014 9:21:00 AM
+ 
+****************
+Catchments
+****************
+ 
+Catch1                      Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+--------------------       ----------------       -----------       -----------        ----------       -----------        -----------      -----------
+Road                                     5.0               0.0               0.0               0.0               0.0               0.0               0.0
+Multi Family Residential                 1.4              52.0               3.7               0.1               0.1               0.6               0.0
+Catch1 Total                             7.1               225               104                 1                 0                 6                 1
+ 
+ 
+ 
+**********************
+Storm Water Treatment
+**********************
+ 
+ 
+****************
+Scenario Summary
+****************
+ 
+Average Annual Hydrology              acre-feet/yr            inches/yr
+----------------------------          ------------            ---------
+  Total Precipitation ......                  20.3                 49.7
+  Evaporation Loss .........                   3.6                  8.8
+  System Surface Discharge..                  23.8                 58.2
+  Percolation to Groundwater                   7.2                 17.6
+  Continuity Error..........                  -70%
+  Percent Surface Runoff....                  117%
+ 
+ 
+Average Annual Surface Loading
+------------------------------
+ 
+Name                        Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+--------------------       ----------------       -----------       -----------        ----------       -----------        ----------       -----------
+Outfall1                                23.8             434.8             225.7               3.1               0.8              15.1               2.2
+Scenario Total                          23.8             434.8             225.7               3.1               0.8              15.1               2.2
+
+

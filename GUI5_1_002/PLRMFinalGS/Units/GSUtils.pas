@@ -8,11 +8,12 @@ uses
   SysUtils, Windows, Messages, Classes, Graphics, Controls, Forms, Dialogs,
   xmldom, XMLIntf, msxmldom, XMLDoc,
   StdCtrls, ComCtrls, Menus, ImgList, ShlObj, ShellApi, Registry,
-  ExtCtrls, Grids, GSTypes, StrUtils, MSXML, Variants;
+  ExtCtrls, Grids, GSTypes, StrUtils, MSXML, Variants, FileCtrl;
 
 type
   TCopyDataProc = procedure(oldnode, newnode: TTreenode);
 
+function gsSelectDirectory(initDir: String): String;
 procedure AddGridRow(inStr: String; Grd: TStringGrid; strColNum: Integer);
 function BrowseURL(const URL: string): boolean;
 function CopyFolderContents(const FromFolder: string; ToFolder: string): string;
@@ -217,6 +218,19 @@ var
   defaultXslPath: String;
   validateXslPath: String;
   luseNameCodeTable: PLRMGridData;
+
+  // 2014 for GIS tool shapefiles dictionary keys
+  shpFileKeys: array [0 .. 7] of string = (
+    'Catchments',
+    'Slopes',
+    'LandUses',
+    'Soils',
+    'RoadConditions',
+    'RoadShoulders',
+    'RunoffConnectivity',
+    'BMps'
+  );
+
   frmsLuses: array [0 .. 7] of string = (
     'Primary Road (ROW)',
     'Secondary Road (ROW)',
@@ -1862,6 +1876,35 @@ begin
   end;
 end;
 {$ENDREGION}
+
+function gsSelectDirectory(initDir: String): String;
+begin
+  if Win32MajorVersion >= 6 then
+    with TFileOpenDialog.Create(nil) do
+      try
+        Title := 'Select Directory';
+        Options := [fdoPickFolders, fdoPathMustExist, fdoForceFileSystem];
+        OkButtonLabel := 'Select';
+        DefaultFolder := initDir;
+        FileName := initDir;
+        if Execute then
+        begin
+          //ShowMessage(FileName);
+          Result := FileName;
+        end;
+      finally
+        Free;
+      end
+  else
+  begin
+    if selectDirectory('Select Directory',
+      ExtractFileDrive(initDir), initDir, [sdNewUI, sdNewFolder],Nil) then
+    begin
+      ShowMessage(initDir);
+      Result := initDir;
+    end;
+  end;
+end;
 
 procedure initPLRMPaths();
 begin

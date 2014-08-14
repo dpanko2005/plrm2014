@@ -1,0 +1,58 @@
+*******************
+Global Information
+*******************
+ 
+Project Name:....................  jan2010v3
+Scenario Name:...................  test
+Number of years in simulation :..  6
+Met Grid # simulated:............  1
+Working Directory:...............  C:\Documents and Settings\dpankani\My Documents\RAD Studio\Projects\PLRM\Jan2010\Projects\Project6\Scenario1\
+Date First Created:..............  01/05/2010 14:17:48
+Date Computed:...................  01/05/2010 14:47:12
+ 
+****************
+Catchments
+****************
+ 
+Catchment Name             Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Catch1                                10.95           1666.57            598.16             13.89              4.28             52.03              4.28
+ 
+**********************
+Storm Water Treatment
+**********************
+ 
+DryBasin1                  Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Total Influent                        10.95           1666.30            598.07             13.89              4.28             52.02              4.27
+Bypass Stream                          7.96           1211.84            434.76             10.10              3.12             37.83              3.11
+Treated Stream                         2.14            145.64            116.85              0.93              0.29              6.41              0.70
+Total Effluent                        10.11           1357.48            551.61             11.04              3.41             44.24              3.81
+Volume/Load Removed                    0.84            308.83             46.46              2.86              0.88              7.78              0.47
+%Change(Removed/Influent)             7.70%            18.53%             7.77%            20.56%            20.45%            14.95%            10.93%
+%Capture(1-Bypass/Influent)            27.28%
+
+ 
+****************
+Scenario Summary
+****************
+ 
+Average Annual Hydrology              acre-feet/yr            inches/yr
+-----------------------------------------------------------------------
+  Total Precipitation ......                 21.10                63.29
+  Evaporation Loss .........                  2.87                 8.60
+  System Surface Discharge..                 10.10                30.29
+  Percolation to Groundwater                  8.20                24.59
+  Continuity Error..........                -0.31%
+  Percent Surface Runoff....                47.92%
+ 
+ 
+Average Annual Surface Loading
+------------------------------
+ 
+Name                       Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Outfall1                              10.11           1357.48            551.59             11.04              3.41             44.24              3.81
+Scenario Total                        10.11           1357.48            551.59             11.04              3.41             44.24              3.81
+
+

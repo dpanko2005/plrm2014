@@ -410,6 +410,11 @@
 				<Form>PLRMBMPSizing</Form>
 				<FormType>dfm</FormType>
 			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\Dialogs\_PLRMD7GISTool.pas">
+				<Form>PLRMGISTool</Form>
+				<FormType>dfm</FormType>
+			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Units\GSGIS.pas"/>
 			<None Include="objprops.txt"/>
 			<None Include="viewvars.txt"/>
 			<None Include="Epaswmm5.dpr"/>
@@ -476,13 +481,13 @@
 					<Platform value="Win32">True</Platform>
 				</Platforms>
 				<Deployment>
-					<DeployFile Class="ProjectOutput" Configuration="Release" LocalName="Epaswmm5.exe">
-						<Platform Name="Win32"/>
-					</DeployFile>
 					<DeployFile Class="DebugSymbols" Configuration="Release" LocalName="Epaswmm5.rsm">
 						<Platform Name="Win32">
 							<RemoteName>Epaswmm5.rsm</RemoteName>
 						</Platform>
+					</DeployFile>
+					<DeployFile Class="ProjectOutput" Configuration="Release" LocalName="Epaswmm5.exe">
+						<Platform Name="Win32"/>
 					</DeployFile>
 					<DeployClass Name="ProjectOutput" Required="true">
 						<Platform Name="OSX32">

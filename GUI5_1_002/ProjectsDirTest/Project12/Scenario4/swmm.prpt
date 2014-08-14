@@ -1,0 +1,48 @@
+*******************
+Global Information
+*******************
+ 
+Project Name:....................  Project12
+Scenario Name:...................  Scenario4
+Number of years in simulation :..  6
+Met Grid # simulated:............  1
+Working Directory:...............  C:\dev\plrm2014\GUI5_1_002\Projects\Project12\Scenario4\
+Date First Created:..............  5/26/2014 2:02:06 PM
+Date Computed:...................  5/29/2014 1:55:05 PM
+ 
+****************
+Catchments
+****************
+ 
+Catchment Name             Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Catch1                                 2.02           1518.37           1025.42              3.99              0.82             12.50              1.24
+ 
+**********************
+Storm Water Treatment
+**********************
+ 
+ 
+****************
+Scenario Summary
+****************
+ 
+Average Annual Hydrology              acre-feet/yr            inches/yr
+-----------------------------------------------------------------------
+  Total Precipitation ......                 21.90                63.29
+  Evaporation Loss .........                  3.65                10.55
+  System Surface Discharge..                  2.02                 5.85
+  Percolation to Groundwater                 16.01                46.26
+  Continuity Error..........                 1.00%
+  Percent Surface Runoff....                 9.59%
+ 
+ 
+Average Annual Surface Loading
+------------------------------
+ 
+Name                       Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Outfall1                               2.02           1514.93           1022.82              3.98              0.82             12.49              1.23
+Scenario Total                         2.02           1514.93           1022.82              3.98              0.82             12.49              1.23
+
+

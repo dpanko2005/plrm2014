@@ -1,0 +1,9 @@
+Scenario Results
+Scenario,Runoff Vol(ac-ft/yr),TSS(lbs/yr),FSP(lbs/yr),TP(lbs/yr),SRP(lbs/yr),TN(lbs/yr),DIN(lbs/yr)
+Scenario2,4.1,5674.0,3964.5,11.2,1.4,34.4,4.1
+Scenario3,2.9,404.4,142.0,3.6,1.1,13.4,1.1
+ 
+Scenario Results: Basline and Percent Differences from Baseline
+Scenario,Runoff Vol(ac-ft/yr),TSS(lbs/yr),FSP(lbs/yr),TP(lbs/yr),SRP(lbs/yr),TN(lbs/yr),DIN(lbs/yr)
+Scenario2,4.1,5674.0,3964.5,11.2,1.4,34.4,4.1
+Scenario3,1.2,5269.5,3822.5,7.6,0.3,21.0,3.0

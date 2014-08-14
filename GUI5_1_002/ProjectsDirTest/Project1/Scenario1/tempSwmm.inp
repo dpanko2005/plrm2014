@@ -1,0 +1,1051 @@
+[TITLE]
+Input Files
+
+
+[OPTIONS]
+;;----------------------------------------
+FLOW_UNITS           CFS                 
+INFILTRATION         GREEN_AMPT          
+FLOW_ROUTING         KINWAVE             
+START_DATE           10/01/2004          
+START_TIME           00:00:00            
+REPORT_START_DATE    10/01/2004          
+REPORT_START_TIME    00:00:00            
+END_DATE             10/01/2006          
+END_TIME             00:00:00            
+SWEEP_START          01/01               
+SWEEP_END            12/31               
+DRY_DAYS             0                   
+REPORT_STEP          00:15:00            
+WET_STEP             00:15:00            
+DRY_STEP             04:00:00            
+ROUTING_STEP         0:00:30             
+ALLOW_PONDING        NO                  
+INERTIAL_DAMPING     PARTIAL             
+VARIABLE_STEP        0.75                
+LENGTHENING_STEP     0                   
+MIN_SURFAREA         0                   
+NORMAL_FLOW_LIMITED  BOTH                
+SKIP_STEADY_STATE    NO                  
+IGNORE_RAINFALL      NO                  
+FORCE_MAIN_EQUATION  H-W                 
+LINK_OFFSETS         DEPTH               
+MIN_SLOPE            1                   
+
+
+[EVAPORATION]
+;;Type       Parameters
+;;---------- ----------
+MONTHLY      0.011  0.015  0.025  0.078  0.106  0.134  0.152  0.135  0.104  0.064  0.034  0.01  
+
+
+[TEMPERATURE]
+TIMESERIES   TempTSeries
+ADC          PERVIOUS   0.1        0.5        0.6        0.675      0.75       0.775      0.85       0.875      0.925      0.975     
+ADC          IMPERVIOUS 0.1        0.5        0.6        0.675      0.75       0.775      0.85       0.875      0.925      0.975     
+SNOWMELT                34         0.5        0.6        7824       39         0         
+WINDSPEED    MONTHLY    11.5       11.7       11.2       10.5       9.5        9.2        8.7        8.5        8.9        9.8        11.2       11.5      
+
+
+[RAINGAGES]
+;;              	Rain     	Time  	Snow  	Data
+;;Name          	Type     	Intrvl	Catch 	Source
+;;--------------	---------	------	------	----------
+204			VOLUME		1:00	1.0	FILE		"C:\dev\plrm2014\GUI5_1_002\Data\204_Precip.dat"	204		IN		
+
+
+[SUBCATCHMENTS]
+;;              	               	                	Total   	Pcnt.   	        	Pcnt.   	Curb    	Snow
+;;Name          	Raingage       	Outlet          	Area    	Imperv  	Width   	Slope   	Length  	Pack
+;;--------------	---------------	----------------	--------	--------	--------	--------	--------	--------
+SFR_SfrToInfCa		204		SFR_SfrIsInfCa		10		30		871.2		2		0		Parcels		
+SFR_SfrIsInfCa		204		SFR_Ju		0.125		0		52.178		0.1		0		Pervious		
+MFR_MfrToInfCa		204		MFR_MfrIsInfCa		8		40		697.0		2		0		Parcels		
+MFR_MfrIsInfCa		204		MFR_Ju		0.133		0		53.889		0.1		0		Pervious		
+CICU_CicToInfCa		204		CICU_CicIsInfCa		5		50		435.6		2		0		Parcels		
+CICU_CicIsInfCa		204		CICU_Ju		0.104		0		47.631		0.1		0		Pervious		
+PR_PrrToInfCa		204		PR_PrrIsInfCa		5		80		435.6		2		0		Roads		
+PR_PrrIsInfCa		204		PR_Ju		0.167		0		60.249		0.1		0		Pervious		
+SR_SerToInfCa		204		SR_SerIsInfCa		5		70		435.6		2		0		Roads		
+SR_SerIsInfCa		204		SR_Ju		0.146		0		56.358		0.1		0		Pervious		
+PR_PrrToDspCa		204		PR_PrrIsDspCa		5		80		435.6		2		0		Roads		
+PR_PrrIsDspCa		204		PR_Ju		0.115		0		50.000		0.5		0		Pervious		
+SR_SerToDspCa		204		SR_SerIsDspCa		5		70		435.6		2		0		Roads		
+SR_SerIsDspCa		204		SR_Ju		0.115		0		50.000		0.5		0		Pervious		
+SFR_SfrToOutCa		204		SFR_Ju		10		30		871.2		2		0		Parcels		
+MFR_MfrToOutCa		204		MFR_Ju		12		40		1045.4		2		0		Parcels		
+CICU_CicToOutCa		204		CICU_Ju		15		50		1306.8		2		0		Parcels		
+PR_PrrToOutCa		204		PR_Ju		10		80		871.2		2		0		Roads		
+SR_SerToOutCa		204		SR_Ju		10		70		871.2		2		0		Roads		
+Pervious_OthrToOutCa		204		Pervious_Ju		20		0		1742.4		2		0		Parcels		
+
+
+[SUBAREAS]
+;;SubCatchment    	N-Imperv   	N-Perv     	S-Imperv   	S-Perv     	PctZero    	RouteTo    	PctRouted
+;;--------------  	---------- 	---------- 	---------- 	---------- 	---------- 	---------- 	----------
+SFR_SfrToInfCa		0.012		0.150		0.02		0.1		0		PERVIOUS	0	
+SFR_SfrIsInfCa		0.012		0.150		0.02		23.5		0		PERVIOUS		0
+MFR_MfrToInfCa		0.012		0.150		0.02		0.1		0		PERVIOUS	0	
+MFR_MfrIsInfCa		0.012		0.150		0.02		23.5		0		PERVIOUS		0
+CICU_CicToInfCa		0.012		0.150		0.02		0.1		0		PERVIOUS	0	
+CICU_CicIsInfCa		0.012		0.150		0.02		23.5		0		PERVIOUS		0
+PR_PrrToInfCa		0.012		0.150		0.02		0.1		0		PERVIOUS	0	
+PR_PrrIsInfCa		0.012		0.150		0.02		23.5		0		PERVIOUS		0
+SR_SerToInfCa		0.012		0.150		0.02		0.1		0		PERVIOUS	0	
+SR_SerIsInfCa		0.012		0.150		0.02		23.5		0		PERVIOUS		0
+PR_PrrToDspCa		0.012		0.150		0.02		0.1		0		PERVIOUS	0	
+PR_PrrIsDspCa		0.012		0.150		0.02		0.1		0		PERVIOUS		0
+SR_SerToDspCa		0.012		0.150		0.02		0.1		0		PERVIOUS	0	
+SR_SerIsDspCa		0.012		0.150		0.02		0.1		0		PERVIOUS		0
+SFR_SfrToOutCa		0.012		0.150		0.02		0.1		0		PERVIOUS		75
+MFR_MfrToOutCa		0.012		0.150		0.02		0.1		0		PERVIOUS		75
+CICU_CicToOutCa		0.012		0.150		0.02		0.1		0		PERVIOUS		75
+PR_PrrToOutCa		0.012		0.150		0.02		0.1		0		PERVIOUS		75
+SR_SerToOutCa		0.012		0.150		0.02		0.1		0		PERVIOUS		75
+Pervious_OthrToOutCa		0.012		0.150		0.02		0.1		0		PERVIOUS		50
+
+
+[INFILTRATION]]
+;;SubCatchment  	Suction   	HydCon    	IMDmax]
+;;--------------	----------	----------	----------]
+SFR_SfrToInfCa		2.897		0.99		0.34		
+SFR_SfrIsInfCa		2.897		0.5		0.34
+MFR_MfrToInfCa		2.897		0.85		0.34		
+MFR_MfrIsInfCa		2.897		0.5		0.34
+CICU_CicToInfCa		2.897		0.71		0.34		
+CICU_CicIsInfCa		2.897		0.5		0.34
+PR_PrrToInfCa		2.897		0.28		0.34		
+PR_PrrIsInfCa		2.897		0.5		0.34
+SR_SerToInfCa		2.897		0.43		0.34		
+SR_SerIsInfCa		2.897		0.5		0.34
+PR_PrrToDspCa		2.897		0.28		0.34		
+PR_PrrIsDspCa		2.897		1.42		0.34
+SR_SerToDspCa		2.897		0.43		0.34		
+SR_SerIsDspCa		2.897		1.42		0.34
+SFR_SfrToOutCa		2.897		0.99		0.34
+MFR_MfrToOutCa		2.897		0.85		0.34
+CICU_CicToOutCa		2.897		0.71		0.34
+PR_PrrToOutCa		2.897		0.28		0.34
+SR_SerToOutCa		2.897		0.43		0.34
+Pervious_OthrToOutCa		2.897		1.42		0.34
+
+
+[AQUIFERS]
+;;               Por-   Wilt   Field  Hyd    Cond   Tens   Upper  Lower  Lower  Bottom Water  Upper 
+;;Name           osity  Point  Capac  Cond   Slope  Slope  Evap   Evap   Loss   Elev   Table  Moist 
+;;-------------- ------ ------ ------ ------ ------ ------ ------ ------ ------ ------ ------ ------ ------
+GW1              0.57   0.04   0.09   0.67   10.00   15.00   0.35   14.00   0.00   1.00   10.00   0.07  
+
+
+
+[GROUNDWATER]
+;;                                                 Surf                                      Fixed  GW    
+;;Subcatchment   Aquifer          Node             Elev   A1     B1     A2     B2     A3     Depth  Elev  
+;;-------------- ---------------- ---------------- ------ ------ ------ ------ ------ ------ ------ ------
+SFR_SfrToInfCa		GW1	Gw	6500	1	1	0	0	0	0	1000	
+MFR_MfrToInfCa		GW1	Gw	6500	1	1	0	0	0	0	1000	
+CICU_CicToInfCa		GW1	Gw	6500	1	1	0	0	0	0	1000	
+PR_PrrToInfCa		GW1	Gw	6500	1	1	0	0	0	0	1000	
+SR_SerToInfCa		GW1	Gw	6500	1	1	0	0	0	0	1000	
+PR_PrrToDspCa		GW1	Gw	6500	1	1	0	0	0	0	1000	
+SR_SerToDspCa		GW1	Gw	6500	1	1	0	0	0	0	1000	
+SFR_SfrToOutCa		GW1	Gw	6500	1	1	0	0	0	0	1000	
+MFR_MfrToOutCa		GW1	Gw	6500	1	1	0	0	0	0	1000	
+CICU_CicToOutCa		GW1	Gw	6500	1	1	0	0	0	0	1000	
+PR_PrrToOutCa		GW1	Gw	6500	1	1	0	0	0	0	1000	
+SR_SerToOutCa		GW1	Gw	6500	1	1	0	0	0	0	1000	
+Pervious_OthrToOutCa		GW1	Gw	6500	1	1	0	0	0	0	1000	
+SFR_SfrIsInfCa		GW1	Gw	6500	1	1	0	0	0	0	1000	
+MFR_MfrIsInfCa		GW1	Gw	6500	1	1	0	0	0	0	1000	
+CICU_CicIsInfCa		GW1	Gw	6500	1	1	0	0	0	0	1000	
+PR_PrrIsInfCa		GW1	Gw	6500	1	1	0	0	0	0	1000	
+SR_SerIsInfCa		GW1	Gw	6500	1	1	0	0	0	0	1000	
+PR_PrrIsDspCa		GW1	Gw	6500	1	1	0	0	0	0	1000	
+SR_SerIsDspCa		GW1	Gw	6500	1	1	0	0	0	0	1000	
+
+
+
+[SNOWPACKS]
+;;Snow Pack Name   Surface          Min. Melt  Max Melt   Base Temp  FreeWat.Ca InitSnoDep InitFreeWa TBD       
+;;---------------- ---------------- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+Roads              PLOWABLE       0.003          0.007          32             0.10           0.00           0.00           0.90          
+Roads              IMPERVIOUS     0.003          0.007          32             0.10           0.00           0.00           0.00          
+Roads              PERVIOUS       0.003          0.007          32             0.10           0.00           0.00           0.00          
+Roads              REMOVAL        0.1            0.0            0.8            0.2            0.0            0.0                          
+Parcels            PLOWABLE       0.0014         0.006          32             0.10           0.00           0.00           0.3           
+Parcels            IMPERVIOUS     0.0014         0.006          32             0.10           0.00           0.00           0.00          
+Parcels            PERVIOUS       0.0014         0.006          32             0.10           0.00           0.00           0.00          
+Parcels            REMOVAL        0.1            0              0.2            0.8            0              0                            
+Pervious           PLOWABLE       0.0016         0.0033         32             0.10           0.00           0.00           0.00          
+Pervious           IMPERVIOUS     0.0016         0.0033         32             0.10           0.00           0.00           0.00          
+Pervious           PERVIOUS       0.0016         0.0033         32             0.10           0.00           0.00           0.00          
+Pervious           REMOVAL        0.1            0.0            0.0            0.0            0.0            0.0                          
+
+
+[JUNCTIONS]
+;;              	Invert    	Max.      	Init.     	Surcharge 	Ponded
+;;Name          	Elev.     	Depth     	Depth     	Depth     	Area
+;;--------------	----------	----------	----------	----------	----------
+SFR_Outfall_UsJu		0		4		0		0		0
+MFR_Outfall_UsJu		0		4		0		0		0
+CICU_Outfall_UsJu		0		4		0		0		0
+PR_Outfall_UsJu		0		4		0		0		0
+SR_Outfall_UsJu		0		4		0		0		0
+Pervious_Outfall_UsJu		0		4		0		0		0
+SFR_Ju			0		4		0		0		0
+MFR_Ju			0		4		0		0		0
+CICU_Ju			0		4		0		0		0
+PR_Ju			0		4		0		0		0
+SR_Ju			0		4		0		0		0
+Pervious_Ju			0		4		0		0		0
+
+[OUTFALLS]
+;;               Invert     Outfall    Stage/Table      Tide
+;;Name           Elev.      Type       Time Series      Gate
+;;-------------- ---------- ---------- ---------------- ----
+SFR_Outfall	0		FREE				NO
+MFR_Outfall	0		FREE				NO
+CICU_Outfall	0		FREE				NO
+PR_Outfall	0		FREE				NO
+SR_Outfall	0		FREE				NO
+Pervious_Outfall	0		FREE				NO
+GW	0		FREE				NO
+
+[DIVIDERS]
+;;              	Invert    	Diverted        	Divider 
+;;Name          	Elev.     	Link            	Type      	Parameters
+;;--------------	----------	----------------	----------	----------
+
+[STORAGE]
+;;              	Invert  	Max.    	Init.   	Shape     	Shape   	        	        	Ponded  	Evap.
+;;Name          	Elev.   	Depth   	Depth   	Curve     	Params  	        	        	Area    	Frac.
+;;--------------	--------	--------	--------	----------	--------	--------	--------	--------	--------
+
+[CONDUITS]
+;;              	Inlet           	Outlet          	          	Manning   	Inlet     	Outlet    	Init.     	Max.
+;;Name          	Node            	Node            	Length    	N         	Offset    	Offset    	Flow      	Flow 
+;;--------------	----------------	----------------	----------	----------	----------	----------	----------	----------
+SFR_Outfall_UsCo		SFR_Outfall_UsJu		SFR_Outfall		10		0.01		0		0		0		0
+MFR_Outfall_UsCo		MFR_Outfall_UsJu		MFR_Outfall		10		0.01		0		0		0		0
+CICU_Outfall_UsCo		CICU_Outfall_UsJu		CICU_Outfall		10		0.01		0		0		0		0
+PR_Outfall_UsCo		PR_Outfall_UsJu		PR_Outfall		10		0.01		0		0		0		0
+SR_Outfall_UsCo		SR_Outfall_UsJu		SR_Outfall		10		0.01		0		0		0		0
+Pervious_Outfall_UsCo		Pervious_Outfall_UsJu		Pervious_Outfall		10		0.01		0		0		0		0
+SFR_DsCo		SFR_Ju		SFR_Outfall_UsJu		10		0.01		0		0		0		0
+MFR_DsCo		MFR_Ju		MFR_Outfall_UsJu		10		0.01		0		0		0		0
+CICU_DsCo		CICU_Ju		CICU_Outfall_UsJu		10		0.01		0		0		0		0
+PR_DsCo		PR_Ju		PR_Outfall_UsJu		10		0.01		0		0		0		0
+SR_DsCo		SR_Ju		SR_Outfall_UsJu		10		0.01		0		0		0		0
+Pervious_DsCo		Pervious_Ju		Pervious_Outfall_UsJu		10		0.01		0		0		0		0
+
+[WEIRS]
+;;              	Inlet           	Outlet          	Weir        	Crest     	Disch.    	Flap	End     	End
+;;Name          	Node            	Node            	Type        	Height    	Coeff.    	Gate	Con.    	Coeff.
+;;--------------	----------------	----------------	------------	----------	----------	----	--------	----------
+
+[OUTLETS]
+;;              	Inlet           	Outlet          	Outflow   	Outlet         	Qcoeff/         	          	Flap
+;;Name          	Node            	Node            	Height    	Type           	QTable          	Qexpon    	Gate
+;;--------------	----------------	----------------	----------	---------------	----------------	----------	----
+
+[XSECTIONS]
+;;Link          	Shape       	Geom1     	Geom2     	Geom3     	Geom4     	Barrels
+;;--------------	------------	----------	----------	----------	----------	----------
+SFR_Outfall_UsCo	DUMMY		0		0		0		0		1
+MFR_Outfall_UsCo	DUMMY		0		0		0		0		1
+CICU_Outfall_UsCo	DUMMY		0		0		0		0		1
+PR_Outfall_UsCo	DUMMY		0		0		0		0		1
+SR_Outfall_UsCo	DUMMY		0		0		0		0		1
+Pervious_Outfall_UsCo	DUMMY		0		0		0		0		1
+SFR_DsCo		DUMMY		0		0		0		0		1
+MFR_DsCo		DUMMY		0		0		0		0		1
+CICU_DsCo		DUMMY		0		0		0		0		1
+PR_DsCo		DUMMY		0		0		0		0		1
+SR_DsCo		DUMMY		0		0		0		0		1
+Pervious_DsCo		DUMMY		0		0		0		0		1
+
+
+
+[LOSSES]
+;;Link          	Inlet     	Outlet    	Average   	Flap Gate
+;;--------------	----------	----------	----------	----------
+
+
+[POLLUTANTS]
+;;              	Mass  	Rain      	GW        	IandI       	Decay     	Snow 	Co-Pollut.      	Co-Pollut.
+;;Name          	Units 	Concen.   	Concen.   	Concen.   	Coeff.    	Only 	Name            	Fraction
+;;--------------	------	----------	----------	----------	----------	-----	----------------	----------
+TSS	MG/L  	0		0		0		0		NO   					
+FSP	MG/L  	0		0		0		0		NO   					
+TP	MG/L  	0		0		0		0		NO   					
+SRP	MG/L  	0		0		0		0		NO   					
+TN	MG/L  	0		0		0		0		NO   					
+DIN	MG/L  	0		0		0		0		NO   					
+
+
+[LANDUSES]
+;;              	Cleaning  	Fraction  	Last
+;;Name          	Interval  	Available 	Cleaned
+;;--------------	----------	----------	----------
+SfrNoBMP			0		0		0
+SfrBMP			0		0		0
+MfrNoBMP			0		0		0
+MfrBMP			0		0		0
+CicNoBMP			0		0		0
+CicBMP			0		0		0
+VgtNoBMP			0		0		0
+VgtBMP			0		0		0
+Vbu			0		0		0
+Upr			0		0		0
+Ski			0		0		0
+Ep1			0		0		0
+Ep2			0		0		0
+Ep3			0		0		0
+Ep4			0		0		0
+Ep5			0		0		0
+SFR_PrrHi			0		0		0		
+SFR_PrrMo			0		0		0		
+SFR_PrrLo			0		0		0		
+SFR_SerHi			0		0		0		
+SFR_SerMo			0		0		0		
+SFR_SerLo			0		0		0		
+MFR_PrrHi			0		0		0		
+MFR_PrrMo			0		0		0		
+MFR_PrrLo			0		0		0		
+MFR_SerHi			0		0		0		
+MFR_SerMo			0		0		0		
+MFR_SerLo			0		0		0		
+CICU_PrrHi			0		0		0		
+CICU_PrrMo			0		0		0		
+CICU_PrrLo			0		0		0		
+CICU_SerHi			0		0		0		
+CICU_SerMo			0		0		0		
+CICU_SerLo			0		0		0		
+PR_PrrHi			0		0		0		
+PR_PrrMo			0		0		0		
+PR_PrrLo			0		0		0		
+PR_SerHi			0		0		0		
+PR_SerMo			0		0		0		
+PR_SerLo			0		0		0		
+SR_PrrHi			0		0		0		
+SR_PrrMo			0		0		0		
+SR_PrrLo			0		0		0		
+SR_SerHi			0		0		0		
+SR_SerMo			0		0		0		
+SR_SerLo			0		0		0		
+Pervious_PrrHi			0		0		0		
+Pervious_PrrMo			0		0		0		
+Pervious_PrrLo			0		0		0		
+Pervious_SerHi			0		0		0		
+Pervious_SerMo			0		0		0		
+Pervious_SerLo			0		0		0		
+
+
+[COVERAGES]
+;;SubCatchment   Land Use         Percent
+;;-------------- ---------------- ----------
+SFR_SfrToInfCa		SfrBMP		100
+SFR_SfrIsInfCa		Ep1		100
+SFR_SfrToOutCa		SfrBMP		0
+SFR_SfrToOutCa		SfrNoBMP		100
+MFR_MfrToInfCa		MfrBMP		100
+MFR_MfrIsInfCa		Ep1		100
+MFR_MfrToOutCa		MfrBMP		0
+MFR_MfrToOutCa		MfrNoBMP		100
+CICU_CicToInfCa		CicBMP		100
+CICU_CicIsInfCa		Ep1		100
+CICU_CicToOutCa		CicBMP		0
+CICU_CicToOutCa		CicNoBMP		100
+PR_PrrToOutCa		PR_PrrHi			34
+PR_PrrToOutCa		PR_PrrMo			33
+PR_PrrToOutCa		PR_PrrLo			33
+PR_PrrToInfCa		PR_PrrHi			34
+PR_PrrToInfCa		PR_PrrMo			33
+PR_PrrToInfCa		PR_PrrLo			33
+PR_PrrIsInfCa		Ep1			100
+PR_PrrToDspCa		PR_PrrHi			34
+PR_PrrToDspCa		PR_PrrMo			33
+PR_PrrToDspCa		PR_PrrLo			33
+PR_PrrIsDspCa		Ep1			100
+SR_SerToOutCa		SR_SerHi			34
+SR_SerToOutCa		SR_SerMo			33
+SR_SerToOutCa		SR_SerLo			33
+SR_SerToInfCa		SR_SerHi			34
+SR_SerToInfCa		SR_SerMo			33
+SR_SerToInfCa		SR_SerLo			33
+SR_SerIsInfCa		Ep1			100
+SR_SerToDspCa		SR_SerHi			34
+SR_SerToDspCa		SR_SerMo			33
+SR_SerToDspCa		SR_SerLo			33
+SR_SerIsDspCa		Ep1			100
+Pervious_OthrToOutCa		Ep1			20
+Pervious_OthrToOutCa		Ep2			20
+Pervious_OthrToOutCa		Ep3			20
+Pervious_OthrToOutCa		Ep4			20
+Pervious_OthrToOutCa		Ep5			20
+
+
+
+[LOADINGS]
+;;Subcatchment  	Pollutant       	Loading
+;;--------------	----------------	----------
+
+
+[BUILDUP]
+;;LandUse       	Pollutant       	Function  	Coeff1    	Coeff2    	Coeff3    	Normalizer
+;;--------------	----------------	----------	----------	----------	----------	----------
+Vbu			TSS		NONE		0		0		0		AREA		
+Vbu			FSP		NONE		0		0		0		AREA		
+Vbu			TP		NONE		0		0		0		AREA		
+Vbu			SRP		NONE		0		0		0		AREA		
+Vbu			TN		NONE		0		0		0		AREA		
+Vbu			DIN		NONE		0		0		0		AREA		
+Upr			TSS		NONE		0		0		0		AREA		
+Upr			FSP		NONE		0		0		0		AREA		
+Upr			TP		NONE		0		0		0		AREA		
+Upr			SRP		NONE		0		0		0		AREA		
+Upr			TN		NONE		0		0		0		AREA		
+Upr			DIN		NONE		0		0		0		AREA		
+Ski			TSS		NONE		0		0		0		AREA		
+Ski			FSP		NONE		0		0		0		AREA		
+Ski			TP		NONE		0		0		0		AREA		
+Ski			SRP		NONE		0		0		0		AREA		
+Ski			TN		NONE		0		0		0		AREA		
+Ski			DIN		NONE		0		0		0		AREA		
+Ep1			TSS		NONE		0		0		0		AREA		
+Ep1			FSP		NONE		0		0		0		AREA		
+Ep1			TP		NONE		0		0		0		AREA		
+Ep1			SRP		NONE		0		0		0		AREA		
+Ep1			TN		NONE		0		0		0		AREA		
+Ep1			DIN		NONE		0		0		0		AREA		
+Ep2			TSS		NONE		0		0		0		AREA		
+Ep2			FSP		NONE		0		0		0		AREA		
+Ep2			TP		NONE		0		0		0		AREA		
+Ep2			SRP		NONE		0		0		0		AREA		
+Ep2			TN		NONE		0		0		0		AREA		
+Ep2			DIN		NONE		0		0		0		AREA		
+Ep3			TSS		NONE		0		0		0		AREA		
+Ep3			FSP		NONE		0		0		0		AREA		
+Ep3			TP		NONE		0		0		0		AREA		
+Ep3			SRP		NONE		0		0		0		AREA		
+Ep3			TN		NONE		0		0		0		AREA		
+Ep3			DIN		NONE		0		0		0		AREA		
+Ep4			TSS		NONE		0		0		0		AREA		
+Ep4			FSP		NONE		0		0		0		AREA		
+Ep4			TP		NONE		0		0		0		AREA		
+Ep4			SRP		NONE		0		0		0		AREA		
+Ep4			TN		NONE		0		0		0		AREA		
+Ep4			DIN		NONE		0		0		0		AREA		
+Ep5			TSS		NONE		0		0		0		AREA		
+Ep5			FSP		NONE		0		0		0		AREA		
+Ep5			TP		NONE		0		0		0		AREA		
+Ep5			SRP		NONE		0		0		0		AREA		
+Ep5			TN		NONE		0		0		0		AREA		
+Ep5			DIN		NONE		0		0		0		AREA		
+SfrNoBMP			TSS		NONE		0		0		0		AREA		
+SfrNoBMP			FSP		NONE		0		0		0		AREA		
+SfrNoBMP			TP		NONE		0		0		0		AREA		
+SfrNoBMP			SRP		NONE		0		0		0		AREA		
+SfrNoBMP			TN		NONE		0		0		0		AREA		
+SfrNoBMP			DIN		NONE		0		0		0		AREA		
+SfrBMP			TSS		NONE		0		0		0		AREA		
+SfrBMP			FSP		NONE		0		0		0		AREA		
+SfrBMP			TP		NONE		0		0		0		AREA		
+SfrBMP			SRP		NONE		0		0		0		AREA		
+SfrBMP			TN		NONE		0		0		0		AREA		
+SfrBMP			DIN		NONE		0		0		0		AREA		
+MfrNoBMP			TSS		NONE		0		0		0		AREA		
+MfrNoBMP			FSP		NONE		0		0		0		AREA		
+MfrNoBMP			TP		NONE		0		0		0		AREA		
+MfrNoBMP			SRP		NONE		0		0		0		AREA		
+MfrNoBMP			TN		NONE		0		0		0		AREA		
+MfrNoBMP			DIN		NONE		0		0		0		AREA		
+MfrBMP			TSS		NONE		0		0		0		AREA		
+MfrBMP			FSP		NONE		0		0		0		AREA		
+MfrBMP			TP		NONE		0		0		0		AREA		
+MfrBMP			SRP		NONE		0		0		0		AREA		
+MfrBMP			TN		NONE		0		0		0		AREA		
+MfrBMP			DIN		NONE		0		0		0		AREA		
+CicNoBMP			TSS		NONE		0		0		0		AREA		
+CicNoBMP			FSP		NONE		0		0		0		AREA		
+CicNoBMP			TP		NONE		0		0		0		AREA		
+CicNoBMP			SRP		NONE		0		0		0		AREA		
+CicNoBMP			TN		NONE		0		0		0		AREA		
+CicNoBMP			DIN		NONE		0		0		0		AREA		
+CicBMP			TSS		NONE		0		0		0		AREA		
+CicBMP			FSP		NONE		0		0		0		AREA		
+CicBMP			TP		NONE		0		0		0		AREA		
+CicBMP			SRP		NONE		0		0		0		AREA		
+CicBMP			TN		NONE		0		0		0		AREA		
+CicBMP			DIN		NONE		0		0		0		AREA		
+VgtNoBMP			TSS		NONE		0		0		0		AREA		
+VgtNoBMP			FSP		NONE		0		0		0		AREA		
+VgtNoBMP			TP		NONE		0		0		0		AREA		
+VgtNoBMP			SRP		NONE		0		0		0		AREA		
+VgtNoBMP			TN		NONE		0		0		0		AREA		
+VgtNoBMP			DIN		NONE		0		0		0		AREA		
+VgtBMP			DIN		NONE		0		0		0		AREA		
+VgtBMP			FSP		NONE		0		0		0		AREA		
+VgtBMP			SRP		NONE		0		0		0		AREA		
+VgtBMP			TN		NONE		0		0		0		AREA		
+VgtBMP			TP		NONE		0		0		0		AREA		
+VgtBMP			TSS		NONE		0		0		0		AREA		
+SFR_PrrHi			FSP		NONE		0.0		0.0		0.0		AREA
+SFR_PrrMo			FSP		NONE		0.0		0.0		0.0		AREA
+SFR_PrrLo			FSP		NONE		0.0		0.0		0.0		AREA
+SFR_PrrHi			TSS		NONE		0.0		0.0		0.0		AREA
+SFR_PrrMo			TSS		NONE		0.0		0.0		0.0		AREA
+SFR_PrrLo			TSS		NONE		0.0		0.0		0.0		AREA
+SFR_PrrHi			TP		NONE		0.0		0.0		0.0		AREA
+SFR_PrrMo			TP		NONE		0.0		0.0		0.0		AREA
+SFR_PrrLo			TP		NONE		0.0		0.0		0.0		AREA
+SFR_PrrHi			SRP		NONE		0.0		0.0		0.0		AREA
+SFR_PrrMo			SRP		NONE		0.0		0.0		0.0		AREA
+SFR_PrrLo			SRP		NONE		0.0		0.0		0.0		AREA
+SFR_PrrHi			TN		NONE		0.0		0.0		0.0		AREA
+SFR_PrrMo			TN		NONE		0.0		0.0		0.0		AREA
+SFR_PrrLo			TN		NONE		0.0		0.0		0.0		AREA
+SFR_PrrHi			DIN		NONE		0.0		0.0		0.0		AREA
+SFR_PrrMo			DIN		NONE		0.0		0.0		0.0		AREA
+SFR_PrrLo			DIN		NONE		0.0		0.0		0.0		AREA
+SFR_SerHi			FSP		NONE		0.0		0.0		0.0		AREA
+SFR_SerMo			FSP		NONE		0.0		0.0		0.0		AREA
+SFR_SerLo			FSP		NONE		0.0		0.0		0.0		AREA
+SFR_SerHi			TSS		NONE		0.0		0.0		0.0		AREA
+SFR_SerMo			TSS		NONE		0.0		0.0		0.0		AREA
+SFR_SerLo			TSS		NONE		0.0		0.0		0.0		AREA
+SFR_SerHi			TP		NONE		0.0		0.0		0.0		AREA
+SFR_SerMo			TP		NONE		0.0		0.0		0.0		AREA
+SFR_SerLo			TP		NONE		0.0		0.0		0.0		AREA
+SFR_SerHi			SRP		NONE		0.0		0.0		0.0		AREA
+SFR_SerMo			SRP		NONE		0.0		0.0		0.0		AREA
+SFR_SerLo			SRP		NONE		0.0		0.0		0.0		AREA
+SFR_SerHi			TN		NONE		0.0		0.0		0.0		AREA
+SFR_SerMo			TN		NONE		0.0		0.0		0.0		AREA
+SFR_SerLo			TN		NONE		0.0		0.0		0.0		AREA
+SFR_SerHi			DIN		NONE		0.0		0.0		0.0		AREA
+SFR_SerMo			DIN		NONE		0.0		0.0		0.0		AREA
+SFR_SerLo			DIN		NONE		0.0		0.0		0.0		AREA
+MFR_PrrHi			FSP		NONE		0.0		0.0		0.0		AREA
+MFR_PrrMo			FSP		NONE		0.0		0.0		0.0		AREA
+MFR_PrrLo			FSP		NONE		0.0		0.0		0.0		AREA
+MFR_PrrHi			TSS		NONE		0.0		0.0		0.0		AREA
+MFR_PrrMo			TSS		NONE		0.0		0.0		0.0		AREA
+MFR_PrrLo			TSS		NONE		0.0		0.0		0.0		AREA
+MFR_PrrHi			TP		NONE		0.0		0.0		0.0		AREA
+MFR_PrrMo			TP		NONE		0.0		0.0		0.0		AREA
+MFR_PrrLo			TP		NONE		0.0		0.0		0.0		AREA
+MFR_PrrHi			SRP		NONE		0.0		0.0		0.0		AREA
+MFR_PrrMo			SRP		NONE		0.0		0.0		0.0		AREA
+MFR_PrrLo			SRP		NONE		0.0		0.0		0.0		AREA
+MFR_PrrHi			TN		NONE		0.0		0.0		0.0		AREA
+MFR_PrrMo			TN		NONE		0.0		0.0		0.0		AREA
+MFR_PrrLo			TN		NONE		0.0		0.0		0.0		AREA
+MFR_PrrHi			DIN		NONE		0.0		0.0		0.0		AREA
+MFR_PrrMo			DIN		NONE		0.0		0.0		0.0		AREA
+MFR_PrrLo			DIN		NONE		0.0		0.0		0.0		AREA
+MFR_SerHi			FSP		NONE		0.0		0.0		0.0		AREA
+MFR_SerMo			FSP		NONE		0.0		0.0		0.0		AREA
+MFR_SerLo			FSP		NONE		0.0		0.0		0.0		AREA
+MFR_SerHi			TSS		NONE		0.0		0.0		0.0		AREA
+MFR_SerMo			TSS		NONE		0.0		0.0		0.0		AREA
+MFR_SerLo			TSS		NONE		0.0		0.0		0.0		AREA
+MFR_SerHi			TP		NONE		0.0		0.0		0.0		AREA
+MFR_SerMo			TP		NONE		0.0		0.0		0.0		AREA
+MFR_SerLo			TP		NONE		0.0		0.0		0.0		AREA
+MFR_SerHi			SRP		NONE		0.0		0.0		0.0		AREA
+MFR_SerMo			SRP		NONE		0.0		0.0		0.0		AREA
+MFR_SerLo			SRP		NONE		0.0		0.0		0.0		AREA
+MFR_SerHi			TN		NONE		0.0		0.0		0.0		AREA
+MFR_SerMo			TN		NONE		0.0		0.0		0.0		AREA
+MFR_SerLo			TN		NONE		0.0		0.0		0.0		AREA
+MFR_SerHi			DIN		NONE		0.0		0.0		0.0		AREA
+MFR_SerMo			DIN		NONE		0.0		0.0		0.0		AREA
+MFR_SerLo			DIN		NONE		0.0		0.0		0.0		AREA
+CICU_PrrHi			FSP		NONE		0.0		0.0		0.0		AREA
+CICU_PrrMo			FSP		NONE		0.0		0.0		0.0		AREA
+CICU_PrrLo			FSP		NONE		0.0		0.0		0.0		AREA
+CICU_PrrHi			TSS		NONE		0.0		0.0		0.0		AREA
+CICU_PrrMo			TSS		NONE		0.0		0.0		0.0		AREA
+CICU_PrrLo			TSS		NONE		0.0		0.0		0.0		AREA
+CICU_PrrHi			TP		NONE		0.0		0.0		0.0		AREA
+CICU_PrrMo			TP		NONE		0.0		0.0		0.0		AREA
+CICU_PrrLo			TP		NONE		0.0		0.0		0.0		AREA
+CICU_PrrHi			SRP		NONE		0.0		0.0		0.0		AREA
+CICU_PrrMo			SRP		NONE		0.0		0.0		0.0		AREA
+CICU_PrrLo			SRP		NONE		0.0		0.0		0.0		AREA
+CICU_PrrHi			TN		NONE		0.0		0.0		0.0		AREA
+CICU_PrrMo			TN		NONE		0.0		0.0		0.0		AREA
+CICU_PrrLo			TN		NONE		0.0		0.0		0.0		AREA
+CICU_PrrHi			DIN		NONE		0.0		0.0		0.0		AREA
+CICU_PrrMo			DIN		NONE		0.0		0.0		0.0		AREA
+CICU_PrrLo			DIN		NONE		0.0		0.0		0.0		AREA
+CICU_SerHi			FSP		NONE		0.0		0.0		0.0		AREA
+CICU_SerMo			FSP		NONE		0.0		0.0		0.0		AREA
+CICU_SerLo			FSP		NONE		0.0		0.0		0.0		AREA
+CICU_SerHi			TSS		NONE		0.0		0.0		0.0		AREA
+CICU_SerMo			TSS		NONE		0.0		0.0		0.0		AREA
+CICU_SerLo			TSS		NONE		0.0		0.0		0.0		AREA
+CICU_SerHi			TP		NONE		0.0		0.0		0.0		AREA
+CICU_SerMo			TP		NONE		0.0		0.0		0.0		AREA
+CICU_SerLo			TP		NONE		0.0		0.0		0.0		AREA
+CICU_SerHi			SRP		NONE		0.0		0.0		0.0		AREA
+CICU_SerMo			SRP		NONE		0.0		0.0		0.0		AREA
+CICU_SerLo			SRP		NONE		0.0		0.0		0.0		AREA
+CICU_SerHi			TN		NONE		0.0		0.0		0.0		AREA
+CICU_SerMo			TN		NONE		0.0		0.0		0.0		AREA
+CICU_SerLo			TN		NONE		0.0		0.0		0.0		AREA
+CICU_SerHi			DIN		NONE		0.0		0.0		0.0		AREA
+CICU_SerMo			DIN		NONE		0.0		0.0		0.0		AREA
+CICU_SerLo			DIN		NONE		0.0		0.0		0.0		AREA
+PR_PrrHi			FSP		NONE		0.0		0.0		0.0		AREA
+PR_PrrMo			FSP		NONE		0.0		0.0		0.0		AREA
+PR_PrrLo			FSP		NONE		0.0		0.0		0.0		AREA
+PR_PrrHi			TSS		NONE		0.0		0.0		0.0		AREA
+PR_PrrMo			TSS		NONE		0.0		0.0		0.0		AREA
+PR_PrrLo			TSS		NONE		0.0		0.0		0.0		AREA
+PR_PrrHi			TP		NONE		0.0		0.0		0.0		AREA
+PR_PrrMo			TP		NONE		0.0		0.0		0.0		AREA
+PR_PrrLo			TP		NONE		0.0		0.0		0.0		AREA
+PR_PrrHi			SRP		NONE		0.0		0.0		0.0		AREA
+PR_PrrMo			SRP		NONE		0.0		0.0		0.0		AREA
+PR_PrrLo			SRP		NONE		0.0		0.0		0.0		AREA
+PR_PrrHi			TN		NONE		0.0		0.0		0.0		AREA
+PR_PrrMo			TN		NONE		0.0		0.0		0.0		AREA
+PR_PrrLo			TN		NONE		0.0		0.0		0.0		AREA
+PR_PrrHi			DIN		NONE		0.0		0.0		0.0		AREA
+PR_PrrMo			DIN		NONE		0.0		0.0		0.0		AREA
+PR_PrrLo			DIN		NONE		0.0		0.0		0.0		AREA
+PR_SerHi			FSP		NONE		0.0		0.0		0.0		AREA
+PR_SerMo			FSP		NONE		0.0		0.0		0.0		AREA
+PR_SerLo			FSP		NONE		0.0		0.0		0.0		AREA
+PR_SerHi			TSS		NONE		0.0		0.0		0.0		AREA
+PR_SerMo			TSS		NONE		0.0		0.0		0.0		AREA
+PR_SerLo			TSS		NONE		0.0		0.0		0.0		AREA
+PR_SerHi			TP		NONE		0.0		0.0		0.0		AREA
+PR_SerMo			TP		NONE		0.0		0.0		0.0		AREA
+PR_SerLo			TP		NONE		0.0		0.0		0.0		AREA
+PR_SerHi			SRP		NONE		0.0		0.0		0.0		AREA
+PR_SerMo			SRP		NONE		0.0		0.0		0.0		AREA
+PR_SerLo			SRP		NONE		0.0		0.0		0.0		AREA
+PR_SerHi			TN		NONE		0.0		0.0		0.0		AREA
+PR_SerMo			TN		NONE		0.0		0.0		0.0		AREA
+PR_SerLo			TN		NONE		0.0		0.0		0.0		AREA
+PR_SerHi			DIN		NONE		0.0		0.0		0.0		AREA
+PR_SerMo			DIN		NONE		0.0		0.0		0.0		AREA
+PR_SerLo			DIN		NONE		0.0		0.0		0.0		AREA
+SR_PrrHi			FSP		NONE		0.0		0.0		0.0		AREA
+SR_PrrMo			FSP		NONE		0.0		0.0		0.0		AREA
+SR_PrrLo			FSP		NONE		0.0		0.0		0.0		AREA
+SR_PrrHi			TSS		NONE		0.0		0.0		0.0		AREA
+SR_PrrMo			TSS		NONE		0.0		0.0		0.0		AREA
+SR_PrrLo			TSS		NONE		0.0		0.0		0.0		AREA
+SR_PrrHi			TP		NONE		0.0		0.0		0.0		AREA
+SR_PrrMo			TP		NONE		0.0		0.0		0.0		AREA
+SR_PrrLo			TP		NONE		0.0		0.0		0.0		AREA
+SR_PrrHi			SRP		NONE		0.0		0.0		0.0		AREA
+SR_PrrMo			SRP		NONE		0.0		0.0		0.0		AREA
+SR_PrrLo			SRP		NONE		0.0		0.0		0.0		AREA
+SR_PrrHi			TN		NONE		0.0		0.0		0.0		AREA
+SR_PrrMo			TN		NONE		0.0		0.0		0.0		AREA
+SR_PrrLo			TN		NONE		0.0		0.0		0.0		AREA
+SR_PrrHi			DIN		NONE		0.0		0.0		0.0		AREA
+SR_PrrMo			DIN		NONE		0.0		0.0		0.0		AREA
+SR_PrrLo			DIN		NONE		0.0		0.0		0.0		AREA
+SR_SerHi			FSP		NONE		0.0		0.0		0.0		AREA
+SR_SerMo			FSP		NONE		0.0		0.0		0.0		AREA
+SR_SerLo			FSP		NONE		0.0		0.0		0.0		AREA
+SR_SerHi			TSS		NONE		0.0		0.0		0.0		AREA
+SR_SerMo			TSS		NONE		0.0		0.0		0.0		AREA
+SR_SerLo			TSS		NONE		0.0		0.0		0.0		AREA
+SR_SerHi			TP		NONE		0.0		0.0		0.0		AREA
+SR_SerMo			TP		NONE		0.0		0.0		0.0		AREA
+SR_SerLo			TP		NONE		0.0		0.0		0.0		AREA
+SR_SerHi			SRP		NONE		0.0		0.0		0.0		AREA
+SR_SerMo			SRP		NONE		0.0		0.0		0.0		AREA
+SR_SerLo			SRP		NONE		0.0		0.0		0.0		AREA
+SR_SerHi			TN		NONE		0.0		0.0		0.0		AREA
+SR_SerMo			TN		NONE		0.0		0.0		0.0		AREA
+SR_SerLo			TN		NONE		0.0		0.0		0.0		AREA
+SR_SerHi			DIN		NONE		0.0		0.0		0.0		AREA
+SR_SerMo			DIN		NONE		0.0		0.0		0.0		AREA
+SR_SerLo			DIN		NONE		0.0		0.0		0.0		AREA
+Pervious_PrrHi			FSP		NONE		0.0		0.0		0.0		AREA
+Pervious_PrrMo			FSP		NONE		0.0		0.0		0.0		AREA
+Pervious_PrrLo			FSP		NONE		0.0		0.0		0.0		AREA
+Pervious_PrrHi			TSS		NONE		0.0		0.0		0.0		AREA
+Pervious_PrrMo			TSS		NONE		0.0		0.0		0.0		AREA
+Pervious_PrrLo			TSS		NONE		0.0		0.0		0.0		AREA
+Pervious_PrrHi			TP		NONE		0.0		0.0		0.0		AREA
+Pervious_PrrMo			TP		NONE		0.0		0.0		0.0		AREA
+Pervious_PrrLo			TP		NONE		0.0		0.0		0.0		AREA
+Pervious_PrrHi			SRP		NONE		0.0		0.0		0.0		AREA
+Pervious_PrrMo			SRP		NONE		0.0		0.0		0.0		AREA
+Pervious_PrrLo			SRP		NONE		0.0		0.0		0.0		AREA
+Pervious_PrrHi			TN		NONE		0.0		0.0		0.0		AREA
+Pervious_PrrMo			TN		NONE		0.0		0.0		0.0		AREA
+Pervious_PrrLo			TN		NONE		0.0		0.0		0.0		AREA
+Pervious_PrrHi			DIN		NONE		0.0		0.0		0.0		AREA
+Pervious_PrrMo			DIN		NONE		0.0		0.0		0.0		AREA
+Pervious_PrrLo			DIN		NONE		0.0		0.0		0.0		AREA
+Pervious_SerHi			FSP		NONE		0.0		0.0		0.0		AREA
+Pervious_SerMo			FSP		NONE		0.0		0.0		0.0		AREA
+Pervious_SerLo			FSP		NONE		0.0		0.0		0.0		AREA
+Pervious_SerHi			TSS		NONE		0.0		0.0		0.0		AREA
+Pervious_SerMo			TSS		NONE		0.0		0.0		0.0		AREA
+Pervious_SerLo			TSS		NONE		0.0		0.0		0.0		AREA
+Pervious_SerHi			TP		NONE		0.0		0.0		0.0		AREA
+Pervious_SerMo			TP		NONE		0.0		0.0		0.0		AREA
+Pervious_SerLo			TP		NONE		0.0		0.0		0.0		AREA
+Pervious_SerHi			SRP		NONE		0.0		0.0		0.0		AREA
+Pervious_SerMo			SRP		NONE		0.0		0.0		0.0		AREA
+Pervious_SerLo			SRP		NONE		0.0		0.0		0.0		AREA
+Pervious_SerHi			TN		NONE		0.0		0.0		0.0		AREA
+Pervious_SerMo			TN		NONE		0.0		0.0		0.0		AREA
+Pervious_SerLo			TN		NONE		0.0		0.0		0.0		AREA
+Pervious_SerHi			DIN		NONE		0.0		0.0		0.0		AREA
+Pervious_SerMo			DIN		NONE		0.0		0.0		0.0		AREA
+Pervious_SerLo			DIN		NONE		0.0		0.0		0.0		AREA
+
+[WASHOFF]
+;;              	                	          	          	          	Cleaning  	BMP  
+;;Land Use      	Pollutant       	Function  	Coeff1    	Coeff2    	Effic.    	Effic. 
+;;--------------	----------------	----------	----------	----------	----------	----------
+Vbu			TSS		EMC		1015		0		0		0		
+Vbu			FSP		EMC		102		0		0		0		
+Vbu			TP		EMC		1.524		0		0		0		
+Vbu			SRP		EMC		0.48		0		0		0		
+Vbu			TN		EMC		2.34		0		0		0		
+Vbu			DIN		EMC		0.014		0		0		0		
+Upr			TSS		EMC		1015		0		0		0		
+Upr			FSP		EMC		102		0		0		0		
+Upr			TP		EMC		1.524		0		0		0		
+Upr			SRP		EMC		0.48		0		0		0		
+Upr			TN		EMC		2.34		0		0		0		
+Upr			DIN		EMC		0.014		0		0		0		
+Ski			TSS		EMC		271		0		0		0		
+Ski			FSP		EMC		27		0		0		0		
+Ski			TP		EMC		0.12		0		0		0		
+Ski			SRP		EMC		0.038		0		0		0		
+Ski			TN		EMC		0.36		0		0		0		
+Ski			DIN		EMC		0.132		0		0		0		
+Ep1			TSS		EMC		14		0		0		0		
+Ep1			FSP		EMC		1		0		0		0		
+Ep1			TP		EMC		0.034		0		0		0		
+Ep1			SRP		EMC		0.029		0		0		0		
+Ep1			TN		EMC		0.164		0		0		0		
+Ep1			DIN		EMC		0.011		0		0		0		
+Ep2			TSS		EMC		38		0		0		0		
+Ep2			FSP		EMC		4		0		0		0		
+Ep2			TP		EMC		0.034		0		0		0		
+Ep2			SRP		EMC		0.029		0		0		0		
+Ep2			TN		EMC		0.164		0		0		0		
+Ep2			DIN		EMC		0.011		0		0		0		
+Ep3			TSS		EMC		101		0		0		0		
+Ep3			FSP		EMC		10		0		0		0		
+Ep3			TP		EMC		0.034		0		0		0		
+Ep3			SRP		EMC		0.029		0		0		0		
+Ep3			TN		EMC		0.164		0		0		0		
+Ep3			DIN		EMC		0.011		0		0		0		
+Ep4			TSS		EMC		271		0		0		0		
+Ep4			FSP		EMC		27		0		0		0		
+Ep4			TP		EMC		0.034		0		0		0		
+Ep4			SRP		EMC		0.029		0		0		0		
+Ep4			TN		EMC		0.164		0		0		0		
+Ep4			DIN		EMC		0.011		0		0		0		
+Ep5			TSS		EMC		727		0		0		0		
+Ep5			FSP		EMC		73		0		0		0		
+Ep5			TP		EMC		0.034		0		0		0		
+Ep5			SRP		EMC		0.029		0		0		0		
+Ep5			TN		EMC		0.164		0		0		0		
+Ep5			DIN		EMC		0.011		0		0		0		
+SfrNoBMP			TSS		EMC		56.4		0		0		0		
+SfrNoBMP			FSP		EMC		20.3		0		0		0		
+SfrNoBMP			TP		EMC		0.468		0		0		0		
+SfrNoBMP			SRP		EMC		0.144		0		0		0		
+SfrNoBMP			TN		EMC		1.752		0		0		0		
+SfrNoBMP			DIN		EMC		0.144		0		0		0		
+SfrBMP			TSS		EMC		39		0		0		0		
+SfrBMP			FSP		EMC		14		0		0		0		
+SfrBMP			TP		EMC		0.421		0		0		0		
+SfrBMP			SRP		EMC		0.13		0		0		0		
+SfrBMP			TN		EMC		1.577		0		0		0		
+SfrBMP			DIN		EMC		0.13		0		0		0		
+MfrNoBMP			TSS		EMC		150		0		0		0		
+MfrNoBMP			FSP		EMC		87		0		0		0		
+MfrNoBMP			TP		EMC		0.588		0		0		0		
+MfrNoBMP			SRP		EMC		0.144		0		0		0		
+MfrNoBMP			TN		EMC		2.844		0		0		0		
+MfrNoBMP			DIN		EMC		0.42		0		0		0		
+MfrBMP			TSS		EMC		56.4		0		0		0		
+MfrBMP			FSP		EMC		32.7		0		0		0		
+MfrBMP			TP		EMC		0.529		0		0		0		
+MfrBMP			SRP		EMC		0.13		0		0		0		
+MfrBMP			TN		EMC		2.56		0		0		0		
+MfrBMP			DIN		EMC		0.378		0		0		0		
+CicNoBMP			TSS		EMC		296.4		0		0		0		
+CicNoBMP			FSP		EMC		186.7		0		0		0		
+CicNoBMP			TP		EMC		0.702		0		0		0		
+CicNoBMP			SRP		EMC		0.37		0		0		0		
+CicNoBMP			TN		EMC		2.472		0		0		0		
+CicNoBMP			DIN		EMC		0.293		0		0		0		
+CicBMP			TSS		EMC		204		0		0		0		
+CicBMP			FSP		EMC		128.5		0		0		0		
+CicBMP			TP		EMC		0.536		0		0		0		
+CicBMP			SRP		EMC		0.05		0		0		0		
+CicBMP			TN		EMC		2.136		0		0		0		
+CicBMP			DIN		EMC		0.195		0		0		0		
+VgtNoBMP			TSS		EMC		12		0		0		0		
+VgtNoBMP			FSP		EMC		4.3		0		0		0		
+VgtNoBMP			TP		EMC		1.09		0		0		0		
+VgtNoBMP			SRP		EMC		0.631		0		0		0		
+VgtNoBMP			TN		EMC		4.387		0		0		0		
+VgtNoBMP			DIN		EMC		0.547		0		0		0		
+VgtBMP			TSS		EMC		12		0		0		0		
+VgtBMP			FSP		EMC		4.3		0		0		0		
+VgtBMP			TP		EMC		0.454		0		0		0		
+VgtBMP			SRP		EMC		0.289		0		0		0		
+VgtBMP			TN		EMC		2.369		0		0		0		
+VgtBMP			DIN		EMC		0.319		0		0		0		
+SFR_PrrHi			FSP		EMC		1021		0.0		0.0		0.0
+SFR_PrrMo			FSP		EMC		673		0.0		0.0		0.0
+SFR_PrrLo			FSP		EMC		477		0.0		0.0		0.0
+SFR_PrrHi			TSS		EMC		1370		0.0		0.0		0.0
+SFR_PrrMo			TSS		EMC		970		0.0		0.0		0.0
+SFR_PrrLo			TSS		EMC		686		0.0		0.0		0.0
+SFR_PrrHi			TP		EMC		2.05		0.0		0.0		0.0
+SFR_PrrMo			TP		EMC		1.59		0.0		0.0		0.0
+SFR_PrrLo			TP		EMC		1.25		0.0		0.0		0.0
+SFR_PrrHi			SRP		EMC		0.16		0.0		0.0		0.0
+SFR_PrrMo			SRP		EMC		0.13		0.0		0.0		0.0
+SFR_PrrLo			SRP		EMC		0.11		0.0		0.0		0.0
+SFR_PrrHi			TN		EMC		4.98		0.0		0.0		0.0
+SFR_PrrMo			TN		EMC		4.46		0.0		0.0		0.0
+SFR_PrrLo			TN		EMC		3.99		0.0		0.0		0.0
+SFR_PrrHi			DIN		EMC		0.64		0.0		0.0		0.0
+SFR_PrrMo			DIN		EMC		0.58		0.0		0.0		0.0
+SFR_PrrLo			DIN		EMC		0.51		0.0		0.0		0.0
+SFR_SerHi			FSP		EMC		477		0.0		0.0		0.0
+SFR_SerMo			FSP		EMC		211		0.0		0.0		0.0
+SFR_SerLo			FSP		EMC		92		0.0		0.0		0.0
+SFR_SerHi			TSS		EMC		686		0.0		0.0		0.0
+SFR_SerMo			TSS		EMC		344		0.0		0.0		0.0
+SFR_SerLo			TSS		EMC		172		0.0		0.0		0.0
+SFR_SerHi			TP		EMC		1.25		0.0		0.0		0.0
+SFR_SerMo			TP		EMC		0.75		0.0		0.0		0.0
+SFR_SerLo			TP		EMC		0.46		0.0		0.0		0.0
+SFR_SerHi			SRP		EMC		0.11		0.0		0.0		0.0
+SFR_SerMo			SRP		EMC		0.07		0.0		0.0		0.0
+SFR_SerLo			SRP		EMC		0.05		0.0		0.0		0.0
+SFR_SerHi			TN		EMC		3.99		0.0		0.0		0.0
+SFR_SerMo			TN		EMC		3.21		0.0		0.0		0.0
+SFR_SerLo			TN		EMC		2.57		0.0		0.0		0.0
+SFR_SerHi			DIN		EMC		0.51		0.0		0.0		0.0
+SFR_SerMo			DIN		EMC		0.42		0.0		0.0		0.0
+SFR_SerLo			DIN		EMC		0.34		0.0		0.0		0.0
+MFR_PrrHi			FSP		EMC		1021		0.0		0.0		0.0
+MFR_PrrMo			FSP		EMC		673		0.0		0.0		0.0
+MFR_PrrLo			FSP		EMC		477		0.0		0.0		0.0
+MFR_PrrHi			TSS		EMC		1370		0.0		0.0		0.0
+MFR_PrrMo			TSS		EMC		970		0.0		0.0		0.0
+MFR_PrrLo			TSS		EMC		686		0.0		0.0		0.0
+MFR_PrrHi			TP		EMC		2.05		0.0		0.0		0.0
+MFR_PrrMo			TP		EMC		1.59		0.0		0.0		0.0
+MFR_PrrLo			TP		EMC		1.25		0.0		0.0		0.0
+MFR_PrrHi			SRP		EMC		0.16		0.0		0.0		0.0
+MFR_PrrMo			SRP		EMC		0.13		0.0		0.0		0.0
+MFR_PrrLo			SRP		EMC		0.11		0.0		0.0		0.0
+MFR_PrrHi			TN		EMC		4.98		0.0		0.0		0.0
+MFR_PrrMo			TN		EMC		4.46		0.0		0.0		0.0
+MFR_PrrLo			TN		EMC		3.99		0.0		0.0		0.0
+MFR_PrrHi			DIN		EMC		0.64		0.0		0.0		0.0
+MFR_PrrMo			DIN		EMC		0.58		0.0		0.0		0.0
+MFR_PrrLo			DIN		EMC		0.51		0.0		0.0		0.0
+MFR_SerHi			FSP		EMC		477		0.0		0.0		0.0
+MFR_SerMo			FSP		EMC		211		0.0		0.0		0.0
+MFR_SerLo			FSP		EMC		92		0.0		0.0		0.0
+MFR_SerHi			TSS		EMC		686		0.0		0.0		0.0
+MFR_SerMo			TSS		EMC		344		0.0		0.0		0.0
+MFR_SerLo			TSS		EMC		172		0.0		0.0		0.0
+MFR_SerHi			TP		EMC		1.25		0.0		0.0		0.0
+MFR_SerMo			TP		EMC		0.75		0.0		0.0		0.0
+MFR_SerLo			TP		EMC		0.46		0.0		0.0		0.0
+MFR_SerHi			SRP		EMC		0.11		0.0		0.0		0.0
+MFR_SerMo			SRP		EMC		0.07		0.0		0.0		0.0
+MFR_SerLo			SRP		EMC		0.05		0.0		0.0		0.0
+MFR_SerHi			TN		EMC		3.99		0.0		0.0		0.0
+MFR_SerMo			TN		EMC		3.21		0.0		0.0		0.0
+MFR_SerLo			TN		EMC		2.57		0.0		0.0		0.0
+MFR_SerHi			DIN		EMC		0.51		0.0		0.0		0.0
+MFR_SerMo			DIN		EMC		0.42		0.0		0.0		0.0
+MFR_SerLo			DIN		EMC		0.34		0.0		0.0		0.0
+CICU_PrrHi			FSP		EMC		1021		0.0		0.0		0.0
+CICU_PrrMo			FSP		EMC		673		0.0		0.0		0.0
+CICU_PrrLo			FSP		EMC		477		0.0		0.0		0.0
+CICU_PrrHi			TSS		EMC		1370		0.0		0.0		0.0
+CICU_PrrMo			TSS		EMC		970		0.0		0.0		0.0
+CICU_PrrLo			TSS		EMC		686		0.0		0.0		0.0
+CICU_PrrHi			TP		EMC		2.05		0.0		0.0		0.0
+CICU_PrrMo			TP		EMC		1.59		0.0		0.0		0.0
+CICU_PrrLo			TP		EMC		1.25		0.0		0.0		0.0
+CICU_PrrHi			SRP		EMC		0.16		0.0		0.0		0.0
+CICU_PrrMo			SRP		EMC		0.13		0.0		0.0		0.0
+CICU_PrrLo			SRP		EMC		0.11		0.0		0.0		0.0
+CICU_PrrHi			TN		EMC		4.98		0.0		0.0		0.0
+CICU_PrrMo			TN		EMC		4.46		0.0		0.0		0.0
+CICU_PrrLo			TN		EMC		3.99		0.0		0.0		0.0
+CICU_PrrHi			DIN		EMC		0.64		0.0		0.0		0.0
+CICU_PrrMo			DIN		EMC		0.58		0.0		0.0		0.0
+CICU_PrrLo			DIN		EMC		0.51		0.0		0.0		0.0
+CICU_SerHi			FSP		EMC		477		0.0		0.0		0.0
+CICU_SerMo			FSP		EMC		211		0.0		0.0		0.0
+CICU_SerLo			FSP		EMC		92		0.0		0.0		0.0
+CICU_SerHi			TSS		EMC		686		0.0		0.0		0.0
+CICU_SerMo			TSS		EMC		344		0.0		0.0		0.0
+CICU_SerLo			TSS		EMC		172		0.0		0.0		0.0
+CICU_SerHi			TP		EMC		1.25		0.0		0.0		0.0
+CICU_SerMo			TP		EMC		0.75		0.0		0.0		0.0
+CICU_SerLo			TP		EMC		0.46		0.0		0.0		0.0
+CICU_SerHi			SRP		EMC		0.11		0.0		0.0		0.0
+CICU_SerMo			SRP		EMC		0.07		0.0		0.0		0.0
+CICU_SerLo			SRP		EMC		0.05		0.0		0.0		0.0
+CICU_SerHi			TN		EMC		3.99		0.0		0.0		0.0
+CICU_SerMo			TN		EMC		3.21		0.0		0.0		0.0
+CICU_SerLo			TN		EMC		2.57		0.0		0.0		0.0
+CICU_SerHi			DIN		EMC		0.51		0.0		0.0		0.0
+CICU_SerMo			DIN		EMC		0.42		0.0		0.0		0.0
+CICU_SerLo			DIN		EMC		0.34		0.0		0.0		0.0
+PR_PrrHi			FSP		EMC		673		0.0		0.0		0.0
+PR_PrrMo			FSP		EMC		318		0.0		0.0		0.0
+PR_PrrLo			FSP		EMC		154		0.0		0.0		0.0
+PR_PrrHi			TSS		EMC		970		0.0		0.0		0.0
+PR_PrrMo			TSS		EMC		444		0.0		0.0		0.0
+PR_PrrLo			TSS		EMC		218		0.0		0.0		0.0
+PR_PrrHi			TP		EMC		1.59		0.0		0.0		0.0
+PR_PrrMo			TP		EMC		1.04		0.0		0.0		0.0
+PR_PrrLo			TP		EMC		0.68		0.0		0.0		0.0
+PR_PrrHi			SRP		EMC		0.13		0.0		0.0		0.0
+PR_PrrMo			SRP		EMC		0.1		0.0		0.0		0.0
+PR_PrrLo			SRP		EMC		0.06		0.0		0.0		0.0
+PR_PrrHi			TN		EMC		4.46		0.0		0.0		0.0
+PR_PrrMo			TN		EMC		3.63		0.0		0.0		0.0
+PR_PrrLo			TN		EMC		2.95		0.0		0.0		0.0
+PR_PrrHi			DIN		EMC		0.58		0.0		0.0		0.0
+PR_PrrMo			DIN		EMC		0.47		0.0		0.0		0.0
+PR_PrrLo			DIN		EMC		0.38		0.0		0.0		0.0
+PR_SerHi			FSP		EMC		477		0.0		0.0		0.0
+PR_SerMo			FSP		EMC		211		0.0		0.0		0.0
+PR_SerLo			FSP		EMC		92		0.0		0.0		0.0
+PR_SerHi			TSS		EMC		686		0.0		0.0		0.0
+PR_SerMo			TSS		EMC		344		0.0		0.0		0.0
+PR_SerLo			TSS		EMC		172		0.0		0.0		0.0
+PR_SerHi			TP		EMC		1.25		0.0		0.0		0.0
+PR_SerMo			TP		EMC		0.75		0.0		0.0		0.0
+PR_SerLo			TP		EMC		0.46		0.0		0.0		0.0
+PR_SerHi			SRP		EMC		0.11		0.0		0.0		0.0
+PR_SerMo			SRP		EMC		0.07		0.0		0.0		0.0
+PR_SerLo			SRP		EMC		0.05		0.0		0.0		0.0
+PR_SerHi			TN		EMC		3.99		0.0		0.0		0.0
+PR_SerMo			TN		EMC		3.21		0.0		0.0		0.0
+PR_SerLo			TN		EMC		2.57		0.0		0.0		0.0
+PR_SerHi			DIN		EMC		0.51		0.0		0.0		0.0
+PR_SerMo			DIN		EMC		0.42		0.0		0.0		0.0
+PR_SerLo			DIN		EMC		0.34		0.0		0.0		0.0
+SR_PrrHi			FSP		EMC		1021		0.0		0.0		0.0
+SR_PrrMo			FSP		EMC		673		0.0		0.0		0.0
+SR_PrrLo			FSP		EMC		477		0.0		0.0		0.0
+SR_PrrHi			TSS		EMC		1370		0.0		0.0		0.0
+SR_PrrMo			TSS		EMC		970		0.0		0.0		0.0
+SR_PrrLo			TSS		EMC		686		0.0		0.0		0.0
+SR_PrrHi			TP		EMC		2.05		0.0		0.0		0.0
+SR_PrrMo			TP		EMC		1.59		0.0		0.0		0.0
+SR_PrrLo			TP		EMC		1.25		0.0		0.0		0.0
+SR_PrrHi			SRP		EMC		0.16		0.0		0.0		0.0
+SR_PrrMo			SRP		EMC		0.13		0.0		0.0		0.0
+SR_PrrLo			SRP		EMC		0.11		0.0		0.0		0.0
+SR_PrrHi			TN		EMC		4.98		0.0		0.0		0.0
+SR_PrrMo			TN		EMC		4.46		0.0		0.0		0.0
+SR_PrrLo			TN		EMC		3.99		0.0		0.0		0.0
+SR_PrrHi			DIN		EMC		0.64		0.0		0.0		0.0
+SR_PrrMo			DIN		EMC		0.58		0.0		0.0		0.0
+SR_PrrLo			DIN		EMC		0.51		0.0		0.0		0.0
+SR_SerHi			FSP		EMC		298		0.0		0.0		0.0
+SR_SerMo			FSP		EMC		100		0.0		0.0		0.0
+SR_SerLo			FSP		EMC		22		0.0		0.0		0.0
+SR_SerHi			TSS		EMC		487		0.0		0.0		0.0
+SR_SerMo			TSS		EMC		168		0.0		0.0		0.0
+SR_SerLo			TSS		EMC		55		0.0		0.0		0.0
+SR_SerHi			TP		EMC		0.97		0.0		0.0		0.0
+SR_SerMo			TP		EMC		0.48		0.0		0.0		0.0
+SR_SerLo			TP		EMC		0.25		0.0		0.0		0.0
+SR_SerHi			SRP		EMC		0.09		0.0		0.0		0.0
+SR_SerMo			SRP		EMC		0.05		0.0		0.0		0.0
+SR_SerLo			SRP		EMC		0.03		0.0		0.0		0.0
+SR_SerHi			TN		EMC		3.57		0.0		0.0		0.0
+SR_SerMo			TN		EMC		2.6		0.0		0.0		0.0
+SR_SerLo			TN		EMC		1.89		0.0		0.0		0.0
+SR_SerHi			DIN		EMC		0.47		0.0		0.0		0.0
+SR_SerMo			DIN		EMC		0.34		0.0		0.0		0.0
+SR_SerLo			DIN		EMC		0.25		0.0		0.0		0.0
+Pervious_PrrHi			FSP		EMC		1021		0.0		0.0		0.0
+Pervious_PrrMo			FSP		EMC		673		0.0		0.0		0.0
+Pervious_PrrLo			FSP		EMC		477		0.0		0.0		0.0
+Pervious_PrrHi			TSS		EMC		1370		0.0		0.0		0.0
+Pervious_PrrMo			TSS		EMC		970		0.0		0.0		0.0
+Pervious_PrrLo			TSS		EMC		686		0.0		0.0		0.0
+Pervious_PrrHi			TP		EMC		2.05		0.0		0.0		0.0
+Pervious_PrrMo			TP		EMC		1.59		0.0		0.0		0.0
+Pervious_PrrLo			TP		EMC		1.25		0.0		0.0		0.0
+Pervious_PrrHi			SRP		EMC		0.16		0.0		0.0		0.0
+Pervious_PrrMo			SRP		EMC		0.13		0.0		0.0		0.0
+Pervious_PrrLo			SRP		EMC		0.11		0.0		0.0		0.0
+Pervious_PrrHi			TN		EMC		4.98		0.0		0.0		0.0
+Pervious_PrrMo			TN		EMC		4.46		0.0		0.0		0.0
+Pervious_PrrLo			TN		EMC		3.99		0.0		0.0		0.0
+Pervious_PrrHi			DIN		EMC		0.64		0.0		0.0		0.0
+Pervious_PrrMo			DIN		EMC		0.58		0.0		0.0		0.0
+Pervious_PrrLo			DIN		EMC		0.51		0.0		0.0		0.0
+Pervious_SerHi			FSP		EMC		477		0.0		0.0		0.0
+Pervious_SerMo			FSP		EMC		211		0.0		0.0		0.0
+Pervious_SerLo			FSP		EMC		92		0.0		0.0		0.0
+Pervious_SerHi			TSS		EMC		686		0.0		0.0		0.0
+Pervious_SerMo			TSS		EMC		344		0.0		0.0		0.0
+Pervious_SerLo			TSS		EMC		172		0.0		0.0		0.0
+Pervious_SerHi			TP		EMC		1.25		0.0		0.0		0.0
+Pervious_SerMo			TP		EMC		0.75		0.0		0.0		0.0
+Pervious_SerLo			TP		EMC		0.46		0.0		0.0		0.0
+Pervious_SerHi			SRP		EMC		0.11		0.0		0.0		0.0
+Pervious_SerMo			SRP		EMC		0.07		0.0		0.0		0.0
+Pervious_SerLo			SRP		EMC		0.05		0.0		0.0		0.0
+Pervious_SerHi			TN		EMC		3.99		0.0		0.0		0.0
+Pervious_SerMo			TN		EMC		3.21		0.0		0.0		0.0
+Pervious_SerLo			TN		EMC		2.57		0.0		0.0		0.0
+Pervious_SerHi			DIN		EMC		0.51		0.0		0.0		0.0
+Pervious_SerMo			DIN		EMC		0.42		0.0		0.0		0.0
+Pervious_SerLo			DIN		EMC		0.34		0.0		0.0		0.0
+
+[TREATMENT]
+;;Node          	Pollutant       	Function
+;;--------------	----------------	----------
+
+[TIMESERIES]
+;;Name          	Type      	Path 
+;;--------------	----------	--------------------
+TempTSeries      FILE      "C:\dev\plrm2014\GUI5_1_002\Data\204_Temp.dat"
+
+[CURVES]
+;;Name          	Type      	X-Value   	Y-Value
+;;--------------	----------	----------	----------
+
+[REPORTS]
+INPUT     	NO
+CONTROLS  	NO
+SUBCATCHMENTS	NONE
+NODES	NONE
+LINKS	ALL
+
+[TAGS]
+
+[MAP]
+DIMENSIONS 0.000 0.000 10000.000 10000.000
+Units     	Feet 

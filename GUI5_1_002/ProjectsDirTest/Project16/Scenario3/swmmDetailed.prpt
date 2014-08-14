@@ -1,0 +1,91 @@
+*******************************************************************
+POLLUTTANT LOAD REDUCTION MODEL (PLRM) - VERSION 2.0 (Build 2.0.006)
+*******************************************************************
+*******************
+Global Information
+*******************
+ 
+Project Name:....................  BrentDanTestPrj
+Scenario Name:...................  Scenario3
+Number of years in simulation :..  2
+Met Grid # simulated:............  204
+Working Directory:...............  C:\dev\plrm2014\GUI5_1_002\Projects\Project13\Scenario3\
+Date First Created:..............  5/29/2014 1:57:49 PM
+Date Computed:...................  7/21/2014 4:49:12 PM
+ 
+****************
+Catchments
+****************
+ 
+Catch1                      Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+--------------------       ----------------       -----------       -----------        ----------       -----------        -----------      -----------
+LU not found-Catch1_RoadIsInfCa               0.0               0.0               0.0               0.0               0.0               0.0               0.0
+LU not found-Catch1_RoadToPchCa               0.4               0.0               0.0               0.0               0.0               0.0               0.0
+LU not found-Catch1_RoadIsPchCa               0.0               0.0               0.0               0.0               0.0               0.0               0.0
+LU not found-Catch1_RoadToOutCa               0.5               0.0               0.0               0.0               0.0               0.0               0.0
+Single Family Residential                0.2              14.3               3.6               0.1               0.0               0.4               0.0
+Multi Family Residential                 0.1               2.6               0.2               0.0               0.0               0.0               0.0
+CICU                                     0.2              35.4              19.7               0.2               0.1               1.0               0.1
+Vegetated Turf                           0.0               0.0               0.0               0.0               0.0               0.0               0.0
+Catch1 Total                             1.6               170                97                 1                 0                 3                 0
+ 
+ 
+ 
+**********************
+Storm Water Treatment
+**********************
+ 
+DryBasin1                   Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+-------------------------  ----------------       -----------       -----------        ----------       -----------        -----------      -----------
+Total Influent                           2.0             216.8             122.7               0.9               0.3               3.8               0.4
+Bypass Stream                            0.2              21.3              12.0               0.1               0.0               0.4               0.0
+Treated Stream                           1.3              81.2              75.6               0.5               0.2               2.5               0.3
+Total Effluent                           1.5             102.4              87.6               0.6               0.2               2.9               0.3
+Volume/Load Removed                      0.5             114.4              35.2               0.3               0.1               0.9               0.1
+%Removed                                 23%               53%               29%               34%               29%               25%               25%
+%Treated                                90%
+
+InfiltrationBasin1          Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+-------------------------  ----------------       -----------       -----------        ----------       -----------        -----------      -----------
+Total Influent                           0.0               0.0               0.0               0.0               0.0               0.0               0.0
+Bypass Stream                            0.0               0.0               0.0               0.0               0.0               0.0               0.0
+Treated Stream                           0.0               0.0               0.0               0.0               0.0               0.0               0.0
+Total Effluent                           0.0               0.0               0.0               0.0               0.0               0.0               0.0
+Volume/Load Removed                      0.0               0.0               0.0               0.0               0.0               0.0               0.0
+%Removed                                  0%                0%                0%                0%                0%                0%                0%
+%Treated                               NAN%
+
+CartridgeFilter1            Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+-------------------------  ----------------       -----------       -----------        ----------       -----------        -----------      -----------
+Total Influent                           2.0             217.3             123.0               0.9               0.3               3.8               0.4
+Bypass Stream                            2.0             217.2             123.0               0.9               0.3               3.8               0.4
+Treated Stream                           0.0               0.0               0.0               0.0               0.0               0.0               0.0
+Total Effluent                           2.0             217.1             122.9               0.9               0.3               3.8               0.4
+Volume/Load Removed                      0.0               0.2               0.1               0.0               0.0               0.0               0.0
+%Removed                                  0%                0%                0%                0%                0%                0%                0%
+%Treated                                 0%
+
+ 
+****************
+Scenario Summary
+****************
+ 
+Average Annual Hydrology              acre-feet/yr            inches/yr
+----------------------------          ------------            ---------
+  Total Precipitation ......                  11.4                 49.7
+  Evaporation Loss .........                   1.8                  7.6
+  System Surface Discharge..                   1.5                  6.6
+  Percolation to Groundwater                   8.3                 36.0
+  Continuity Error..........                   -1%
+  Percent Surface Runoff....                   13%
+ 
+ 
+Average Annual Surface Loading
+------------------------------
+ 
+Name                        Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+--------------------       ----------------       -----------       -----------        ----------       -----------        ----------       -----------
+Outfall1                                 1.5             102.4              87.6               0.6               0.2               2.9               0.3
+Scenario Total                           1.5             102.4              87.6               0.6               0.2               2.9               0.3
+
+

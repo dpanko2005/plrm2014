@@ -1,0 +1,345 @@
+
+  EPA STORM WATER MANAGEMENT MODEL - VERSION 5.1 (Build 5.1.001)
+  --------------------------------------------------------------
+
+  Input Files 
+  WARNING 04: minimum elevation drop used for Conduit Outfall1_UsCo
+  WARNING 05: minimum slope used for Conduit Outfall1_UsCo
+  WARNING 04: minimum elevation drop used for Conduit TestDryBasinDP_OtCo
+  WARNING 05: minimum slope used for Conduit TestDryBasinDP_OtCo
+  WARNING 04: minimum elevation drop used for Conduit TestDryBasinDP_InCo
+  WARNING 05: minimum slope used for Conduit TestDryBasinDP_InCo
+  
+  *********************************************************
+  NOTE: The summary statistics displayed in this report are
+  based on results found at every computational time step,  
+  not just on results from each reporting time step.
+  *********************************************************
+  
+  ****************
+  Analysis Options
+  ****************
+  Flow Units ............... CFS
+  Process Models:
+    Rainfall/Runoff ........ YES
+    Snowmelt ............... YES
+    Groundwater ............ YES
+    Flow Routing ........... YES
+    Ponding Allowed ........ NO
+    Water Quality .......... YES
+  Infiltration Method ...... GREEN_AMPT
+  Flow Routing Method ...... KINWAVE
+  Starting Date ............ OCT-01-1990 00:00:00
+  Ending Date .............. OCT-01-1996 00:00:00
+  Antecedent Dry Days ...... 0.0
+  Report Time Step ......... 00:15:00
+  Wet Time Step ............ 00:15:00
+  Dry Time Step ............ 04:00:00
+  Routing Time Step ........ 30.00 sec
+  
+  
+  *********************
+  Rainfall File Summary
+  *********************
+  Station    First        Last         Recording   Periods    Periods    Periods
+  ID         Date         Date         Frequency  w/Precip    Missing    Malfunc.
+  -------------------------------------------------------------------------------
+  1          NOV-02-1988  NOV-14-2006     60 min     13389          0          0
+
+  
+  **************************        Volume         Depth
+  Runoff Quantity Continuity     acre-feet        inches
+  **************************     ---------       -------
+  Initial Snow Cover .......         0.000         0.000
+  Total Precipitation ......       134.709       379.730
+  Evaporation Loss .........        25.920        73.065
+  Infiltration Loss ........        79.545       224.229
+  Surface Runoff ...........        26.518        74.751
+  Snow Removed .............         0.000         0.000
+  Final Snow Cover .........         3.341         9.417
+  Final Surface Storage ....         0.006         0.016
+  Continuity Error (%) .....        -0.461
+  
+  
+  **************************           TSS           FSP            TP           SRP            TN
+  Runoff Quality Continuity            lbs           lbs           lbs           lbs           lbs
+  **************************    ----------    ----------    ----------    ----------    ----------
+  Initial Buildup ..........         0.000         0.000         0.000         0.000         0.000
+  Surface Buildup ..........    119565.713     85921.102       195.034        16.208       553.477
+  Wet Deposition ...........         0.000         0.000         0.000         0.000         0.000
+  Sweeping Removal .........         0.000         0.000         0.000         0.000         0.000
+  Infiltration Loss ........     51326.856     36728.637        84.879         7.086       246.330
+  BMP Removal ..............         0.000         0.000         0.000         0.000         0.000
+  Surface Runoff ...........     68238.856     49192.464       110.155         9.122       307.147
+  Remaining Buildup ........         0.001         0.001         0.000         0.000         0.000
+  Continuity Error (%) .....         0.000         0.000         0.000         0.000         0.000
+  
+  
+  **************************           DIN
+  Runoff Quality Continuity            lbs
+  **************************    ----------
+  Initial Buildup ..........         0.000
+  Surface Buildup ..........        71.302
+  Wet Deposition ...........         0.000
+  Sweeping Removal .........         0.000
+  Infiltration Loss ........        31.744
+  BMP Removal ..............         0.000
+  Surface Runoff ...........        39.558
+  Remaining Buildup ........         0.000
+  Continuity Error (%) .....         0.000
+  
+  
+  **************************        Volume         Depth
+  Groundwater Continuity         acre-feet        inches
+  **************************     ---------       -------
+  Initial Storage ..........      1955.794      5513.160
+  Infiltration .............        79.545       224.229
+  Upper Zone ET ............         2.636         7.432
+  Lower Zone ET ............         0.000         0.000
+  Deep Percolation .........         0.000         0.000
+  Groundwater Flow .........         0.000         0.000
+  Final Storage ............      2032.702      5729.957
+  Continuity Error (%) .....         0.000
+  
+  
+  **************************        Volume        Volume
+  Flow Routing Continuity        acre-feet      10^6 gal
+  **************************     ---------     ---------
+  Dry Weather Inflow .......         0.000         0.000
+  Wet Weather Inflow .......        26.518         8.641
+  Groundwater Inflow .......         0.000         0.000
+  RDII Inflow ..............         0.000         0.000
+  External Inflow ..........         0.000         0.000
+  External Outflow .........        26.518         8.641
+  Internal Outflow .........         0.000         0.000
+  Evaporation Loss .........         0.000         0.000
+  Seepage Loss .............         0.000         0.000
+  Initial Stored Volume ....         0.000         0.000
+  Final Stored Volume ......         0.000         0.000
+  Continuity Error (%) .....         0.000
+  
+  
+  **************************           TSS           FSP            TP           SRP            TN
+  Quality Routing Continuity           lbs           lbs           lbs           lbs           lbs
+  **************************    ----------    ----------    ----------    ----------    ----------
+  Dry Weather Inflow .......         0.000         0.000         0.000         0.000         0.000
+  Wet Weather Inflow .......     68238.856     49192.464       110.155         9.122       307.147
+  Groundwater Inflow .......         0.000         0.000         0.000         0.000         0.000
+  RDII Inflow ..............         0.000         0.000         0.000         0.000         0.000
+  External Inflow ..........         0.000         0.000         0.000         0.000         0.000
+  Internal Flooding ........         0.000         0.000         0.000         0.000         0.000
+  External Outflow .........     68238.856     49192.464       110.155         9.122       307.147
+  Mass Reacted .............         0.000         0.000         0.000         0.000         0.000
+  Initial Stored Mass ......         0.000         0.000         0.000         0.000         0.000
+  Final Stored Mass ........         0.000         0.000         0.000         0.000         0.000
+  Continuity Error (%) .....         0.000         0.000         0.000         0.000         0.000
+  
+  
+  **************************           DIN
+  Quality Routing Continuity           lbs
+  **************************    ----------
+  Dry Weather Inflow .......         0.000
+  Wet Weather Inflow .......        39.558
+  Groundwater Inflow .......         0.000
+  RDII Inflow ..............         0.000
+  External Inflow ..........         0.000
+  Internal Flooding ........         0.000
+  External Outflow .........        39.558
+  Mass Reacted .............         0.000
+  Initial Stored Mass ......         0.000
+  Final Stored Mass ........         0.000
+  Continuity Error (%) .....         0.000
+  
+  
+  ********************************
+  Highest Flow Instability Indexes
+  ********************************
+  All links are stable.
+  
+  
+  *************************
+  Routing Time Step Summary
+  *************************
+  Minimum Time Step           :    30.00 sec
+  Average Time Step           :    30.00 sec
+  Maximum Time Step           :    30.00 sec
+  Percent in Steady State     :     0.00
+  Average Iterations per Step :     1.00
+  Percent Not Converging      :     0.00
+  
+  
+  ***************************
+  Subcatchment Runoff Summary
+  ***************************
+  
+  --------------------------------------------------------------------------------------------------------
+                            Total      Total      Total      Total      Total       Total     Peak  Runoff
+                           Precip      Runon       Evap      Infil     Runoff      Runoff   Runoff   Coeff
+  Subcatchment                 in         in         in         in         in    10^6 gal      CFS
+  --------------------------------------------------------------------------------------------------------
+  Catch1_PrrToInfCa        379.73       0.00      81.47      79.56     210.04        1.14     0.39   0.553
+  Catch1_PrrIsInfCa        379.73    6001.12      31.95    5926.93     433.94        0.08     0.40   0.068
+  Catch1_SerToInfCa        379.73       0.00      72.51     113.46     185.84        3.03     1.17   0.489
+  Catch1_SerIsInfCa        379.73    5575.34      26.62    5558.72     375.94        0.20     1.20   0.063
+  Catch1_PrrToDspCa        379.73       0.00      81.70      79.57     209.62        2.28     0.78   0.552
+  Catch1_PrrIsDspCa        379.73     729.11       0.06    1093.17      16.02        0.05     0.89   0.014
+  Catch1_SerToDspCa        379.73       0.00      72.19     113.45     186.44        1.01     0.39   0.491
+  Catch1_SerIsDspCa        379.73     324.24       0.01     698.94       5.14        0.02     0.50   0.007
+  Catch1_PrrToOutCa        379.73       0.00      82.78     156.78     131.60        5.00     2.79   0.347
+  Catch1_SerToOutCa        379.73       0.00      72.90     198.16     100.82        3.29     2.37   0.265
+  
+  
+  ****************************
+  Subcatchment Washoff Summary
+  ****************************
+  
+  --------------------------------------------------------------------------------------------------------
+                                 TSS           FSP            TP           SRP            TN           DIN
+  Subcatchment                   lbs           lbs           lbs           lbs           lbs           lbs
+  --------------------------------------------------------------------------------------------------------
+  Catch1_PrrToInfCa        11859.078      8696.025        18.140         1.433        45.767         5.901
+  Catch1_PrrIsInfCa          811.902       588.978         1.251         0.117         3.209         0.407
+  Catch1_SerToInfCa        13380.252      9095.452        25.487         2.315        89.671        11.549
+  Catch1_SerIsInfCa          867.984       575.526         1.666         0.195         5.937         0.747
+  Catch1_PrrToDspCa        23664.680     17352.836        36.197         2.859        91.327        11.776
+  Catch1_PrrIsDspCa          374.229       270.549         0.578         0.057         1.490         0.188
+  Catch1_SerToDspCa         4476.227      3042.791         8.527         0.774        29.999         3.863
+  Catch1_SerIsDspCa           40.448        26.355         0.078         0.011         0.280         0.035
+  Catch1_PrrToOutCa        51732.314     37934.271        79.130         6.249       199.645        25.742
+  Catch1_SerToOutCa        14411.979      9796.785        27.453         2.493        96.586        12.439
+  --------------------------------------------------------------------------------------------------------
+  System                  121619.094     87379.568       198.506        16.502       563.910        72.646
+  
+  
+  ******************
+  Node Depth Summary
+  ******************
+  
+  ---------------------------------------------------------------------
+                                 Average  Maximum  Maximum  Time of Max
+                                   Depth    Depth      HGL   Occurrence
+  Node                 Type         Feet     Feet     Feet  days hr:min
+  ---------------------------------------------------------------------
+  Outfall1_UsJu        JUNCTION     0.00     0.00     0.00     0  00:00
+  Catch1_Ju            JUNCTION     0.00     0.00     0.00     0  00:00
+  TestDryBasinDP_InJu  JUNCTION     0.00     0.00     0.00     0  00:00
+  TestDryBasinDP_TrJu  JUNCTION     0.00     0.00     0.00     0  00:00
+  TestDryBasinDP_OuJu  JUNCTION     0.00     0.00     0.00     0  00:00
+  Outfall1             OUTFALL      0.00     0.00     0.00     0  00:00
+  GW                   OUTFALL      0.00     0.00     0.00     0  00:00
+  TestDryBasinDP_St    STORAGE      0.00     0.00     0.00     0  00:00
+  
+  
+  *******************
+  Node Inflow Summary
+  *******************
+  
+  -------------------------------------------------------------------------------------------------
+                                  Maximum  Maximum                  Lateral       Total        Flow
+                                  Lateral    Total  Time of Max      Inflow      Inflow     Balance
+                                   Inflow   Inflow   Occurrence      Volume      Volume       Error
+  Node                 Type           CFS      CFS  days hr:min    10^6 gal    10^6 gal     Percent
+  -------------------------------------------------------------------------------------------------
+  Outfall1_UsJu        JUNCTION      0.00     0.00     0  00:00           0           0       0.000gal
+  Catch1_Ju            JUNCTION      8.14     8.14   154  13:00        8.64        8.64       0.000
+  TestDryBasinDP_InJu  JUNCTION      0.00     0.00     0  00:00           0           0       0.000gal
+  TestDryBasinDP_TrJu  JUNCTION      0.00     0.00     0  00:00           0           0       0.000gal
+  TestDryBasinDP_OuJu  JUNCTION      0.00     0.00     0  00:00           0           0       0.000gal
+  Outfall1             OUTFALL       0.00     0.00     0  00:00           0           0       0.000gal
+  GW                   OUTFALL       0.00     0.00     0  00:00           0           0       0.000gal
+  TestDryBasinDP_St    STORAGE       0.00     0.00     0  00:00           0           0       0.000gal
+  
+  
+  **********************
+  Node Surcharge Summary
+  **********************
+  
+  Surcharging occurs when water rises above the top of the highest conduit.
+  ---------------------------------------------------------------------
+                                               Max. Height   Min. Depth
+                                   Hours       Above Crown    Below Rim
+  Node                 Type      Surcharged           Feet         Feet
+  ---------------------------------------------------------------------
+  Outfall1_UsJu        JUNCTION    52608.01          0.000        4.000
+  Catch1_Ju            JUNCTION    52608.01          0.000        4.000
+  TestDryBasinDP_InJu  JUNCTION    52608.01          0.000        4.000
+  TestDryBasinDP_TrJu  JUNCTION    52608.01          0.000        4.000
+  
+  
+  *********************
+  Node Flooding Summary
+  *********************
+  
+  No nodes were flooded.
+  
+  
+  **********************
+  Storage Volume Summary
+  **********************
+  
+  --------------------------------------------------------------------------------------------------
+                         Average     Avg  Evap Infil       Maximum     Max    Time of Max    Maximum
+                          Volume    Pcnt  Pcnt  Pcnt        Volume    Pcnt     Occurrence    Outflow
+  Storage Unit          1000 ft3    Full  Loss  Loss      1000 ft3    Full    days hr:min        CFS
+  --------------------------------------------------------------------------------------------------
+  TestDryBasinDP_St        0.000       0     0     0         0.000       0       0  00:00       0.00
+  
+  
+  ***********************
+  Outfall Loading Summary
+  ***********************
+  
+  -----------------------------------------------------------------------------------------------------------------------------------------------
+                         Flow       Avg       Max       Total         Total         Total         Total         Total         Total         Total
+                         Freq      Flow      Flow      Volume           TSS           FSP            TP           SRP            TN           DIN
+  Outfall Node           Pcnt       CFS       CFS    10^6 gal           lbs           lbs           lbs           lbs           lbs           lbs
+  -----------------------------------------------------------------------------------------------------------------------------------------------
+  Outfall1               0.00      0.00      0.00       0.000         0.000         0.000         0.000         0.000         0.000         0.000
+  GW                     0.00      0.00      0.00       0.000         0.000         0.000         0.000         0.000         0.000         0.000
+  -----------------------------------------------------------------------------------------------------------------------------------------------
+  System                 0.00      0.00      0.00       0.000         0.000         0.000         0.000         0.000         0.000         0.000
+  
+  
+  ********************
+  Link Flow Summary
+  ********************
+  
+  -----------------------------------------------------------------------------
+                                 Maximum  Time of Max   Maximum    Max/    Max/
+                                  |Flow|   Occurrence   |Veloc|    Full    Full
+  Link                 Type          CFS  days hr:min    ft/sec    Flow   Depth
+  -----------------------------------------------------------------------------
+  Outfall1_UsCo        DUMMY        0.00     0  00:00
+  TestDryBasinDP_OtCo  DUMMY        0.00     0  00:00
+  TestDryBasinDP_InCo  DUMMY        0.00     0  00:00
+  TestDryBasinDP_ByWe  WEIR         0.00     0  00:00                      0.00
+  TestDryBasinDP_TrOl  DUMMY        0.00     0  00:00
+  TestDryBasinDP_GwOl  DUMMY        0.00     0  00:00
+  
+  
+  *************************
+  Conduit Surcharge Summary
+  *************************
+  
+  No conduits were surcharged.
+  
+  
+  ***************************
+  Link Pollutant Load Summary
+  ***************************
+  
+  --------------------------------------------------------------------------------------------------------
+                                 TSS           FSP            TP           SRP            TN           DIN
+  Link                           lbs           lbs           lbs           lbs           lbs           lbs
+  --------------------------------------------------------------------------------------------------------
+  Outfall1_UsCo                0.000         0.000         0.000         0.000         0.000         0.000
+  TestDryBasinDP_OtCo          0.000         0.000         0.000         0.000         0.000         0.000
+  TestDryBasinDP_InCo          0.000         0.000         0.000         0.000         0.000         0.000
+  TestDryBasinDP_ByWe          0.000         0.000         0.000         0.000         0.000         0.000
+  TestDryBasinDP_TrOl          0.000         0.000         0.000         0.000         0.000         0.000
+  TestDryBasinDP_GwOl          0.000         0.000         0.000         0.000         0.000         0.000
+  
+
+  Analysis begun on:  Fri Apr 11 11:04:26 2014
+  Analysis ended on:  Fri Apr 11 11:04:43 2014
+  Total elapsed time: 00:00:17

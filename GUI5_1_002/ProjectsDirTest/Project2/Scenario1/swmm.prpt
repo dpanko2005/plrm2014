@@ -1,0 +1,48 @@
+*******************
+Global Information
+*******************
+ 
+Project Name:....................  TestMetGrid
+Scenario Name:...................  Scenario1
+Number of years in simulation :..  6
+Met Grid # simulated:............  231
+Working Directory:...............  C:\Documents and Settings\dpankani\My Documents\RAD Studio\Projects\PLRM\July09\Projects\Project2\Scenario1\
+Date First Created:..............  10/16/2009 16:58:51
+Date Computed:...................  10/19/2009 12:43:09
+ 
+****************
+Catchments
+****************
+ 
+Catchment Name             Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Catch1                                 3.52           6522.56           4535.36             11.89              1.05             37.94              4.85
+ 
+**********************
+Storm Water Treatment
+**********************
+ 
+ 
+****************
+Scenario Summary
+****************
+ 
+Average Annual Hydrology              acre-feet/yr            inches/yr
+-----------------------------------------------------------------------
+  Total Precipitation ......                 13.00                38.99
+  Evaporation Loss .........                  3.56                10.68
+  System Surface Discharge..                  3.52                10.57
+  Percolation to Groundwater                  5.95                17.84
+  Continuity Error..........                -0.26%
+  Percent Surface Runoff....                27.11%
+ 
+ 
+Average Annual Surface Loading
+------------------------------
+ 
+Name                       Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Outfall1                               3.52           6520.07           4533.63             11.88              1.05             37.92              4.85
+Scenario Total                         3.52           6520.07           4533.63             11.88              1.05             37.92              4.85
+
+

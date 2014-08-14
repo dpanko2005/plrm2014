@@ -1,0 +1,156 @@
+*******************************************************************
+POLLUTTANT LOAD REDUCTION MODEL (PLRM) - VERSION 2.0 (Build 2.0.006)
+*******************************************************************
+*******************
+Global Information
+*******************
+ 
+Project Name:....................  BrentDanTestPrj
+Scenario Name:...................  Scenario2
+Number of years in simulation :..  2
+Met Grid # simulated:............  204
+Working Directory:...............  C:\dev\plrm2014\GUI5_1_002\Projects\Project13\Scenario2\
+Date First Created:..............  5/29/2014 1:57:49 PM
+Date Computed:...................  7/7/2014 5:16:00 PM
+ 
+****************
+Catchments
+****************
+ 
+Catch1                      Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+--------------------       ----------------       -----------       -----------        ----------       -----------        -----------      -----------
+Primary Road (ROW)                      49.6          182704.5          136161.5             273.4              21.3             664.1              85.4
+Secondary Road (ROW)                    38.7           71073.4           49419.8             129.5              11.4             413.4              52.8
+Single Family Residential               17.0            2571.4             925.5              21.3               6.6              79.9               6.6
+Multi Family Residential                22.6            9133.7            5297.6              35.8               8.8             173.2              25.6
+CICU                                    28.7           22966.3           14466.3              54.4              28.7             191.5              22.7
+Vegetated Turf                           2.0              45.5              16.3               4.1               2.4              16.6               2.1
+Other                                   27.7           18467.0            1849.0              13.7               5.0              26.7               1.5
+Catch1 Total                           186.3            306962            208136               532                84              1565               197
+ 
+ 
+Catch2                      Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+--------------------       ----------------       -----------       -----------        ----------       -----------        -----------      -----------
+Primary Road (ROW)                      49.6          182704.5          136161.5             273.4              21.3             664.1              85.4
+Single Family Residential               17.0            2571.4             925.5              21.3               6.6              79.9               6.6
+Catch2 Total                            66.6            185276            137087               295                28               744                92
+ 
+ 
+Catch3                      Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+--------------------       ----------------       -----------       -----------        ----------       -----------        -----------      -----------
+Other                                    6.8           18680.2            1877.2              28.0               8.8              43.1               0.3
+Catch3 Total                             6.8             18680              1877                28                 9                43                 0
+ 
+ 
+Catch4                      Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+--------------------       ----------------       -----------       -----------        ----------       -----------        -----------      -----------
+Other                                    3.3            2421.4             241.2               1.1               0.3               3.2               1.2
+Catch4 Total                             3.3              2421               241                 1                 0                 3                 1
+ 
+ 
+Catch5                      Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+--------------------       ----------------       -----------       -----------        ----------       -----------        -----------      -----------
+Multi Family Residential                 3.4            1374.7             797.3               5.4               1.3              26.1               3.8
+Catch5 Total                             3.4              1375               797                 5                 1                26                 4
+ 
+ 
+Catch6                      Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+--------------------       ----------------       -----------       -----------        ----------       -----------        -----------      -----------
+Other                                    4.6           12480.5            1254.2              18.7               5.9              28.8               0.2
+Catch6 Total                             4.6             12481              1254                19                 6                29                 0
+ 
+ 
+ 
+**********************
+Storm Water Treatment
+**********************
+ 
+DryBasin1                   Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+-------------------------  ----------------       -----------       -----------        ----------       -----------        -----------      -----------
+Total Influent                         185.8          306757.8          207940.9             531.9              84.1            1564.4             196.5
+Bypass Stream                          179.3          294799.7          199385.1             511.6              81.5            1506.2             189.1
+Treated Stream                           5.0             339.8             339.8               2.2               0.7              14.9               1.6
+Total Effluent                         184.3          295099.9          199685.3             513.7              82.1            1520.8             190.7
+Volume/Load Removed                      1.5           11657.9            8255.6              18.3               2.0              43.6               5.8
+%Removed                                  1%                4%                4%                3%                2%                3%                3%
+%Treated                                 4%
+
+InfiltrationBasin1          Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+-------------------------  ----------------       -----------       -----------        ----------       -----------        -----------      -----------
+Total Influent                          66.6          185175.4          136992.8             294.6              27.9             743.8              91.9
+Bypass Stream                            4.3          174318.1          128987.4             277.2              26.2             699.6              86.4
+Treated Stream                           0.0               0.0               0.0               0.0               0.0               0.0               0.0
+Total Effluent                           4.3          174318.1          128987.4             277.2              26.2             699.6              86.4
+Volume/Load Removed                     62.3           10857.4            8005.4              17.4               1.7              44.2               5.4
+%Removed                                 94%                6%                6%                6%                6%                6%                6%
+%Treated                                94%
+
+WetBasin1                   Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+-------------------------  ----------------       -----------       -----------        ----------       -----------        -----------      -----------
+Total Influent                           6.8           18682.7            1877.3              28.0               8.8              43.1               0.3
+Bypass Stream                            2.6               0.0               0.0               0.0               0.0               0.0               0.0
+Treated Stream                           4.1             243.6             243.6               2.3               0.7              13.9               0.2
+Total Effluent                           6.7            7465.1             969.2              13.1               4.1              30.6               0.3
+Volume/Load Removed                      0.1           11217.6             908.0              14.9               4.8              12.5               0.0
+%Removed                                  1%               60%               48%               53%               54%               29%                1%
+%Treated                                62%
+
+BedFilter1                  Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+-------------------------  ----------------       -----------       -----------        ----------       -----------        -----------      -----------
+Total Influent                           3.4            1374.7             797.3               5.4               1.3              26.1               3.8
+Bypass Stream                            0.6             242.8             140.8               1.0               0.2               4.6               0.7
+Treated Stream                           2.8              99.0              99.0               1.1               0.3              11.4               3.2
+Total Effluent                           3.4             341.8             239.8               2.0               0.5              16.0               3.9
+Volume/Load Removed                      0.0            1033.0             557.5               3.4               0.8              10.0               0.0
+%Removed                                  0%               75%               70%               63%               59%               39%                0%
+%Treated                                82%
+
+CartridgeFilter1            Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+-------------------------  ----------------       -----------       -----------        ----------       -----------        -----------      -----------
+Total Influent                           3.3            2421.4             241.2               1.1               0.3               3.2               1.2
+Bypass Stream                            0.7             504.2              50.2               0.2               0.1               0.7               0.2
+Treated Stream                           2.6              92.0              92.0               0.8               0.3               2.5               0.9
+Total Effluent                           3.3             596.2             142.2               1.1               0.3               3.2               1.2
+Volume/Load Removed                      0.0            1825.2              99.0               0.0               0.0               0.0               0.0
+%Removed                                  0%               75%               41%                0%                0%                0%                0%
+%Treated                                79%
+
+TreatmentVault1             Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+-------------------------  ----------------       -----------       -----------        ----------       -----------        -----------      -----------
+Total Influent                           4.6           12478.5            1254.2              18.7               5.9              28.8               0.2
+Bypass Stream                            0.3             747.9              75.2               1.1               0.4               1.7               0.0
+Treated Stream                           4.3             555.7             555.5               2.1               1.0              16.4               0.2
+Total Effluent                           4.6            1303.6             630.6               3.2               1.4              18.2               0.2
+Volume/Load Removed                      0.0           11174.9             623.6              15.5               4.5              10.6               0.0
+%Removed                                  0%               90%               50%               83%               76%               37%                0%
+%Treated                                94%
+
+ 
+****************
+Scenario Summary
+****************
+ 
+Average Annual Hydrology              acre-feet/yr            inches/yr
+----------------------------          ------------            ---------
+  Total Precipitation ......                1889.9                 49.7
+  Evaporation Loss .........                 302.5                  8.0
+  System Surface Discharge..                 264.6                  7.0
+  Percolation to Groundwater                1325.8                 34.9
+  Continuity Error..........                    0%
+  Percent Surface Runoff....                   14%
+ 
+ 
+Average Annual Surface Loading
+------------------------------
+ 
+Name                        Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+--------------------       ----------------       -----------       -----------        ----------       -----------        ----------       -----------
+Outfall1                               184.3          295070.2          199658.9             513.6              82.1            1520.6             190.7
+Outfall2                                62.4          174269.3          128948.3             277.1              26.2             699.5              86.4
+Outfall3                                 6.7            7464.0             969.2              13.1               4.1              30.6               0.3
+Outfall4                                 3.3             596.1             142.2               1.1               0.3               3.2               1.2
+Outfall5                                 3.4             341.7             239.8               2.0               0.5              16.0               3.9
+Outfall6                                 4.6            1303.4             630.6               3.2               1.4              18.2               0.2
+Scenario Total                         264.7          479044.7          330588.9             810.1             114.7            2288.0             282.5
+
+

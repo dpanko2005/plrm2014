@@ -1,0 +1,62 @@
+*******************
+Global Information
+*******************
+ 
+Project Name:....................  Project12
+Scenario Name:...................  TestWetBasinResults
+Number of years in simulation :..  6
+Met Grid # simulated:............  1
+Working Directory:...............  C:\dev\plrm2014\GUI5_1_002\Projects\Project12\Scenario3\
+Date First Created:..............  5/26/2014 2:02:06 PM
+Date Computed:...................  5/29/2014 11:25:05 AM
+ 
+****************
+Catchments
+****************
+ 
+Catchment Name             Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Catch1                                 3.98          14572.99          10851.39             21.82              1.73             53.08              6.81
+Catch2                                 3.57           6547.73           4547.54             11.94              1.07             38.13              4.87
+Catch3                                 3.28            499.81            179.90              4.15              1.28             15.53              1.28
+ 
+**********************
+Storm Water Treatment
+**********************
+ 
+WetBasin1                  Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Total Influent                         3.98          14573.97          10852.15             21.82              1.73             53.09              6.81
+Bypass Stream                          1.60           5832.36           4338.30              8.74              0.71             21.30              2.73
+Treated Stream                         2.31             75.29             75.29              0.74              0.27              6.28              0.92
+Total Effluent                         3.91           5907.91           4413.80              9.48              0.98             27.58              3.65
+Volume/Load Removed                    0.07           8666.06           6438.35             12.34              0.75             25.50              3.17
+%Change(Removed/Influent)             1.68%            59.46%            59.33%            56.57%            43.53%            48.04%            46.48%
+%Capture(1-Bypass/Influent)            59.81%
+
+ 
+****************
+Scenario Summary
+****************
+ 
+Average Annual Hydrology              acre-feet/yr            inches/yr
+-----------------------------------------------------------------------
+  Total Precipitation ......                 64.84                63.29
+  Evaporation Loss .........                 11.77                11.49
+  System Surface Discharge..                 10.77                10.51
+  Percolation to Groundwater                 41.36                40.36
+  Continuity Error..........                 1.47%
+  Percent Surface Runoff....                17.01%
+ 
+ 
+Average Annual Surface Loading
+------------------------------
+ 
+Name                       Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Outfall1                               3.91           5908.12           4413.98              9.48              0.98             27.58              3.65
+Outfall2                               3.57           6548.27           4547.93             11.94              1.07             38.14              4.87
+Outfall3                               3.28            499.88            179.92              4.15              1.28             15.53              1.28
+Scenario Total                        10.77          12956.27           9141.83             25.56              3.32             81.25              9.79
+
+

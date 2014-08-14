@@ -1,0 +1,59 @@
+*******************************************************************
+POLLUTTANT LOAD REDUCTION MODEL (PLRM) - VERSION 2.0 (Build 2.0.006)
+*******************************************************************
+*******************
+Global Information
+*******************
+ 
+Project Name:....................  BrentDanTestPrj
+Scenario Name:...................  Scenario28
+Number of years in simulation :..  2
+Met Grid # simulated:............  204
+Working Directory:...............  C:\dev\plrm2014\GUI5_1_002\Projects\Project13\Scenario28\
+Date First Created:..............  5/29/2014 1:57:49 PM
+Date Computed:...................  8/4/2014 5:08:10 PM
+ 
+****************
+Catchments
+****************
+ 
+Catch1                      Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+--------------------       ----------------       -----------       -----------        ----------       -----------        -----------      -----------
+Roads                                    1.2            1813.8            1142.4               3.5               0.3              11.9               1.6
+Single Family Residential                0.8             120.1              33.9               1.0               0.4               3.9               0.3
+Multi Family Residential                 0.1              22.4              10.7               0.2               0.1               0.9               0.1
+CICU                                     0.1              80.1              47.6               0.2               0.0               0.8               0.1
+Vegetated Turf                           1.5             202.8              73.0               1.8               0.5               6.6               0.5
+Other                                    0.0               0.0               0.0               0.0               0.0               0.0               0.0
+Catch1 Total                             4.3              2522              1482                 8                 2                28                 3
+ 
+ 
+ 
+**********************
+Storm Water Treatment
+**********************
+ 
+ 
+****************
+Scenario Summary
+****************
+ 
+Average Annual Hydrology              acre-feet/yr            inches/yr
+----------------------------          ------------            ---------
+  Total Precipitation ......                  43.4                 49.7
+  Evaporation Loss .........                   7.0                  8.1
+  System Surface Discharge..                   3.9                  4.4
+  Percolation to Groundwater                  32.6                 37.4
+  Continuity Error..........                    0%
+  Percent Surface Runoff....                    9%
+ 
+ 
+Average Annual Surface Loading
+------------------------------
+ 
+Name                        Volume(ac-ft/yr)       TSS(lbs/yr)       FSP(lbs/yr)        TP(lbs/yr)       SRP(lbs/yr)        TN(lbs/yr)       DIN(lbs/yr)
+--------------------       ----------------       -----------       -----------        ----------       -----------        ----------       -----------
+Outfall1                                 3.9            1868.3            1070.1               6.3               1.5              23.4               2.6
+Scenario Total                           3.9            1868.3            1070.1               6.3               1.5              23.4               2.6
+
+

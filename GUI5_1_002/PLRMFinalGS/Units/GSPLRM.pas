@@ -5,7 +5,8 @@ interface
 uses
   SysUtils, Windows, Messages, Classes, Controls, Forms, Dialogs, XMLIntf,
   msxmldom, XMLDoc,
-  StdCtrls, ComCtrls, Grids, GSUtils, GSTypes, Uproject, GSCatchments, GSNodes;
+  StdCtrls, ComCtrls, Grids, GSUtils, GSTypes, Uproject, GSCatchments, GSNodes,
+  GSGIS;
 
 const
   MAXNODETYPES = 9;
@@ -36,15 +37,17 @@ type
     hasActvScn: Boolean;
     RunStatusStopped: Integer;
 
+    PLRMGISObj: TPLRMGIS;
     // file paths
     projXMLPath: String;
-    //defaultValidateFilePath: String;
+    // defaultValidateFilePath: String;
     scenarioXMLFilePath: String;
     curSWMMInptFilePath: String;
     userSWMMInptFilePath: String;
     userSWMMRptFilePath: String;
     dbPath: string;
     wrkdir: string;
+    gisdir: string;
 
     dateCreated: String;
     dateModified: String;
@@ -244,8 +247,12 @@ begin
     SysUtils.FindClose(SearchRec);
   end;
 
+  // 2014 create obj to hold GIS data
+  PLRMGISObj := TPLRMGIS.Create();
+
   projFolder := defaultPrjDir;
   wrkdir := defaultPrjDir;
+  gisdir := defaultPrjDir;
   dbPath := defaultDBPath;
   eipNum := '0000';
   implAgency := 'unknown';
@@ -301,6 +308,11 @@ begin
     FreeAndNil(swmmDefaultBlocks[I]);
     swmmDefaultBlockXML[I] := nil;
   end;
+
+  // 2014 create obj to hold GIS data
+  if assigned(PLRMGISObj) then
+    FreeAndNil(PLRMGISObj);
+
   inherited;
 end;
 
@@ -368,7 +380,7 @@ begin
 
     // Display result validation html file in browser
     // 2014 now added a button to trigger this no longer loaded automatically
-    //BrowseURL(defaultValidateFilePath);
+    // BrowseURL(defaultValidateFilePath);
 
     // Step 2 - transform main xml file into swmm file
     transformXMLToSwmm(defaultXslPath, scenarioXMLFilePath,
@@ -466,7 +478,6 @@ begin
   // Step 1 - first make swmm save user inp file as swmm.inp
   makeSWMMSaveInpFile(userSWMMInptFilePath, userSWMMRptFilePath);
   Try
-    // TO DO - get raingage id from DB
 
     gageFilePath := defaultDataDir + '\' + intToStr(metgridNum) + '_Precip.dat';
     tempNode3 := swmmInptFileRainGageToXML(PLRMObj.gageID, gageFilePath);
@@ -520,6 +531,12 @@ begin
     XMLDoc := TXMLDocument.Create(nil);
     XMLDoc.Active := true;
     iNode := XMLDoc.AddChild('PLRM');
+
+    // 2014 add GIS node
+    if (assigned(PLRMGISObj.PLRMGISRec.shpFilesDict) and
+      (PLRMGISObj.PLRMGISRec.shpFilesDict.count < 1)) then
+      iNode.ChildNodes.Add(PLRMGISObj.toXML());
+
     iNode.AddChild('Project');
     // Add project meta data
     iNode.ChildNodes['Project'].Attributes['dateCreated'] := dateCreated;

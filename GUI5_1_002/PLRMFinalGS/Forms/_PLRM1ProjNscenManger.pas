@@ -23,6 +23,8 @@ type
     lblPrjPath: TLabel;
     statBar: TStatusBar;
     btnExitPlrm: TButton;
+    btnChngwrkspace: TButton;
+    btnGISTool: TButton;
 
     procedure FormCreate(Sender: TObject);
     procedure f1BtnCpyClick(Sender: TObject);
@@ -33,6 +35,8 @@ type
     procedure f1BtnNwPrjClick(Sender: TObject);
     procedure TreeView1Click(Sender: TObject);
     procedure btnExitPlrmClick(Sender: TObject);
+    procedure btnGISToolClick(Sender: TObject);
+    procedure btnChngwrkspaceClick(Sender: TObject);
   private
     function GetNextPrjID(): String;
     function GetNextScnID(prjNode: TTreeNode): String;
@@ -52,13 +56,40 @@ var
 implementation
 
 uses
-  Fmain, GSFileManage, Fmap;
+  Fmain, GSFileManage, Fmap, _PLRMD7GISTool;
 
 {$R *.dfm}
+
+procedure TProjNscenManager.btnChngwrkspaceClick(Sender: TObject);
+var
+  selectedDir: String;
+begin
+  // change default PLRM directory
+  selectedDir := gsSelectDirectory(defaultPrjDir);
+  FolderLookAddUserName(selectedDir, RootNode, TreeView1);
+end;
 
 procedure TProjNscenManager.btnExitPlrmClick(Sender: TObject);
 begin
   MainForm.Close();
+end;
+
+procedure TProjNscenManager.btnGISToolClick(Sender: TObject);
+begin
+  // -----------------------------------------------------------------------------
+  // Shows GIS Tool which allows user to process shapefiles and create properties of
+  // PLRM catchments
+  // -----------------------------------------------------------------------------
+  begin
+    // Create GIS Tool form
+    PLRMGISTool := TPLRMGISTool.Create(Self);
+    with PLRMGISTool do
+      try
+        Caption := PLRM7GIS_TITLE;
+        PLRMGISTool.Show;
+      finally
+      end;
+  end;
 end;
 
 procedure TProjNscenManager.f1BtnCnclClick(Sender: TObject);
@@ -206,7 +237,7 @@ end;
 procedure TProjNscenManager.f1BtnLoadClick(Sender: TObject);
 begin
   ProjScenMangerFrm.closeModal;
-  ProjNscenEditorFrm := TProjNscenEditor.Create(self);
+  ProjNscenEditorFrm := TProjNscenEditor.Create(Self);
 end;
 
 procedure TProjNscenManager.f1BtnNwPrjClick(Sender: TObject);
@@ -231,7 +262,7 @@ begin
     try
       begin // it is a new scenario leave scenario editor blank except for project name and working directory
         // Populate project specific-info
-        caption := PLRM2b_TITLE;
+        Caption := PLRM2b_TITLE;
         PLRMObj.projUserName := prjName;
         PLRMObj.projFolder := prjFolder;
 
@@ -313,10 +344,10 @@ begin
   MainForm.MnuNewClick(Sender);
   FreeAndNil(PLRMObj);
   PLRMObj := TPLRM.Create;
-  MainForm.caption := TXT_MAIN_CAPTION + '[Project Name: ' +
+  MainForm.Caption := TXT_MAIN_CAPTION + '[Project Name: ' +
     PLRMObj.projUserName + '] [Scenario Name: ' + PLRMObj.scenarioName + ' ]';
   statBar.SimpleText := PLRMVERSION;
-  self.caption := PLRM1_TITLE;
+  Self.Caption := PLRM1_TITLE;
 
   TreeView1.ReadOnly := True;
   FolderLookAddUserName(defaultPrjDir, RootNode, TreeView1);
@@ -356,7 +387,7 @@ begin
   begin
     scnFilePath := prjFolderPath;
   end;
-  lblPrjPath.caption := 'Project or Scenario Files at: ' + scnFilePath;
+  lblPrjPath.Caption := 'Project or Scenario Files at: ' + scnFilePath;
 end;
 
 procedure TProjNscenManager.TreeView1DblClick(Sender: TObject);
@@ -389,7 +420,7 @@ begin
     with ProjNscenEditorFrm do
       try
         // Populate project specific-info
-        caption := PLRM2b_TITLE;
+        Caption := PLRM2b_TITLE;
         tbxProjName.Text := PLRMObj.projUserName;
         tbxEIPNumber.Text := PLRMObj.eipNum;
         tbxImplAgency.Text := PLRMObj.implAgency;
@@ -547,7 +578,6 @@ begin
       finished := True; // no matches, can now exit
   until finished;
   Result := prjName;
-
 end;
 
 function TProjNscenManager.GetNextScnID(prjNode: TTreeNode): String;
@@ -593,13 +623,21 @@ var
   buttonSelected: Integer;
 begin
   buttonSelected := 0;
+
+  // 2014 commented out to provide a smoother experience, scenario will be autosaved and
+  // dialog will not be presented to the user
   if firstTimeFlag = 0 then
+  begin
     buttonSelected :=
       MessageDlg('If you proceed the existing project will be closed.' + #13#10
       + 'If you would like to save your work, hit Cancel and' + #13#10 +
       'save when on main form. Proceed?', mtCustom, [mbYes, mbNo, mbCancel], 0);
-  if ((buttonSelected = mrNo) or (buttonSelected = mrCancel)) then
-    exit;
+    if ((buttonSelected = mrNo) or (buttonSelected = mrCancel)) then
+      exit;
+  end;
+
+  // attempt to save the user's work
+  // TProjNscenManager.btnSavePLRMClick(Sender);
 
   ProjScenMangerFrm := TProjNscenManager.Create(Application);
   // tempInt := ProjScenMangerFrm.ShowModal;
@@ -614,7 +652,7 @@ begin
   if PLRMObj.hasActvScn = True then
     exit;
   // ShowMessage('You are currently working outside a Project and a Scenario' + #13#10 + 'Please create or load a scenario to proceed');
-  {ShowMessage('You are working outside a Project and a Scenario.' + #13#10 +
+  { ShowMessage('You are working outside a Project and a Scenario.' + #13#10 +
     'Hit OK on this form and you will be returned to the' + #13#10 +
     'Project and Scenario Manager.' + #13#10 +
     'Please create or load a Scenario to proceed.'); }
@@ -622,5 +660,3 @@ begin
 end;
 
 end.
-
-

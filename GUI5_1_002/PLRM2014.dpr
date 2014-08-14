@@ -130,7 +130,9 @@ uses
   _PLRMD4RoadPollutants in 'PLRMFinalGS\Forms\Dialogs\_PLRMD4RoadPollutants.pas' {PLRMRoadPollutants},
   _PLRMD5RoadDrainageEditor in 'PLRMFinalGS\Forms\Dialogs\_PLRMD5RoadDrainageEditor.pas' {PLRMRoadDrainageEditor},
   _PLRMD6ParcelDrainageAndBMPs in 'PLRMFinalGS\Forms\Dialogs\_PLRMD6ParcelDrainageAndBMPs.pas' {PLRMParcelDrngAndBMPs},
-  _PLRMD6aBMPSizing in 'PLRMFinalGS\Forms\Dialogs\_PLRMD6aBMPSizing.pas' {PLRMBMPSizing};
+  _PLRMD6aBMPSizing in 'PLRMFinalGS\Forms\Dialogs\_PLRMD6aBMPSizing.pas' {PLRMBMPSizing},
+  _PLRMD7GISTool in 'PLRMFinalGS\Forms\Dialogs\_PLRMD7GISTool.pas' {PLRMGISTool},
+  GSGIS in 'PLRMFinalGS\Units\GSGIS.pas';
 
 {$R *.RES}
 
@@ -140,5 +142,6 @@ begin
   Application.Title := 'SWMM 5';
   Application.HelpFile := '';
   Application.CreateForm(TMainForm, MainForm);
+  Application.CreateForm(TPLRMGISTool, PLRMGISTool);
   Application.Run;
 end.

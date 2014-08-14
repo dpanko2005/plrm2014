@@ -1,0 +1,123 @@
+[TITLE]
+
+[OPTIONS]
+FLOW_UNITS           CFS
+INFILTRATION         HORTON
+FLOW_ROUTING         KINWAVE
+START_DATE           10/18/2009
+START_TIME           00:00:00
+REPORT_START_DATE    10/18/2009
+REPORT_START_TIME    00:00:00
+END_DATE             10/18/2009
+END_TIME             00:00:00
+SWEEP_START          1/1
+SWEEP_END            12/31
+DRY_DAYS             0
+REPORT_STEP          00:15:00
+WET_STEP             00:15:00
+DRY_STEP             01:00:00
+ROUTING_STEP         0:00:30 
+ALLOW_PONDING        NO
+INERTIAL_DAMPING     PARTIAL
+VARIABLE_STEP        0.75
+LENGTHENING_STEP     0
+MIN_SURFAREA         0
+NORMAL_FLOW_LIMITED  BOTH
+SKIP_STEADY_STATE    NO
+FORCE_MAIN_EQUATION  H-W
+LINK_OFFSETS         DEPTH
+MIN_SLOPE            0
+
+[EVAPORATION]
+;;Type       Parameters
+;;---------- ----------
+CONSTANT     0.0
+
+[SUBCATCHMENTS]
+;;                                                 Total    Pcnt.             Pcnt.    Curb     Snow    
+;;Name           Raingage         Outlet           Area     Imperv   Width    Slope    Length   Pack    
+;;-------------- ---------------- ---------------- -------- -------- -------- -------- -------- --------
+Catch1           *                *                4        25       0        2        0                        
+Catch2           *                *                4        25       0        2        0                        
+Catch3           *                *                4        25       0        2        0                        
+
+[SUBAREAS]
+;;Subcatchment   N-Imperv   N-Perv     S-Imperv   S-Perv     PctZero    RouteTo    PctRouted 
+;;-------------- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+Catch1           0.01       0.1        0.05       0.05       25         OUTLET    
+Catch2           0.01       0.1        0.05       0.05       25         OUTLET    
+Catch3           0.01       0.1        0.05       0.05       25         OUTLET    
+
+[INFILTRATION]
+;;Subcatchment   MaxRate    MinRate    Decay      DryTime    MaxInfil  
+;;-------------- ---------- ---------- ---------- ---------- ----------
+Catch1           3.0        0.5        4          7          0         
+Catch2           3.0        0.5        4          7          0         
+Catch3           3.0        0.5        4          7          0         
+
+[JUNCTIONS]
+;;               Invert     Max.       Init.      Surcharge  Ponded    
+;;Name           Elev.      Depth      Depth      Depth      Area      
+;;-------------- ---------- ---------- ---------- ---------- ----------
+Junction1        0          0          0          0          0         
+
+[OUTFALLS]
+;;               Invert     Outfall    Stage/Table      Tide
+;;Name           Elev.      Type       Time Series      Gate
+;;-------------- ---------- ---------- ---------------- ----
+Outfall2         0          FREE                        NO
+
+[DIVIDERS]
+;;               Invert     Diverted         Divider   
+;;Name           Elev.      Link             Type       Parameters
+;;-------------- ---------- ---------------- ---------- ----------
+Divider3         0          *                CUTOFF     0          0          0          0          0         
+
+[STORAGE]
+;;               Invert   Max.     Init.    Shape      Shape                      Ponded   Evap.   
+;;Name           Elev.    Depth    Depth    Curve      Params                     Area     Frac.   
+;;-------------- -------- -------- -------- ---------- -------- -------- -------- -------- --------
+DryBasin1        0        0        0        FUNCTIONAL 1000     0        0        0        0       
+InfiltrationBasin1 0        0        0        FUNCTIONAL 1000     0        0        0        0       
+WetBasin1        0        0        0        FUNCTIONAL 1000     0        0        0        0       
+BedFilter1       0        0        0        FUNCTIONAL 1000     0        0        0        0       
+CartridgeFilter1 0        0        0        FUNCTIONAL 1000     0        0        0        0       
+TreatmentVault1  0        0        0        FUNCTIONAL 1000     0        0        0        0       
+
+[REPORT]
+INPUT      NO
+CONTROLS   NO
+SUBCATCHMENTS ALL
+NODES ALL
+LINKS ALL
+
+[TAGS]
+
+[MAP]
+DIMENSIONS 0.000 0.000 10000.000 10000.000
+Units      None
+
+[COORDINATES]
+;;Node           X-Coord            Y-Coord           
+;;-------------- ------------------ ------------------
+Junction1        -2451.087          7119.565          
+Outfall2         -885.870           5902.174          
+Divider3         -3190.217          5054.348          
+DryBasin1        -429.348           4184.783          
+InfiltrationBasin1 2059.783           4076.087          
+WetBasin1        -2266.304          3478.261          
+BedFilter1       1135.870           2543.478          
+CartridgeFilter1 3081.522           3217.391          
+TreatmentVault1  2559.783           2293.478          
+
+[VERTICES]
+;;Link           X-Coord            Y-Coord           
+;;-------------- ------------------ ------------------
+
+[Polygons]
+;;Subcatchment   X-Coord            Y-Coord           
+;;-------------- ------------------ ------------------
+Catch1           -1440.217          8271.739          
+Catch2           38.043             7021.739          
+Catch3           1842.391           5771.739          
+
