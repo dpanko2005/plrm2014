@@ -117,7 +117,7 @@
 			<DCCReference Include="Dlabel.pas">
 				<Form>LabelForm</Form>
 			</DCCReference>
-			<DCCReference Include="Uinifile.pas"/>
+			<DCCReference Include="PLRMFinalGS\Units\GSInifile.pas"/>
 			<DCCReference Include="Dlegend.pas">
 				<Form>LegendForm</Form>
 			</DCCReference>
@@ -415,6 +415,11 @@
 				<FormType>dfm</FormType>
 			</DCCReference>
 			<DCCReference Include="PLRMFinalGS\Units\GSGIS.pas"/>
+			<DCCReference Include="Uinifile.pas"/>
+			<DCCReference Include="PLRMFinalGS\Units\GSGdal.pas"/>
+			<DCCReference Include="PLRMFinalGS\Units\gdal.pas"/>
+			<DCCReference Include="PLRMFinalGS\Units\gdalcore.pas"/>
+			<DCCReference Include="PLRMFinalGS\Units\ogr.pas"/>
 			<None Include="objprops.txt"/>
 			<None Include="viewvars.txt"/>
 			<None Include="Epaswmm5.dpr"/>

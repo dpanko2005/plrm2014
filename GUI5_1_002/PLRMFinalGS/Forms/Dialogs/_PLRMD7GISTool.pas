@@ -6,7 +6,8 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics, Generics.Collections,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Imaging.jpeg, Vcl.ExtCtrls,
-  Vcl.ComCtrls, GSIO, GSUtils, GSTypes, GSPLRM, GSCatchments, UProject,
+  Vcl.ComCtrls, GSIO, GSUtils, GSTypes, GSPLRM, GSCatchments, GSGdal, GDal,
+  UProject,
   Vcl.StdCtrls, Vcl.Grids, Vcl.ExtDlgs;
 
 type
@@ -90,7 +91,7 @@ type
 
 var
   PLRMGISTool: TPLRMGISTool;
-  //FrmData: PLRMGISData;
+  // FrmData: PLRMGISData;
   shpFilesDict: TDictionary<String, String>;
   gisShpFileDir, prevGridVal: String;
   shpPathInputs: array [0 .. 7] of TEdit;
@@ -261,8 +262,8 @@ begin
 
   // save form data
   PLRMObj.PLRMGISObj.PLRMGISRec.shpFilesDict := shpFilesDict;
-  PLRMObj.PLRMGISObj.PLRMGISRec.manualBMPGridEntries := GSUtils.copyGridContents(0, 0,
-    sgManualBMPs);
+  PLRMObj.PLRMGISObj.PLRMGISRec.manualBMPGridEntries :=
+    GSUtils.copyGridContents(0, 0, sgManualBMPs);
   self.Close;
 end;
 
@@ -302,11 +303,19 @@ end;
 
 procedure TPLRMGISTool.FormCreate(Sender: TObject);
 var
-  I: Integer;
-
+  // I: Integer;
+  tempStr: AnsiString;
 begin
   statBar.SimpleText := PLRMVERSION;
   self.Caption := PLRMD1_TITLE;
+  // intersectShapeFiles('C:\dev\plrm2014\GUI5_1_002\GIS\PLRM_LandUse.shp', 'C:\dev\plrm2014\GUI5_1_002\GIS\PLRM_Catchments.shp');
+  // intersectShapeFiles('C:\dev\plrm2014\GUI5_1_002\PLRM_BMPs.shp', 'C:\dev\plrm2014\GUI5_1_002\PLRM_Catchments.shp');
+
+  // intersectShapeFilesAsLayers('C:\dev\plrm2014\GUI5_1_002\PLRM_BMPs.shp',
+  // 'C:\dev\plrm2014\GUI5_1_002\PLRM_Catchments.shp');
+  runGISOps();
+
+  // intersectShapeFiles('C:\dev\plrm2014\GUI5_1_002\PLRM_LandUse.shp', 'C:\dev\plrm2014\GUI5_1_002\PLRM_Catchments.shp');
   initFormContents();
 end;
 
@@ -315,7 +324,7 @@ var
   idx: Integer;
   isShpMode: Boolean;
 begin
-  isShpMode := True;
+  // isShpMode := True;
   idx := rgpSimLength.ItemIndex;
   Assert(idx >= 0); // Sanity check
 
@@ -366,10 +375,10 @@ end;
 procedure TPLRMGISTool.sgManualBMPsSetEditText(Sender: TObject;
   ACol, ARow: Integer; const Value: string);
 var
-  tempSum, prevTotal: Double;
+  tempSum: Double;
   sg: TStringGrid;
 begin
-  tempSum := 0.0;
+  // tempSum := 0.0;
   sg := Sender as TStringGrid;
 
   // then check sums to see if they will exceed 100%
@@ -393,14 +402,14 @@ end;
 
 procedure TPLRMGISTool.initFormContents();
 var
-  idx, I: Integer;
-  jdx: Integer;
-  tempInt: Integer;
-  tempLst: TStringList;
-  tempLst2: TStrings;
+  I: Integer;
+  // jdx: Integer;
+  // tempInt: Integer;
+  // tempLst: TStringList;
+  // tempLst2: TStrings;
 
-  hydProps: dbReturnFields;
-  kSatMultplrs: dbReturnFields;
+  // hydProps: dbReturnFields;
+  // kSatMultplrs: dbReturnFields;
 begin
   // create data structure for holding shp file paths
   shpFilesDict := TDictionary<String, String>.Create();

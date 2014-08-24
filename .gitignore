@@ -57,3 +57,10 @@ GUI5_1_002/Data/
 GUI5_1_002/Engine/
 GUI5_1_002/Projects/
 GUI5_1_002/PLRM/
+GUI5_1_002/GIS/
+*.shp
+*.shx
+*.prj
+*.dbf
+*.sbn
+*.sbx

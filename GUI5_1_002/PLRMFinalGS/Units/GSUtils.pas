@@ -8,7 +8,7 @@ uses
   SysUtils, Windows, Messages, Classes, Graphics, Controls, Forms, Dialogs,
   xmldom, XMLIntf, msxmldom, XMLDoc,
   StdCtrls, ComCtrls, Menus, ImgList, ShlObj, ShellApi, Registry,
-  ExtCtrls, Grids, GSTypes, StrUtils, MSXML, Variants, FileCtrl;
+  ExtCtrls, Grids, GSTypes, StrUtils, MSXML, Variants, FileCtrl, GSInifile;
 
 type
   TCopyDataProc = procedure(oldnode, newnode: TTreenode);
@@ -47,7 +47,7 @@ procedure DefaultCopyDataProc(oldnode, newnode: TTreenode);
 function deleteFileGS(const filePath: String): Integer;
 function deleteFileGSNoConfirm(const filePath: String): Integer;
 function DelTree(DirName: string): boolean;
-procedure ForceDeleteDirAndContents(dir: string);
+//procedure ForceDeleteDirAndContents(dir: string);
 procedure deleteGridRow(searchStr: String; strColNum: Integer;
   initCellStr: string; var Grd: TStringGrid);
 function FileLook(genSpec: string; myFileExt: string; Node: TTreenode;
@@ -88,6 +88,8 @@ procedure sgGrayOnDrawCellColAndRow(var Sender: TObject; ACol, ARow: Integer;
 procedure TransferLstBxItems(Dest: TListbox; var Source: TListbox);
 procedure TransferAllLstBxItems(Dest, Source: TListbox);
 procedure initPLRMPaths();
+procedure updatePLRMPaths(newPrjDir: String);
+
 // GUI Helper Routines
 function getComboBoxSelValue(Sender: TObject): String; Overload;
 function getComboBoxSelValue2(Sender: TObject): TObject; Overload;
@@ -307,6 +309,7 @@ var
     'description'
   );
 
+  defaultGISDir:String;
   defaultPLRMPath: String;
   defaultXMLDeclrtn: String;
   defaultPrjDir: String;
@@ -1091,7 +1094,7 @@ function xmlAttachedChildNodesToPLRMGridData(parentNode: IXMLNode;
   childTagName: string; rowName: String; var data: PLRMGridData;
   tags: TStringList): PLRMGridData;
 var
-  I: Integer;
+  //I: Integer;
   tempNode: IXMLNode;
   tempNodeList: IXMLNodeList;
   // tempData: PLRMGridData;
@@ -1889,7 +1892,7 @@ begin
         FileName := initDir;
         if Execute then
         begin
-          //ShowMessage(FileName);
+          // ShowMessage(FileName);
           Result := FileName;
         end;
       finally
@@ -1897,8 +1900,8 @@ begin
       end
   else
   begin
-    if selectDirectory('Select Directory',
-      ExtractFileDrive(initDir), initDir, [sdNewUI, sdNewFolder],Nil) then
+    if selectDirectory('Select Directory', ExtractFileDrive(initDir), initDir,
+      [sdNewUI, sdNewFolder], Nil) then
     begin
       ShowMessage(initDir);
       Result := initDir;
@@ -1908,16 +1911,24 @@ end;
 
 procedure initPLRMPaths();
 begin
-
   defaultPLRMPath := StringReplace(ExtractFileDir(Application.ExeName),
     '\Engine', '', [rfReplaceAll, rfIgnoreCase]);
   defaultXMLDeclrtn := '<?xml version="1.0"?>';
-  defaultPrjDir := defaultPLRMPath + '\Projects';
+
+  // if default project workspace path has not been updated from .ini file then use the default and save it to the
+  // ini file
+  if (defaultPrjDir = '') then
+  begin
+    defaultPrjDir := defaultPLRMPath + '\Projects';
+    SaveIniFile();
+  end;
+
+  defaultGISDir :=  defaultPLRMPath + '\GIS';
   defaultSchmDir := defaultPLRMPath + '\Schemes';
   defaultEngnDir := defaultPLRMPath + '\Engine';
   PLRMInitIni := defaultEngnDir + '\swmm.ini';
   defaultDataDir := defaultPLRMPath + '\Data';
-  // defaultDBPath := defaultDataDir + '\PLRM_v1.0.accdb';
+
   defaultDBPath := defaultDataDir + '\PLRM_v2.0.accdb';
   defaultPrjPath := defaultPrjDir + '\temp.xml';
   defaultGenSWmmInpPath := defaultPrjDir + '\tempSwmm.inp';
@@ -1931,6 +1942,37 @@ begin
   HYDSCHMSDIR := defaultEngnDir +
     '\DefaultSchemes\Hydroloic Properties Schemes';
   RCONDSCHMSDIR := defaultEngnDir + '\DefaultSchemes\Road Condition Schemes';
+end;
+
+// 2014 added to allow projects folder path to be changed
+procedure updatePLRMPaths(newPrjDir: String);
+begin
+  // defaultPLRMPath := StringReplace(ExtractFileDir(Application.ExeName),
+  // '\Engine', '', [rfReplaceAll, rfIgnoreCase]);
+  // defaultXMLDeclrtn := '<?xml version="1.0"?>';
+
+  defaultPrjDir := newPrjDir;
+  // update ini file
+  SaveIniFile();
+
+  // defaultSchmDir := defaultPLRMPath + '\Schemes';
+  // defaultEngnDir := defaultPLRMPath + '\Engine';
+  // PLRMInitIni := defaultEngnDir + '\swmm.ini';
+  // defaultDataDir := defaultPLRMPath + '\Data';
+  // defaultDBPath := defaultDataDir + '\PLRM_v1.0.accdb';
+  // defaultDBPath := defaultDataDir + '\PLRM_v2.0.accdb';
+  defaultPrjPath := defaultPrjDir + '\temp.xml';
+  defaultGenSWmmInpPath := defaultPrjDir + '\tempSwmm.inp';
+  defaultUserSWmmInpPath := defaultPrjDir + '\swmm.inp';
+  defaultUserSwmmRptPath := defaultPrjDir + '\swmm.rpt';
+  // defaultValidateDir := defaultEngnDir + '\Validation';
+  // defaultValidateFilePath := defaultValidateDir + '\validation.html';
+
+  // dbPath := defaultDBPath;
+  // initDbPath();
+  // HYDSCHMSDIR := defaultEngnDir +
+  // '\DefaultSchemes\Hydroloic Properties Schemes';
+  // RCONDSCHMSDIR := defaultEngnDir + '\DefaultSchemes\Road Condition Schemes';
 end;
 
 function dbFields2ToPLRMGridData(data: dbReturnFields2; strtRowIdx: Integer = 0)
@@ -2056,16 +2098,25 @@ begin
     scenFilePaths := TStringList.Create;
 
   projSL := getFoldersInFolder(startPath);
+  // if the directory is empty exit
+  If projSL.Count < 1 then
+  begin
+    exit;
+  end;
+
+  // remove all the items currently in the treeview before adding new ones
+  TV.Items.Clear();
+
   // Add project and scenario folders to TreeView
   for I := 0 to projSL.Count - 1 do
   begin
     // check if directory contains project file if not do not add to list
-    if (FindFirst(defaultPrjDir + '\' + projSL[I] + '\*.xml', faAnyFile,
+    if (FindFirst(startPath + '\' + projSL[I] + '\*.xml', faAnyFile,
       SearchRec) = 0) then
     begin
-      projFolders.add(defaultPrjDir + '\' + projSL[I]);
-      tempPrjName := getUserProjectOrScenName(defaultPrjDir + '\' + projSL[I] +
-        '\' + SearchRec.name, 'ProjectUserName');
+      projFolders.add(startPath + '\' + projSL[I]);
+      tempPrjName := getUserProjectOrScenName(startPath + '\' + projSL[I] + '\'
+        + SearchRec.name, 'ProjectUserName');
       prjIdx := projNames.add(tempPrjName);
       tempNode := TV.Items.AddChild(Node, projNames[prjIdx]);
       scenPath := startPath + '\' + projSL[I];
@@ -2183,7 +2234,7 @@ begin
       IntToStr(GetLastError));
 end;
 
-/// /adapted from http://training.codeface.com.br/?p=12
+{/// /adapted from http://training.codeface.com.br/?p=12
 procedure ForceDeleteDirAndContents(dir: string);
 var
   I: Integer;
@@ -2201,7 +2252,7 @@ begin
       // DP if not DeleteFile( PAnsiChar(sDirectory+sr.Name) ) then
       if not DeleteFile(PWideChar(sDirectory + sr.name)) then
       begin
-        FileSetAttr(PAnsiChar(sDirectory + sr.name), 0); { reset all flags }
+        FileSetAttr(PAnsiChar(sDirectory + sr.name), 0); // reset all flags
         // DP DeleteFile (PAnsiChar(sDirectory+sr.Name));
         DeleteFile(PWideChar(sDirectory + sr.name))
       end;
@@ -2211,6 +2262,7 @@ begin
   FindClose(sr.FindHandle);
   removeDirGS(dir);
 end;
+}
 
 // adapted from http://delphi.about.com/cs/adptips1999/a/bltip1199_2.htm
 Function DelTree(DirName: string): boolean;

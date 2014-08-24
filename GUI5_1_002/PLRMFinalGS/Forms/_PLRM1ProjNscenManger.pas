@@ -67,6 +67,7 @@ begin
   // change default PLRM directory
   selectedDir := gsSelectDirectory(defaultPrjDir);
   FolderLookAddUserName(selectedDir, RootNode, TreeView1);
+  updatePLRMPaths(selectedDir);
 end;
 
 procedure TProjNscenManager.btnExitPlrmClick(Sender: TObject);
