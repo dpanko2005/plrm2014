@@ -1031,6 +1031,8 @@ function OGR_L_SetIgnoredFields(hLayer: OGRLayerH; fields: CPChar): OGRErr;
 function OGR_L_Intersection(hLayer: OGRLayerH; hLayerOther: OGRLayerH; hLayerResult: OGRLayerH;
   papszOptions:CPChar;  pfnProgress:Pointer; pProgressArg:Pointer): OGRErr; cdecl; external LibName;
 
+function OGR_G_Length(hGeom: OGRGeometryH): double; cdecl; external LibName;
+
 { OGRDataSource }
 
 { Closes opened datasource and releases allocated resources }
