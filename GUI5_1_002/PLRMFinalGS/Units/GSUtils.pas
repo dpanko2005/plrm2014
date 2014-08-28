@@ -47,7 +47,7 @@ procedure DefaultCopyDataProc(oldnode, newnode: TTreenode);
 function deleteFileGS(const filePath: String): Integer;
 function deleteFileGSNoConfirm(const filePath: String): Integer;
 function DelTree(DirName: string): boolean;
-//procedure ForceDeleteDirAndContents(dir: string);
+// procedure ForceDeleteDirAndContents(dir: string);
 procedure deleteGridRow(searchStr: String; strColNum: Integer;
   initCellStr: string; var Grd: TStringGrid);
 function FileLook(genSpec: string; myFileExt: string; Node: TTreenode;
@@ -221,6 +221,7 @@ var
   validateXslPath: String;
   luseNameCodeTable: PLRMGridData;
 
+
   // 2014 for GIS tool shapefiles dictionary keys
   shpFileKeys: array [0 .. 7] of string = (
     'Catchments',
@@ -309,7 +310,7 @@ var
     'description'
   );
 
-  defaultGISDir:String;
+  defaultGISDir: String;
   defaultPLRMPath: String;
   defaultXMLDeclrtn: String;
   defaultPrjDir: String;
@@ -1094,7 +1095,7 @@ function xmlAttachedChildNodesToPLRMGridData(parentNode: IXMLNode;
   childTagName: string; rowName: String; var data: PLRMGridData;
   tags: TStringList): PLRMGridData;
 var
-  //I: Integer;
+  // I: Integer;
   tempNode: IXMLNode;
   tempNodeList: IXMLNodeList;
   // tempData: PLRMGridData;
@@ -1923,7 +1924,7 @@ begin
     SaveIniFile();
   end;
 
-  defaultGISDir :=  defaultPLRMPath + '\GIS';
+  defaultGISDir := defaultPLRMPath + '\GIS';
   defaultSchmDir := defaultPLRMPath + '\Schemes';
   defaultEngnDir := defaultPLRMPath + '\Engine';
   PLRMInitIni := defaultEngnDir + '\swmm.ini';
@@ -2234,34 +2235,34 @@ begin
       IntToStr(GetLastError));
 end;
 
-{/// /adapted from http://training.codeface.com.br/?p=12
-procedure ForceDeleteDirAndContents(dir: string);
-var
+{ /// /adapted from http://training.codeface.com.br/?p=12
+  procedure ForceDeleteDirAndContents(dir: string);
+  var
   I: Integer;
   sDirectory: string;
   sr: TSearchRec;
-begin
+  begin
   sDirectory := IncludeTrailingPathDelimiter(dir);
   I := FindFirst(sDirectory + '\*.*', faAnyFile, sr);
   while I = 0 do
   begin
-    if (sr.Attr and faDirectory) = faDirectory then
-      RemoveDir(sDirectory + sr.name)
-    else
-    begin
-      // DP if not DeleteFile( PAnsiChar(sDirectory+sr.Name) ) then
-      if not DeleteFile(PWideChar(sDirectory + sr.name)) then
-      begin
-        FileSetAttr(PAnsiChar(sDirectory + sr.name), 0); // reset all flags
-        // DP DeleteFile (PAnsiChar(sDirectory+sr.Name));
-        DeleteFile(PWideChar(sDirectory + sr.name))
-      end;
-    end;
-    I := FindNext(sr);
+  if (sr.Attr and faDirectory) = faDirectory then
+  RemoveDir(sDirectory + sr.name)
+  else
+  begin
+  // DP if not DeleteFile( PAnsiChar(sDirectory+sr.Name) ) then
+  if not DeleteFile(PWideChar(sDirectory + sr.name)) then
+  begin
+  FileSetAttr(PAnsiChar(sDirectory + sr.name), 0); // reset all flags
+  // DP DeleteFile (PAnsiChar(sDirectory+sr.Name));
+  DeleteFile(PWideChar(sDirectory + sr.name))
+  end;
+  end;
+  I := FindNext(sr);
   end;
   FindClose(sr.FindHandle);
   removeDirGS(dir);
-end;
+  end;
 }
 
 // adapted from http://delphi.about.com/cs/adptips1999/a/bltip1199_2.htm
@@ -2471,3 +2472,4 @@ begin
 end;
 
 end.
+

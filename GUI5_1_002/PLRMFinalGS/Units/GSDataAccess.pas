@@ -66,7 +66,7 @@ const
   // Begin runtime querries and resulting table names
   // uses sentinels T* = table name, F* = field name, V* = value, R1 is return value field name etc
 const
-  dbRunTimeQrys: array [0 .. 21] of String =
+  dbRunTimeQrys: array [0 .. 22] of String =
     ('SELECT <R1> FROM <T1> as T1 WHERE (T1.<F1> = <V1> AND T1.<F2> =<V2> )',
     'SELECT T1.PollutantPotentialScore, T1.PollutantCode, T1.CRCValue FROM RoadCRCs as T1 WHERE (((T1.PollutantPotentialScore)=<V1>)) ORDER BY T1.PollutantCode;',
     'SELECT T1.SweeperTypeScore, T1.SweepFrequencyScore, T1.PollutantCode, T1.Percent_Red FROM SweepingEffectiveness as T1 WHERE (((T1.SweeperTypeScore)=<V1>) AND ((T1.SweepFrequencyScore)=<V2>))ORDER BY T1.PollutantCode;',
@@ -104,15 +104,16 @@ const
     'SELECT LandUses.code, LandUses.PLRM_Name, LandUses.name, LandUses.defaultImpervFrac FROM LandUses WHERE (((LandUses.code)<>"100x")) AND (((LandUses.code)<>"101x"))',
     'SELECT t.Parameter, t.Min, t.Max, t.Units, t.Flag, t.Description FROM catchmentValidationRules as t ORDER BY t.DisplayOrder',
     'SELECT t.Parameter, t.Min, t.Max, t.Units, t.Flag, t.Description FROM nodeValidationRules as t ORDER BY t.DisplayOrder',
-    'SELECT * FROM RoadCRCs2');
+    'SELECT * FROM RoadCRCs2',
+    'SELECT PLRM_CODE, PLRM_DESC FROM LanduseShapeFileCodes');
 
 const
-  dbRunTimeQryTblNames: array [0 .. 21] of String = ('RdPollPot', 'RdCRCs',
+  dbRunTimeQryTblNames: array [0 .. 22] of String = ('RdPollPot', 'RdCRCs',
     'SWPRReds', 'ParcelCRCs', 'soilsProps', 'Defaults', 'SWTDesignParameters',
     'SWTCECs', 'Defaults', 'BuildUp', 'WashOff', 'Pollutants', 'TempTimeSeries',
     'PrecipTimeSeries', 'Generic', 'BuildupParcels', 'ParcelCRCs',
     'LanduseParcels', 'LandUses', 'nodeValidationRules',
-    'catchmentValidationRules','RoadCRCs2');
+    'catchmentValidationRules', 'RoadCRCs2', 'LanduseShapeFileCodes');
 
 var
   dbDataSets: array of TADODataSet;

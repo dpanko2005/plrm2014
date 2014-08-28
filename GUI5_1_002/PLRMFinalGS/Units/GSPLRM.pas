@@ -129,6 +129,7 @@ type
     function writeInitProjectToXML(filePath: String;
       scnName: String = ''): Boolean;
     function plrmToXML(): Boolean;
+    function plrmGISToXML(catchList:TStringList; saveToFilePath: String): Boolean;
     function updateScenarioXML(xmlFilePath: String): Boolean;
     function run(): Boolean;
     function chkNodesAndCatchs(): Boolean;
@@ -232,6 +233,7 @@ begin
   userSWMMInptFilePath := defaultUserSWmmInpPath;
   userSWMMRptFilePath := defaultUserSwmmRptPath;
   scenarioXMLFilePath := defaultPrjPath;
+
 
   // set default main xsl path to the path of any .xsl file in the /Engine folder
   if (FindFirst(defaultEngnDir + '\*.xsl', faAnyFile, SearchRec) = 0) then
@@ -650,6 +652,94 @@ begin
     if (curSWMMInptFilePath = '') then
       curSWMMInptFilePath := defaultGenSWmmInpPath;
     saveXmlDoc2(scenarioXMLFilePath, XMLDoc);
+    Result := true;
+  except
+    on E: Exception do
+    begin
+      Result := false;
+      ShowMessage('An Error occured, Exception message = ' + E.Message);
+    end;
+  end;
+end;
+
+// 2014 added to serialize GIS Tools inputs and outputs
+function TPLRM.plrmGISToXML(catchList:TStringList; saveToFilePath: String): Boolean;
+var
+  XMLDoc: IXMLDocument;
+  iNode: IXMLNode;
+  tempNodeArry: array of IXMLNode;
+  tempNodeArry2: array of IXMLNode;
+  tempNodeArry3: array of IXMLNode;
+  tempNodeArry4: array of IXMLNode;
+  tempNodeArry5: array of IXMLNode;
+  tempNode3: IXMLNode;
+  tempNode4: IXMLNode;
+  tempNode4b: IXMLNode;
+  tempNode6: IXMLNode;
+  tempNode7: IXMLNode;
+  tempNode8: IXMLNode;
+  tempNode9: IXMLNode;
+  tempNode10: IXMLNode;
+  tempNode19b: IXMLNode;
+  catchmentValidationXMLNode: IXMLNode;
+  nodeValidationXMLNode: IXMLNode;
+  I: Integer;
+begin
+  Try
+
+    // 5.Prep catchments
+    SetLength(tempNodeArry, catchList.count);
+    for I := 0 to catchList.count - 1 do
+    begin
+      tempNodeArry[I] := (catchList.Objects[I] as TPLRMCatch)
+        .catchToXML(projectLandUseNames, projectLandUseCodes);
+    end;
+
+    XMLDoc := TXMLDocument.Create(nil);
+    XMLDoc.Active := true;
+    iNode := XMLDoc.AddChild('PLRM');
+
+    // 2014 add GIS node
+    if (assigned(PLRMGISObj.PLRMGISRec.shpFilesDict) and
+      (PLRMGISObj.PLRMGISRec.shpFilesDict.count < 1)) then
+      iNode.ChildNodes.Add(PLRMGISObj.toXML());
+
+    iNode.AddChild('Project');
+    // Add project meta data
+    iNode.ChildNodes['Project'].Attributes['dateCreated'] := dateCreated;
+    iNode.ChildNodes['Project'].Attributes['dateModified'] :=
+      DateTimeToStr(Now);
+    iNode.ChildNodes['Project'].Attributes['name'] := projUserName;
+    iNode.ChildNodes['Metgrid'].Text := intToStr(metgridNum);
+    iNode.ChildNodes['UserSWMMInpt'].Text := userSWMMInptFilePath;
+    iNode.ChildNodes['GenSWMMInpt'].Text := curSWMMInptFilePath;
+    iNode.ChildNodes['WorkingDir'].Text := wrkdir;
+    iNode.ChildNodes['CreatedBy'].Text := createdBy;
+    iNode.ChildNodes['LocationDescription'].Text := prjDescription;
+    iNode.ChildNodes['ScenName'].Text := scenarioName;
+    iNode.ChildNodes['ScenDescription'].Text := scenarioNotes;
+    XMLDoc.Resync;
+
+    // 5.Add catchments
+    XMLDoc.ChildNodes[0].AddChild('Catchments');
+    XMLDoc.Resync;
+    for I := 0 to catchList.count - 1 do
+    begin
+      if (assigned(tempNodeArry[I])) then
+        XMLDoc.ChildNodes[0].ChildNodes['Catchments'].ChildNodes.Add
+          (tempNodeArry[I]);
+    end;
+    XMLDoc.Resync;
+
+    // 19.Add project land uses
+    tempNode4 := XMLDoc.ChildNodes[0].AddChild('LandUses');
+    for I := 0 to projectLandUseCodes.count - 1 do
+    begin
+      tempNode4b := tempNode4.AddChild('LandUse');
+      tempNode4b.Text := projectLandUseCodes[I];
+    end;
+
+    saveXmlDoc2(saveToFilePath, XMLDoc);
     Result := true;
   except
     on E: Exception do
