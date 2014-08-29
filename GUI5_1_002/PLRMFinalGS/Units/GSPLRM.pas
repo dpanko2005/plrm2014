@@ -29,6 +29,10 @@ type
     widthPower: Double; // exponent of area is width calculation
     maxFloLength: Double; // max width is area calculation
 
+    // 2014 added to support GIS Catchments
+    expectingGISCatch: Boolean;
+    currentGISCatch: TPLRMCatch;
+
   public
     runType: Integer;
     simTypeID: Integer;
@@ -111,6 +115,7 @@ type
       nodes: TStringList);
     procedure addNode(N: Uproject.TNode; objIndex: Integer);
     function loadFromXML(xmlFilePath: String): Boolean;
+    function loadGISCatchmentsFromXML(xmlFilePath: String): Boolean;
     function loadFromPrjXML(xmlFilePath: String): Boolean;
     procedure loadHydPropsSchemeFromDb(schmExt: String;
       soilsInfData: PLRMGridData);
@@ -129,7 +134,8 @@ type
     function writeInitProjectToXML(filePath: String;
       scnName: String = ''): Boolean;
     function plrmToXML(): Boolean;
-    function plrmGISToXML(catchList:TStringList; saveToFilePath: String): Boolean;
+    function plrmGISToXML(catchList: TStringList;
+      saveToFilePath: String): Boolean;
     function updateScenarioXML(xmlFilePath: String): Boolean;
     function run(): Boolean;
     function chkNodesAndCatchs(): Boolean;
@@ -233,7 +239,6 @@ begin
   userSWMMInptFilePath := defaultUserSWmmInpPath;
   userSWMMRptFilePath := defaultUserSwmmRptPath;
   scenarioXMLFilePath := defaultPrjPath;
-
 
   // set default main xsl path to the path of any .xsl file in the /Engine folder
   if (FindFirst(defaultEngnDir + '\*.xsl', faAnyFile, SearchRec) = 0) then
@@ -663,24 +668,25 @@ begin
 end;
 
 // 2014 added to serialize GIS Tools inputs and outputs
-function TPLRM.plrmGISToXML(catchList:TStringList; saveToFilePath: String): Boolean;
+function TPLRM.plrmGISToXML(catchList: TStringList;
+  saveToFilePath: String): Boolean;
 var
   XMLDoc: IXMLDocument;
   iNode: IXMLNode;
   tempNodeArry: array of IXMLNode;
-//  tempNodeArry2: array of IXMLNode;
-//  tempNodeArry3: array of IXMLNode;
-//  tempNodeArry4: array of IXMLNode;
-//  tempNodeArry5: array of IXMLNode;
-//  tempNode3: IXMLNode;
+  // tempNodeArry2: array of IXMLNode;
+  // tempNodeArry3: array of IXMLNode;
+  // tempNodeArry4: array of IXMLNode;
+  // tempNodeArry5: array of IXMLNode;
+  // tempNode3: IXMLNode;
   tempNode4: IXMLNode;
   tempNode4b: IXMLNode;
-//  tempNode6: IXMLNode;
-//  tempNode7: IXMLNode;
-//  tempNode8: IXMLNode;
-//  tempNode9: IXMLNode;
-//  tempNode10: IXMLNode;
-//  tempNode19b: IXMLNode;
+  // tempNode6: IXMLNode;
+  // tempNode7: IXMLNode;
+  // tempNode8: IXMLNode;
+  // tempNode9: IXMLNode;
+  // tempNode10: IXMLNode;
+  // tempNode19b: IXMLNode;
   catchmentValidationXMLNode: IXMLNode;
   nodeValidationXMLNode: IXMLNode;
   I: Integer;
@@ -922,6 +928,39 @@ begin
   Result := true
 end;
 
+function TPLRM.loadGISCatchmentsFromXML(xmlFilePath: String): Boolean;
+var
+  XMLDoc: IXMLDocument;
+  rootNode: IXMLNode;
+  tempNodeList: IXMLNodeList;
+  I, J: Integer;
+  tempCatch: TPLRMCatch;
+  tempPLRMNode: TPLRMNode;
+begin
+  try
+    XMLDoc := TXMLDocument.Create(nil);
+    XMLDoc.loadFromFile(xmlFilePath);
+    rootNode := XMLDoc.DocumentElement;
+
+    catchments.Clear;
+    tempNodeList := XMLDoc.DocumentElement.ChildNodes['Catchments'].ChildNodes;
+    for I := 0 to tempNodeList.count - 1 do
+    begin
+      if (tempNodeList[I].NodeName = 'Catchment') then
+      begin
+        tempCatch := TPLRMCatch.Create;
+        // currentCatchment := tempCatch;
+        catchments.AddObject(tempNodeList[I].Attributes['name'], tempCatch);
+        nodeAndCatchNames.Add(tempNodeList[I].Attributes['name']);
+        tempCatch.xmlToCatch(tempNodeList[I], hydPropsSchemes, rdCondsSchemes);
+      end;
+    end;
+  finally
+    XMLDoc := nil;
+  end;
+  Result := true
+end;
+
 function TPLRM.loadFromPrjXML(xmlFilePath: String): Boolean;
 var
   XMLDoc: IXMLDocument;
@@ -1096,12 +1135,23 @@ var
 var
   tempInt: Integer;
 begin
-  newCatch := TPLRMCatch.Create;
+
+  // 2014 additions to support GIS catchment loading
+  if (expectingGISCatch = true) then
+  begin
+    newCatch := currentGISCatch;
+    newCatch.Name := currentGISCatch.Name;
+  end
+  else
+  begin
+    newCatch := TPLRMCatch.Create;
+    newCatch.Name := CATCHPREFIX + intToStr(catchments.count + 1);
+  end;
+
   newCatch.swmmCatch := S;
   newCatch.objType := SUBCATCH;
   newCatch.objIndex := objIndex;
 
-  newCatch.Name := CATCHPREFIX + intToStr(catchments.count + 1);
   while nodeAndCatchNames.IndexOf(newCatch.Name) <> -1 do
     newCatch.Name := newCatch.Name + intToStr(catchments.count + 1);
 
@@ -1120,6 +1170,14 @@ begin
     Project.Lists[SUBCATCH][objIndex] := newCatch.Name;
   ValidateEditor(0, newCatch.Name, strErrVal);
   nodeAndCatchNames.Add(newCatch.Name);
+
+  // 2014
+  if (expectingGISCatch = true) then
+  begin
+    // to prevent the user from repeatedly adding the same GIS catchment
+    // select selector button after drawing catchment
+    MainForm.SelectorButtonClick();
+  end;
 end;
 
 function TPLRM.deleteObj(objType: Integer; objIndex: Integer): Boolean;

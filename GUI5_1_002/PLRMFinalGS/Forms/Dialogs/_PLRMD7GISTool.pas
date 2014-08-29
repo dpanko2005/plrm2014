@@ -307,7 +307,7 @@ procedure TPLRMGISTool.FormCreate(Sender: TObject);
 //  tempStr: AnsiString;
 begin
   statBar.SimpleText := PLRMVERSION;
-  self.Caption := PLRMD1_TITLE;
+  //self.Caption := PLRMD1_TITLE;
   // intersectShapeFiles('C:\dev\plrm2014\GUI5_1_002\GIS\PLRM_LandUse.shp', 'C:\dev\plrm2014\GUI5_1_002\GIS\PLRM_Catchments.shp');
   // intersectShapeFiles('C:\dev\plrm2014\GUI5_1_002\PLRM_BMPs.shp', 'C:\dev\plrm2014\GUI5_1_002\PLRM_Catchments.shp');
 

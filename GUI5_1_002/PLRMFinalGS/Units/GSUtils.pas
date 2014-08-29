@@ -2235,36 +2235,6 @@ begin
       IntToStr(GetLastError));
 end;
 
-{ /// /adapted from http://training.codeface.com.br/?p=12
-  procedure ForceDeleteDirAndContents(dir: string);
-  var
-  I: Integer;
-  sDirectory: string;
-  sr: TSearchRec;
-  begin
-  sDirectory := IncludeTrailingPathDelimiter(dir);
-  I := FindFirst(sDirectory + '\*.*', faAnyFile, sr);
-  while I = 0 do
-  begin
-  if (sr.Attr and faDirectory) = faDirectory then
-  RemoveDir(sDirectory + sr.name)
-  else
-  begin
-  // DP if not DeleteFile( PAnsiChar(sDirectory+sr.Name) ) then
-  if not DeleteFile(PWideChar(sDirectory + sr.name)) then
-  begin
-  FileSetAttr(PAnsiChar(sDirectory + sr.name), 0); // reset all flags
-  // DP DeleteFile (PAnsiChar(sDirectory+sr.Name));
-  DeleteFile(PWideChar(sDirectory + sr.name))
-  end;
-  end;
-  I := FindNext(sr);
-  end;
-  FindClose(sr.FindHandle);
-  removeDirGS(dir);
-  end;
-}
-
 // adapted from http://delphi.about.com/cs/adptips1999/a/bltip1199_2.htm
 Function DelTree(DirName: string): boolean;
 var

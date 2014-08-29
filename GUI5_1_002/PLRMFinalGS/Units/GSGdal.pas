@@ -70,7 +70,7 @@ const
   soilsDSName = 'PLRM_Soils';
   rdCondDSName = 'PLRM_RoadCondition';
   rdShdlrErosionDSName = 'PLRM_ShoulderErosion';
-  rsRunoffConnDSName = 'PLRM_RunoffConnectivity';
+  rdRunoffConnDSName = 'PLRM_RunoffConnectivity';
 
   fldNameCatch = 'NAME';
   fldNameCatchArea = 'Acres';
@@ -78,12 +78,14 @@ const
   fldNameLuseCode = 'LU_ID';
   fldNameSoilCode = 'SOIL_ID';
   fldNameRdShoulder = 'SHOULDER';
-  fldNameRdConn = 'CONNECTIVITY';
+  fldNameRdCondition = 'SCORE';
+  fldNameRdConn = 'CONNECT';
 
   intcatchSlope = 'PLRM_CatchSlopes';
   intcatchLuse = 'PLRM_CatchLuses';
   intcatchSoil = 'PLRM_CatchSoils';
   intcatchRdShd = 'PLRM_CatchShlds';
+  intcatchRdCondition = 'PLRM_CatchCond';
   intcatchRdConn = 'PLRM_CatchConn';
 
   layerNum = 0;
@@ -241,8 +243,9 @@ begin
           tempCatch.rdShouldersDict := TDictionary<String, TGSAreaWTObj>.Create
             (tempCatch.TempAreaWTDict);
           tempCatch.totalRdShdLength := tempCatch.tempTotalLength;
-          // IMPORTANT free dict below for next set of intersections and calcs
+          // IMPORTANT free dict below and reset other vars for next set of intersections and calcs
           FreeAndNil(tempCatch.TempAreaWTDict);
+          tempCatch.tempTotalLength := 0;
         end;
       end;
   Result := flag;
@@ -256,11 +259,11 @@ var
   tempCatch: TGISCatch;
 begin
   intersectShapeFilesAsLayers(dir + catchDSName + shpExt,
-    dir + rdCondDSName + shpExt, dir + intcatchRdConn + shpExt,
+    dir + rdCondDSName + shpExt, dir + intcatchRdCondition + shpExt,
     OGRwkbGeometryType.wkbLineString);
 
-  flag := lengthWeigthRoads(CDict, dir + intcatchRdShd + shpExt, fldNameCatch,
-    fldNameRdConn);
+  flag := lengthWeigthRoads(CDict, dir + intcatchRdCondition + shpExt,
+    fldNameCatch, fldNameRdCondition);
   // calculation was successful if flag is true so copy tempdict to lusedict of each catchment
   if (flag) then
     for tempKey in CDict.Keys do
@@ -271,9 +274,44 @@ begin
         begin
           tempCatch.rdConditionDict := TDictionary<String, TGSAreaWTObj>.Create
             (tempCatch.TempAreaWTDict);
-          tempCatch.totalRdConnLength := tempCatch.tempTotalLength;
-          // IMPORTANT free dict below for next set of intersections and calcs
+          tempCatch.totalRdConditionLength := tempCatch.tempTotalLength;
+
+          // IMPORTANT free dict below and reset other vars for next set of intersections and calcs
           FreeAndNil(tempCatch.TempAreaWTDict);
+          tempCatch.tempTotalLength := 0;
+        end;
+      end;
+  Result := flag;
+end;
+
+function processRdConnectivity(dir: String;
+  CDict: TDictionary<String, TGISCatch>): Boolean;
+var
+  flag: Boolean;
+  tempKey: String;
+  tempCatch: TGISCatch;
+begin
+  intersectShapeFilesAsLayers(dir + catchDSName + shpExt,
+    dir + rdRunoffConnDSName + shpExt, dir + intcatchRdConn + shpExt,
+    OGRwkbGeometryType.wkbLineString);
+
+  flag := lengthWeigthRoads(CDict, dir + intcatchRdConn + shpExt, fldNameCatch,
+    fldNameRdConn);
+  // calculation was successful if flag is true so copy tempdict to lusedict of each catchment
+  if (flag) then
+    for tempKey in CDict.Keys do
+      if (CDict.Items[tempKey] is TGISCatch) then
+      begin
+        tempCatch := CDict.Items[tempKey];
+        if (assigned(tempCatch.TempAreaWTDict)) then
+        begin
+          tempCatch.rdConnDict := TDictionary<String, TGSAreaWTObj>.Create
+            (tempCatch.TempAreaWTDict);
+          tempCatch.totalRdConnLength := tempCatch.tempTotalLength;
+
+          // IMPORTANT free dict below and reset other vars for next set of intersections and calcs
+          FreeAndNil(tempCatch.TempAreaWTDict);
+          tempCatch.tempTotalLength := 0;
         end;
       end;
   Result := flag;
@@ -320,8 +358,13 @@ begin
 
   // Step 6: Road condition
   // *******************************************
-  // Intersect catchment layer and road runoff connectivity layer and calc lengths of each kind of connectivity
+  // Intersect catchment layer and road conditions layer and calc lengths of each kind of condition
   processRdCondition(dir, CDict);
+
+  // Step 7: Road connectivity
+  // *******************************************
+  // Intersect catchment layer and road runoff connectivity layer and calc lengths of each kind of connectivity
+  processRdConnectivity(dir, CDict);
   createPLRMCatchmentObjs(CDict);
 
   Result := True;
@@ -474,9 +517,15 @@ begin
         assigned(tempCatch.rdConditionDict.Items[tempVarKey])) then
       begin
         areaWTObj := tempCatch.rdConditionDict.Items[tempVarKey];
-        areaWTObj.percentOfTotalCatch := 100 * areaWTObj.tempWeightedVal /
-          tempCatch.totalRdConditionLength;
-        tempArryVals[0, tempInt] := areaWTObj.percentOfTotalCatch;
+
+        if (tempCatch.totalRdConditionLength = 0) then
+          areaWTObj.percentOfTotalCatch := 0
+        else
+          areaWTObj.percentOfTotalCatch := 100 * areaWTObj.tempWeightedVal /
+            tempCatch.totalRdConditionLength;
+
+        tempArryVals[I, 0] := areaWTObj.percentOfTotalCatch;
+        tempArryVals[I, 1] := StrToFloat(tempVarKey);
         inc(I);
       end;
     end;
@@ -488,7 +537,71 @@ begin
     for J := 0 to numTblCols - 1 do
       rsltArry[I, J] := FormatFloat(TWODP, tempArryVals[I, J]);
 
-  NewCatch.frm4of6SgRoadShoulderData := rsltArry;
+  NewCatch.frm4of6SgRoadConditionData := rsltArry;
+  Result := True;
+end;
+
+// saves road connectivity to catchment obj
+function updateCatchObjRdConnectivity(tempCatch: TGISCatch;
+  var NewCatch: TPLRMCatch): Boolean;
+var
+  rsltArry, tempArry: PLRMGridData;
+  // tempArryVals: PLRMGridDataDbl;
+  I, J, tempInt, numTblCols: Integer;
+  tempVarKey: String;
+  areaWTObj: TGSAreaWTObj;
+  rdCondStates: TArray<string>;
+  rdCondStateList: TStringList;
+  tData: GSRoadDrainageInput;
+begin
+  numTblCols := 2;
+  I := 0;
+  if (assigned(tempCatch.rdConnDict)) then
+  begin
+    SetLength(tempArry, tempCatch.rdConnDict.Count, numTblCols);
+    for tempVarKey in tempCatch.rdConnDict.Keys do
+    begin
+      if (tempCatch.rdConnDict.Items[tempVarKey] is TGSAreaWTObj and
+        assigned(tempCatch.rdConnDict.Items[tempVarKey])) then
+      begin
+        areaWTObj := tempCatch.rdConnDict.Items[tempVarKey];
+
+        if (tempCatch.totalRdConnLength = 0) then
+          areaWTObj.percentOfTotalCatch := 0
+        else
+          areaWTObj.percentOfTotalCatch := 100 * areaWTObj.tempWeightedVal /
+            tempCatch.totalRdConnLength;
+
+        // tempArry[I, 0] := FormatFloat(TWODP, areaWTObj.percentOfTotalCatch);
+        // tempArry[I, 1] := tempVarKey;
+        if (tempVarKey = 'DCIA') then
+          tData.DCIA := areaWTObj.percentOfTotalCatch
+        else
+          tData.ICIA := areaWTObj.percentOfTotalCatch;
+        inc(I);
+      end;
+    end;
+  end;
+  // copy data to string array and save on object
+  SetLength(rsltArry, I, numTblCols);
+  tempInt := 0;
+  for I := 0 to I - 1 do
+    for J := 0 to numTblCols - 1 do
+      rsltArry[I, J] := tempArry[I, J];
+
+  tData.DINF := 0;
+  tData.INFFacility.totSurfaceArea := 0;
+  tData.INFFacility.totStorage := 0;
+  tData.INFFacility.aveAnnInfiltrationRate := 0.5;
+  tData.DPCH := 1;
+  tData.PervChanFacility.length := 0;
+  tData.PervChanFacility.width := 0;
+  tData.PervChanFacility.aveSlope := 1;
+  tData.PervChanFacility.storageDepth := 0;
+  tData.PervChanFacility.aveAnnInfiltrationRate := 0.5;
+  tData.isAssigned := True;
+
+  NewCatch.frm5of6RoadDrainageEditorData := tData;
   Result := True;
 end;
 
@@ -591,8 +704,11 @@ begin
       // 3. save road shoulders to catchObj
       updateCatchObjRdShoulders(tempCatch, NewCatch);
 
-      // 4. save road shoulders to catchObj
+      // 4. save road condition to catchObj
       updateCatchObjRdCondition(tempCatch, NewCatch);
+
+      // 5. save road connectivity to catchObj
+      updateCatchObjRdConnectivity(tempCatch, NewCatch);
 
       NewCatch.othrArea := 0;
       catchList.AddObject(tempKey, NewCatch);
@@ -671,6 +787,7 @@ begin
             tempAreaWTObj.tempTotalLength := tempLength;
             tempAreaWTObj.tempAccumulation := tempLength;
             tempAreaWTObj.tempWeightedVal := 0;
+            tempCatch.tempTotalLength := tempCatch.tempTotalLength + tempLength;
             tDict.Add(propCode, tempAreaWTObj);
           end;
         end
@@ -906,7 +1023,7 @@ var
   ogrLayer: OGRLayerH;
   I: longint;
   err: longint;
-  intDSName: String;
+  intDSName, intDSPath: String;
 begin
   OGRRegisterAll;
 
@@ -920,13 +1037,15 @@ begin
 
   // get name of resulting intersected shapefile from path passed in
   intDSName := ChangeFileExt(ExtractFileName(outShpFilePath), '');
+  intDSPath := ExtractFilePath(outShpFilePath) + intDSName;
 
   // check to see if intersect result shp file already exists
-  if FileExists(outShpFilePath) then
-  begin
+  { TODO, uncomment for production
+    if FileExists(outShpFilePath) then
+    begin
     for I := 0 to High(shpExts) do
-      DeleteFile(intDSName + shpExts[I]);
-  end;
+    DeleteFile(  intDSPath + shpExts[I]);
+    end; }
 
   // create shape file to hold results of intersect operation
   // first try to create datasource

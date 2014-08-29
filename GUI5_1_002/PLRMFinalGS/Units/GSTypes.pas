@@ -204,6 +204,7 @@ const
   PLRM6inf_TITLE = 'Infiltration Facility Editor';
   PLRM6dsp_TITLE = 'Pervious Dispersion Area Editor';
   PLRM7GIS_TITLE = 'GIS to Catchment Inputs Tool';
+  PLRM7bGIS_TITLE = 'GIS Catchment Import';
 
   PLRM7_TITLE = 'Storm Water Treatment BMPs';
   PLRM8_TITLE = 'Scenario Comparisons';
