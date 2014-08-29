@@ -66,7 +66,7 @@ const
   // Begin runtime querries and resulting table names
   // uses sentinels T* = table name, F* = field name, V* = value, R1 is return value field name etc
 const
-  dbRunTimeQrys: array [0 .. 22] of String =
+  dbRunTimeQrys: array [0 .. 23] of String =
     ('SELECT <R1> FROM <T1> as T1 WHERE (T1.<F1> = <V1> AND T1.<F2> =<V2> )',
     'SELECT T1.PollutantPotentialScore, T1.PollutantCode, T1.CRCValue FROM RoadCRCs as T1 WHERE (((T1.PollutantPotentialScore)=<V1>)) ORDER BY T1.PollutantCode;',
     'SELECT T1.SweeperTypeScore, T1.SweepFrequencyScore, T1.PollutantCode, T1.Percent_Red FROM SweepingEffectiveness as T1 WHERE (((T1.SweeperTypeScore)=<V1>) AND ((T1.SweepFrequencyScore)=<V2>))ORDER BY T1.PollutantCode;',
@@ -105,15 +105,16 @@ const
     'SELECT t.Parameter, t.Min, t.Max, t.Units, t.Flag, t.Description FROM catchmentValidationRules as t ORDER BY t.DisplayOrder',
     'SELECT t.Parameter, t.Min, t.Max, t.Units, t.Flag, t.Description FROM nodeValidationRules as t ORDER BY t.DisplayOrder',
     'SELECT * FROM RoadCRCs2',
-    'SELECT PLRM_CODE, PLRM_DESC FROM LanduseShapeFileCodes');
+    'SELECT PLRM_CODE, PLRM_DESC, PLRM_NAME FROM LanduseShapeFileCodes',
+    'SELECT MU,MUName FROM Soils');
 
 const
-  dbRunTimeQryTblNames: array [0 .. 22] of String = ('RdPollPot', 'RdCRCs',
+  dbRunTimeQryTblNames: array [0 .. 23] of String = ('RdPollPot', 'RdCRCs',
     'SWPRReds', 'ParcelCRCs', 'soilsProps', 'Defaults', 'SWTDesignParameters',
     'SWTCECs', 'Defaults', 'BuildUp', 'WashOff', 'Pollutants', 'TempTimeSeries',
     'PrecipTimeSeries', 'Generic', 'BuildupParcels', 'ParcelCRCs',
     'LanduseParcels', 'LandUses', 'nodeValidationRules',
-    'catchmentValidationRules', 'RoadCRCs2', 'LanduseShapeFileCodes');
+    'catchmentValidationRules', 'RoadCRCs2', 'LanduseShapeFileCodes','Soils');
 
 var
   dbDataSets: array of TADODataSet;
@@ -756,6 +757,7 @@ begin
   end;
   Result := S;
 end;
+
 
 function getCodes(Var S: TStringList; codePrefix: String; fldNum: integer;
   conn: TADOConnection): TStringList;

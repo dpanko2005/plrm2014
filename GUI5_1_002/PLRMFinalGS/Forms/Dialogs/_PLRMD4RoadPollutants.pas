@@ -132,8 +132,8 @@ end;
 
 function calcRoadShoulderConc(errodible: Double; protectd: Double;
   stable: Double; stableProtected: Double; crcParams: array of Double): Double;
-var
-  A, B, C, D: Double;
+//var
+//  A, B, C, D: Double;
 begin
   Result := (errodible * crcParams[0] + protectd * crcParams[1] + stable *
     crcParams[2] + stableProtected * crcParams[3]) / 100;
@@ -328,8 +328,8 @@ begin
 end;
 
 procedure TPLRMRoadPollutants.FormCreate(Sender: TObject);
-var
-  I: Integer;
+//var
+//  I: Integer;
 begin
   // default form labels and other info
   statBar.SimpleText := PLRMVERSION;
@@ -351,7 +351,7 @@ end;
 
 procedure TPLRMRoadPollutants.restoreFormContents(catch: TPLRMCatch);
 var
-  I, j, iRow, jCol: Integer;
+   j, iRow, jCol: Integer;
 begin
 
   copyContentsToGrid(PLRMObj.currentCatchment.frm4of6SgRoadShoulderData, 0, 0,
@@ -536,8 +536,8 @@ end;
 
 procedure TPLRMRoadPollutants.sgRoadConditionsSelectCell(Sender: TObject;
   ACol, ARow: Integer; var CanSelect: Boolean);
-var
-  sg: TStringGrid;
+//var
+//  sg: TStringGrid;
 begin
   // sg := Sender as TStringGrid;
   // prevGridValue := sg.Cells[ACol, ARow];
@@ -548,8 +548,8 @@ procedure TPLRMRoadPollutants.sgRoadConditionsSetEditText(Sender: TObject;
   ACol, ARow: Integer; const Value: string);
 var
   tempInfFootPrintArea: Double;
-  tempSum: Double;
-  iRow, tempNum: Integer;
+//  tempSum: Double;
+//  iRow, tempNum: Integer;
   sg: TStringGrid;
 begin
   sg := Sender as TStringGrid;
@@ -601,7 +601,7 @@ procedure TPLRMRoadPollutants.sgRoadShoulderPercentsKeyUp(Sender: TObject;
 var
   sg: TStringGrid;
   C, lastCol: longInt;
-  acreSum, prcntSum, wtdSum: Double;
+  prcntSum: Double;
 begin
   sg := TStringGrid(Sender);
   prcntSum := 0;
@@ -625,8 +625,8 @@ end;
 
 procedure TPLRMRoadPollutants.sgRoadShoulderPercentsSelectCell(Sender: TObject;
   ACol, ARow: Integer; var CanSelect: Boolean);
-var
-  sg: TStringGrid;
+//var
+//  sg: TStringGrid;
 begin
   // sg := Sender as TStringGrid;
   // prevGridValue := sg.Cells[ACol, ARow];
@@ -635,11 +635,11 @@ end;
 
 procedure TPLRMRoadPollutants.sgRoadShoulderPercentsSetEditText(Sender: TObject;
   ACol, ARow: Integer; const Value: string);
-var
-  tempInfFootPrintArea: Double;
-  tempSum: Double;
-  icol: Integer;
-  sg: TStringGrid;
+//var
+//  tempInfFootPrintArea: Double;
+//  tempSum: Double;
+//  icol: Integer;
+//  sg: TStringGrid;
 begin
   { sg := Sender as TStringGrid;
     tempSum := 0;

@@ -302,9 +302,9 @@ begin
 end;
 
 procedure TPLRMGISTool.FormCreate(Sender: TObject);
-var
+//var
   // I: Integer;
-  tempStr: AnsiString;
+//  tempStr: AnsiString;
 begin
   statBar.SimpleText := PLRMVERSION;
   self.Caption := PLRMD1_TITLE;

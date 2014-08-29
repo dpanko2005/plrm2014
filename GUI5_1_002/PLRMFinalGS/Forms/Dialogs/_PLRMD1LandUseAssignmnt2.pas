@@ -338,10 +338,10 @@ begin
 end;
 
 procedure TPLRMLandUse.btnApplyClick(Sender: TObject);
-var
-  hasLuse: array [0 .. 6] of Boolean;
-  I: Integer;
-  tempRoadArea, tempRoadImpervArea: Double;
+//var
+//  hasLuse: array [0 .. 6] of Boolean;
+//  I: Integer;
+//  tempRoadArea, tempRoadImpervArea: Double;
 begin
   GSPLRM.PLRMObj.currentCatchment.landUseData := GSUtils.copyGridContents(0, 1,
     GSPLRM.PLRMObj.currentCatchment.landUseNames, sgLuse, 1, 0);

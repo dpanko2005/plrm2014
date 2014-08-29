@@ -182,9 +182,9 @@ end;
 
 procedure TPLRMParcelDrngAndBMPs.sgBMPImplDrawCell(Sender: TObject;
   ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
-var
-  S: String;
-  sg: TStringGrid;
+//var
+//  S: String;
+//  sg: TStringGrid;
 begin
   { sg := Sender as TStringGrid;
     if ((ACol = 0) or ((ACol = 1) and (ARow = 3))) then
@@ -212,7 +212,7 @@ end;
 procedure TPLRMParcelDrngAndBMPs.sgBMPImplSetEditText(Sender: TObject;
   ACol, ARow: Integer; const Value: string);
 var
-  tempSum, prevTotal: Double;
+  tempSum: Double;
   sg: TStringGrid;
 begin
   tempSum := 0.0;
@@ -256,9 +256,9 @@ end;
 
 procedure TPLRMParcelDrngAndBMPs.sgNoBMPsSetEditText(Sender: TObject;
   ACol, ARow: Integer; const Value: string);
-var
-  tempSum: Double;
-  sg: TStringGrid;
+//var
+//  tempSum: Double;
+//  sg: TStringGrid;
 begin
   { tempSum := 0.0;
     sg := Sender as TStringGrid;
@@ -321,11 +321,11 @@ end;
 
 procedure TPLRMParcelDrngAndBMPs.initFormContents(catch: String);
 var
-  idx, I: Integer;
-  jdx: Integer;
+ I: Integer;
+//  jdx: Integer;
   tempInt: Integer;
-  tempLst: TStringList;
-  tempLst2: TStrings;
+//  tempLst: TStringList;
+//  tempLst2: TStrings;
 
   hydProps: dbReturnFields;
   kSatMultplrs: dbReturnFields;

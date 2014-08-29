@@ -97,8 +97,8 @@ implementation
 
 var
   tempEdtSavedVal: String;
-  INFParams: GSInfiltrationFacility;
-  PCHParams: GSPervChannelFacility;
+//  INFParams: GSInfiltrationFacility;
+//  PCHParams: GSPervChannelFacility;
   // used to account for no road landuses in parcel grid as of 2014 set to two to
   // compensate for and align arrays that have full set of landuses
   luseOffset: Integer;
@@ -402,8 +402,8 @@ end;
 
 procedure TPLRMRoadDrainageEditor.initFormContents(catch: String);
 var
-  idx, I: Integer;
-  jdx: Integer;
+//  idx, I: Integer;
+//  jdx: Integer;
   hydProps: dbReturnFields;
   kSatMultplrs: dbReturnFields;
 begin

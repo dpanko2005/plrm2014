@@ -112,8 +112,8 @@ end;
 
 procedure TCatchProps.btnDefLuseClick(Sender: TObject);
 var
-  tempInt, buttonSelected: Integer;
-  msg: String;
+  tempInt: Integer;
+//  msg: String;
 begin
   { if btnDefHydProps.Enabled then
     begin
@@ -157,8 +157,8 @@ end;
 
 procedure TCatchProps.btnDefRoadPollsClick(Sender: TObject);
 var
-  tempInt, buttonSelected: Integer;
-  msg: String;
+  tempInt: Integer;
+//  msg: String;
 begin
   btnApplyClick(Sender);
   tempInt := showRoadPollutantsDialog(PLRMObj.currentCatchment.name);
@@ -172,8 +172,8 @@ end;
 
 procedure TCatchProps.btnDefSoilsClick(Sender: TObject);
 var
-  tempInt, buttonSelected: Integer;
-  msg: String;
+  tempInt: Integer;
+//  msg: String;
 begin
   // 2014 addition to warn user that ksat values will be overwritten
   { if btnDefHydProps.Enabled then
@@ -229,7 +229,7 @@ end;
 procedure TCatchProps.btnShowParcelDrainageAndBMPEditorClick(Sender: TObject);
 var
   tempInt: Integer;
-  msg: String;
+ // msg: String;
 begin
   btnApplyClick(Sender);
   if (not(assigned(PLRMObj.currentCatchment.soilsInfData))) then
@@ -249,7 +249,7 @@ end;
 procedure TCatchProps.btnShowRoadDrainageEditorClick(Sender: TObject);
 var
   tempInt: Integer;
-  msg: String;
+  //msg: String;
 begin
   btnApplyClick(Sender);
   if (not(assigned(PLRMObj.currentCatchment.soilsInfData))) then

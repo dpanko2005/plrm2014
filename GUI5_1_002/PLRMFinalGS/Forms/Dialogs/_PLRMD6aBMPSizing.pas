@@ -110,15 +110,15 @@ begin
 end;
 
 procedure TPLRMBMPSizing.initFormContents(catch: String);
-var
-  idx, I: Integer;
-  jdx: Integer;
-  tempInt: Integer;
-  tempLst: TStringList;
-  tempLst2: TStrings;
+//var
+//  idx, I: Integer;
+//  jdx: Integer;
+//  tempInt: Integer;
+//  tempLst: TStringList;
+//  tempLst2: TStrings;
 
-  hydProps: dbReturnFields;
-  kSatMultplrs: dbReturnFields;
+//  hydProps: dbReturnFields;
+//  kSatMultplrs: dbReturnFields;
 begin
 
   // populate default values colums

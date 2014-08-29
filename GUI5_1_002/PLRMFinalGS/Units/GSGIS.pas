@@ -43,27 +43,27 @@ function TPLRMGIS.toXML(): IXMLNode;
 var
   XMLDoc: IXMLDocument;
   iNode: IXMLNode;
-  tempNode, tempNode2, tempNode3: IXMLNode;
+  tempNode, tempNode2: IXMLNode;
   tempNodeList: IXMLNodeList;
   luseTagList: TStringList;
-  luseCodeList: TStringList;
+//  luseCodeList: TStringList;
   soilsTagList: TStringList;
   rdRiskTagList: TStringList;
 
   tempList: TStringList;
   tempList2: TStringList;
-  tempList3: TStringList;
-  tempListDrng0: TStringList;
-  tempListDrng1: TStringList;
-  tempListDrng2: TStringList;
+//  tempList3: TStringList;
+//  tempListDrng0: TStringList;
+//  tempListDrng1: TStringList;
+//  tempListDrng2: TStringList;
 
-  tempTextListDrng0: TStringList;
-  tempTextListDrng1: TStringList;
-  tempTextListDrng2: TStringList;
-  runoffConcsTags: TStringList;
+//  tempTextListDrng0: TStringList;
+//  tempTextListDrng1: TStringList;
+//  tempTextListDrng2: TStringList;
+//  runoffConcsTags: TStringList;
 
-  I, J: Integer;
-  tempStr: String;
+//  I, J: Integer;
+//  tempStr: String;
   tempPair: TPair<String, String>;
 begin
   if (assigned(PLRMGISRec.shpFilesDict) and (PLRMGISRec.shpFilesDict.Count < 1)) then
