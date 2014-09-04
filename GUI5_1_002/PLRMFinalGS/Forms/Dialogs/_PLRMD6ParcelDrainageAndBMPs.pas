@@ -62,6 +62,7 @@ type
     procedure sgBMPImplDrawCell(Sender: TObject; ACol, ARow: Integer;
       Rect: TRect; State: TGridDrawState);
     procedure restoreFormContents(catch: TPLRMCatch);
+    procedure restoreFormContentsGIS(catch: TPLRMCatch);
     procedure btnOKClick(Sender: TObject);
     procedure btnEditBMPSizeClick(Sender: TObject);
 
@@ -182,9 +183,9 @@ end;
 
 procedure TPLRMParcelDrngAndBMPs.sgBMPImplDrawCell(Sender: TObject;
   ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
-//var
-//  S: String;
-//  sg: TStringGrid;
+// var
+// S: String;
+// sg: TStringGrid;
 begin
   { sg := Sender as TStringGrid;
     if ((ACol = 0) or ((ACol = 1) and (ARow = 3))) then
@@ -256,9 +257,9 @@ end;
 
 procedure TPLRMParcelDrngAndBMPs.sgNoBMPsSetEditText(Sender: TObject;
   ACol, ARow: Integer; const Value: string);
-//var
-//  tempSum: Double;
-//  sg: TStringGrid;
+// var
+// tempSum: Double;
+// sg: TStringGrid;
 begin
   { tempSum := 0.0;
     sg := Sender as TStringGrid;
@@ -300,7 +301,7 @@ begin
     GSUtils.copyGridContents(0, 0, sgNoBMPs);
   GSPLRM.PLRMObj.currentCatchment.frm6of6AreasData := FrmLuseConds;
 
-  GSPLRM.PLRMObj.currentCatchment.hasDefParcelAndDrainageBMPs := True;
+  GSPLRM.PLRMObj.currentCatchment.hasDefParcelAndDrainageBMPs := true;
   ModalResult := mrOk;
 end;
 
@@ -321,11 +322,11 @@ end;
 
 procedure TPLRMParcelDrngAndBMPs.initFormContents(catch: String);
 var
- I: Integer;
-//  jdx: Integer;
+  I: Integer;
+  // jdx: Integer;
   tempInt: Integer;
-//  tempLst: TStringList;
-//  tempLst2: TStrings;
+  // tempLst: TStringList;
+  // tempLst2: TStrings;
 
   hydProps: dbReturnFields;
   kSatMultplrs: dbReturnFields;
@@ -403,6 +404,14 @@ begin
     sgNoBMPs);
 end;
 
+procedure TPLRMParcelDrngAndBMPs.restoreFormContentsGIS(catch: TPLRMCatch);
+begin
+  copyContentsToGrid(PLRMObj.currentCatchment.frm6of6SgBMPImplData, 0, 0,
+    sgBMPImpl);
+  copyContentsToGrid(PLRMObj.currentCatchment.frm6of6SgNoBMPsData, 1, 0,
+    sgNoBMPs);
+end;
+
 procedure TPLRMParcelDrngAndBMPs.FormCreate(Sender: TObject);
 begin
   luseOffset := 2;
@@ -416,8 +425,13 @@ begin
     [UProject.SUBCATCH_AREA_INDEX] + 'ac ]';
 
   initFormContents(initCatchID); // also calls updateAreas
-  if PLRMObj.currentCatchment.hasDefParcelAndDrainageBMPs = True then
-    restoreFormContents(PLRMObj.currentCatchment);
+  if (PLRMObj.currentCatchment.hasDefParcelAndDrainageBMPs = true) then
+  begin
+    if PLRMObj.currentCatchment.isGISCatchment then
+      restoreFormContentsGIS(PLRMObj.currentCatchment)
+    else
+      restoreFormContents(PLRMObj.currentCatchment);
+  end;
 end;
 
 end.

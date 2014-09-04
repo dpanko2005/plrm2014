@@ -6,7 +6,7 @@ interface
 uses
 
   SysUtils, Windows, Messages, Classes, Graphics, Controls, Forms, Dialogs,
-  xmldom, XMLIntf, msxmldom, XMLDoc,
+  xmldom, XMLIntf, msxmldom, XMLDoc, Generics.Collections,
   StdCtrls, ComCtrls, Menus, ImgList, ShlObj, ShellApi, Registry,
   ExtCtrls, Grids, GSTypes, StrUtils, MSXML, Variants, FileCtrl, GSInifile;
 
@@ -39,8 +39,14 @@ function copyContentsToGridNChk(const data: PLRMGridData;
 
 function dbFields2ToPLRMGridData(data: dbReturnFields2; strtRowIdx: Integer = 0)
   : PLRMGridData;
+
+// transposes columns and rows
 function PLRMGridDblToPLRMGridData(data: PLRMGridDataDbl;
-  strtRowIdx: Integer = 0; formatStr: String = THREEDP): PLRMGridData;
+  strtRowIdx: Integer = 0; formatStr: String = THREEDP): PLRMGridData; overload;
+// does not transpose columns and rows
+function PLRMGridDblToPLRMGridDataNT(data: PLRMGridDataDbl;
+  formatStr: String = THREEDP): PLRMGridData; overload;
+
 function dbFields3ToPLRMGridData(data: dbReturnFields3; strtRowIdx: Integer = 0)
   : PLRMGridData;
 procedure DefaultCopyDataProc(oldnode, newnode: TTreenode);
@@ -220,7 +226,7 @@ var
   defaultXslPath: String;
   validateXslPath: String;
   luseNameCodeTable: PLRMGridData;
-
+  shpFilesDict: TDictionary<String, String>;
 
   // 2014 for GIS tool shapefiles dictionary keys
   shpFileKeys: array [0 .. 7] of string = (
@@ -1989,6 +1995,7 @@ begin
   Result := rslt;
 end;
 
+// transposes columns and rows
 function PLRMGridDblToPLRMGridData(data: PLRMGridDataDbl;
   strtRowIdx: Integer = 0; formatStr: String = THREEDP): PLRMGridData;
 var
@@ -1999,6 +2006,20 @@ begin
   for I := strtRowIdx to High(data[0]) do
     for J := 0 to High(rslt[0]) do
       rslt[I - strtRowIdx][J] := FormatFloat(formatStr, data[J][I]);
+  Result := rslt;
+end;
+
+// does not transpose columns and rows
+function PLRMGridDblToPLRMGridDataNT(data: PLRMGridDataDbl;
+  formatStr: String = THREEDP): PLRMGridData;
+var
+  I, J: Integer;
+  rslt: PLRMGridData;
+begin
+  SetLength(rslt, High(data) + 1, High(data[0]) + 1);
+  for I := 0 to High(data) do
+    for J := 0 to High(data[0]) do
+      rslt[I, J] := FormatFloat(formatStr, data[I, J]);
   Result := rslt;
 end;
 

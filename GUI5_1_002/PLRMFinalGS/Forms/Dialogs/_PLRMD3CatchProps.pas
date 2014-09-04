@@ -203,6 +203,8 @@ end;
 procedure TCatchProps.btnOkClick(Sender: TObject);
 begin
   btnApplyClick(Sender);
+  //make sure GIS catchments are intialized only once when first loaded from xml
+  PLRMObj.currentCatchment.isGISCatchment := false;
   ModalResult := mrOK;
 end;
 

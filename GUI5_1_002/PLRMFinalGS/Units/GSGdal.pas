@@ -6,7 +6,8 @@
 interface
 
 uses
-  SysUtils, Forms, Dialogs, Generics.Collections,
+  SysUtils, Forms, Dialogs, Generics.Collections, Vcl.ComCtrls, Vcl.StdCtrls,
+  StrUtils,
   Classes, gdal, gdalcore, ogr, UProject, GSUtils, GSTypes, GSCatchments, GSIO,
   GSPLRM;
 
@@ -16,6 +17,8 @@ type
     parentTotArea: Double;
     // used in calcs to temporarily hold sums during area / length weighting etc
     tempAccumulation: Double;
+    // used in calcs to temporarily hold sums during area / length weighting etc - currently used for calcing luse imperviousness
+    tempAccumulation2: Double;
     // used to accumulate geometry areas during area weighting allows check with actual area
     tempTotalArea: Double;
     // used to accumulate geometry lengths for road shoulder erosion and connectivity
@@ -33,17 +36,23 @@ type
     totalCatchArea: Double;
     totalSlopeArea: Double;
     totalLuseArea: Double; // total landuse coverage area
+    totalImprvLuseArea: Double; // total landuse coverage area
+    totalPervLuseArea: Double; // total landuse coverage area
+
     totalSoilsArea: Double; // total soils coverage area
+    totalBMPsArea: Double; // total BMPs coverage area
     totalRdShdLength: Double; // sum of all road shoulder lengths for catchment
     totalRdConnLength: Double; // sum all road connectivity lengths
     totalRdConditionLength: Double; // sum all road condition lenghths
     // sum of all road connectivity lengths for catchment
 
     luseDict: TDictionary<String, TGSAreaWTObj>;
+    // luseImpervDict: TDictionary<String, TGSAreaWTObj>;
     rdShouldersDict: TDictionary<String, TGSAreaWTObj>;
     rdConditionDict: TDictionary<String, TGSAreaWTObj>;
     rdConnDict: TDictionary<String, TGSAreaWTObj>;
     soilsDict: TDictionary<String, TGSAreaWTObj>;
+    bmpsDict: TDictionary<String, TGSAreaWTObj>;
 
     // used in calcs to temporarily hold sums during area weighting etc
     tempAccumulation: Double;
@@ -61,27 +70,38 @@ const
   GISAREACONV = 1 / 43560; // conversions for geom area to acres
   shpExt: String = '.shp';
   minSlope: Double = 0.1;
-  shpExts: array [0 .. 4] of string = ('.shp', '.shx', '.prj', '.dbf', '.sbn');
+  shpExts: array [0 .. 5] of string = ('.shp', '.shx', '.prj', '.dbf',
+    '.sbn', '.xml');
+  msgs: array [0 .. 9] of string = ('Processing catchments',
+    'Processing slopes', 'Processing landuse codes',
+    'Processing landuse imperviousness', 'Processing soils',
+    'Processing road conditions', 'Processing road shoulders',
+    'Processing runoff connectivity', 'Processing BMPs',
+    'GIS Processing complete');
+  pervImpervDefnStrings: array [0 .. 1] of string = ('Pervious', 'Impervious');
 
-  catchDSName = 'PLRM_Catchments';
-  bmpsDSName = 'PLRM_BMPs';
-  luseDSName = 'PLRM_LandUse';
-  slopeDSName = 'PLRM_Slope';
-  soilsDSName = 'PLRM_Soils';
-  rdCondDSName = 'PLRM_RoadCondition';
-  rdShdlrErosionDSName = 'PLRM_ShoulderErosion';
-  rdRunoffConnDSName = 'PLRM_RunoffConnectivity';
+  { catchDSName = 'PLRM_Catchments';
+    bmpsDSName = 'PLRM_BMP';
+    luseDSName = 'PLRM_LandUse';
+    slopeDSName = 'PLRM_Slope';
+    soilsDSName = 'PLRM_Soils';
+    rdCondDSName = 'PLRM_RoadCondition';
+    rdShdlrErosionDSName = 'PLRM_ShoulderErosion';
+    rdRunoffConnDSName = 'PLRM_RunoffConnectivity'; }
 
   fldNameCatch = 'NAME';
   fldNameCatchArea = 'Acres';
+  fldNameBMPCode = 'COMB_ID';
   fldNameSlope = 'SLOPE';
   fldNameLuseCode = 'LU_ID';
+  fldNameLuseImprvCode = 'LU_DESC';
   fldNameSoilCode = 'SOIL_ID';
   fldNameRdShoulder = 'SHOULDER';
   fldNameRdCondition = 'SCORE';
   fldNameRdConn = 'CONNECT';
 
   intcatchSlope = 'PLRM_CatchSlopes';
+  intCatchBMP = 'PLRM_CatchBMPs';
   intcatchLuse = 'PLRM_CatchLuses';
   intcatchSoil = 'PLRM_CatchSoils';
   intcatchRdShd = 'PLRM_CatchShlds';
@@ -91,11 +111,18 @@ const
   layerNum = 0;
   driverName = 'ESRI Shapefile';
 
-function runGISOps(): Boolean;
+function runGISOps(shpFilesDict: TDictionary<String, String>;
+  var pgBar: TProgressBar; var lblPercentComplete: TLabel;
+  var lblCurrentItem: TLabel): Boolean;
+procedure aggregateOthrAreas(NewCatch: TPLRMCatch);
 function getAreaWeightedTable(var catchDict: TDictionary<String, TGISCatch>;
   shpFilePath: String; catchNameFld: String; propNameFld: String): Boolean;
 function getAreaWeightedTableLuse(var catchDict: TDictionary<String, TGISCatch>;
-  shpFilePath: String; catchNameFld: String; propNameFld: String): Boolean;
+  shpFilePath: String; catchNameFld: String; propNameFld: String)
+  : Boolean; overload;
+function getAreaWeightedTableLuse(var catchDict: TDictionary<String, TGISCatch>;
+  shpFilePath: String; catchNameFld: String; propNameFld: String;
+  coPropNameFld: String): Boolean; overload;
 function lengthWeigthRoads(var catchDict: TDictionary<String, TGISCatch>;
   shpFilePath: String; catchNameFld: String; propNameFld: String): Boolean;
 function getLayer(shpFilePath: String): OGRLayerH;
@@ -118,15 +145,14 @@ implementation
 var
   luseDBData, luseShpCodes, soilMUCodes: dbReturnFields;
 
-function processCatchments(dir: String;
+function processCatchments(shpPath: String;
   CDict: TDictionary<String, TGISCatch>): Boolean;
 var
   flag: Boolean;
   tempKey: String;
   tempCatch: TGISCatch;
 begin
-  flag := getAreaWeightedTable(CDict, dir + catchDSName + shpExt, fldNameCatch,
-    fldNameCatchArea);
+  flag := getAreaWeightedTable(CDict, shpPath, fldNameCatch, fldNameCatchArea);
   // calculation was successful if flag is true so set ave slope prop of each catchment
   if (flag) then
     for tempKey in CDict.Keys do
@@ -136,24 +162,24 @@ begin
       begin
         tempCatch := CDict.Items[tempKey];
         CDict.Items[tempKey].totalCatchArea := tempCatch.tempTotalArea;
-        tempCatch.tempTotalArea := 0;
+
         // IMPORTANT free dict below for next set of intersections and calcs
         FreeAndNil(tempCatch.TempAreaWTDict);
+        tempCatch.tempTotalArea := 0;
       end;
     end;
   Result := flag;
 end;
 
-function processSlopes(dir: String;
+function processSlopes(dir, catchmentsShpPath: String; slopesShpPath: String;
   CDict: TDictionary<String, TGISCatch>): Boolean;
 var
   flag: Boolean;
   tempKey: String;
   tempCatch: TGISCatch;
 begin
-  intersectShapeFilesAsLayers(dir + catchDSName + shpExt,
-    dir + slopeDSName + shpExt, dir + intcatchSlope + shpExt,
-    OGRwkbGeometryType.wkbPolygon);
+  intersectShapeFilesAsLayers(catchmentsShpPath, slopesShpPath,
+    dir + intcatchSlope + shpExt, OGRwkbGeometryType.wkbPolygon);
 
   flag := getAreaWeightedTable(CDict, dir + intcatchSlope + shpExt,
     fldNameCatch, fldNameSlope);
@@ -170,6 +196,8 @@ begin
         CDict.Items[tempKey].totalSlopeArea := tempCatch.tempTotalArea;
         // IMPORTANT free dict below for next set of intersections and calcs
         FreeAndNil(tempCatch.TempAreaWTDict);
+        tempCatch.tempTotalArea := 0;
+        tempCatch.tempWeightedVal := 0;
       end;
     end;
   Result := flag;
@@ -177,7 +205,8 @@ end;
 
 // mode = 0 > land uses
 // mode = 1 > soils
-function processLusesOrSoils(dir: String; CDict: TDictionary<String, TGISCatch>;
+function processLusesOrSoils(dir: String; shpPathCatch: String;
+  shpPathVar: String; CDict: TDictionary<String, TGISCatch>;
   sourceDSName: String; rsltShpName: String; fldNameVar: String;
   mode: Integer): Boolean;
 var
@@ -185,12 +214,15 @@ var
   tempKey: String;
   tempCatch: TGISCatch;
 begin
-  intersectShapeFilesAsLayers(dir + catchDSName + shpExt,
-    dir + sourceDSName + shpExt, dir + rsltShpName + shpExt,
-    OGRwkbGeometryType.wkbPolygon);
+  intersectShapeFilesAsLayers(shpPathCatch, shpPathVar,
+    dir + rsltShpName + shpExt, OGRwkbGeometryType.wkbPolygon);
 
-  flag := getAreaWeightedTableLuse(CDict, dir + rsltShpName + shpExt,
-    fldNameCatch, fldNameVar);
+  if (mode = 0) then
+    flag := getAreaWeightedTableLuse(CDict, dir + rsltShpName + shpExt,
+      fldNameCatch, fldNameVar, fldNameLuseImprvCode)
+  else
+    flag := getAreaWeightedTableLuse(CDict, dir + rsltShpName + shpExt,
+      fldNameCatch, fldNameVar);
 
   // calculation was successful if flag is true so copy tempdict to lusedict of each catchment
   if (flag) then
@@ -198,36 +230,45 @@ begin
       if (CDict.Items[tempKey] is TGISCatch) then
       begin
         tempCatch := CDict.Items[tempKey];
+        // for land uses
         if (mode = 0) then
         begin
           tempCatch.luseDict := TDictionary<String, TGSAreaWTObj>.Create
             (tempCatch.TempAreaWTDict);
           tempCatch.totalLuseArea := tempCatch.tempTotalArea;
-          tempCatch.tempTotalArea := 0;
         end
-        else
+        // for soils
+        else if (mode = 1) then
         begin
           tempCatch.soilsDict := TDictionary<String, TGSAreaWTObj>.Create
             (tempCatch.TempAreaWTDict);
           tempCatch.totalSoilsArea := tempCatch.tempTotalArea;
-          tempCatch.tempTotalArea := 0;
+        end
+        // for bmps
+        else if ((mode = 2) and assigned(tempCatch.TempAreaWTDict)) then
+        begin
+          tempCatch.bmpsDict := TDictionary<String, TGSAreaWTObj>.Create
+            (tempCatch.TempAreaWTDict);
+          tempCatch.totalBMPsArea := tempCatch.tempTotalArea;
         end;
-        // IMPORTANT free dict below for next set of intersections and calcs
+        // else
+        // showMessage('Unknown mode while process polygon shapefiles');
+        // IMPORTANT free dict below for next set of intersections and
+        tempCatch.tempTotalArea := 0;
         FreeAndNil(tempCatch.TempAreaWTDict);
       end;
   Result := flag;
 end;
 
-function processRdShoulders(dir: String;
-  CDict: TDictionary<String, TGISCatch>): Boolean;
+function processRdShoulders(dir: String; shpPathCatch: String;
+  shpPathVar: String; CDict: TDictionary<String, TGISCatch>): Boolean;
 var
   flag: Boolean;
   tempKey: String;
   tempCatch: TGISCatch;
 begin
-  intersectShapeFilesAsLayers(dir + catchDSName + shpExt,
-    dir + rdShdlrErosionDSName + shpExt, dir + intcatchRdShd + shpExt,
-    OGRwkbGeometryType.wkbLineString);
+  intersectShapeFilesAsLayers(shpPathCatch, shpPathVar,
+    dir + intcatchRdShd + shpExt, OGRwkbGeometryType.wkbLineString);
 
   flag := lengthWeigthRoads(CDict, dir + intcatchRdShd + shpExt, fldNameCatch,
     fldNameRdShoulder);
@@ -251,16 +292,15 @@ begin
   Result := flag;
 end;
 
-function processRdCondition(dir: String;
-  CDict: TDictionary<String, TGISCatch>): Boolean;
+function processRdCondition(dir: String; shpPathCatch: String;
+  shpPathVar: String; CDict: TDictionary<String, TGISCatch>): Boolean;
 var
   flag: Boolean;
   tempKey: String;
   tempCatch: TGISCatch;
 begin
-  intersectShapeFilesAsLayers(dir + catchDSName + shpExt,
-    dir + rdCondDSName + shpExt, dir + intcatchRdCondition + shpExt,
-    OGRwkbGeometryType.wkbLineString);
+  intersectShapeFilesAsLayers(shpPathCatch, shpPathVar,
+    dir + intcatchRdCondition + shpExt, OGRwkbGeometryType.wkbLineString);
 
   flag := lengthWeigthRoads(CDict, dir + intcatchRdCondition + shpExt,
     fldNameCatch, fldNameRdCondition);
@@ -284,16 +324,15 @@ begin
   Result := flag;
 end;
 
-function processRdConnectivity(dir: String;
-  CDict: TDictionary<String, TGISCatch>): Boolean;
+function processRdConnectivity(dir: String; shpPathCatch: String;
+  shpPathVar: String; CDict: TDictionary<String, TGISCatch>): Boolean;
 var
   flag: Boolean;
   tempKey: String;
   tempCatch: TGISCatch;
 begin
-  intersectShapeFilesAsLayers(dir + catchDSName + shpExt,
-    dir + rdRunoffConnDSName + shpExt, dir + intcatchRdConn + shpExt,
-    OGRwkbGeometryType.wkbLineString);
+  intersectShapeFilesAsLayers(shpPathCatch, shpPathVar,
+    dir + intcatchRdConn + shpExt, OGRwkbGeometryType.wkbLineString);
 
   flag := lengthWeigthRoads(CDict, dir + intcatchRdConn + shpExt, fldNameCatch,
     fldNameRdConn);
@@ -317,56 +356,123 @@ begin
   Result := flag;
 end;
 
-function runGISOps(): Boolean;
+function getShapeFilePath(sFilesDict: TDictionary<String, String>;
+  I: Integer): String;
+begin
+  if (sFilesDict.ContainsKey(shpFileKeys[I])) then
+    Result := sFilesDict[shpFileKeys[I]]
+  else
+  begin
+    showMessage('Unable to find shapefile for ' + shpFileKeys[I]);
+    Result := '';
+  end;
+end;
+
+procedure updateProgress(var pgBar: TProgressBar;
+  var lblPercentComplete: TLabel; var lblCurrentItem: TLabel; msgIdx: Integer);
 var
-  // tempKey: String;
+  percentComplete: Double;
+  numberOfSteps: Integer;
+begin
+  numberOfSteps := 9;
+  Application.ProcessMessages; // TODO implement alternative
+  percentComplete := 100 * msgIdx / numberOfSteps;
+  lblPercentComplete.Caption := FormatFloat(ONEDP, percentComplete) +
+    '% complete ...';
+  lblCurrentItem.Caption := msgs[msgIdx - 1];
+  pgBar.StepIt;
+end;
+
+function runGISOps(shpFilesDict: TDictionary<String, String>;
+  var pgBar: TProgressBar; var lblPercentComplete: TLabel;
+  var lblCurrentItem: TLabel): Boolean;
+var
   dir: String;
   CDict: TDictionary<String, TGISCatch>;
-  // flag: Boolean;
-  // tempCatch: TGISCatch;
+  shpPathCatch, shpPathVar: String;
+  numberOfSteps: Integer;
+  luseDSName, soilsDSName, bmpsDSName: String;
 begin
   shpExt := '.shp';
   dir := defaultGISDir + '\';
+  // numberOfSteps := 9;
+  // percentComplete := 0;
+  pgBar.Max := numberOfSteps;
+  // set to # of steps till number of catchments known
   // Step 0: Validate layers
 
   // Step 1: Calc catchment areas
   // *******************************************
   // Create dict to hold catchment properties
   CDict := TDictionary<String, TGISCatch>.Create;
-  processCatchments(dir, CDict);
+  shpPathCatch := getShapeFilePath(shpFilesDict, 0);
+  processCatchments(shpPathCatch, CDict);
+  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 1);
 
   // Step 2: Catchment average slopes
   // *******************************************
   // Intersect catchment layer and slopes layer and calc area-weighted slope by catchment
-  processSlopes(dir, CDict);
+  shpPathVar := getShapeFilePath(shpFilesDict, 1);
+  processSlopes(dir, shpPathCatch, shpPathVar, CDict);
+  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 2);
 
   // Step 3: Catchment land uses
   // *******************************************
   // Intersect catchment layer and landuse layer and calc area-weighted landuse by catchment
-  processLusesOrSoils(dir, CDict, luseDSName, intcatchLuse, fldNameLuseCode, 0);
+  shpPathVar := getShapeFilePath(shpFilesDict, 2);
+  luseDSName := ChangeFileExt(ExtractFileName(shpPathVar), '');
+  processLusesOrSoils(dir, shpPathCatch, shpPathVar, CDict, luseDSName,
+    intcatchLuse, fldNameLuseCode, 0);
+  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 3);
+
+  // Step 3b: Catchment land imperviousness
+  // *******************************************
+  // using previously intersected land use layer calc %imperv hment
+  // processLusesImperv(dir, CDict, intcatchLuse, fldNameLuseCode, 0);
+  // updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 4);
 
   // Step 4: Catchment soils
   // *******************************************
   // Intersect catchment layer and soils layer and calc area-weighted soils by catchment
-  processLusesOrSoils(dir, CDict, soilsDSName, intcatchSoil,
-    fldNameSoilCode, 1);
+  shpPathVar := getShapeFilePath(shpFilesDict, 3);
+  soilsDSName := ChangeFileExt(ExtractFileName(shpPathVar), '');
+  processLusesOrSoils(dir, shpPathCatch, shpPathVar, CDict, soilsDSName,
+    intcatchSoil, fldNameSoilCode, 1);
+  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 5);
 
   // Step 5: Road shoulders
   // *******************************************
   // Intersect catchment layer and road shoulders layer and calc lengths of each kind of shoulder
-  processRdShoulders(dir, CDict);
+  shpPathVar := getShapeFilePath(shpFilesDict, 5);
+  processRdShoulders(dir, shpPathCatch, shpPathVar, CDict);
+  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 6);
 
   // Step 6: Road condition
   // *******************************************
   // Intersect catchment layer and road conditions layer and calc lengths of each kind of condition
-  processRdCondition(dir, CDict);
+  shpPathVar := getShapeFilePath(shpFilesDict, 4);
+  processRdCondition(dir, shpPathCatch, shpPathVar, CDict);
+  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 7);
 
   // Step 7: Road connectivity
   // *******************************************
   // Intersect catchment layer and road runoff connectivity layer and calc lengths of each kind of connectivity
-  processRdConnectivity(dir, CDict);
-  createPLRMCatchmentObjs(CDict);
+  shpPathVar := getShapeFilePath(shpFilesDict, 6);
+  processRdConnectivity(dir, shpPathCatch, shpPathVar, CDict);
+  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 8);
 
+  // Step 8: BMPs
+  // *******************************************
+  // Intersect catchment layer and BMPs layer and calc area-weighted vals of each kind of BMP
+  shpPathVar := getShapeFilePath(shpFilesDict, 7);
+  bmpsDSName := ChangeFileExt(ExtractFileName(shpPathVar), '');
+  processLusesOrSoils(dir, shpPathCatch, shpPathVar, CDict, bmpsDSName,
+    intCatchBMP, fldNameBMPCode, 2);
+  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 9);
+
+  // Step 9: Serialize collected data to disk
+  createPLRMCatchmentObjs(CDict);
+  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 10);
   Result := True;
 end;
 
@@ -382,7 +488,8 @@ begin
   if (assigned(tempCatch.luseDict)) then
   begin
     SetLength(tempArry, luseDBData[0].Count, 4);
-    SetLength(tempArryVals, luseDBData[0].Count, 4);
+    // SetLength(tempArryVals, luseDBData[0].Count, 4);
+    SetLength(tempArryVals, luseDBData[0].Count, 5);
     I := 0;
     for tempVarKey in tempCatch.luseDict.Keys do
     begin
@@ -403,11 +510,16 @@ begin
             areaWTObj.percentOfTotalCatch := 100 * areaWTObj.tempAccumulation /
               tempCatch.totalLuseArea;
             tempArry[tempInt, 0] := luseDBData[0][tempInt]; // label
-            tempArry[tempInt, 2] := luseDBData[1][tempInt]; // %imp
             tempArryVals[tempInt, 1] := tempArryVals[tempInt, 1] +
               areaWTObj.percentOfTotalCatch; // %catch
+            // tempArry[tempInt, 2] := luseDBData[1][tempInt]; // %imp
+            tempArryVals[tempInt, 2] := tempArryVals[tempInt, 2] +
+              areaWTObj.tempAccumulation2; // imp area
+
             tempArryVals[tempInt, 3] := tempCatch.totalCatchArea * tempArryVals
               [tempInt, 1];
+            tempArryVals[tempInt, 4] := tempArryVals[tempInt, 4] +
+              areaWTObj.tempAccumulation; // sum all areas of that luse
             inc(I);
           end;
         end;
@@ -421,7 +533,9 @@ begin
       begin
         rsltArry[tempInt, 0] := tempArry[I, 0]; // label
         rsltArry[tempInt, 1] := FormatFloat(TWODP, tempArryVals[I, 1]);
-        rsltArry[tempInt, 2] := tempArry[I, 2]; // %imp
+        // rsltArry[tempInt, 2] := tempArry[I, 2]; // %imp
+        rsltArry[tempInt, 2] := FormatFloat(TWODP, 100 * tempArryVals[I, 2] /
+          tempArryVals[I, 4]); // %imp
         rsltArry[tempInt, 3] := FormatFloat(TWODP, tempArryVals[I, 3]);;
         inc(tempInt);
       end;
@@ -500,11 +614,9 @@ function updateCatchObjRdCondition(tempCatch: TGISCatch;
 var
   rsltArry: PLRMGridData;
   tempArryVals: PLRMGridDataDbl;
-  I, J, tempInt, numTblCols: Integer;
+  I, J, numTblCols: Integer;
   tempVarKey: String;
   areaWTObj: TGSAreaWTObj;
-  rdCondStates: TArray<string>;
-  rdCondStateList: TStringList;
 begin
   numTblCols := 2;
   I := 0;
@@ -532,7 +644,7 @@ begin
   end;
   // copy data to string array and save on object
   SetLength(rsltArry, I, numTblCols);
-  tempInt := 0;
+  // tempInt := 0;
   for I := 0 to I - 1 do
     for J := 0 to numTblCols - 1 do
       rsltArry[I, J] := FormatFloat(TWODP, tempArryVals[I, J]);
@@ -547,11 +659,11 @@ function updateCatchObjRdConnectivity(tempCatch: TGISCatch;
 var
   rsltArry, tempArry: PLRMGridData;
   // tempArryVals: PLRMGridDataDbl;
-  I, J, tempInt, numTblCols: Integer;
+  I, J, numTblCols: Integer;
   tempVarKey: String;
   areaWTObj: TGSAreaWTObj;
-  rdCondStates: TArray<string>;
-  rdCondStateList: TStringList;
+  // rdCondStates: TArray<string>;
+  // rdCondStateList: TStringList;
   tData: GSRoadDrainageInput;
 begin
   numTblCols := 2;
@@ -584,7 +696,7 @@ begin
   end;
   // copy data to string array and save on object
   SetLength(rsltArry, I, numTblCols);
-  tempInt := 0;
+  // tempInt := 0;
   for I := 0 to I - 1 do
     for J := 0 to numTblCols - 1 do
       rsltArry[I, J] := tempArry[I, J];
@@ -593,7 +705,7 @@ begin
   tData.INFFacility.totSurfaceArea := 0;
   tData.INFFacility.totStorage := 0;
   tData.INFFacility.aveAnnInfiltrationRate := 0.5;
-  tData.DPCH := 1;
+  tData.DPCH := 0;
   tData.PervChanFacility.length := 0;
   tData.PervChanFacility.width := 0;
   tData.PervChanFacility.aveSlope := 1;
@@ -603,6 +715,123 @@ begin
 
   NewCatch.frm5of6RoadDrainageEditorData := tData;
   Result := True;
+end;
+
+function updateCatchObjBMPs(tempCatch: TGISCatch;
+  var NewCatch: TPLRMCatch): Boolean;
+var
+  // rsltArry: PLRMGridData;
+  // tempArryVals: PLRMGridDataDbl;
+  numBMPImplCols, numNoBMPImplCols, numBMPRows: Integer;
+  tempVarKey: String;
+  areaWTObj: TGSAreaWTObj;
+  tempf6of6SgBMPImplData: PLRMGridDataDbl;
+  tempf6of6SgNoBMPsData: PLRMGridDataDbl;
+  // represents landuse index and BMP type index
+  luseidx, ctrlidx: Integer;
+begin
+  // # of cols in frm6of6SgBMPImplData grid
+  numBMPImplCols := 2;
+  // # of cols in frm6of6SgNoBMPImplData grid
+  numNoBMPImplCols := 3;
+  // # of cols in frm6of6SgBMPImplData & frm6of6SgNoBMPImplData grids
+  numBMPRows := 4;
+
+  if (assigned(tempCatch.bmpsDict)) then
+  begin
+    SetLength(tempf6of6SgBMPImplData, numBMPRows, numBMPImplCols);
+    SetLength(tempf6of6SgNoBMPsData, numBMPRows, numNoBMPImplCols);
+    // I := 0;
+    for tempVarKey in tempCatch.bmpsDict.Keys do
+    begin
+      if (tempCatch.bmpsDict.Items[tempVarKey] is TGSAreaWTObj and
+        assigned(tempCatch.bmpsDict.Items[tempVarKey])) then
+      begin
+        areaWTObj := tempCatch.bmpsDict.Items[tempVarKey];
+        if (assigned(areaWTObj) and (tempVarKey <> '')) then
+        begin
+          // compute land use and BMP type 10 - SRF:NoBMP, 11-SFR:BMP, 12-:SFR:SCO, 20-MFR:NoBMP etc
+          luseidx := strToInt(tempVarKey[1]);
+          ctrlidx := strToInt(tempVarKey[2]);
+
+          if (ctrlidx = 0) then
+          begin
+            tempf6of6SgNoBMPsData[luseidx - 1, ctrlidx] := tempf6of6SgNoBMPsData
+              [luseidx - 1, ctrlidx] + 100 * areaWTObj.tempAccumulation /
+              tempCatch.totalBMPsArea;
+              tempf6of6SgNoBMPsData[luseidx - 1, 1] := 50;//default DCIA
+          end
+          else // takes care of both ctrlidx = 1 & 2
+            tempf6of6SgBMPImplData[luseidx - 1, ctrlidx - 1] :=
+              tempf6of6SgBMPImplData[luseidx - 1, ctrlidx - 1] + 100 *
+              areaWTObj.tempAccumulation / tempCatch.totalBMPsArea;
+        end;
+      end;
+    end;
+    NewCatch.frm6of6SgNoBMPsData := PLRMGridDblToPLRMGridDataNT
+      (tempf6of6SgNoBMPsData);
+    NewCatch.frm6of6SgBMPImplData := PLRMGridDblToPLRMGridDataNT
+      (tempf6of6SgBMPImplData);
+    aggregateOthrAreas(NewCatch);
+  end;
+  Result := True;
+end;
+
+procedure aggregateOthrAreas(NewCatch: TPLRMCatch);
+var
+  tempInt, I: Integer;
+  tempOtherArea, tempOtherImpvArea: Double;
+  FrmLuseConds: TDrngXtsData;
+  tempList: TStringList;
+begin
+  tempOtherArea := 0;
+  tempOtherImpvArea := 0;
+  SetLength(FrmLuseConds.luseAreaNImpv, High(frmsLuses) + 1, 2);
+  tempList := TStringList.Create;
+  // Add Landuses to StringList to allow indexof
+  for I := 0 to High(frmsLuses) do
+  begin
+    tempList.Add(frmsLuses[I]);
+  end;
+
+  with NewCatch do
+  begin
+    // totArea := NewCatch.area;
+    for I := 0 to landUseNames.Count - 1 do
+    begin
+      tempInt := tempList.IndexOf(landUseNames[I]);
+      if (tempInt > -1) then
+      begin
+        // write total area
+        FrmLuseConds.luseAreaNImpv[tempInt, 0] :=
+          PLRMObj.currentCatchment.landUseData[I][3];
+        // compute and write impervious acres
+        FrmLuseConds.luseAreaNImpv[tempInt, 1] :=
+          FormatFloat(THREEDP, StrToFloat(PLRMObj.currentCatchment.landUseData
+          [I][3]) * StrToFloat(PLRMObj.currentCatchment.landUseData[I]
+          [2]) / 100);
+      end
+      else // lump all other land uses into other areas
+      begin
+        tempOtherArea := tempOtherArea + StrToFloat(landUseData[I][3]);
+        tempOtherImpvArea := tempOtherImpvArea + StrToFloat(landUseData[I][2]) *
+          StrToFloat(landUseData[I][3]);
+      end;
+    end;
+  end;
+  FrmLuseConds.luseAreaNImpv[High(frmsLuses), 0] := FloatToStr(tempOtherArea);
+  FrmLuseConds.luseAreaNImpv[High(frmsLuses), 1] :=
+    FloatToStr(tempOtherImpvArea / 100);
+  NewCatch.othrArea := tempOtherArea;
+  NewCatch.othrPrcntToOut := 100;
+  // entire area drains directly to out
+  if tempOtherArea = 0 then
+    NewCatch.othrPrcntImpv := 0
+  else
+    NewCatch.othrPrcntImpv := tempOtherImpvArea / tempOtherArea;
+
+  NewCatch.frm6of6AreasData := FrmLuseConds;
+  NewCatch.hasDefParcelAndDrainageBMPs := True;
 end;
 
 // saves road shoulders to catchment obj
@@ -648,7 +877,7 @@ begin
     end;
     // copy data to string array and save on object
     SetLength(rsltArry, numTblRows, numTblCols);
-    tempInt := 0;
+    // tempInt := 0;
     for I := 0 to numTblRows - 1 do
       for J := 0 to numTblCols - 1 do
         rsltArry[I, J] := FormatFloat(TWODP, tempArryVals[I, J]);
@@ -688,15 +917,19 @@ begin
       NewCatch.name := tempCatch.id;
       NewCatch.hasDefLuse := True;
       NewCatch.hasDefSoils := True;
-      NewCatch.hasDefRoadPolls := False;
-      NewCatch.hasDefRoadDrainage := False;
+      NewCatch.hasDefRoadPolls := True;
+      NewCatch.hasDefRoadDrainage := True;
       NewCatch.hasDefParcelAndDrainageBMPs := False;
       NewCatch.hasDefCustomBMPSizeData := False;
-      NewCatch.area := tempCatch.totalCatchArea;
-      NewCatch.slope := tempCatch.aveSlope;
+      NewCatch.area := StrToFloat(FormatFloat(THREEDP,
+        tempCatch.totalCatchArea));
+      NewCatch.slope := StrToFloat(FormatFloat(THREEDP, tempCatch.aveSlope));
 
-      // 1. save landuses to catchObj
+      // 1. save landuse codes to catchObj
       updateCatchObjLuse(tempCatch, NewCatch);
+
+      // 1b. save landuse imperviousness to catchObj
+      // updateCatchObjLuseImprv(tempCatch, NewCatch);
 
       // 2. save soils to catchObj
       updateCatchObjSoils(tempCatch, NewCatch);
@@ -710,10 +943,13 @@ begin
       // 5. save road connectivity to catchObj
       updateCatchObjRdConnectivity(tempCatch, NewCatch);
 
+      // 6. save BMPs to catchObj
+      updateCatchObjBMPs(tempCatch, NewCatch);
+
       NewCatch.othrArea := 0;
       catchList.AddObject(tempKey, NewCatch);
     end;
-  gisXMLFilePath := defaultEngnDir + '\GIS.xml';
+  gisXMLFilePath := defaultGISDir + '\GIS.xml';
   PLRMObj.plrmGISToXML(catchList, gisXMLFilePath);
 
   catchList.Free;
@@ -786,7 +1022,7 @@ begin
             tempAreaWTObj := TGSAreaWTObj.Create;
             tempAreaWTObj.tempTotalLength := tempLength;
             tempAreaWTObj.tempAccumulation := tempLength;
-            tempAreaWTObj.tempWeightedVal := 0;
+            tempAreaWTObj.tempWeightedVal := tempLength;
             tempCatch.tempTotalLength := tempCatch.tempTotalLength + tempLength;
             tDict.Add(propCode, tempAreaWTObj);
           end;
@@ -853,7 +1089,6 @@ begin
             tempCatch.TempAreaWTDict :=
               TDictionary<String, TGSAreaWTObj>.Create;
           end;
-          // tDict := tempCatch.TempAreaWTDict;
 
           if tempCatch.TempAreaWTDict.ContainsKey(propCode) then
           begin
@@ -864,39 +1099,114 @@ begin
               tempCatch.tempTotalArea := tempCatch.tempTotalArea + tempArea;
 
               // accumulate total area for this variable e.g. SFR sliver
-              tempAreaWTObj.tempTotalArea := tempCatch.tempTotalArea;
-              tempAreaWTObj.tempAccumulation := tempCatch.tempTotalArea;
-              tempAreaWTObj.tempWeightedVal := tempCatch.tempTotalArea;
+              tempAreaWTObj.tempTotalArea := tempAreaWTObj.tempTotalArea
+                + tempArea;
+              tempAreaWTObj.tempAccumulation := tempAreaWTObj.tempAccumulation
+                + tempArea;
+              tempAreaWTObj.tempWeightedVal := tempAreaWTObj.tempWeightedVal
+                + tempArea;
             end;
           end
           else
           begin
             tempCatch.tempTotalArea := tempCatch.tempTotalArea + tempArea;
-
-            // if (assigned(tempAreaWTObj)) then
-            // tempAreaWTObj.Free;
-
             tempAreaWTObj := TGSAreaWTObj.Create;
             tempAreaWTObj.tempTotalArea := tempArea;
             tempAreaWTObj.tempAccumulation := tempArea;
             tempAreaWTObj.tempWeightedVal := 0;
             tempCatch.TempAreaWTDict.Add(propCode, tempAreaWTObj);
           end;
-
         end
-      end
-      else
-      begin
-        // if (assigned(tempCatch)) then
-        // tempCatch.Free;
+      end;
+    end;
+    feat := OGR_L_GetNextFeature(ogrLayer);
+  until feat = nil;
+  Result := True;
+end;
 
-        tempCatch := TGISCatch.Create;
-        tempCatch.id := catchName;
-        tempCatch.TempAreaWTDict := TDictionary<String, TGSAreaWTObj>.Create;
-        tempCatch.tempTotalArea := tempArea;
-        tempCatch.tempAccumulation := tempArea;
-        tempCatch.tempWeightedVal := 0;
-        catchDict.Add(catchName, tempCatch);
+// similar to overloaded version, computes area weighted average of a single field with multiple possible values such as catchment landuses but also
+// looks at an additional field to calculater imperviousness for each land use
+function getAreaWeightedTableLuse(var catchDict: TDictionary<String, TGISCatch>;
+  shpFilePath: String; catchNameFld: String; propNameFld: String;
+  coPropNameFld: String): Boolean;
+var
+  ogrLayer: OGRLayerH;
+  feat: OGRFeatureH;
+  geom: OGRGeometryH;
+  catchFldIdx, propCodeFldIdx, coPropCodeFldIdx: longint;
+  catchName, propCode, coPropCode: String;
+  tempArea: Double;
+  tempCatch: TGISCatch;
+  tempAreaWTObj: TGSAreaWTObj;
+begin
+
+  ogrLayer := getLayer(shpFilePath);
+
+  feat := OGR_L_GetNextFeature(ogrLayer);
+  catchFldIdx := OGR_F_GetFieldIndex(feat, PAnsiChar(AnsiString(catchNameFld)));
+  propCodeFldIdx := OGR_F_GetFieldIndex(feat,
+    PAnsiChar(AnsiString(propNameFld)));
+  coPropCodeFldIdx := OGR_F_GetFieldIndex(feat,
+    PAnsiChar(AnsiString(coPropNameFld)));
+
+  Repeat
+    geom := OGR_F_GetGeometryRef(feat);
+
+    if (geom <> nil) then
+    begin
+      catchName := String(OGR_F_GetFieldAsString(feat, catchFldIdx));
+      propCode := String(OGR_F_GetFieldAsString(feat, propCodeFldIdx));
+      coPropCode := String(OGR_F_GetFieldAsString(feat, coPropCodeFldIdx));
+      geom := OGR_F_GetGeometryRef(feat);
+      tempArea := OGR_G_GetArea(geom) * GISAREACONV;
+
+      // Try looking up current catchment.
+      if catchDict.ContainsKey(catchName) then
+      begin
+        if (catchDict.TryGetValue(catchName, tempCatch) = True) then
+        begin
+          if tempCatch.id = '' then
+            tempCatch.id := catchName;
+
+          if (not(assigned(tempCatch.TempAreaWTDict))) then
+          begin
+            tempCatch.TempAreaWTDict :=
+              TDictionary<String, TGSAreaWTObj>.Create;
+          end;
+
+          if tempCatch.TempAreaWTDict.ContainsKey(propCode) then
+          begin
+            if (tempCatch.TempAreaWTDict.TryGetValue(propCode, tempAreaWTObj)
+              = True) then
+            begin
+              // accumulate total parent area - in this case parent is individual catchment containing this landuse
+              tempCatch.tempTotalArea := tempCatch.tempTotalArea + tempArea;
+
+              // accumulate total area for this variable e.g. SFR sliver
+              tempAreaWTObj.tempTotalArea := tempAreaWTObj.tempTotalArea
+                + tempArea;
+              tempAreaWTObj.tempAccumulation := tempAreaWTObj.tempAccumulation
+                + tempArea;
+              if (AnsiEndsStr(pervImpervDefnStrings[1], coPropCode)) then
+                tempAreaWTObj.tempAccumulation2 :=
+                  tempAreaWTObj.tempAccumulation2 + tempArea;
+              tempAreaWTObj.tempWeightedVal := tempAreaWTObj.tempWeightedVal
+                + tempArea;
+            end;
+          end
+          else
+          begin
+            tempCatch.tempTotalArea := tempCatch.tempTotalArea + tempArea;
+            tempAreaWTObj := TGSAreaWTObj.Create;
+            tempAreaWTObj.tempTotalArea := tempArea;
+            tempAreaWTObj.tempAccumulation := tempArea;
+            if (AnsiEndsStr(pervImpervDefnStrings[1], coPropCode)) then
+              tempAreaWTObj.tempAccumulation2 := tempAreaWTObj.tempAccumulation2
+                + tempArea;
+            tempAreaWTObj.tempWeightedVal := 0;
+            tempCatch.TempAreaWTDict.Add(propCode, tempAreaWTObj);
+          end;
+        end
       end;
     end;
     feat := OGR_L_GetNextFeature(ogrLayer);
@@ -952,8 +1262,8 @@ begin
         tempCatch := TGISCatch.Create;
         tempCatch.id := catchName;
         tempCatch.tempTotalArea := tempArea;
-        tempCatch.tempAccumulation := 0;
-        tempCatch.tempWeightedVal := 0;
+        tempCatch.tempAccumulation := tempArea * propVal;
+        // tempCatch.tempWeightedVal := propVal;
         catchDict.Add(catchName, tempCatch);
       end;
     end;
@@ -965,8 +1275,11 @@ begin
   begin
     if (catchDict.Items[tempKey] is TGISCatch) then
     begin
-      catchDict.Items[tempKey].tempWeightedVal := tempCatch.tempAccumulation /
-        tempCatch.tempTotalArea;
+      if (catchDict.TryGetValue(tempKey, tempCatch) = True) then
+      begin
+        tempCatch.tempWeightedVal := tempCatch.tempAccumulation /
+          tempCatch.tempTotalArea;
+      end;
     end;
   end;
   Result := True;
@@ -1040,11 +1353,11 @@ begin
   intDSPath := ExtractFilePath(outShpFilePath) + intDSName;
 
   // check to see if intersect result shp file already exists
-  { TODO, uncomment for production
+  { // TODO, uncomment for production
     if FileExists(outShpFilePath) then
     begin
     for I := 0 to High(shpExts) do
-    DeleteFile(  intDSPath + shpExts[I]);
+    DeleteFile(intDSPath + shpExts[I]);
     end; }
 
   // create shape file to hold results of intersect operation
@@ -1053,7 +1366,7 @@ begin
     PAnsiChar(AnsiString(outShpFilePath)), Nil);
   if ogrDS = Nil then
   begin
-    // showMessage(Format('Failed to create output file %s.', [outShpFilePath]));
+    showMessage(Format('Failed to create output file %s.', [outShpFilePath]));
     exit;
   end;
 

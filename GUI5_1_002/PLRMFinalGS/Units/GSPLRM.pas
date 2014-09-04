@@ -1141,6 +1141,7 @@ begin
   begin
     newCatch := currentGISCatch;
     newCatch.Name := currentGISCatch.Name;
+    newCatch.isGISCatchment := True;
   end
   else
   begin
@@ -1178,6 +1179,7 @@ begin
     // select selector button after drawing catchment
     MainForm.SelectorButtonClick();
   end;
+  expectingGISCatch := false;
 end;
 
 function TPLRM.deleteObj(objType: Integer; objIndex: Integer): Boolean;

@@ -424,6 +424,10 @@
 				<Form>PLRMGISCatchDlg</Form>
 				<FormType>dfm</FormType>
 			</DCCReference>
+			<DCCReference Include="PLRMFinalGS\Forms\Dialogs\_PLRMD7bGISProgrs.pas">
+				<Form>PLRMGISProgrsDlg</Form>
+				<FormType>dfm</FormType>
+			</DCCReference>
 			<None Include="objprops.txt"/>
 			<None Include="viewvars.txt"/>
 			<None Include="Epaswmm5.dpr"/>

@@ -16,8 +16,7 @@ unit GSInifile;
 interface
 
 uses
-  Classes, SysUtils, Forms,  IniFiles;
-
+  Classes, SysUtils, Forms, IniFiles;
 
 procedure ReadIniFile;
 procedure SaveIniFile;
@@ -25,7 +24,7 @@ procedure SaveIniFile;
 implementation
 
 uses
-  Fmain, Fmap, Fproped, Uupdate, GSUtils;
+  Fmain, Fmap, Fproped, Uupdate, Generics.Collections,GSUtils;
 
 var
   PLRMINIFilePath: String;
@@ -38,6 +37,8 @@ procedure ReadIniFile;
 // -----------------------------------------------------------------------------
 var
   INIFILE: TIniFile;
+  tempStr: String;
+  I: Integer;
 begin
 
   INIFILE := TIniFile.Create(ChangeFileExt(Application.ExeName, '.ini'));
@@ -46,6 +47,18 @@ begin
     // read and update file paths
     defaultPrjDir := INIFILE.ReadString('FilePaths', 'workspace',
       defaultPrjDir);
+
+    // read saved GIS shapefile
+    if (not(assigned(shpFilesDict))) then
+      shpFilesDict := TDictionary<String, String>.Create();
+
+    for I := 0 to High(shpFileKeys) do
+    begin
+      tempStr := INIFILE.ReadString('FilePaths', shpFileKeys[I], tempStr);
+      if (tempStr <> '') then
+        if not(shpFilesDict.ContainsKey(shpFileKeys[I])) then
+          shpFilesDict.Add(shpFileKeys[I], tempStr);
+    end;
     // Free the .INI file object
   finally
     INIFILE.Free;
@@ -60,12 +73,25 @@ procedure SaveIniFile;
 // -----------------------------------------------------------------------------
 var
   INIFILE: TIniFile;
+  I: Integer;
 begin
   INIFILE := TIniFile.Create(ChangeFileExt(Application.ExeName, '.ini'));
 
   try
     // write file paths
     INIFILE.WriteString('FilePaths', 'workspace', defaultPrjDir);
+
+    // Save GIS shapefile paths if exist
+    if (assigned(shpFilesDict)) then
+    begin
+      for I := 0 to High(shpFileKeys) do
+      begin
+        if (shpFilesDict.ContainsKey(shpFileKeys[I])) then
+          INIFILE.WriteString('FilePaths', shpFileKeys[I],
+            shpFilesDict[shpFileKeys[I]]);
+      end;
+    end;
+
     // Free the .INI file object
   finally
     INIFILE.Free;

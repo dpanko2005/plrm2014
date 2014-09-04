@@ -25,6 +25,7 @@ type
     procedure cbxCatchmentsChange(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
+    procedure loadGISCatchments(gisXMLFilePath: String);
 
   private
     { Private declarations }
@@ -48,26 +49,32 @@ begin
   ModalResult := mrCancel;
 end;
 
+procedure TPLRMGISCatchDlg.loadGISCatchments(gisXMLFilePath: String);
+var
+  tGPLRMObj: TPLRM;
+begin
+  tGPLRMObj := TPLRM.Create;
+  tGPLRMObj.loadGISCatchmentsFromXML(gisXMLFilePath);
+  if (assigned(tGPLRMObj.nodeAndCatchNames)) then
+  begin
+    cbxCatchments.items := tGPLRMObj.catchments;
+    lblCatchments.Visible := True;
+    cbxCatchments.Visible := True;
+    edtCatchShpPath.Enabled := True;
+  end
+  else
+    showMessage('Unable to load and proccess GIS Catchments Database');
+end;
+
 procedure TPLRMGISCatchDlg.btnCatchShpClick(Sender: TObject);
 var
   tempStr: String;
-  tGPLRMObj: TPLRM;
 begin
 
   tempStr := BrowseToXML('junk value');
   if (tempStr <> '') then
   begin
-    tGPLRMObj := TPLRM.Create;
-    tGPLRMObj.loadGISCatchmentsFromXML(tempStr);
-    if (assigned(tGPLRMObj.nodeAndCatchNames)) then
-    begin
-      cbxCatchments.items := tGPLRMObj.catchments;
-      lblCatchments.Visible := True;
-      cbxCatchments.Visible := True;
-
-    end
-    else
-      showMessage('Unable to load and proccess GIS Catchments Database');
+    loadGISCatchments(tempStr);
   end;
 end;
 
@@ -75,11 +82,9 @@ procedure TPLRMGISCatchDlg.btnOKClick(Sender: TObject);
 begin
   // setup already done in onchange of cbx so trigger catchment creation as
   // if user clicked reqular catchment button
-
   ModalResult := mrOk;
   Self.Close;
   MainForm.tbPLRMCatchClick(Sender);
-
 end;
 
 procedure TPLRMGISCatchDlg.cbxCatchmentsChange(Sender: TObject);
@@ -95,8 +100,19 @@ begin
 end;
 
 procedure TPLRMGISCatchDlg.FormCreate(Sender: TObject);
+var
+  gisXMLFilePath: String;
 begin
   statBar.SimpleText := PLRMVERSION;
+  gisXMLFilePath := defaultGISDir + '\GIS.xml';
+  edtCatchShpPath.Text := gisXMLFilePath;
+  if FileExists(gisXMLFilePath) then
+  begin
+    edtCatchShpPath.Enabled := True;
+    loadGISCatchments(gisXMLFilePath);
+  end
+  else
+    edtCatchShpPath.Enabled := False;
 end;
 
 function TPLRMGISCatchDlg.BrowseToXML(initialDir: String): String;
@@ -104,7 +120,7 @@ var
   openDialog: TOpenDialog; // Open dialog variable
 begin
   // Create the open dialog object - assign to our open dialog variable
-  openDialog := TOpenDialog.Create(self);
+  openDialog := TOpenDialog.Create(Self);
 
   // Set up the starting directory to be the current one
   // openDialog.initialDir := initialDir; // GetCurrentDir;

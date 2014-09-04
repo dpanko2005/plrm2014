@@ -623,7 +623,7 @@ procedure getProjManager(firstTimeFlag: Integer = 0);
 var
   buttonSelected: Integer;
 begin
-  buttonSelected := 0;
+//  buttonSelected := 0;
 
   // 2014 commented out to provide a smoother experience, scenario will be autosaved and
   // dialog will not be presented to the user

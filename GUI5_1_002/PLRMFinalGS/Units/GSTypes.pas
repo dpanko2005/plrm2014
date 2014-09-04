@@ -170,6 +170,7 @@ const
   ONEDP = '#0.0';
   TWODP = '#0.00';
   THREEDP = '#0.000';
+  INTTWODP = 2; //used to round floats
 
   // SWT names
   SWTDETBASIN = 'DryBasin';

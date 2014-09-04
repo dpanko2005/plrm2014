@@ -7,6 +7,7 @@ uses
   System.Classes, Vcl.Graphics, Generics.Collections,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Imaging.jpeg, Vcl.ExtCtrls,
   Vcl.ComCtrls, GSIO, GSUtils, GSTypes, GSPLRM, GSCatchments, GSGdal, GDal,
+  GSInifile,
   UProject,
   Vcl.StdCtrls, Vcl.Grids, Vcl.ExtDlgs;
 
@@ -58,6 +59,9 @@ type
     rgpSimLength: TRadioGroup;
     lblRgpBMPs: TLabel;
     pnlManualBMPsCont: TPanel;
+    lblCurrentItem: TLabel;
+    lblPercentComplete: TLabel;
+    progrBar: TProgressBar;
 
     procedure initFormContents();
     procedure enableControlsSavePath(idx: Integer; path: String;
@@ -92,13 +96,17 @@ type
 var
   PLRMGISTool: TPLRMGISTool;
   // FrmData: PLRMGISData;
-  shpFilesDict: TDictionary<String, String>;
+  // shpFilesDict: TDictionary<String, String>;
   gisShpFileDir, prevGridVal: String;
   shpPathInputs: array [0 .. 7] of TEdit;
+  btnsArr: array [0 .. 7] of TButton;
 
 implementation
 
 {$R *.dfm}
+
+uses
+  _PLRMD7bGISProgrs;
 
 function TPLRMGISTool.BrowseToShp(initialDir: String): String;
 var
@@ -264,6 +272,20 @@ begin
   PLRMObj.PLRMGISObj.PLRMGISRec.shpFilesDict := shpFilesDict;
   PLRMObj.PLRMGISObj.PLRMGISRec.manualBMPGridEntries :=
     GSUtils.copyGridContents(0, 0, sgManualBMPs);
+  // Self.Hide;
+  // PLRMGISProgrsDlg :=TPLRMGISProgrsDlg.Create(Self);
+  // PLRMGISProgrsDlg.ShowModal;
+  // runGISOps(shpFilesDict,PLRMGISProgrsDlg.progrBar,PLRMGISProgrsDlg.lblPercentComplete);
+  // PLRMGISProgrsDlg.Close;
+  // showGISProgressDialog();
+  SaveIniFile();
+
+  lblCurrentItem.Caption := 'Intiating GIS processing...';
+  lblCurrentItem.Visible := True;
+  lblPercentComplete.Visible := True;
+  progrBar.Visible := True;
+
+  runGISOps(shpFilesDict, progrBar, lblPercentComplete, lblCurrentItem);
   self.Close;
 end;
 
@@ -302,20 +324,12 @@ begin
 end;
 
 procedure TPLRMGISTool.FormCreate(Sender: TObject);
-//var
-  // I: Integer;
-//  tempStr: AnsiString;
+// var
+// I: Integer;
+// tempStr: AnsiString;
 begin
   statBar.SimpleText := PLRMVERSION;
-  //self.Caption := PLRMD1_TITLE;
-  // intersectShapeFiles('C:\dev\plrm2014\GUI5_1_002\GIS\PLRM_LandUse.shp', 'C:\dev\plrm2014\GUI5_1_002\GIS\PLRM_Catchments.shp');
-  // intersectShapeFiles('C:\dev\plrm2014\GUI5_1_002\PLRM_BMPs.shp', 'C:\dev\plrm2014\GUI5_1_002\PLRM_Catchments.shp');
-
-  // intersectShapeFilesAsLayers('C:\dev\plrm2014\GUI5_1_002\PLRM_BMPs.shp',
-  // 'C:\dev\plrm2014\GUI5_1_002\PLRM_Catchments.shp');
-  runGISOps();
-
-  // intersectShapeFiles('C:\dev\plrm2014\GUI5_1_002\PLRM_LandUse.shp', 'C:\dev\plrm2014\GUI5_1_002\PLRM_Catchments.shp');
+  self.Caption := PLRM7GIS_TITLE;
   initFormContents();
 end;
 
@@ -402,7 +416,8 @@ end;
 
 procedure TPLRMGISTool.initFormContents();
 var
-  I: Integer;
+  I, numberOfShapeFiles: Integer;
+
   // jdx: Integer;
   // tempInt: Integer;
   // tempLst: TStringList;
@@ -411,8 +426,33 @@ var
   // hydProps: dbReturnFields;
   // kSatMultplrs: dbReturnFields;
 begin
+  numberOfShapeFiles := 7;
+
+  // save array of buttons for convenient looping
+  btnsArr[0] := btnCatchShp;
+  btnsArr[1] := btnSlopeShp;
+  btnsArr[2] := btnLuseShp;
+  btnsArr[3] := btnSoilsShp;
+  btnsArr[4] := btnRoadConditionsShp;
+  btnsArr[5] := btnRoadShouldersShp;
+  btnsArr[6] := btnConnectivityShp;
+  btnsArr[7] := btnBMpsShp;
+
+  shpPathInputs[0] := edtCatchShpPath;
+  shpPathInputs[1] := edtSlopeShpPath;
+  shpPathInputs[2] := edtLuseShpPath;
+  shpPathInputs[3] := edtSoilsShpPath;
+  shpPathInputs[4] := edtRoadConditionsShpPath;
+  shpPathInputs[5] := edtRoadShouldersShpPath;
+  shpPathInputs[6] := edtRunoffConnectivityShpPath;
+  shpPathInputs[7] := edtBMPShpPath;
+
   // create data structure for holding shp file paths
-  shpFilesDict := TDictionary<String, String>.Create();
+  if (not(assigned(shpFilesDict))) then
+  begin
+    shpFilesDict := TDictionary<String, String>.Create();
+    ReadIniFile();
+  end;
 
   shpPathInputs[0] := edtCatchShpPath;
   shpPathInputs[1] := edtSlopeShpPath;
@@ -426,8 +466,10 @@ begin
   // retrieve previously saved shp file paths if exists
   for I := 0 to High(shpFileKeys) do
   begin
-    if (shpFilesDict.ContainsKey(shpFileKeys[0])) then
-      shpPathInputs[I].Text := shpFilesDict[shpFileKeys[0]];
+    if (shpFilesDict.ContainsKey(shpFileKeys[I])) then
+      shpPathInputs[I].Text := shpFilesDict[shpFileKeys[I]];
+    btnsArr[I].Enabled := True;
+    btnsArr[I].Visible := True;
   end;
 
   // populate no bmp implementation grid with initial values
@@ -447,6 +489,14 @@ begin
   sgManualBMPs.Cells[2, 3] := '0';
 
   sgManualBMPs.Options := sgManualBMPs.Options + [goEditing];
+
+  lblCurrentItem.Visible := False;
+  lblPercentComplete.Visible := False;
+  progrBar.Visible := False;
+
+  btnRun.Enabled := btnsArr[0].Enabled and btnsArr[1].Enabled and
+    btnsArr[2].Enabled and btnsArr[3].Enabled and btnsArr[4].Enabled and
+    btnsArr[5].Enabled and btnsArr[6].Enabled and btnsArr[7].Enabled
 end;
 
 end.
