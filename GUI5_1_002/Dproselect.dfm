@@ -1,0 +1,255 @@
+object ProfileSelectForm: TProfileSelectForm
+  Left = 0
+  Top = 0
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsDialog
+  Caption = 'Profile Plot Selection'
+  ClientHeight = 307
+  ClientWidth = 329
+  Color = clBtnFace
+  Font.Charset = ANSI_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  FormStyle = fsStayOnTop
+  OldCreateOrder = False
+  OnClose = FormClose
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 15
+  object GroupBox1: TGroupBox
+    Left = 8
+    Top = 8
+    Width = 145
+    Height = 169
+    Caption = 'Create Profile'
+    TabOrder = 0
+    object Label7: TLabel
+      Left = 8
+      Top = 24
+      Width = 56
+      Height = 15
+      Caption = 'Start Node'
+    end
+    object Label8: TLabel
+      Left = 8
+      Top = 72
+      Width = 52
+      Height = 15
+      Caption = 'End Node'
+    end
+    object StartNodeEdit: TEdit
+      Left = 8
+      Top = 40
+      Width = 105
+      Height = 23
+      TabOrder = 0
+      OnChange = StartEndNodeEditChange
+    end
+    object StartNodeBtn: TBitBtn
+      Left = 114
+      Top = 40
+      Width = 21
+      Height = 21
+      Glyph.Data = {
+        DE000000424DDE0000000000000076000000280000000D0000000D0000000100
+        0400000000006800000000000000000000001000000010000000000000000000
+        BF0000BF000000BFBF00BF000000BF00BF00BFBF0000C0C0C000808080000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00777777777777
+        700077777777777770007777700077777000777770C077777000777770C07777
+        7000770000C000077000770CCCCCCC077000770000C000077000777770C07777
+        7000777770C07777700077777000777770007777777777777000777777777777
+        7000}
+      TabOrder = 1
+      TabStop = False
+      OnClick = StartEndNodeBtnClick
+    end
+    object EndNodeEdit: TEdit
+      Left = 8
+      Top = 88
+      Width = 105
+      Height = 23
+      TabOrder = 2
+      OnChange = StartEndNodeEditChange
+    end
+    object EndNodeBtn: TBitBtn
+      Left = 114
+      Top = 88
+      Width = 21
+      Height = 21
+      Glyph.Data = {
+        DE000000424DDE0000000000000076000000280000000D0000000D0000000100
+        0400000000006800000000000000000000001000000010000000000000000000
+        BF0000BF000000BFBF00BF000000BF00BF00BFBF0000C0C0C000808080000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00777777777777
+        700077777777777770007777700077777000777770C077777000777770C07777
+        7000770000C000077000770CCCCCCC077000770000C000077000777770C07777
+        7000777770C07777700077777000777770007777777777777000777777777777
+        7000}
+      TabOrder = 3
+      TabStop = False
+      OnClick = StartEndNodeBtnClick
+    end
+    object FindPathBtn: TButton
+      Left = 24
+      Top = 128
+      Width = 89
+      Height = 25
+      Caption = '&Find Path'
+      TabOrder = 4
+      OnClick = FindPathBtnClick
+    end
+  end
+  object UseProfileBtn: TButton
+    Left = 16
+    Top = 184
+    Width = 133
+    Height = 25
+    Caption = 'Use Saved Profile'
+    TabOrder = 1
+    OnClick = UseProfileBtnClick
+  end
+  object SaveProfileBtn: TButton
+    Left = 16
+    Top = 216
+    Width = 133
+    Height = 25
+    Caption = 'Save Current Profile'
+    TabOrder = 2
+    OnClick = SaveProfileBtnClick
+  end
+  object ProfileLinksBox: TGroupBox
+    Left = 168
+    Top = 8
+    Width = 145
+    Height = 233
+    Caption = 'Links in Profile'
+    TabOrder = 3
+    object BtnAddLink: TBitBtn
+      Left = 12
+      Top = 200
+      Width = 25
+      Height = 25
+      Hint = 'Insert Link'
+      Glyph.Data = {
+        DE000000424DDE0000000000000076000000280000000D0000000D0000000100
+        0400000000006800000000000000000000001000000010000000000000000000
+        BF0000BF000000BFBF00BF000000BF00BF00BFBF0000C0C0C000808080000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00777777777777
+        700077777777777770007777700077777000777770C077777000777770C07777
+        7000770000C000077000770CCCCCCC077000770000C000077000777770C07777
+        7000777770C07777700077777000777770007777777777777000777777777777
+        7000}
+      TabOrder = 1
+      OnClick = BtnAddLinkClick
+    end
+    object BtnDelLink: TBitBtn
+      Left = 36
+      Top = 200
+      Width = 25
+      Height = 25
+      Hint = 'Remove Link'
+      Glyph.Data = {
+        DE000000424DDE0000000000000076000000280000000D0000000D0000000100
+        0400000000006800000000000000000000001000000010000000000000000000
+        BF0000BF000000BFBF00BF000000BF00BF00BFBF0000C0C0C000808080000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00777777777777
+        7000777777777777700077777777777770007777777777777000777777777777
+        70007700000000077000770CCCCCCC0770007700000000077000777777777777
+        7000777777777777700077777777777770007777777777777000777777777777
+        7000}
+      TabOrder = 2
+      OnClick = BtnDelLinkClick
+    end
+    object BtnLinkUp: TBitBtn
+      Left = 60
+      Top = 200
+      Width = 25
+      Height = 25
+      Hint = 'Move Link Up'
+      Glyph.Data = {
+        DE000000424DDE0000000000000076000000280000000D0000000D0000000100
+        0400000000006800000000000000000000001000000010000000000000000000
+        BF0000BF000000BFBF00BF000000BF00BF00BFBF0000C0C0C000808080000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00777777777777
+        7000777777777777700077770000077770007777066607777000777706660777
+        7000777706660777700070000666000070007706666666077000777066666077
+        7000777706660777700077777060777770007777770777777000777777777777
+        7000}
+      TabOrder = 3
+      OnClick = BtnLinkUpClick
+    end
+    object BtnLinkDown: TBitBtn
+      Left = 84
+      Top = 200
+      Width = 25
+      Height = 25
+      Hint = 'Move Link Down'
+      Glyph.Data = {
+        DE000000424DDE0000000000000076000000280000000D0000000D0000000100
+        0400000000006800000000000000000000001000000010000000000000000000
+        BF0000BF000000BFBF00BF000000BF00BF00BFBF0000C0C0C000808080000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00777777777777
+        7000777777777777700077777707777770007777706077777000777706660777
+        7000777066666077700077066666660770007000066600007000777706660777
+        7000777706660777700077770666077770007777000007777000777777777777
+        7000}
+      TabOrder = 4
+      OnClick = BtnLinkDownClick
+    end
+    object LinksListBox: TListBox
+      Left = 8
+      Top = 24
+      Width = 129
+      Height = 169
+      ItemHeight = 15
+      TabOrder = 0
+    end
+    object BtnClearLinks: TBitBtn
+      Left = 108
+      Top = 200
+      Width = 25
+      Height = 25
+      Hint = 'Clear All Links'
+      Glyph.Data = {
+        F6000000424DF600000000000000760000002800000010000000100000000100
+        04000000000080000000CE0E0000D80E00001000000000000000000000000000
+        80000080000000808000800000008000800080800000C0C0C000808080000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00777777777777
+        7777777777777777777777777777777770F77770F7777777777777000F777777
+        0F7777000F777770F777777000F77700F7777777000F700F77777777700000F7
+        7777777777000F7777777777700000F777777777000F70F77777770000F77700
+        F77770000F7777700F77700F7777777700F77777777777777777}
+      TabOrder = 5
+      OnClick = BtnClearLinksClick
+    end
+  end
+  object BtnOK: TButton
+    Left = 37
+    Top = 265
+    Width = 75
+    Height = 25
+    Caption = 'OK'
+    TabOrder = 4
+    OnClick = BtnOKClick
+  end
+  object BtnCancel: TButton
+    Left = 127
+    Top = 265
+    Width = 75
+    Height = 25
+    Caption = 'Cancel'
+    TabOrder = 5
+    OnClick = BtnCancelClick
+  end
+  object BtnHelp: TButton
+    Left = 217
+    Top = 265
+    Width = 75
+    Height = 25
+    Caption = '&Help'
+    TabOrder = 6
+    OnClick = BtnHelpClick
+  end
+end

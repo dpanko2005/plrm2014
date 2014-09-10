@@ -1,0 +1,51 @@
+*******************************************************************
+POLLUTTANT LOAD REDUCTION MODEL (PLRM) - VERSION 2.0 (Build 2.0.006)
+*******************************************************************
+*******************
+Global Information
+*******************
+ 
+Project Name:....................  Project1
+Scenario Name:...................  Scenario1
+Number of years in simulation :..  2
+Met Grid # simulated:............  204
+Working Directory:...............  C:\dev\plrm2014\GUI5_1_002\Workspace\TesprojectsSet1\Project1\Scenario1\
+Date First Created:..............  8/15/2014 12:13:38 PM
+Date Computed:...................  8/15/2014 12:17:51 PM
+ 
+****************
+Catchments
+****************
+ 
+Catchment Name              Volume(ac-ft/yr)       FSP(lbs/yr)        TP(lbs/yr)        TN(lbs/yr)
+--------------------       ----------------       -----------       -----------        ----------
+Catch1                                   2.9              2708                 8                28
+ 
+**********************
+Storm Water Treatment
+**********************
+ 
+ 
+****************
+Scenario Summary
+****************
+ 
+Average Annual Hydrology              acre-feet/yr            inches/yr
+----------------------------          ------------            ---------
+  Total Precipitation ......                  16.6                 49.9
+  Evaporation Loss .........                   2.9                  8.6
+  System Surface Discharge..                   2.9                  8.8
+  Percolation to Groundwater                  10.9                 32.6
+  Continuity Error..........                    0%
+  Percent Surface Runoff....                   18%
+ 
+ 
+Average Annual Surface Loading
+------------------------------
+ 
+Name                        Volume(ac-ft/yr)       FSP(lbs/yr)        TP(lbs/yr)        TN(lbs/yr)
+--------------------       ----------------       -----------       -----------        ----------
+Outfall1                                 2.9              2707                 8                28
+Scenario Total                           2.9              2707                 8                28
+
+
