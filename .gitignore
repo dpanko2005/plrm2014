@@ -65,3 +65,9 @@ GUI5_1_002/OpenGIS/
 *.dbf
 *.sbn
 *.sbx
+#swmm files
+*.out
+*.tmp
+*.ini
+*.inp
+*.rpt
