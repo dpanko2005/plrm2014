@@ -139,7 +139,7 @@ uses
   gdalcore in 'PLRMFinalGS\Units\gdalcore.pas',
   ogr in 'PLRMFinalGS\Units\ogr.pas',
   _PLRMD7bGISTool in 'PLRMFinalGS\Forms\Dialogs\_PLRMD7bGISTool.pas' {PLRMGISCatchDlg},
-  _PLRMD7bGISProgrs in 'PLRMFinalGS\Forms\Dialogs\_PLRMD7bGISProgrs.pas' {PLRMGISProgrsDlg};
+  _PLRMD7bGISStatus in 'PLRMFinalGS\Forms\Dialogs\_PLRMD7bGISStatus.pas' {PLRMGISProgrsDlg};
 
 {$R *.RES}
 
@@ -149,6 +149,7 @@ begin
   Application.Title := 'SWMM 5';
   Application.HelpFile := '';
   Application.CreateForm(TMainForm, MainForm);
+  Application.CreateForm(TPLRMGISProgrsDlg, PLRMGISProgrsDlg);
   //Application.CreateForm(TPLRMGISProgrsDlg, PLRMGISProgrsDlg);
   //Application.CreateForm(TPLRMGISCatchDlg, PLRMGISCatchDlg);
   //Application.CreateForm(TPLRMGISTool, PLRMGISTool);

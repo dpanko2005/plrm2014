@@ -67,7 +67,8 @@ type
     procedure enableControlsSavePath(idx: Integer; path: String;
       var nextBtn: TButton; nextLbl: TLabel;
       var pathDict: TDictionary<String, String>);
-    function BrowseToShp(initialDir: String): String;
+    function browseToShp(initialDir: String): String;
+    function saveXMLFileDialog(initialDir: String): String;
     procedure FormCreate(Sender: TObject);
     procedure btnCatchShpClick(Sender: TObject);
     procedure btnLuseShpClick(Sender: TObject);
@@ -95,8 +96,6 @@ type
 
 var
   PLRMGISTool: TPLRMGISTool;
-  // FrmData: PLRMGISData;
-  // shpFilesDict: TDictionary<String, String>;
   gisShpFileDir, prevGridVal: String;
   shpPathInputs: array [0 .. 7] of TEdit;
   btnsArr: array [0 .. 7] of TButton;
@@ -106,9 +105,9 @@ implementation
 {$R *.dfm}
 
 uses
-  _PLRMD7bGISProgrs;
+  _PLRMD7bGISStatus;
 
-function TPLRMGISTool.BrowseToShp(initialDir: String): String;
+function TPLRMGISTool.browseToShp(initialDir: String): String;
 var
   openDialog: TOpenDialog; // Open dialog variable
 begin
@@ -142,6 +141,44 @@ begin
   openDialog.Free;
 end;
 
+function TPLRMGISTool.saveXMLFileDialog(initialDir: String): String;
+var
+  saveDialog: TSaveDialog; // Save dialog variable
+begin
+  // Create the save dialog object - assign to our save dialog variable
+  saveDialog := TSaveDialog.Create(self);
+
+  // Give the dialog a title
+  saveDialog.Title := 'Save PLRM GIS Database File';
+
+  // Set up the starting directory to be the current one
+  saveDialog.initialDir := GetCurrentDir;
+
+  // Allow only .txt and .doc file types to be saved
+  saveDialog.Filter := 'All XML files|*.xml';
+
+  // Set the default extension
+  saveDialog.DefaultExt := 'xml';
+
+  // Select text files as the starting filter type
+  saveDialog.FilterIndex := 1;
+
+  // Display the open file dialog
+  if saveDialog.Execute then
+  begin
+    // ShowMessage('File : ' + saveDialog.FileName);
+    Result := saveDialog.FileName;
+  end
+  else
+  begin
+    Result := '';
+    // ShowMessage('Save file was cancelled');
+  end;
+
+  // Free up the dialog
+  saveDialog.Free;
+end;
+
 procedure TPLRMGISTool.btnCancelClick(Sender: TObject);
 begin
   shpFilesDict.Free;
@@ -170,13 +207,9 @@ begin
   if (shpFilesDict.ContainsKey(shpFileKeys[0])) then
     gisShpFileDir := ExtractFilePath(shpFilesDict[shpFileKeys[0]]);
 
-  tempStr := BrowseToShp(gisShpFileDir);
+  tempStr := browseToShp(gisShpFileDir);
   if (tempStr <> '') then
   begin
-    { edtCatchShpPath.Text := tempStr;
-      btnSlopeShp.Enabled := True;
-      lblSlopeShp.Enabled := True;
-      shpFilesDict.Add(shpFileKeys[0], tempStr); }
     enableControlsSavePath(0, tempStr, btnSlopeShp, lblSlopeShp, shpFilesDict);
   end;
 end;
@@ -186,13 +219,9 @@ procedure TPLRMGISTool.btnSlopeShpClick(Sender: TObject);
 var
   tempStr: String;
 begin
-  tempStr := BrowseToShp(gisShpFileDir);
+  tempStr := browseToShp(gisShpFileDir);
   if (tempStr <> '') then
   begin
-    { edtSlopeShpPath.Text := tempStr;
-      btnLuseShp.Enabled := True;
-      lblLuseShp.Enabled := True;
-      shpFilesDict.Add(shpFileKeys[1], tempStr); }
     enableControlsSavePath(1, tempStr, btnLuseShp, lblLuseShp, shpFilesDict);
   end;
 end;
@@ -202,13 +231,9 @@ procedure TPLRMGISTool.btnLuseShpClick(Sender: TObject);
 var
   tempStr: String;
 begin
-  tempStr := BrowseToShp(gisShpFileDir);
+  tempStr := browseToShp(gisShpFileDir);
   if (tempStr <> '') then
   begin
-    { edtLuseShpPath.Text := tempStr;
-      btnSoilsShp.Enabled := True;
-      lblSoilsShp.Enabled := True;
-      shpFilesDict.Add(shpFileKeys[2], tempStr); }
     enableControlsSavePath(2, tempStr, btnSoilsShp, lblSoilsShp, shpFilesDict);
   end;
 end;
@@ -218,13 +243,9 @@ procedure TPLRMGISTool.btnSoilsShpClick(Sender: TObject);
 var
   tempStr: String;
 begin
-  tempStr := BrowseToShp(gisShpFileDir);
+  tempStr := browseToShp(gisShpFileDir);
   if (tempStr <> '') then
   begin
-    { edtSoilsShpPath.Text := tempStr;
-      btnRoadConditionsShp.Enabled := True;
-      lblRoadConditionsShp.Enabled := True;
-      shpFilesDict.Add(shpFileKeys[3], tempStr); }
     enableControlsSavePath(3, tempStr, btnRoadConditionsShp,
       lblRoadConditionsShp, shpFilesDict);
   end;
@@ -235,13 +256,9 @@ procedure TPLRMGISTool.btnRoadConditionsShpClick(Sender: TObject);
 var
   tempStr: String;
 begin
-  tempStr := BrowseToShp(gisShpFileDir);
+  tempStr := browseToShp(gisShpFileDir);
   if (tempStr <> '') then
   begin
-    { edtRoadConditionsShpPath.Text := tempStr;
-      btnRoadShouldersShp.Enabled := True;
-      lblRoadShouldersShp.Enabled := True;
-      shpFilesDict.Add(shpFileKeys[4], tempStr); }
     enableControlsSavePath(4, tempStr, btnRoadShouldersShp, lblRoadShouldersShp,
       shpFilesDict);
   end;
@@ -252,32 +269,35 @@ procedure TPLRMGISTool.btnRoadShouldersShpClick(Sender: TObject);
 var
   tempStr: String;
 begin
-  tempStr := BrowseToShp(gisShpFileDir);
+  tempStr := browseToShp(gisShpFileDir);
   if (tempStr <> '') then
   begin
-    { edtRoadShouldersShpPath.Text := tempStr;
-      btnConnectivityShp.Enabled := True;
-      lblConnectivityShp.Enabled := True;
-      shpFilesDict.Add(shpFileKeys[5], tempStr); }
     enableControlsSavePath(5, tempStr, btnConnectivityShp, lblConnectivityShp,
       shpFilesDict);
   end;
 end;
 
 procedure TPLRMGISTool.btnRunClick(Sender: TObject);
+var
+  tempStr: String;
+  tempErrList: TStringList;
+  hasManualBMPs: Boolean;
 begin
   // TODO perform validation
+  // let user specify path to save gis db xml file to
+  tempStr := saveXMLFileDialog(gisShpFileDir);
+  if (tempStr <> '') then
+  begin
+    gisXMLFilePath := tempStr;
+    //enableControlsSavePath(8, tempStr, btnSlopeShp, lblSlopeShp, shpFilesDict);
+  end
+  else
+    gisXMLFilePath := defaultGISDir + '\GIS.xml';
 
   // save form data
   PLRMObj.PLRMGISObj.PLRMGISRec.shpFilesDict := shpFilesDict;
   PLRMObj.PLRMGISObj.PLRMGISRec.manualBMPGridEntries :=
     GSUtils.copyGridContents(0, 0, sgManualBMPs);
-  // Self.Hide;
-  // PLRMGISProgrsDlg :=TPLRMGISProgrsDlg.Create(Self);
-  // PLRMGISProgrsDlg.ShowModal;
-  // runGISOps(shpFilesDict,PLRMGISProgrsDlg.progrBar,PLRMGISProgrsDlg.lblPercentComplete);
-  // PLRMGISProgrsDlg.Close;
-  // showGISProgressDialog();
   SaveIniFile();
 
   lblCurrentItem.Caption := 'Intiating GIS processing...';
@@ -285,7 +305,21 @@ begin
   lblPercentComplete.Visible := True;
   progrBar.Visible := True;
 
-  runGISOps(shpFilesDict, progrBar, lblPercentComplete, lblCurrentItem);
+  if (rgpSimLength.ItemIndex = 0) then
+    hasManualBMPs := False
+  else
+    hasManualBMPs := True;
+
+  tempErrList := runGISOps(gisXMLFilePath, shpFilesDict, progrBar,
+    lblPercentComplete, lblCurrentItem, hasManualBMPs, sgManualBMPs);
+
+  if (not(assigned(tempErrList)) or (tempErrList.Count < 1)) then
+  // errs occured
+  begin
+    tempErrList := TStringList.Create;
+    tempErrList.Add('Success - GIS operations completed successfully');
+  end;
+  showGISProgressDialog(tempErrList);
   self.Close;
 end;
 
@@ -294,14 +328,9 @@ procedure TPLRMGISTool.btnConnectivityShpClick(Sender: TObject);
 var
   tempStr: String;
 begin
-  tempStr := BrowseToShp(gisShpFileDir);
+  tempStr := browseToShp(gisShpFileDir);
   if (tempStr <> '') then
   begin
-    { edtRunoffConnectivityShpPath.Text := tempStr;
-      btnBMpsShp.Enabled := True;
-      rgpSimLength.Enabled := True;
-      lblRgpBMPs.Enabled := True;
-      shpFilesDict.Add(shpFileKeys[6], tempStr); }
     rgpSimLength.Enabled := True;
     enableControlsSavePath(6, tempStr, btnBMpsShp, lblRgpBMPs, shpFilesDict);
     lblBMPShp.Enabled := True;
@@ -313,11 +342,9 @@ procedure TPLRMGISTool.btnBMpsShpClick(Sender: TObject);
 var
   tempStr: String;
 begin
-  tempStr := BrowseToShp(gisShpFileDir);
+  tempStr := browseToShp(gisShpFileDir);
   if (tempStr <> '') then
   begin
-    { edtBMPShpPath.Text := tempStr;
-      shpFilesDict.Add(shpFileKeys[7], tempStr); }
     enableControlsSavePath(7, tempStr, btnBMpsShp, lblRgpBMPs, shpFilesDict);
     btnRun.Enabled := True;
   end;
@@ -417,14 +444,7 @@ end;
 procedure TPLRMGISTool.initFormContents();
 var
   I, numberOfShapeFiles: Integer;
-
-  // jdx: Integer;
-  // tempInt: Integer;
-  // tempLst: TStringList;
-  // tempLst2: TStrings;
-
-  // hydProps: dbReturnFields;
-  // kSatMultplrs: dbReturnFields;
+  tempEnabledState: Boolean;
 begin
   numberOfShapeFiles := 7;
 
@@ -494,9 +514,13 @@ begin
   lblPercentComplete.Visible := False;
   progrBar.Visible := False;
 
-  btnRun.Enabled := btnsArr[0].Enabled and btnsArr[1].Enabled and
+  tempEnabledState := btnsArr[0].Enabled and btnsArr[1].Enabled and
     btnsArr[2].Enabled and btnsArr[3].Enabled and btnsArr[4].Enabled and
-    btnsArr[5].Enabled and btnsArr[6].Enabled and btnsArr[7].Enabled
+    btnsArr[5].Enabled and btnsArr[6].Enabled and btnsArr[7].Enabled;
+
+  btnRun.Enabled := tempEnabledState;
+  lblRgpBMPs.Enabled := tempEnabledState;
+  rgpSimLength.Enabled := tempEnabledState;
 end;
 
 end.

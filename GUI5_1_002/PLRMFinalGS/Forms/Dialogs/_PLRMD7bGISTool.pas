@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Imaging.jpeg,
-  Vcl.ExtCtrls, Vcl.ComCtrls, GSTypes, GSPLRM, GSUtils, GSCatchments;
+  Vcl.ExtCtrls, Vcl.ComCtrls, GSTypes, GSPLRM, GSUtils, GSCatchments, GSInifile;
 
 type
   TPLRMGISCatchDlg = class(TForm)
@@ -47,6 +47,7 @@ uses
 procedure TPLRMGISCatchDlg.btnCancelClick(Sender: TObject);
 begin
   ModalResult := mrCancel;
+  Self.Close;
 end;
 
 procedure TPLRMGISCatchDlg.loadGISCatchments(gisXMLFilePath: String);
@@ -75,6 +76,10 @@ begin
   if (tempStr <> '') then
   begin
     loadGISCatchments(tempStr);
+    edtCatchShpPath.Enabled := True;
+    edtCatchShpPath.Text := tempStr;
+    gisXMLFilePath := tempStr;
+    SaveIniFile();
   end;
 end;
 
@@ -100,11 +105,9 @@ begin
 end;
 
 procedure TPLRMGISCatchDlg.FormCreate(Sender: TObject);
-var
-  gisXMLFilePath: String;
 begin
   statBar.SimpleText := PLRMVERSION;
-  gisXMLFilePath := defaultGISDir + '\GIS.xml';
+  ReadIniFile(); // updates gisXMLFilePath
   edtCatchShpPath.Text := gisXMLFilePath;
   if FileExists(gisXMLFilePath) then
   begin

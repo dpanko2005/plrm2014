@@ -201,9 +201,14 @@ begin
     //then revert to using default inf rate from soils
     if (PLRMObj.currentCatchment.hasChangedSoils  = false) then
     begin
+    {//TODO replace
+    if(catch.frm5of6RoadDrainageEditorData.shoulderAveAnnInfRate < minKsat)then
+       catch.frm5of6RoadDrainageEditorData.shoulderAveAnnInfRate := minKsat; }
+
       edtShoulderAveAnnInfRate.Text :=
         FormatFloat(ONEDP,
         catch.frm5of6RoadDrainageEditorData.shoulderAveAnnInfRate);
+
     end;
 
     edtDINFTotSurfArea.Text := FormatFloat(ZERODP,

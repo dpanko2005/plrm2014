@@ -132,8 +132,8 @@ end;
 
 function calcRoadShoulderConc(errodible: Double; protectd: Double;
   stable: Double; stableProtected: Double; crcParams: array of Double): Double;
-//var
-//  A, B, C, D: Double;
+// var
+// A, B, C, D: Double;
 begin
   Result := (errodible * crcParams[0] + protectd * crcParams[1] + stable *
     crcParams[2] + stableProtected * crcParams[3]) / 100;
@@ -237,6 +237,9 @@ begin
       end;
     end;
   end;
+  // added to help with CRC generation for GIS catchments
+  if (sgCRCs.RowCount < j) then
+    sgCRCs.RowCount := j + 1;
 end;
 
 function showRoadPollutantsDialog(CatchID: String): Integer;
@@ -328,8 +331,8 @@ begin
 end;
 
 procedure TPLRMRoadPollutants.FormCreate(Sender: TObject);
-//var
-//  I: Integer;
+// var
+// I: Integer;
 begin
   // default form labels and other info
   statBar.SimpleText := PLRMVERSION;
@@ -351,7 +354,7 @@ end;
 
 procedure TPLRMRoadPollutants.restoreFormContents(catch: TPLRMCatch);
 var
-   j, iRow, jCol: Integer;
+  j, iRow, jCol: Integer;
 begin
 
   copyContentsToGrid(PLRMObj.currentCatchment.frm4of6SgRoadShoulderData, 0, 0,
@@ -380,20 +383,25 @@ begin
       High(PLRMObj.currentCatchment.frm4of6SgRoadConditionData) + 2;
   end;
 
-  // fxns above wont skip rows, so manually copy over the three visible pollutant CRCs FSP, TP and TN
-  sgCRCs.RowCount := High(PLRMObj.currentCatchment.frm4of6SgRoadCRCsData) + 1;
-  for iRow := 0 to High(PLRMObj.currentCatchment.frm4of6SgRoadCRCsData) do
+  // do not overwrite crcs for GIS catchments when first loaded from xml
+  if (PLRMObj.currentCatchment.isGISCatchment = False) then
   begin
-    j := 0;
-    for jCol := 0 to High(PLRMObj.currentCatchment.frm4of6SgRoadCRCsData[0]) do
+    // fxns above wont skip rows, so manually copy over the three visible pollutant CRCs FSP, TP and TN
+    sgCRCs.RowCount := High(PLRMObj.currentCatchment.frm4of6SgRoadCRCsData) + 1;
+    for iRow := 0 to High(PLRMObj.currentCatchment.frm4of6SgRoadCRCsData) do
     begin
-      // in delphi tstringgrid indexes are column first then row
-      // only copy over values for FSP, TP and TN
-      if ((jCol = 1) or (jCol = 2) or (jCol = 4)) then
+      j := 0;
+      for jCol :=
+        0 to High(PLRMObj.currentCatchment.frm4of6SgRoadCRCsData[0]) do
       begin
-        sgCRCs.Cells[j, iRow] := PLRMObj.currentCatchment.frm4of6SgRoadCRCsData
-          [iRow, jCol];
-        j := j + 1;
+        // in delphi tstringgrid indexes are column first then row
+        // only copy over values for FSP, TP and TN
+        if ((jCol = 1) or (jCol = 2) or (jCol = 4)) then
+        begin
+          sgCRCs.Cells[j, iRow] :=
+            PLRMObj.currentCatchment.frm4of6SgRoadCRCsData[iRow, jCol];
+          j := j + 1;
+        end;
       end;
     end;
   end;
@@ -536,8 +544,8 @@ end;
 
 procedure TPLRMRoadPollutants.sgRoadConditionsSelectCell(Sender: TObject;
   ACol, ARow: Integer; var CanSelect: Boolean);
-//var
-//  sg: TStringGrid;
+// var
+// sg: TStringGrid;
 begin
   // sg := Sender as TStringGrid;
   // prevGridValue := sg.Cells[ACol, ARow];
@@ -548,8 +556,8 @@ procedure TPLRMRoadPollutants.sgRoadConditionsSetEditText(Sender: TObject;
   ACol, ARow: Integer; const Value: string);
 var
   tempInfFootPrintArea: Double;
-//  tempSum: Double;
-//  iRow, tempNum: Integer;
+  // tempSum: Double;
+  // iRow, tempNum: Integer;
   sg: TStringGrid;
 begin
   sg := Sender as TStringGrid;
@@ -625,8 +633,8 @@ end;
 
 procedure TPLRMRoadPollutants.sgRoadShoulderPercentsSelectCell(Sender: TObject;
   ACol, ARow: Integer; var CanSelect: Boolean);
-//var
-//  sg: TStringGrid;
+// var
+// sg: TStringGrid;
 begin
   // sg := Sender as TStringGrid;
   // prevGridValue := sg.Cells[ACol, ARow];
@@ -635,11 +643,11 @@ end;
 
 procedure TPLRMRoadPollutants.sgRoadShoulderPercentsSetEditText(Sender: TObject;
   ACol, ARow: Integer; const Value: string);
-//var
-//  tempInfFootPrintArea: Double;
-//  tempSum: Double;
-//  icol: Integer;
-//  sg: TStringGrid;
+// var
+// tempInfFootPrintArea: Double;
+// tempSum: Double;
+// icol: Integer;
+// sg: TStringGrid;
 begin
   { sg := Sender as TStringGrid;
     tempSum := 0;

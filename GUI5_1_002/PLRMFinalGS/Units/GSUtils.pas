@@ -548,7 +548,10 @@ begin
   XMLDoc := TXMLDocument.Create(nil);
   XMLDoc.loadFromFile(xmlFilePath);
   rootNode := XMLDoc.DocumentElement;
-  outFilePath := rootNode.ChildNodes['UserSWMMInpt'].Text;
+  //2014 changed to use relative paths rather than hardcoded paths in xml file
+  //outFilePath := rootNode.ChildNodes['UserSWMMInpt'].Text;
+  outFilePath := ExtractFilePath(xmlFilePath)+ 'swmm.inp'; // rootNode.ChildNodes['UserSWMMInpt'].Text;
+
   if fileExists(outFilePath) then
   begin
     Mainform.OpenFile(nil, outFilePath);

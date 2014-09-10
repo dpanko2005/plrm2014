@@ -1001,6 +1001,7 @@ begin
     begin
       if ((Pos(tempCatch.name, catchRunoffSmryArr[J, 0]) > 0) and
         (Pos('ToInfCa', catchRunoffSmryArr[J, 0]) = 0) and
+        (Pos('ToPchCa', catchWashoffSmryArr[J, 0]) = 0)and
         (Pos('ToDspCa', catchRunoffSmryArr[J, 0]) = 0)) then
       begin
         // save catchment and landuse name
@@ -1031,6 +1032,7 @@ begin
     begin
       if ((Pos(tempCatch.name, catchWashoffSmryArr[J, 0]) > 0) and
         (Pos('ToInfCa', catchWashoffSmryArr[J, 0]) = 0) and
+        (Pos('ToPchCa', catchWashoffSmryArr[J, 0]) = 0)and
         (Pos('ToDspCa', catchWashoffSmryArr[J, 0]) = 0)) then
       begin
         // save catchment and landuse name

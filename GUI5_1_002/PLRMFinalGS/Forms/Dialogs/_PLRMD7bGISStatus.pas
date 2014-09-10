@@ -1,4 +1,4 @@
-unit _PLRMD7bGISProgrs;
+unit _PLRMD7bGISStatus;
 
 interface
 
@@ -13,10 +13,10 @@ type
   TPLRMGISProgrsDlg = class(TForm)
     statBar: TStatusBar;
     Image1: TImage;
-    lblPercentComplete: TLabel;
-    progrBar: TProgressBar;
-    lblCurrentItem: TLabel;
+    lblErrors: TLabel;
+    btnOk: TButton;
     procedure FormCreate(Sender: TObject);
+    procedure btnOkClick(Sender: TObject);
 
   private
     { Private declarations }
@@ -24,7 +24,7 @@ type
     { Public declarations }
   end;
 
-function showGISProgressDialog(): Integer;
+function showGISProgressDialog(msgsList: TStringList): Integer;
 
 var
   PLRMGISProgrsDlg: TPLRMGISProgrsDlg;
@@ -33,16 +33,20 @@ implementation
 
 {$R *.dfm}
 
-function showGISProgressDialog(): Integer;
+function showGISProgressDialog(msgsList: TStringList): Integer;
 var
   Frm: TPLRMGISProgrsDlg;
   tempInt: Integer;
+  I: Integer;
 begin
 
   Frm := TPLRMGISProgrsDlg.Create(Application);
   try
-    runGISOps(shpFilesDict, Frm.progrBar, Frm.lblPercentComplete,
-      Frm.lblCurrentItem);
+    if (assigned(msgsList)) then
+      for I := 0 to msgsList.Count - 1 do
+      begin
+        Frm.lblErrors.Caption := Frm.lblErrors.Caption + #13#10 + msgsList[I];
+      end;
     tempInt := Frm.ShowModal;
   finally
     Frm.Free;
@@ -50,16 +54,15 @@ begin
   Result := tempInt;
 end;
 
+procedure TPLRMGISProgrsDlg.btnOkClick(Sender: TObject);
+begin
+  self.Close;
+end;
+
 procedure TPLRMGISProgrsDlg.FormCreate(Sender: TObject);
 begin
   statBar.SimpleText := PLRMVERSION;
-  lblCurrentItem.Visible := True;
-  lblCurrentItem.Caption := 'Checking catchments GIS file';
-
-  lblPercentComplete.Visible := True;
-  lblPercentComplete.Caption := '0%';
-
-  self.CloseModal;
+  lblErrors.Caption := '';
 end;
 
 end.

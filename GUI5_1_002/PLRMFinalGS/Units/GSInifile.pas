@@ -21,10 +21,13 @@ uses
 procedure ReadIniFile;
 procedure SaveIniFile;
 
+var
+  gisXMLFilePath: String;
+
 implementation
 
 uses
-  Fmain, Fmap, Fproped, Uupdate, Generics.Collections,GSUtils;
+  Fmain, Fmap, Fproped, Uupdate, Generics.Collections, GSUtils;
 
 var
   PLRMINIFilePath: String;
@@ -59,6 +62,10 @@ begin
         if not(shpFilesDict.ContainsKey(shpFileKeys[I])) then
           shpFilesDict.Add(shpFileKeys[I], tempStr);
     end;
+
+    // save gis xml db path
+    gisXMLFilePath := INIFILE.ReadString('FilePaths', 'gisxml', gisXMLFilePath);
+
     // Free the .INI file object
   finally
     INIFILE.Free;
@@ -91,6 +98,9 @@ begin
             shpFilesDict[shpFileKeys[I]]);
       end;
     end;
+
+    // save gis xml db path
+    INIFILE.WriteString('FilePaths', 'gisxml', gisXMLFilePath);
 
     // Free the .INI file object
   finally

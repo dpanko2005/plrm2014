@@ -1141,7 +1141,7 @@ begin
   begin
     newCatch := currentGISCatch;
     newCatch.Name := currentGISCatch.Name;
-    newCatch.isGISCatchment := True;
+    newCatch.isGISCatchment := true;
   end
   else
   begin
@@ -1399,11 +1399,16 @@ begin
   for I := 0 to nodes.count - 1 do
   begin
     tempNode := (nodes.Objects[I] as TPLRMNode);
-    tempNode.swmmNode := Project.Lists[tempNode.objType].Objects
-      [tempNode.objIndex] as TNode;
-    swmmIndex := Project.Lists[CONDUIT].IndexOf(tempNode.dwnLinkID);
-    if swmmIndex <> -1 then
-      tempNode.dwnLink := Project.GetLink(CONDUIT, swmmIndex);
+    // 2014 added check for nil before use
+    if (assigned(Project.Lists[tempNode.objType]) and
+      (Project.Lists[tempNode.objType].count > 0)) then
+    begin
+      tempNode.swmmNode := Project.Lists[tempNode.objType].Objects
+        [tempNode.objIndex] as TNode;
+      swmmIndex := Project.Lists[CONDUIT].IndexOf(tempNode.dwnLinkID);
+      if swmmIndex <> -1 then
+        tempNode.dwnLink := Project.GetLink(CONDUIT, swmmIndex);
+    end;
 
     if (tempNode.divertLinkID <> '-1') then
     begin
@@ -1418,8 +1423,13 @@ begin
   for I := 0 to catchments.count - 1 do
   begin
     Catch := (catchments.Objects[I] as TPLRMCatch);
-    Catch.swmmCatch := Project.Lists[Catch.objType].Objects[Catch.objIndex]
-      as TSubCatch;
+    // 2014 added check for nil before use
+    if (assigned(Project.Lists[Catch.objType]) and
+      (Project.Lists[Catch.objType].count > 0)) then
+    begin
+      Catch.swmmCatch := Project.Lists[Catch.objType].Objects[Catch.objIndex]
+        as TSubCatch;
+    end;
   end;
 end;
 

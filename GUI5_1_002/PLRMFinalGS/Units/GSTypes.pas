@@ -131,6 +131,8 @@ type
 
   // ******CONSTANTS**************
 const
+  // min ksat TODO replace with db value
+  minKsat = 0.01;
   // User inputPLRMGrid row and column pointers
   USERVALCOL = 3;
   // Detention Basin Design Parameters Row Numbers
@@ -170,7 +172,7 @@ const
   ONEDP = '#0.0';
   TWODP = '#0.00';
   THREEDP = '#0.000';
-  INTTWODP = 2; //used to round floats
+  INTTWODP = 2; // used to round floats
 
   // SWT names
   SWTDETBASIN = 'DryBasin';

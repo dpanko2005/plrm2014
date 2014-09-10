@@ -424,9 +424,8 @@
 				<Form>PLRMGISCatchDlg</Form>
 				<FormType>dfm</FormType>
 			</DCCReference>
-			<DCCReference Include="PLRMFinalGS\Forms\Dialogs\_PLRMD7bGISProgrs.pas">
+			<DCCReference Include="PLRMFinalGS\Forms\Dialogs\_PLRMD7bGISStatus.pas">
 				<Form>PLRMGISProgrsDlg</Form>
-				<FormType>dfm</FormType>
 			</DCCReference>
 			<None Include="objprops.txt"/>
 			<None Include="viewvars.txt"/>
@@ -574,6 +573,7 @@
 					<ProjectRoot Name="$(PROJECTNAME)" Platform="Win64"/>
 					<ProjectRoot Name="$(PROJECTNAME)" Platform="Win32"/>
 				</Deployment>
+				<ModelSupport>False</ModelSupport>
 			</BorlandProject>
 			<ProjectFileVersion>12</ProjectFileVersion>
 		</ProjectExtensions>
