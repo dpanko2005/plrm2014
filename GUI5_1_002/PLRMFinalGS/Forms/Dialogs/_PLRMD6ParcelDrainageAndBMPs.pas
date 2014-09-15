@@ -408,8 +408,10 @@ procedure TPLRMParcelDrngAndBMPs.restoreFormContentsGIS(catch: TPLRMCatch);
 begin
   copyContentsToGrid(PLRMObj.currentCatchment.frm6of6SgBMPImplData, 0, 0,
     sgBMPImpl);
-  copyContentsToGrid(PLRMObj.currentCatchment.frm6of6SgNoBMPsData, 1, 0,
-    sgNoBMPs);
+  {copyContentsToGrid(PLRMObj.currentCatchment.frm6of6SgNoBMPsData, 0, 0,
+    sgNoBMPs); }
+    copyContentsToGridSubset(PLRMObj.currentCatchment.frm6of6SgNoBMPsData, 0, 0,1,1,
+    sgNoBMPs)
 end;
 
 procedure TPLRMParcelDrngAndBMPs.FormCreate(Sender: TObject);

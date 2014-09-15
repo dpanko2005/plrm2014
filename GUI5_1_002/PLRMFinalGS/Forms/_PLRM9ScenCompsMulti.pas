@@ -131,7 +131,8 @@ begin
 
   GSUtils.TransferLstBxItems(lbxScnRight,lbxScnLeft);
   btnToLeft.enabled := true;
-  data2 := getScenarioSummary(defaultPrjDir + '\' + prjName + '\' + scnDirname + '\' + 'swmm.prpt',searchStr,5);
+  data2 := getScenarioSummary(defaultPrjDir + '\' + prjName + '\' + scnDirname + '\' + GSRPTFILENAME,searchStr,5);
+  //data2 := getScenarioSummary(defaultPrjDir + '\' + prjName + '\' + scnDirname + '\' + 'swmm.prpt',searchStr,5);
   if data2 = nil then  exit;
 
   curRowIdx := sgAbslut.RowCount;
@@ -366,7 +367,8 @@ begin
     lbxScnRight.enabled := true;
     btnToRight.enabled := true;
     //10/ 18 data1 := getScenarioSummary(defaultPrjDir + '\' + prjName + '\' + scnName + '\' + 'swmm.prpt',searchStr,5);
-    data1 := getScenarioSummary(defaultPrjDir + '\' + prjName + '\' + scnDirname + '\' + 'swmm.prpt',searchStr,5);
+    //data1 := getScenarioSummary(defaultPrjDir + '\' + prjName + '\' + scnDirname + '\' + 'swmm.prpt',searchStr,5);
+    data1 := getScenarioSummary(defaultPrjDir + '\' + prjName + '\' + scnDirname + '\' + GSRPTFILENAME,searchStr,5);
     if data1 = nil  then exit;
 
       //2014 resent grid lengths to prevent phantom rows

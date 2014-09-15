@@ -1119,8 +1119,10 @@ begin
     end;
   end;
 
-  resultsToTextFile(PLRMResults, PLRMObj.wrkDir + '\' + 'swmm.prpt', 0);
-  resultsToTextFile(PLRMResults, PLRMObj.wrkDir + '\' + 'swmmDetailed.prpt', 1);
+  resultsToTextFile(PLRMResults, PLRMObj.wrkDir + '\' + GSRPTFILENAME, 0);
+  resultsToTextFile(PLRMResults, PLRMObj.wrkDir + '\' + GSDETAILRPTFILENAME, 1);
+  //resultsToTextFile(PLRMResults, PLRMObj.wrkDir + '\' + 'swmm.prpt', 0);
+  //resultsToTextFile(PLRMResults, PLRMObj.wrkDir + '\' + 'swmmDetailed.prpt', 1);
   // ShowMessage('All Results Collected!');
 
   // plrm 2014 moved reloadUserHydro fxn call to fmain to separate concerns

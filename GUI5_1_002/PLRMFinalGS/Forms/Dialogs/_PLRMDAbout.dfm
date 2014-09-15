@@ -569,8 +569,6 @@ object AboutPLRMBoxForm: TAboutPLRMBoxForm
       ParentColor = True
       ParentFont = False
       TabOrder = 0
-      ExplicitLeft = 83
-      ExplicitWidth = 446
       object Label4: TLabel
         Left = 0
         Top = 0

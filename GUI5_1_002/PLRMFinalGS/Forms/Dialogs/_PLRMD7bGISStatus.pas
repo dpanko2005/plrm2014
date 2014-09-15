@@ -24,7 +24,8 @@ type
     { Public declarations }
   end;
 
-function showGISProgressDialog(msgsList: TStringList): Integer;
+function showGISProgressDialog(msgsList: TStringList; isError: Boolean)
+  : Integer;
 
 var
   PLRMGISProgrsDlg: TPLRMGISProgrsDlg;
@@ -33,7 +34,8 @@ implementation
 
 {$R *.dfm}
 
-function showGISProgressDialog(msgsList: TStringList): Integer;
+function showGISProgressDialog(msgsList: TStringList; isError: Boolean)
+  : Integer;
 var
   Frm: TPLRMGISProgrsDlg;
   tempInt: Integer;
@@ -47,6 +49,12 @@ begin
       begin
         Frm.lblErrors.Caption := Frm.lblErrors.Caption + #13#10 + msgsList[I];
       end;
+
+    if isError then
+      Frm.lblErrors.Font.Color := clRed
+    else
+      Frm.lblErrors.Font.Color := clBlue;
+
     tempInt := Frm.ShowModal;
   finally
     Frm.Free;

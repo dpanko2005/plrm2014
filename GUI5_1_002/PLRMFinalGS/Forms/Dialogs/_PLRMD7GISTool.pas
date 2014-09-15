@@ -152,7 +152,7 @@ begin
   saveDialog.Title := 'Save PLRM GIS Database File';
 
   // Set up the starting directory to be the current one
-  saveDialog.initialDir := GetCurrentDir;
+  saveDialog.initialDir := initialDir;
 
   // Allow only .txt and .doc file types to be saved
   saveDialog.Filter := 'All XML files|*.xml';
@@ -282,45 +282,73 @@ var
   tempStr: String;
   tempErrList: TStringList;
   hasManualBMPs: Boolean;
+  didValidate: Boolean;
 begin
-  // TODO perform validation
-  // let user specify path to save gis db xml file to
-  tempStr := saveXMLFileDialog(gisShpFileDir);
-  if (tempStr <> '') then
-  begin
-    gisXMLFilePath := tempStr;
-    //enableControlsSavePath(8, tempStr, btnSlopeShp, lblSlopeShp, shpFilesDict);
-  end
-  else
-    gisXMLFilePath := defaultGISDir + '\GIS.xml';
-
-  // save form data
-  PLRMObj.PLRMGISObj.PLRMGISRec.shpFilesDict := shpFilesDict;
-  PLRMObj.PLRMGISObj.PLRMGISRec.manualBMPGridEntries :=
-    GSUtils.copyGridContents(0, 0, sgManualBMPs);
-  SaveIniFile();
-
-  lblCurrentItem.Caption := 'Intiating GIS processing...';
-  lblCurrentItem.Visible := True;
-  lblPercentComplete.Visible := True;
-  progrBar.Visible := True;
+  didValidate := False;
 
   if (rgpSimLength.ItemIndex = 0) then
     hasManualBMPs := False
   else
     hasManualBMPs := True;
 
-  tempErrList := runGISOps(gisXMLFilePath, shpFilesDict, progrBar,
-    lblPercentComplete, lblCurrentItem, hasManualBMPs, sgManualBMPs);
+  // Ran validation check and display validation errors
+  tempErrList := validateAll(shpFilesDict, progrBar, lblPercentComplete,
+    lblCurrentItem, hasManualBMPs, sgManualBMPs);
 
   if (not(assigned(tempErrList)) or (tempErrList.Count < 1)) then
-  // errs occured
-  begin
+  begin // errs occured
+    didValidate := True;
     tempErrList := TStringList.Create;
-    tempErrList.Add('Success - GIS operations completed successfully');
+    lblCurrentItem.Visible := True;
+    lblCurrentItem.Caption := 'Success - GIS validation completed successfully';
+  end
+  else
+  begin
+    tempErrList.Add('Please fix errors and try again');
+    showGISProgressDialog(tempErrList, True);
   end;
-  showGISProgressDialog(tempErrList);
-  self.Close;
+
+  if (didValidate = True) then
+  begin
+    // check if previous shp path save then start from its dir
+    if ((gisShpFileDir = '') and (shpFilesDict.ContainsKey(shpFileKeys[0])))
+    then
+      gisShpFileDir := ExtractFilePath(shpFilesDict[shpFileKeys[0]]);
+
+    // let user specify path to save gis db xml file to
+    tempStr := saveXMLFileDialog(gisShpFileDir);
+    if (tempStr <> '') then
+    begin
+      gisXMLFilePath := tempStr;
+    end
+    else
+      gisXMLFilePath := defaultGISDir + '\GIS.xml';
+
+    // save form data
+    PLRMObj.PLRMGISObj.PLRMGISRec.shpFilesDict := shpFilesDict;
+    PLRMObj.PLRMGISObj.PLRMGISRec.manualBMPGridEntries :=
+      GSUtils.copyGridContents(0, 0, sgManualBMPs);
+    SaveIniFile();
+
+    lblCurrentItem.Caption := 'Intiating GIS processing...';
+    lblCurrentItem.Visible := True;
+    lblPercentComplete.Visible := True;
+    progrBar.Visible := True;
+
+    // Begin actual GIS processing
+    tempErrList := runGISOps(gisXMLFilePath, shpFilesDict, progrBar,
+      lblPercentComplete, lblCurrentItem, hasManualBMPs, sgManualBMPs);
+
+    if (not(assigned(tempErrList)) or (tempErrList.Count < 1)) then
+    begin // errs occured
+      tempErrList := TStringList.Create;
+      lblCurrentItem.Caption := 'Success - GIS operations completed successfully';
+      ShowMessage('Success - GIS operations completed successfully');
+    end
+    else
+      showGISProgressDialog(tempErrList, True);
+    self.Close;
+  end;
 end;
 
 // 7. select connectivity shp file

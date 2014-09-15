@@ -264,6 +264,11 @@ const
   // Messages
   CELLNOEDIT = 'This cell is not editable. Please select another cell!';
 
+  //report file names
+  GSRPTFILENAME = 'SummaryReport.prpt';
+  GSDETAILRPTFILENAME = 'DetailedReport.prpt';
+  GSTEMPSWMMINP = 'PLRM.inp';
+
 implementation
 
 end.

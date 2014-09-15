@@ -1310,6 +1310,8 @@ begin
         newNode.swtType := 2; // Infiltration Basin
         newNode.hasEffl := false;
       end;
+    19:
+      newNode.swtType := 3; // Wetland / Wet basin
   else
     begin
       newNode.isSwt := false;

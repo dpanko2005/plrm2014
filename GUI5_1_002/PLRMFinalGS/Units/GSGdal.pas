@@ -81,12 +81,29 @@ const
     'Begin processing runoff connectivity', 'Begin processing BMPs',
     'GIS Processing complete');
 
-  endMsgs: array [0 .. 9] of string = ('Catchments processing complete',
-    'Slopes processing complete', 'Landuse codes processing complete',
-    'Landuse imperviousness processing complete', 'Soils processing complete',
-    'Road conditions processing complete', 'Road shoulders processing complete',
-    'Runoff connectivity processing complete', 'BMPs processing complete',
+  endMsgs: array [0 .. 9] of string = ('Catchment layer processing complete',
+    'Slope layer processing complete', 'Landuse codes processing complete',
+    'Landuse imperviousness processing complete',
+    'Soils layer processing complete',
+    'Road conditions layer processing complete',
+    'Road shoulder erosion layer processing complete',
+    'Runoff connectivity layer processing complete',
+    'BMPs layer processing complete', 'Success');
+
+  startValidtnMsgs: array [0 .. 9] of string = ('Begin validating catchments',
+    'Begin validating slopes', 'Begin validating landuse codes',
+    'Begin validating landuse imperviousness', 'Begin validating soils',
+    'Begin validating road conditions', 'Begin validating road shoulders',
+    'Begin validating runoff connectivity', 'Begin validating BMPs',
+    'GIS validating complete');
+
+  endValidtnMsgs: array [0 .. 9] of string = ('Catchments validation complete',
+    'Slopes validation complete', 'Landuse codes validation complete',
+    'Landuse imperviousness validation complete', 'Soils validation complete',
+    'Road conditions validation complete', 'Road shoulders validation complete',
+    'Runoff connectivity validation complete', 'BMPs validation complete',
     'Success');
+
   pervImpervDefnStrings: array [0 .. 1] of string = ('Pervious', 'Impervious');
 
   fldNameCatch = 'NAME';
@@ -112,8 +129,8 @@ const
   driverName = 'ESRI Shapefile';
 
 function runGISOps(gisXMLFilePath: String;
-  shpFilesDict: TDictionary<String, String>; var pgBar: TProgressBar;
-  var lblPercentComplete: TLabel; var lblCurrentItem: TLabel;
+  shpFilesDict: TDictionary<String, String>; var inpgBar: TProgressBar;
+  var inlblPercentComplete: TLabel; var inlblCurrentItem: TLabel;
   hasManualBMPs: Boolean; sgManualBMPs: TStringGrid): TStringList;
 procedure aggregateOthrAreas(NewCatch: TPLRMCatch);
 function getAreaWeightedTable(var catchDict: TDictionary<String, TGISCatch>;
@@ -143,7 +160,20 @@ function updateCatchObjRdShoulders(tempCatch: TGISCatch;
   var NewCatch: TPLRMCatch): Boolean;
 function updateCatchObjRdCondition(tempCatch: TGISCatch;
   var NewCatch: TPLRMCatch): Boolean;
+
+procedure updateProgress(var pgBar: TProgressBar;
+  var lblPercentComplete: TLabel; var lblCurrentItem: TLabel; stepNum: Integer;
+  msg: String);
+procedure handleGISErrs(errCode: Integer; err: String);
+
 // validation functions and procs
+function validateFldNameAndType(featDefn: OGRFeatureDefnH; feat: OGRFeatureH;
+  fldName: String; fldType: OGRFieldType; errMsg: String): Boolean;
+function validateAll(shpFilesDict: TDictionary<String, String>;
+  var inpgBar: TProgressBar; var inlblPercentComplete: TLabel;
+  var inlblCurrentItem: TLabel; hasManualBMPs: Boolean;
+  sgManualBMPs: TStringGrid): TStringList;
+
 function checkGeometryType(desiredGeomType: OGRwkbGeometryType;
   featDefn: OGRFeatureDefnH; errString: String): Boolean;
 
@@ -153,56 +183,83 @@ var
   luseDBData, luseShpCodes, soilMUCodes: dbReturnFields;
   numberOfpgBarSteps: Integer;
   gisErrsList: TStringList;
+  pgBar: TProgressBar;
+  lblPercentComplete: TLabel;
+  lblCurrentItem: TLabel;
 
-function validateFldNameAndType(fldName: String; fldType: OGRFieldType)
-  : Boolean;
+function validateFldNameAndType(featDefn: OGRFeatureDefnH; feat: OGRFeatureH;
+  fldName: String; fldType: OGRFieldType; errMsg: String): Boolean;
+var
+  rslt, flag: Boolean;
+  fieldIndex: longint;
+  shpPath: String;
+  fieldDefn: OGRFieldDefnH;
+  fieldType: OGRFieldType;
+  fieldName, typeName: string;
 begin
+
+  fieldIndex := OGR_F_GetFieldIndex(feat, PAnsiChar(AnsiString(fldName)));
+  if (fieldIndex <> -1) then
+  begin
+    fieldDefn := OGR_FD_GetFieldDefn(featDefn, fieldIndex);
+    if assigned(fieldDefn) then
+    begin
+      fieldName := string(OGR_Fld_GetNameRef(fieldDefn));
+      fieldType := OGR_Fld_GetType(fieldDefn);
+      if ((fieldName = fldName) and (fieldType = fldType)) then
+      begin
+        Result := True;
+        Exit;
+      end;
+    end;
+  end;
+
+  handleGISErrs(0, errMsg);
   Result := False;
 end;
-
-{ function validateSingleLayer2(layerIdx: Integer; fldNames: Array of String;
-  fldTypes: Array of OGRFieldType; geomType: OGRwkbGeometryType;
-  fldErrMsg: String; layerTypeErrMsg: String): Boolean;
-  var
-  rslt: Boolean;
-  I: Integer;
-  shpPath: String;
-  ogrLayer: OGRLayerH;
-  featDefn: OGRFeatureDefnH;
-  begin
-  rslt := True;
-  for I := Low(fldNames) to High(fldNames) do
-  begin
-  rslt := rslt and validateFldNameAndType(fldNames[I], fldTypes[I],
-  fldErrMsg);
-  end;
-  shpPath := getShapeFilePath(shpFilesDict, layerIdx);
-  ogrLayer := getLayer(shpPath);
-  featDefn := OGR_L_GetLayerDefn(ogrLayer);
-  rslt := rslt and checkGeometryType(geomType, featDefn, layerTypeErrMsg);
-  Result := rslt;
-  end; }
 
 function validateSingleLayer(layerIdx: Integer; fldName: String;
   fldType: OGRFieldType; geomType: OGRwkbGeometryType; fldErrMsg: String;
   layerTypeErrMsg: String): Boolean;
 var
-  rslt: Boolean;
+  rslt, flag: Boolean;
   I: Integer;
   shpPath: String;
   ogrLayer: OGRLayerH;
   featDefn: OGRFeatureDefnH;
+  feat: OGRFeatureH;
 begin
   rslt := True;
-  rslt := rslt and validateFldNameAndType(fldName, fldType, fldErrMsg);
+
+  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, layerIdx,
+    startValidtnMsgs[layerIdx]);
+
   shpPath := getShapeFilePath(shpFilesDict, layerIdx);
   ogrLayer := getLayer(shpPath);
   featDefn := OGR_L_GetLayerDefn(ogrLayer);
-  rslt := rslt and checkGeometryType(geomType, featDefn, layerTypeErrMsg);
+
+  OGR_L_ResetReading(ogrLayer);
+  feat := OGR_L_GetNextFeature(ogrLayer);
+
+  // validate field name and type
+  flag := validateFldNameAndType(featDefn, feat, fldName, fldType,
+    shpPath + ' - ' + fldErrMsg + fldName + #13#10);
+  rslt := rslt and flag;
+
+  // validate layer geometry type
+  flag := checkGeometryType(geomType, featDefn,
+    shpPath + ' - ' + layerTypeErrMsg + #13#10);
+  rslt := rslt and flag;
+
+  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, layerIdx,
+    endValidtnMsgs[layerIdx]);
   Result := rslt;
 end;
 
-function validateAll(hasManualBMPs: Boolean): Boolean;
+function validateAll(shpFilesDict: TDictionary<String, String>;
+  var inpgBar: TProgressBar; var inlblPercentComplete: TLabel;
+  var inlblCurrentItem: TLabel; hasManualBMPs: Boolean;
+  sgManualBMPs: TStringGrid): TStringList;
 var
   rslt: Boolean;
   featDefn: OGRFeatureDefnH;
@@ -211,55 +268,81 @@ var
   tempFieldNames: Array of String;
   tempFieldTypes: Array of OGRFieldType;
   genericFldErrMsg: String;
-  genericLayerTypeErrMsg: String;
+  genericLayerTypeErrMsg1, genericLayerTypeErrMsg2: String;
+  numberOfpgBarSteps: Integer;
 begin
-  genericFldErrMsg := 'Missing field found';
-  genericLayerTypeErrMsg := 'Wrong layer type found';
+  genericFldErrMsg := 'Missing field or wrong field data type: ';
+  genericLayerTypeErrMsg1 := 'Layer type should be POLYGON';
+  genericLayerTypeErrMsg2 := 'Layer type should be POLYLINE';
 
-  rslt := False;
-  // 1. validate catchment layer - check flds and layer geometry type
-  rslt := rslt and validateFldNameAndType(fldNameCatch, OGRFieldType.OFTString);
-  rslt := rslt and validateFldNameAndType(fldNameCatchArea,
-    OGRFieldType.OFTReal);
-  shpPath := getShapeFilePath(shpFilesDict, 0);
-  ogrLayer := getLayer(shpPath);
-  featDefn := OGR_L_GetLayerDefn(ogrLayer);
-  rslt := rslt and checkGeometryType(OGRwkbGeometryType.wkbPolygon, featDefn,
-    'Polygon shapeFile required');
+  // save progress related vars to global unit vars for other fxns can update progress easily
+  pgBar := inpgBar;
+  lblPercentComplete := inlblPercentComplete;
+  lblCurrentItem := inlblCurrentItem;
+
+  numberOfpgBarSteps := 10;
+  pgBar.Step := 1;
+  pgBar.Position := 0;
+  pgBar.Max := numberOfpgBarSteps;
+  pgBar.StepIt;
+
+  // get rid of old errors messages and notifications
+  if (not(assigned(gisErrsList))) then
+    gisErrsList := TStringList.Create
+  else
+    gisErrsList.Clear;
+
+  rslt := True;
+  // 1. validate catchment layer - check catchment name field
+  rslt := rslt and validateSingleLayer(0, fldNameCatch, OGRFieldType.OFTString,
+    OGRwkbGeometryType.wkbPolygon, genericFldErrMsg, genericLayerTypeErrMsg1);
+
+  // 1b. validate catchment layer - check catchment area field
+  rslt := rslt and validateSingleLayer(0, fldNameCatchArea,
+    OGRFieldType.OFTReal, OGRwkbGeometryType.wkbPolygon, genericFldErrMsg,
+    genericLayerTypeErrMsg1);
 
   // 2. validate slopes layer
-  validateSingleLayer(1, fldNameSlope, OGRFieldType.OFTString,
-    OGRwkbGeometryType.wkbPolygon, genericFldErrMsg, genericLayerTypeErrMsg);
+  rslt := rslt and validateSingleLayer(1, fldNameSlope, OGRFieldType.OFTInteger,
+    OGRwkbGeometryType.wkbPolygon, genericFldErrMsg, genericLayerTypeErrMsg1);
 
   // 3. validate land use layer for land use codes field
-  validateSingleLayer(2, fldNameLuseCode, OGRFieldType.OFTString,
-    OGRwkbGeometryType.wkbPolygon, genericFldErrMsg, genericLayerTypeErrMsg);
+  rslt := rslt and validateSingleLayer(2, fldNameLuseCode,
+    OGRFieldType.OFTInteger, OGRwkbGeometryType.wkbPolygon, genericFldErrMsg,
+    genericLayerTypeErrMsg1);
   // 3b. validate land use layer for land use imperviousness field - aware of redundant check for layer type
-  validateSingleLayer(2, fldNameLuseImprvCode, OGRFieldType.OFTString,
-    OGRwkbGeometryType.wkbPolygon, genericFldErrMsg, genericLayerTypeErrMsg);
+  rslt := rslt and validateSingleLayer(2, fldNameLuseImprvCode,
+    OGRFieldType.OFTString, OGRwkbGeometryType.wkbPolygon, genericFldErrMsg,
+    genericLayerTypeErrMsg1);
 
   // 4. validate soils layer
-  validateSingleLayer(3, fldNameSoilCode, OGRFieldType.OFTString,
-    OGRwkbGeometryType.wkbPolygon, genericFldErrMsg, genericLayerTypeErrMsg);
+  rslt := rslt and validateSingleLayer(3, fldNameSoilCode,
+    OGRFieldType.OFTString, OGRwkbGeometryType.wkbPolygon, genericFldErrMsg,
+    genericLayerTypeErrMsg1);
 
   // 5. validate road conditions layer
-  validateSingleLayer(4, fldNameRdCondition, OGRFieldType.OFTString,
-    OGRwkbGeometryType.wkbPolygon, genericFldErrMsg, genericLayerTypeErrMsg);
+  rslt := rslt and validateSingleLayer(4, fldNameRdCondition,
+    OGRFieldType.OFTReal, OGRwkbGeometryType.wkbLineString, genericFldErrMsg,
+    genericLayerTypeErrMsg2);
 
-  // 6. validate road shoulders layer
-  validateSingleLayer(5, fldNameRdShoulder, OGRFieldType.OFTString,
-    OGRwkbGeometryType.wkbPolygon, genericFldErrMsg, genericLayerTypeErrMsg);
+  // 6. validate road shoulder erosion layer
+  rslt := rslt and validateSingleLayer(5, fldNameRdShoulder,
+    OGRFieldType.OFTString, OGRwkbGeometryType.wkbLineString, genericFldErrMsg,
+    genericLayerTypeErrMsg2);
 
   // 7. validate road connectivity layer
-  validateSingleLayer(5, fldNameRdConn, OGRFieldType.OFTString,
-    OGRwkbGeometryType.wkbPolygon, genericFldErrMsg, genericLayerTypeErrMsg);
+  rslt := rslt and validateSingleLayer(6, fldNameRdConn, OGRFieldType.OFTString,
+    OGRwkbGeometryType.wkbLineString, genericFldErrMsg,
+    genericLayerTypeErrMsg2);
 
   if (hasManualBMPs = False) then
   begin
     // 8. validate bmps layer
-    validateSingleLayer(5, fldNameBMPCode, OGRFieldType.OFTString,
-      OGRwkbGeometryType.wkbPolygon, genericFldErrMsg, genericLayerTypeErrMsg);
+    rslt := rslt and validateSingleLayer(7, fldNameBMPCode,
+      OGRFieldType.OFTString, OGRwkbGeometryType.wkbPolygon, genericFldErrMsg,
+      genericLayerTypeErrMsg1);
   end;
+  Result := gisErrsList;
 end;
 
 procedure handleGISErrs(errCode: Integer; err: String);
@@ -339,9 +422,8 @@ begin
   Result := flag;
 end;
 
-// mode = 0 > land uses
-// mode = 1 > soils
-function processLusesOrSoils(dir: String; shpPathCatch: String;
+// mode = 0 > land uses  | mode = 1 > soils | mode = 2 > bmps
+function processLusesSoilsOrBMPs(dir: String; shpPathCatch: String;
   shpPathVar: String; CDict: TDictionary<String, TGISCatch>;
   sourceDSName: String; rsltShpName: String; fldNameVar: String;
   mode: Integer): Boolean;
@@ -513,17 +595,20 @@ procedure updateProgress(var pgBar: TProgressBar;
 var
   percentComplete: Double;
 begin
-  Application.ProcessMessages; // TODO implement alternative
+  if stepNum = 0 then
+    stepNum := 1;
+
   percentComplete := 100 * stepNum / numberOfpgBarSteps;
   lblPercentComplete.Caption := FormatFloat(ONEDP, percentComplete) +
     '% complete ...';
   lblCurrentItem.Caption := msg;
-  pgBar.StepIt;
+  pgBar.Position := stepNum;
+  Application.ProcessMessages; // TODO implement alternative
 end;
 
 function runGISOps(gisXMLFilePath: String;
-  shpFilesDict: TDictionary<String, String>; var pgBar: TProgressBar;
-  var lblPercentComplete: TLabel; var lblCurrentItem: TLabel;
+  shpFilesDict: TDictionary<String, String>; var inpgBar: TProgressBar;
+  var inlblPercentComplete: TLabel; var inlblCurrentItem: TLabel;
   hasManualBMPs: Boolean; sgManualBMPs: TStringGrid): TStringList;
 var
   dir: String;
@@ -531,45 +616,39 @@ var
   shpPathCatch, shpPathVar: String;
   luseDSName, soilsDSName, bmpsDSName: String;
 begin
-  shpExt := '.shp';
   dir := defaultGISDir + '\';
   numberOfpgBarSteps := 10;
   pgBar.Step := 1;
+  pgBar.Position := 0;
   pgBar.Max := numberOfpgBarSteps;
   pgBar.StepIt;
-  // set to # of steps till number of catchments known
-  // Step 0: Validate layers
-  validateAll(hasManualBMPs);
-
-  // reset progress bar again to show progress of prosessing
-  pgBar.Step := 0;
 
   // Step 1: Calc catchment areas
   // *******************************************
   // Create dict to hold catchment properties
-  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 0, startMsgs[0]);
+  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 1, startMsgs[0]);
   CDict := TDictionary<String, TGISCatch>.Create;
   shpPathCatch := getShapeFilePath(shpFilesDict, 0);
   processCatchments(shpPathCatch, CDict);
-  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 1,endMsgs[0]);
+  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 2, endMsgs[0]);
 
   // Step 2: Catchment average slopes
   // *******************************************
   // Intersect catchment layer and slopes layer and calc area-weighted slope by catchment
-  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 1, startMsgs[1]);
+  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 2, startMsgs[1]);
   shpPathVar := getShapeFilePath(shpFilesDict, 1);
   processSlopes(dir, shpPathCatch, shpPathVar, CDict);
-  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 2,endMsgs[1]);
+  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 3, endMsgs[1]);
 
   // Step 3: Catchment land uses
   // *******************************************
   // Intersect catchment layer and landuse layer and calc area-weighted landuse by catchment
-   updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 2, startMsgs[2]);
+  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 3, startMsgs[2]);
   shpPathVar := getShapeFilePath(shpFilesDict, 2);
   luseDSName := ChangeFileExt(ExtractFileName(shpPathVar), '');
-  processLusesOrSoils(dir, shpPathCatch, shpPathVar, CDict, luseDSName,
+  processLusesSoilsOrBMPs(dir, shpPathCatch, shpPathVar, CDict, luseDSName,
     intcatchLuse, fldNameLuseCode, 0);
-  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 3,endMsgs[2]);
+  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 4, endMsgs[2]);
 
   // Step 3b: Catchment land imperviousness
   // *******************************************
@@ -580,36 +659,36 @@ begin
   // Step 4: Catchment soils
   // *******************************************
   // Intersect catchment layer and soils layer and calc area-weighted soils by catchment
-   updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 4, startMsgs[4]);
+  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 4, startMsgs[4]);
   shpPathVar := getShapeFilePath(shpFilesDict, 3);
   soilsDSName := ChangeFileExt(ExtractFileName(shpPathVar), '');
-  processLusesOrSoils(dir, shpPathCatch, shpPathVar, CDict, soilsDSName,
+  processLusesSoilsOrBMPs(dir, shpPathCatch, shpPathVar, CDict, soilsDSName,
     intcatchSoil, fldNameSoilCode, 1);
-  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 5,endMsgs[4]);
+  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 5, endMsgs[4]);
 
-  // Step 5: Road shoulders
+  // Step 5: Road shoulder erosion
   // *******************************************
   // Intersect catchment layer and road shoulders layer and calc lengths of each kind of shoulder
-   updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 5, startMsgs[5]);
+  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 5, startMsgs[5]);
   shpPathVar := getShapeFilePath(shpFilesDict, 5);
   processRdShoulders(dir, shpPathCatch, shpPathVar, CDict);
-  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 6,endMsgs[5]);
+  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 6, endMsgs[5]);
 
   // Step 6: Road condition
   // *******************************************
   // Intersect catchment layer and road conditions layer and calc lengths of each kind of condition
-   updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 6, startMsgs[6]);
+  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 6, startMsgs[6]);
   shpPathVar := getShapeFilePath(shpFilesDict, 4);
   processRdCondition(dir, shpPathCatch, shpPathVar, CDict);
-  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 7,endMsgs[6]);
+  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 7, endMsgs[6]);
 
   // Step 7: Road connectivity
   // *******************************************
   // Intersect catchment layer and road runoff connectivity layer and calc lengths of each kind of connectivity
-   updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 7, startMsgs[7]);
+  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 7, startMsgs[7]);
   shpPathVar := getShapeFilePath(shpFilesDict, 6);
   processRdConnectivity(dir, shpPathCatch, shpPathVar, CDict);
-  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 8,endMsgs[7]);
+  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 8, endMsgs[7]);
 
   // Step 8: BMPs
   // *******************************************
@@ -618,17 +697,17 @@ begin
   // in which case we don't attempt to intersect BMP layer
   if (hasManualBMPs = False) then
   begin
-   updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 8, startMsgs[8]);
+    updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 8, startMsgs[8]);
     shpPathVar := getShapeFilePath(shpFilesDict, 7);
     bmpsDSName := ChangeFileExt(ExtractFileName(shpPathVar), '');
-    processLusesOrSoils(dir, shpPathCatch, shpPathVar, CDict, bmpsDSName,
+    processLusesSoilsOrBMPs(dir, shpPathCatch, shpPathVar, CDict, bmpsDSName,
       intCatchBMP, fldNameBMPCode, 2);
   end;
-  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 9,endMsgs[8]);
+  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 9, endMsgs[8]);
 
   // Step 9: Serialize collected data to disk
   createPLRMCatchmentObjs(CDict, gisXMLFilePath, hasManualBMPs, sgManualBMPs);
-  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 10,endMsgs[0]);
+  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 10, endMsgs[9]);
 
   // clean up and deallocate memory
   gisCleanUp();
@@ -1508,7 +1587,7 @@ begin
   begin
     handleGISErrs(-1, Format('%s driver not available.', [driverName]));
     Result := nil;
-    exit;
+    Exit;
   end;
 
   // check to see if intersect result shp file already exists
@@ -1520,7 +1599,7 @@ begin
     begin
       handleGISErrs(-1, Format('unable to open %s.', [shpFilePath]));
       Result := nil;
-      exit;
+      Exit;
     end;
     ogrShp1 := OGROpen(PAnsiChar(AnsiString(shpFilePath)), 0, Nil);
     ogrLayer := OGR_DS_GetLayer(ogrShp1, 0);
@@ -1528,10 +1607,10 @@ begin
     begin
       handleGISErrs(-1, shpFilePath + ' was not found');
       Result := nil;
-      exit;
+      Exit;
     end;
     Result := ogrLayer;
-    exit;
+    Exit;
   end;
   Result := nil;
 end;
@@ -1555,7 +1634,7 @@ begin
   if ogrDriver = Nil then
   begin
     handleGISErrs(-1, Format('%s driver not available.', [driverName]));
-    exit;
+    Exit;
   end;
 
   // get name of resulting intersected shapefile from path passed in
@@ -1566,8 +1645,8 @@ begin
   // TODO, uncomment for production
   if FileExists(outShpFilePath) then
   begin
-    for I := 0 to High(shpExts) do
-      DeleteFile(intDSPath + shpExts[I]);
+    err := OGR_Dr_DeleteDataSource(ogrDriver,
+      PAnsiChar(AnsiString(outShpFilePath)));
   end;
 
   // create shape file to hold results of intersect operation
@@ -1578,7 +1657,7 @@ begin
   begin
     handleGISErrs(-1, Format('Failed to create output file %s.',
       [outShpFilePath]));
-    exit;
+    Exit;
   end;
 
   // now try to create layer inside datasource
@@ -1588,7 +1667,7 @@ begin
   begin
     handleGISErrs(-1, Format('Failed to create layer %s in datasource.',
       [intDSName]));
-    exit;
+    Exit;
   end;
 
   ogrShp1 := OGROpen(PAnsiChar(AnsiString(shp1FilePath)), 0, Nil);
@@ -1596,7 +1675,7 @@ begin
   if ogrShp1 = nil then
   begin
     handleGISErrs(err, shp1FilePath + ' was not found');
-    exit;
+    Exit;
   end;
 
   ogrShp2 := OGROpen(PAnsiChar(AnsiString(shp2FilePath)), 0, Nil);
@@ -1604,16 +1683,17 @@ begin
   if ogrShp2 = nil then
   begin
     handleGISErrs(err, shp2FilePath + ' was not found');
-    exit;
+    Exit;
   end;
 
   err := OGR_L_Intersection(ogrShp1, ogrShp2, ogrLayer, nil, nil, nil);
   if err <> OGRERR_NONE then
-    handleGISErrs(err, Format('Failed to intersect layers: %d', [err]));
+    handleGISErrs(err, Format('Failed to intersect layers: %s and %s err:%d',
+      [shp1FilePath, shp2FilePath, err]));
 
-  { TODO fix // release the datasource
-    err := OGRReleaseDatasource(ogrDS);
-    if err <> OGRERR_NONE then
+  // TODO fix // release the datasource
+  err := OGRReleaseDatasource(ogrDS);
+  { if err <> OGRERR_NONE then
     handleGISErrs(err, Format('Error releasing datasource: %d', [err])); }
 
   OGRCleanupAll;

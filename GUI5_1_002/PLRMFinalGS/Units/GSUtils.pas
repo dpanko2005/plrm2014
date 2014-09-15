@@ -29,6 +29,9 @@ function copyGridContents(const strtCol: Integer; strtRow: Integer;
   const grtrThanVal: Double = 0): PLRMGridData; overload;
 function copyContentsToGrid(const data: PLRMGridData; const strtCol: Integer;
   strtRow: Integer; var sg: TStringGrid): boolean;
+function copyContentsToGridSubset(const data: PLRMGridData;
+  const strtCol: Integer; strtRow: Integer; numColsToCopy: Integer;
+  numRowsToCopy: Integer; var sg: TStringGrid): boolean;
 function copyInvertedPLRMGridToStrGrid(const data: PLRMGridData;
   const strtCol: Integer; strtRow: Integer; var sg: TStringGrid): boolean;
 function copyStringGridToInvertedPLRMGrid(const sg: TStringGrid): PLRMGridData;
@@ -548,9 +551,10 @@ begin
   XMLDoc := TXMLDocument.Create(nil);
   XMLDoc.loadFromFile(xmlFilePath);
   rootNode := XMLDoc.DocumentElement;
-  //2014 changed to use relative paths rather than hardcoded paths in xml file
-  //outFilePath := rootNode.ChildNodes['UserSWMMInpt'].Text;
-  outFilePath := ExtractFilePath(xmlFilePath)+ 'swmm.inp'; // rootNode.ChildNodes['UserSWMMInpt'].Text;
+  // 2014 changed to use relative paths rather than hardcoded paths in xml file
+  // outFilePath := rootNode.ChildNodes['UserSWMMInpt'].Text;
+  outFilePath := ExtractFilePath(xmlFilePath) + 'swmm.inp';
+  // rootNode.ChildNodes['UserSWMMInpt'].Text;
 
   if fileExists(outFilePath) then
   begin
@@ -1489,6 +1493,26 @@ begin
 
 end;
 
+// copies a limited number of rows and columns to grid
+function copyContentsToGridSubset(const data: PLRMGridData;
+  const strtCol: Integer; strtRow: Integer; numColsToCopy: Integer;
+  numRowsToCopy: Integer; var sg: TStringGrid): boolean;
+var
+  irow: Integer;
+  icol: Integer;
+begin
+  Result := false;
+  if data <> nil then
+    if data[0] <> nil then
+    begin
+      for irow := strtRow to strtRow + numRowsToCopy do
+        for icol := strtCol to strtCol + numColsToCopy do
+          sg.Cells[icol, irow] := data[irow - strtRow, icol - strtCol];
+      // yes grid index is col first and then row
+      Result := true;
+    end;
+end;
+
 function copyInvertedPLRMGridToStrGrid(const data: PLRMGridData;
   const strtCol: Integer; strtRow: Integer; var sg: TStringGrid): boolean;
 var
@@ -1941,7 +1965,8 @@ begin
 
   defaultDBPath := defaultDataDir + '\PLRM_v2.0.accdb';
   defaultPrjPath := defaultPrjDir + '\temp.xml';
-  defaultGenSWmmInpPath := defaultPrjDir + '\tempSwmm.inp';
+  // defaultGenSWmmInpPath := defaultPrjDir + '\tempSwmm.inp';
+  defaultGenSWmmInpPath := defaultPrjDir + '\' + GSTEMPSWMMINP;
   defaultUserSWmmInpPath := defaultPrjDir + '\swmm.inp';
   defaultUserSwmmRptPath := defaultPrjDir + '\swmm.rpt';
   defaultValidateDir := defaultEngnDir + '\Validation';
@@ -1972,7 +1997,8 @@ begin
   // defaultDBPath := defaultDataDir + '\PLRM_v1.0.accdb';
   // defaultDBPath := defaultDataDir + '\PLRM_v2.0.accdb';
   defaultPrjPath := defaultPrjDir + '\temp.xml';
-  defaultGenSWmmInpPath := defaultPrjDir + '\tempSwmm.inp';
+  // defaultGenSWmmInpPath := defaultPrjDir + '\tempSwmm.inp';
+  defaultGenSWmmInpPath := defaultPrjDir + '\' + GSTEMPSWMMINP;
   defaultUserSWmmInpPath := defaultPrjDir + '\swmm.inp';
   defaultUserSwmmRptPath := defaultPrjDir + '\swmm.rpt';
   // defaultValidateDir := defaultEngnDir + '\Validation';
@@ -2466,4 +2492,3 @@ begin
 end;
 
 end.
-
