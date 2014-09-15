@@ -66,6 +66,9 @@ GUI5_1_002/OpenGIS/
 *.dbf
 *.sbn
 *.sbx
+*.ilk
+*.lib
+*.zip
 
 # swmm files
 *.out
