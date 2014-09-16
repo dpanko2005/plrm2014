@@ -45,28 +45,29 @@ var
   iNode: IXMLNode;
   tempNode, tempNode2: IXMLNode;
   tempNodeList: IXMLNodeList;
-  luseTagList: TStringList;
-//  luseCodeList: TStringList;
-  soilsTagList: TStringList;
-  rdRiskTagList: TStringList;
+  //luseTagList: TStringList;
+  // luseCodeList: TStringList;
+//  soilsTagList: TStringList;
+//  rdRiskTagList: TStringList;
 
-  tempList: TStringList;
-  tempList2: TStringList;
-//  tempList3: TStringList;
-//  tempListDrng0: TStringList;
-//  tempListDrng1: TStringList;
-//  tempListDrng2: TStringList;
+  //tempList: TStringList;
+  //tempList2: TStringList;
+  // tempList3: TStringList;
+  // tempListDrng0: TStringList;
+  // tempListDrng1: TStringList;
+  // tempListDrng2: TStringList;
 
-//  tempTextListDrng0: TStringList;
-//  tempTextListDrng1: TStringList;
-//  tempTextListDrng2: TStringList;
-//  runoffConcsTags: TStringList;
+  // tempTextListDrng0: TStringList;
+  // tempTextListDrng1: TStringList;
+  // tempTextListDrng2: TStringList;
+  // runoffConcsTags: TStringList;
 
-//  I, J: Integer;
-//  tempStr: String;
+  // I, J: Integer;
+  // tempStr: String;
   tempPair: TPair<String, String>;
 begin
-  if (assigned(PLRMGISRec.shpFilesDict) and (PLRMGISRec.shpFilesDict.Count < 1)) then
+  if (assigned(PLRMGISRec.shpFilesDict) and (PLRMGISRec.shpFilesDict.Count < 1))
+  then
   begin
     Result := nil;
     exit;
@@ -91,18 +92,19 @@ begin
 
   finally
     PLRMGISRec.shpFilesDict.Free;
+    iNode := nil;
+    tempNode := nil;
+    tempNode2 := nil;
+    tempNodeList := nil;
+    //luseTagList.Free;
+    //soilsTagList.Free;
+    //rdRiskTagList.Free;
+    //tempList.Free;
+    //tempList2.Free;
   end;
 
   Result := iNode;
-  iNode := nil;
-  tempNode := nil;
-  tempNode2 := nil;
-  tempNodeList := nil;
-  luseTagList.Free;
-  soilsTagList.Free;
-  rdRiskTagList.Free;
-  tempList.Free;
-  tempList2.Free;
+
 end;
 
 // deserializes from XML

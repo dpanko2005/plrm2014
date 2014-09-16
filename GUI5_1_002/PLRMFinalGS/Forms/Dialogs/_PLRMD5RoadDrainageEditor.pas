@@ -248,7 +248,7 @@ var
   DCIA, ICIA, DINF, DPCH: Double;
 begin
   DCIA := StrToFloat(edtDCIA.Text);
-  ICIA := StrToFloat(edtICIA.Text);
+  //ICIA := StrToFloat(edtICIA.Text);
   DINF := StrToFloat(edtDINF.Text);
   DPCH := StrToFloat(edtDPCH.Text);
 

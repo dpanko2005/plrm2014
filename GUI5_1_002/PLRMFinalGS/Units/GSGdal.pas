@@ -190,12 +190,12 @@ var
 function validateFldNameAndType(featDefn: OGRFeatureDefnH; feat: OGRFeatureH;
   fldName: String; fldType: OGRFieldType; errMsg: String): Boolean;
 var
-  rslt, flag: Boolean;
+//  rslt, flag: Boolean;
   fieldIndex: longint;
-  shpPath: String;
+//  shpPath: String;
   fieldDefn: OGRFieldDefnH;
   fieldType: OGRFieldType;
-  fieldName, typeName: string;
+  fieldName: string;
 begin
 
   fieldIndex := OGR_F_GetFieldIndex(feat, PAnsiChar(AnsiString(fldName)));
@@ -223,7 +223,7 @@ function validateSingleLayer(layerIdx: Integer; fldName: String;
   layerTypeErrMsg: String): Boolean;
 var
   rslt, flag: Boolean;
-  I: Integer;
+//  I: Integer;
   shpPath: String;
   ogrLayer: OGRLayerH;
   featDefn: OGRFeatureDefnH;
@@ -262,11 +262,11 @@ function validateAll(shpFilesDict: TDictionary<String, String>;
   sgManualBMPs: TStringGrid): TStringList;
 var
   rslt: Boolean;
-  featDefn: OGRFeatureDefnH;
-  ogrLayer: OGRLayerH;
-  shpPath: String;
-  tempFieldNames: Array of String;
-  tempFieldTypes: Array of OGRFieldType;
+//  featDefn: OGRFeatureDefnH;
+//  ogrLayer: OGRLayerH;
+//  shpPath: String;
+//  tempFieldNames: Array of String;
+ // tempFieldTypes: Array of OGRFieldType;
   genericFldErrMsg: String;
   genericLayerTypeErrMsg1, genericLayerTypeErrMsg2: String;
   numberOfpgBarSteps: Integer;
@@ -1623,7 +1623,7 @@ var
   ogrDriver: OGRSFDriverH;
   ogrDS: OGRDataSourceH;
   ogrLayer: OGRLayerH;
-  I: longint;
+//  I: longint;
   err: longint;
   intDSName, intDSPath: String;
 begin
@@ -1704,7 +1704,7 @@ function checkGeometryType(desiredGeomType: OGRwkbGeometryType;
   featDefn: OGRFeatureDefnH; errString: String): Boolean;
 var
   geomType: OGRwkbGeometryType;
-  geom: OGRGeometryH;
+//  geom: OGRGeometryH;
 begin
   // get layer geometry type
   geomType := OGR_FD_GetGeomType(featDefn);

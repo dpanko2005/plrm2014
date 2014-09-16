@@ -208,6 +208,7 @@ var
   rslts: PLRMGridDataDbl;
   iRow, jCol, j: longInt;
 begin
+  j := 0;
   rslts := calcCRCs(sgRoadShoulderPercents, sgRoadConditions);
   // in delphi tstringgrid indexes are column first then row
   // SetLength(tblCRCsCalculated, High(rslts[0]) + 1, High(rslts) + 1);
@@ -494,12 +495,12 @@ procedure TPLRMRoadPollutants.sgRoadConditionsKeyUp(Sender: TObject;
 var
   sg: TStringGrid;
   R, lastRow, startCol: longInt;
-  conditionScore, acreSum, prcntSum, wtdSum: Double;
+  conditionScore, prcntSum: Double;
 begin
   sg := Sender as TStringGrid;
-  acreSum := 0;
+  // acreSum := 0;
   prcntSum := 0;
-  wtdSum := 0;
+  // wtdSum := 0;
   startCol := 0;
   lastRow := sg.RowCount - 1;
 
@@ -555,7 +556,7 @@ end;
 procedure TPLRMRoadPollutants.sgRoadConditionsSetEditText(Sender: TObject;
   ACol, ARow: Integer; const Value: string);
 var
-  tempInfFootPrintArea: Double;
+  // tempInfFootPrintArea: Double;
   // tempSum: Double;
   // iRow, tempNum: Integer;
   sg: TStringGrid;

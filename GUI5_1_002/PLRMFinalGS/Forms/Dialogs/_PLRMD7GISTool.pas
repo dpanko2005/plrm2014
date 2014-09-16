@@ -471,10 +471,10 @@ end;
 
 procedure TPLRMGISTool.initFormContents();
 var
-  I, numberOfShapeFiles: Integer;
+  I: Integer;
   tempEnabledState: Boolean;
 begin
-  numberOfShapeFiles := 7;
+  //numberOfShapeFiles := 7;
 
   // save array of buttons for convenient looping
   btnsArr[0] := btnCatchShp;

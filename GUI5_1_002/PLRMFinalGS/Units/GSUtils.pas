@@ -1110,7 +1110,7 @@ function xmlAttachedChildNodesToPLRMGridData(parentNode: IXMLNode;
 var
   // I: Integer;
   tempNode: IXMLNode;
-  tempNodeList: IXMLNodeList;
+//  tempNodeList: IXMLNodeList;
   // tempData: PLRMGridData;
 begin
   tempNode := parentNode.ChildNodes[childTagName];
@@ -1738,7 +1738,10 @@ var
 begin
   idx := TCombobox(Sender).ItemIndex;
   if idx = -1 then
+  begin
+    Result := nil;
     exit;
+  end;
   value := TCombobox(Sender).Items.Objects[idx];
   Result := value
 end;
@@ -2078,7 +2081,7 @@ var
 begin
 
   dirPath := ExtractFilePath(genSpec);
-  Result := DirectoryExists(dirPath);
+  Result := SysUtils.DirectoryExists(dirPath);
   If not Result then
     exit;
   Flname := ExtractFileName(genSpec);
@@ -2131,7 +2134,7 @@ var
   // stores scenario names on tree used with scenFolders list below to facilitate deletion
 
 begin
-  Result := DirectoryExists(startPath);
+  Result := SysUtils.DirectoryExists(startPath);
   If not Result then
     exit;
 
@@ -2173,7 +2176,7 @@ begin
       scenPath := startPath + '\' + projSL[I];
 
       scenSL2 := TStringList.Create;
-      If DirectoryExists(scenPath) then
+      If SysUtils.DirectoryExists(scenPath) then
       begin
         scenSL := getFoldersInFolder(scenPath);
         for J := 0 to scenSL.Count - 1 do
@@ -2261,7 +2264,7 @@ end;
 
 function checkNCreateDirectory(folderPath: String): boolean;
 begin
-  if DirectoryExists(folderPath) = false then
+  if SysUtils.DirectoryExists(folderPath) = false then
   // need to create, but check for project folder first
   begin
     if not CreateDir(folderPath) then
@@ -2414,7 +2417,7 @@ var
   genSpec: String;
 begin
   rslt := TStringList.Create;
-  If not DirectoryExists(strtFolder) then
+  If not SysUtils.DirectoryExists(strtFolder) then
   begin
     ShowMessage(strtFolder + ' folder not found. Now exiting');
     Result := nil;
@@ -2447,7 +2450,7 @@ var
   rslt: TStringList;
 begin
   rslt := TStringList.Create;
-  If not DirectoryExists(strtFolderPath) then
+  If not SysUtils.DirectoryExists(strtFolderPath) then
   begin
     ShowMessage(strtFolderPath + ' folder not found. Now exiting');
     Result := nil;

@@ -216,7 +216,7 @@ var
   tempSum: Double;
   sg: TStringGrid;
 begin
-  tempSum := 0.0;
+  //tempSum := 0.0;
   sg := Sender as TStringGrid;
 
   // then check sums to see if they will exceed 100%
@@ -408,10 +408,10 @@ procedure TPLRMParcelDrngAndBMPs.restoreFormContentsGIS(catch: TPLRMCatch);
 begin
   copyContentsToGrid(PLRMObj.currentCatchment.frm6of6SgBMPImplData, 0, 0,
     sgBMPImpl);
-  {copyContentsToGrid(PLRMObj.currentCatchment.frm6of6SgNoBMPsData, 0, 0,
+  { copyContentsToGrid(PLRMObj.currentCatchment.frm6of6SgNoBMPsData, 0, 0,
     sgNoBMPs); }
-    copyContentsToGridSubset(PLRMObj.currentCatchment.frm6of6SgNoBMPsData, 0, 0,1,1,
-    sgNoBMPs)
+  copyContentsToGridSubset(PLRMObj.currentCatchment.frm6of6SgNoBMPsData, 0, 0,
+    1, 1, sgNoBMPs)
 end;
 
 procedure TPLRMParcelDrngAndBMPs.FormCreate(Sender: TObject);

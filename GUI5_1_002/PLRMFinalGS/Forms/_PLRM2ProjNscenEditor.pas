@@ -154,7 +154,7 @@ begin
 
     // Save the project information to a project xml file
     PLRMObj.projXMLPath := PLRMObj.projFolder + '\' + prjID + '.xml';
-    if DirectoryExists(PLRMObj.projFolder) = False then
+    if SysUtils.DirectoryExists(PLRMObj.projFolder) = False then
     // need to create both folders
       checkNCreateDirectory(PLRMObj.projFolder);
     PLRMObj.writeInitProjectToXML(PLRMObj.projXMLPath);

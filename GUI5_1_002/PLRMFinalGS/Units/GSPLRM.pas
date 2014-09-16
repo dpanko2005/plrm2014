@@ -456,6 +456,7 @@ begin
       end;
     end;
   end;
+  Result := false;
 end;
 
 function TPLRM.plrmToXML(): Boolean;
@@ -687,8 +688,8 @@ var
   // tempNode9: IXMLNode;
   // tempNode10: IXMLNode;
   // tempNode19b: IXMLNode;
-  catchmentValidationXMLNode: IXMLNode;
-  nodeValidationXMLNode: IXMLNode;
+//  catchmentValidationXMLNode: IXMLNode;
+//  nodeValidationXMLNode: IXMLNode;
   I: Integer;
 begin
   Try
@@ -933,9 +934,9 @@ var
   XMLDoc: IXMLDocument;
   rootNode: IXMLNode;
   tempNodeList: IXMLNodeList;
-  I, J: Integer;
+  I: Integer;
   tempCatch: TPLRMCatch;
-  tempPLRMNode: TPLRMNode;
+//  tempPLRMNode: TPLRMNode;
 begin
   try
     XMLDoc := TXMLDocument.Create(nil);
@@ -1191,7 +1192,7 @@ var
   foundIndex: Integer;
   tempObj: TObject;
 begin
-
+  foundIndex := -1;
   // delete from catchments
   foundFlag := false;
   if assigned(catchments) then
