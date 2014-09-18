@@ -67,7 +67,7 @@ type
   end;
 
 const
-  //GISAREACONV = 1 / 43560; // conversions for geom area to acres
+  // GISAREACONV = 1 / 43560; // conversions for geom area to acres
   GISAREACONV = 0.00024711; // conversions for geom area to acres
   shpExt: String = '.shp';
   minSlope: Double = 0.1;
@@ -381,6 +381,8 @@ begin
         // IMPORTANT free dict below for next set of intersections and calcs
         FreeAndNil(tempCatch.TempAreaWTDict);
         tempCatch.tempTotalArea := 0;
+        tempCatch.tempAccumulation := 0; // important!
+        tempCatch.tempWeightedVal := 0;
       end;
     end;
   Result := flag;
@@ -412,6 +414,7 @@ begin
         // IMPORTANT free dict below for next set of intersections and calcs
         FreeAndNil(tempCatch.TempAreaWTDict);
         tempCatch.tempTotalArea := 0;
+        tempCatch.tempAccumulation := 0; // important!
         tempCatch.tempWeightedVal := 0;
       end;
     end;
@@ -472,6 +475,8 @@ begin
         // showMessage('Unknown mode while process polygon shapefiles');
         // IMPORTANT free dict below for next set of intersections and
         tempCatch.tempTotalArea := 0;
+        tempCatch.tempAccumulation := 0; // important!
+        tempCatch.tempWeightedVal := 0;
         FreeAndNil(tempCatch.TempAreaWTDict);
       end;
   Result := flag;
@@ -1424,7 +1429,16 @@ var
   tempArea: Double;
   tempCatch: TGISCatch;
   tempAreaWTObj: TGSAreaWTObj;
+  outLuseCodes: TStringList;
+  tempIndex: Integer;
+Var
+  outLuseFamilyCodes: TStringList;
 begin
+
+  // get landuse codes and family codes
+  outLuseCodes := TStringList.Create;
+  outLuseFamilyCodes := TStringList.Create;
+  getLuseCodeFamily(outLuseCodes, outLuseFamilyCodes);
 
   ogrLayer := getLayer(shpFilePath);
 
@@ -1445,6 +1459,16 @@ begin
     begin
       catchName := String(OGR_F_GetFieldAsString(feat, catchFldIdx));
       propCode := String(OGR_F_GetFieldAsString(feat, propCodeFldIdx));
+      tempIndex := outLuseCodes.IndexOf(propCode);
+      if (tempIndex = -1) then
+      begin
+        handleGISErrs(0, 'Unknown land use code found in land use layer.' +
+          propCode);
+      end;
+      // need to use first 2 characters of the code to get land use code that is common to both perv and imperv
+      // propCode := AnsiLeftStr(propCode, 2);
+      propCode := outLuseFamilyCodes[tempIndex];
+
       coPropCode := String(OGR_F_GetFieldAsString(feat, coPropCodeFldIdx));
       geom := OGR_F_GetGeometryRef(feat);
       tempArea := OGR_G_GetArea(geom) * GISAREACONV;
@@ -1542,8 +1566,8 @@ begin
         begin
           tempCatch.id := catchName;
           tempCatch.tempTotalArea := tempCatch.tempTotalArea + tempArea;
-          tempCatch.tempAccumulation := tempCatch.tempAccumulation + tempArea
-            * propVal
+          tempCatch.tempAccumulation := tempCatch.tempAccumulation +
+            (tempArea * propVal)
         end
       end
       else

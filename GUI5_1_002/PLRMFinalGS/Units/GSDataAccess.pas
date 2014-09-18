@@ -13,7 +13,7 @@ Const
   NUMQUERIES = 8;
 
 const
-  dbTblQrys: array [0 .. 11] of String = ('Place holder for title TODO',
+  dbTblQrys: array [0 .. 12] of String = ('Place holder for title TODO',
     'SELECT * FROM EVAPORATION', 'SELECT t1.ID, t1.Category,' +
     ' IIf(IsNull(t1.Parameter), switch(t1.Category=''START_DATE'',' +
     '(select START_DATE from SimulationPeriod where ID = <PARAM>),t1.Category =''REPORT_START_DATE'',(select REPORT_START_DATE from SimulationPeriod where ID = <PARAM>),t1.Category=''END_DATE'',(select END_DATE from SimulationPeriod '
@@ -56,12 +56,13 @@ const
     + 'Switch(<P2>="ND",tad.ND6,<P2>="NA",tad.NA6), Switch(<P2>="ND",tad.ND7,<P2>="NA",tad.NA7), Switch(<P2>="ND",tad.ND8,<P2>="NA",tad.NA8), Switch(<P2>="ND",tad.ND9,<P2>="NA",tad.NA9), "na1", "na2" '
     + 'FROM ArealDepletion as tad',
     'SELECT * FROM Codes WHERE (((Codes.code) Like "<CODEPREFIX>") AND ((Codes.code)<>"100x") AND ((Codes.code)<>"101x"))',
-    'SELECT Soils.MU, Soils.MUName FROM Soils');
+    'SELECT Soils.MU, Soils.MUName FROM Soils',
+    'SELECT l.PLRM_DESC, l.PLRM_CODE, l.FAMILY_CODE from LanduseShapeFileCodes as l');
 
 const
-  dbTblNames: array [0 .. 11] of String = ('TITLE', 'EVAPORATION', 'OPTIONS',
+  dbTblNames: array [0 .. 12] of String = ('TITLE', 'EVAPORATION', 'OPTIONS',
     'AQUIFERS', 'GROUNDWATER', 'SNOWPACKS', 'TEMPERATURE2', 'SnoTelTimeSeries',
-    'Soils', 'Soils_tmp', 'codes', 'Soils');
+    'Soils', 'Soils_tmp', 'codes', 'Soils', 'LanduseShapeFileCodes');
 
   // Begin runtime querries and resulting table names
   // uses sentinels T* = table name, F* = field name, V* = value, R1 is return value field name etc
@@ -130,6 +131,8 @@ function generateTimeSeries(qry: String; tblName: String; fileDescrp: String;
 function generatePrecipTimeSeries(metGridNum: String; qry: String;
   tblName: String; fileDescrp: String; Var S: TStringList; conn: TADOConnection;
   PBar: TProgressBar): TStringList;
+function getLuseCodeFamily(Var outLuseCodes: TStringList;
+  Var outLuseFamilyCodes: TStringList; conn: TADOConnection): TStringList;
 function getDbTable(tableName: String; connStr: String; sqlStr: String)
   : TADOTable; overload;
 function getDbDataset(tableName: String; connStr: String; sqlStr: String)
@@ -826,6 +829,27 @@ begin
     DS.Next;
   end;
   Result := outCodes;
+end;
+
+function getLuseCodeFamily(Var outLuseCodes: TStringList;
+  Var outLuseFamilyCodes: TStringList; conn: TADOConnection): TStringList;
+var
+  DS: TADODataSet;
+  // tempQry: String;
+begin
+  { tempQry := StringReplace(dbTblQrys[10], '<CODEPREFIX>', codePrefix,
+    [rfReplaceAll]); }
+  // <CODEPREFIX> is sentinel sequence in code to be replace with actual parameter value
+  DS := getDbDataset(dbTblNames[12], conn, dbTblQrys[12], false);
+  DS.First;
+
+  while not DS.Eof do
+  begin
+    outLuseCodes.Add(DS.Fields[1].AsString);
+    outLuseFamilyCodes.Add(DS.Fields[2].AsString);
+    DS.Next;
+  end;
+  Result := outLuseFamilyCodes;
 end;
 
 function lookUpValFrmTable(sqlQry: String; tblName: String;

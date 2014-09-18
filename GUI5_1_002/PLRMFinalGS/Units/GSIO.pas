@@ -8,6 +8,8 @@ uses
   Dialogs, jpeg, ExtCtrls, ComCtrls, StdCtrls, Buttons, DB, ADODB, Uglobals,
   GSDataAccess, GSUtils, GSTypes;
 
+function getLuseCodeFamily(Var outLuseCodes: TStringList;
+  Var outLuseFamilyCodes: TStringList): TStringList;
 function getMapUnitMuName(): TStringList;
 function getAndSaveTSeries(metGridNum: Integer; var PBar: TProgressBar)
   : TStringList;
@@ -84,6 +86,16 @@ begin
   Conn := initConn(GSDataAccess.connStr);
   Result := GSDataAccess.lookUpValFrmTable(dbRunTimeQrys[runtimeQryNum],
     dbRunTimeQryTblNames[runtimeQryNum], fldNum1, fldNum2, Conn, false);
+end;
+
+function getLuseCodeFamily(Var outLuseCodes: TStringList;
+  Var outLuseFamilyCodes: TStringList): TStringList;
+var
+  Conn: TADOConnection;
+begin
+  Conn := initConn(GSDataAccess.connStr);
+  Result := GSDataAccess.getLuseCodeFamily(outLuseCodes,
+    outLuseFamilyCodes, Conn);
 end;
 
 function getDBDataAsPLRMGridData(tblName: String): PLRMGridData;
@@ -282,7 +294,6 @@ begin
   Result := S;
 end;
 
-
 function getSwmmDefaultBlocks(typeFlag: Integer; optional2ndParam: string = '0')
   : TStringList;
 var
@@ -294,20 +305,20 @@ begin
   case typeFlag of
     0:
       getOptions(S, strToInt(optional2ndParam), Conn);
-      // read swmm options from database
+    // read swmm options from database
     1:
       getEvap(S, Conn); // read evaporation data from the database
     2:
       getTemperature1(S, 1, 'NA', Conn);
-      // read in default temperature (wind and adc) data from the database
+    // read in default temperature (wind and adc) data from the database
     3:
       getAquifers(S, 1, Conn); // read in default aquifer data from the database
     4:
       getGroundWater(S, 1, Conn);
-      // read in default groundwater data from the database
+    // read in default groundwater data from the database
     5:
       S := getSnowPacks(snowPackNames, Conn);
-      // read in default groundwater data from the database
+    // read in default groundwater data from the database
   end;
   Result := S;
 end;
