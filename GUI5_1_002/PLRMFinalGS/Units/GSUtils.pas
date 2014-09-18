@@ -1,5 +1,8 @@
+{$WARNINGS ON}
+{$HINTS ON}
+{$WARN UNIT_PLATFORM OFF}
+{$WARN SYMBOL_PLATFORM OFF} // added to turnoff warning "Vcl.FileCtrl is specific to platform"
 unit GSUtils;
-{$WARN SYMBOL_PLATFORM OFF}
 
 interface
 

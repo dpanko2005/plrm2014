@@ -5133,6 +5133,10 @@ object PLRMDrngXtsDetail: TPLRMDrngXtsDetail
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object Label3: TLabel
           Left = 5
           Top = 2
@@ -5324,6 +5328,10 @@ object PLRMDrngXtsDetail: TPLRMDrngXtsDetail
         Font.Style = []
         ImageIndex = 1
         ParentFont = False
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object Panel3: TPanel
           Left = 0
           Top = 0

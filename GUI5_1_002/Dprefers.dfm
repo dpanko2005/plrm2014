@@ -26,6 +26,10 @@ object PreferencesForm: TPreferencesForm
     object TabSheet1: TTabSheet
       HelpContext = 137
       Caption = 'General Options'
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label5: TLabel
         Left = 24
         Top = 213

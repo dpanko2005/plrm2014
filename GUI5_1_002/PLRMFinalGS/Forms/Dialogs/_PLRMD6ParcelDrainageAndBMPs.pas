@@ -94,7 +94,7 @@ uses GSIO, _PLRMD6aBMPSizing;
 procedure TPLRMParcelDrngAndBMPs.UpdateAreas();
 var
   tempInt, I: Integer;
-  totArea: Double;
+  //totArea: Double;
   tempList: TStringList;
   tempOtherArea: Double;
   tempOtherImpvArea: Double;
@@ -110,7 +110,7 @@ begin
 
   with PLRMObj.currentCatchment do
   begin
-    totArea := StrToFloat(swmmCatch.Data[UProject.SUBCATCH_AREA_INDEX]);
+    //totArea := StrToFloat(swmmCatch.Data[UProject.SUBCATCH_AREA_INDEX]);
     for I := 0 to landUseNames.Count - 1 do
     begin
       tempInt := tempList.IndexOf(landUseNames[I]);

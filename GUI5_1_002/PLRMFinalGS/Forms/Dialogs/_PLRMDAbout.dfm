@@ -2,7 +2,6 @@ object AboutPLRMBoxForm: TAboutPLRMBoxForm
   Left = 257
   Top = 126
   BorderStyle = bsDialog
-  Caption = 'About EPA SWMM'
   ClientHeight = 392
   ClientWidth = 541
   Color = clBtnFace
@@ -27,6 +26,7 @@ object AboutPLRMBoxForm: TAboutPLRMBoxForm
     Alignment = taCenter
     Caption = 'U.S. Environmental Protection Agency'
     Transparent = True
+    Visible = False
   end
   object Label2: TLabel
     Left = 8
@@ -36,6 +36,7 @@ object AboutPLRMBoxForm: TAboutPLRMBoxForm
     Alignment = taCenter
     Caption = 'Cincinnati, Ohio 45268'
     Transparent = True
+    Visible = False
   end
   object Label5: TLabel
     Left = 8
@@ -44,6 +45,7 @@ object AboutPLRMBoxForm: TAboutPLRMBoxForm
     Height = 15
     Caption = 'National Risk Management Research Laboratory'
     Transparent = True
+    Visible = False
   end
   object Label3: TLabel
     Left = 434
@@ -634,6 +636,7 @@ object AboutPLRMBoxForm: TAboutPLRMBoxForm
     Caption = 'LinkLabel1'
     TabOrder = 1
     TabStop = True
+    Visible = False
     OnLinkClick = LinkLabel1LinkClick
   end
 end

@@ -197,7 +197,7 @@ begin
         // row-1 Get annual bypass loads
         if (Assigned(AnnLoads) and Assigned(AnnLoads2)) then
           for I := 0 to Length(AnnLoads) - 1 do
-          //TODO check with brent about reversed eqn
+            // TODO check with brent about reversed eqn
             SWTLoads[I, 1] :=
               (-StrToFloat(AnnLoads[I, 7]) + StrToFloat(AnnLoads2[I, 7])) /
               simLength;
@@ -220,8 +220,7 @@ begin
               (StrToFloat(AnnLoads4[I, 7]) - StrToFloat(AnnLoads2[I, 7]) -
               StrToFloat(AnnLoads3[I, 7])) / simLength;
         // row-2 annual treated loads = 0.0
-        if (Assigned(AnnLoads2) and Assigned(AnnLoads3))
-        then
+        if (Assigned(AnnLoads2) and Assigned(AnnLoads3)) then
           for I := 0 to Length(AnnLoads2) - 1 do
             SWTLoads[I, 2] :=
               (StrToFloat(AnnLoads2[I, 7]) + StrToFloat(AnnLoads3[I, 7])) /
@@ -250,7 +249,7 @@ var
   // SWTs: TStringList;
   InLinkID: String; // Inflow link name
   ByLinkID: String; // Bypass link name
-  ByCoLinkID:String; // Bypass link for cartridge and treat vaultls
+  ByCoLinkID: String; // Bypass link for cartridge and treat vaultls
   TrLinkID: String; // Treated link (downstream of treatment node)
   // Treated link from permanent pool basin for wet basins
   Tr2LinkID, DsLinkID: String;
@@ -275,7 +274,7 @@ begin
   SetLength(SWTLoads, Length(AnnLoads[0]), 6);
 
   // column-0 Get annual influent loads for links
-  //AnnLoads := GetAveAnnualLoadsForJuncOrLink(InLinkID, sourceTble);
+  // AnnLoads := GetAveAnnualLoadsForJuncOrLink(InLinkID, sourceTble);
   if (Assigned(AnnLoads)) then
     for I := 1 to Length(AnnLoads[0]) - 1 do
       SWTLoads[I, 0] := StrToFloat(AnnLoads[0, I]) / simLength;
@@ -316,10 +315,17 @@ begin
       begin
         InLinkID := tempNode.userName + '_InCo';
         ByLinkID := tempNode.userName + '_SurByWe'; // surcharge bypass outlet
-        //ByLinkID := tempNode.userName + '_ByWe'; // surcharge bypass outlet
+        // ByLinkID := tempNode.userName + '_ByWe'; // surcharge bypass outlet
         TrLinkID := tempNode.userName + '_SurOtCo'; // surcharge treated outlet
         Tr2LinkID := tempNode.userName + '_WetOtCo';
 
+        // column-1 Get annual bypassed loads for links - a bit different for wetbasins cause of link name
+        AnnLoads := GetAveAnnualLoadsForJuncOrLink(ByLinkID, sourceTble);
+        if (Assigned(AnnLoads)) then
+          for I := 1 to Length(AnnLoads[0]) - 1 do
+            SWTLoads[I, 1] := StrToFloat(AnnLoads[0, I]) / simLength;
+
+        // column-2 Get annual treated loads for links - a bit different for wetbasins cause of link name
         AnnLoads := GetAveAnnualLoadsForJuncOrLink(TrLinkID, sourceTble);
         AnnLoads2 := GetAveAnnualLoadsForJuncOrLink(Tr2LinkID, sourceTble);
         if (Assigned(AnnLoads) and Assigned(AnnLoads2)) then
@@ -1001,7 +1007,7 @@ begin
     begin
       if ((Pos(tempCatch.name, catchRunoffSmryArr[J, 0]) > 0) and
         (Pos('ToInfCa', catchRunoffSmryArr[J, 0]) = 0) and
-        (Pos('ToPchCa', catchWashoffSmryArr[J, 0]) = 0)and
+        (Pos('ToPchCa', catchWashoffSmryArr[J, 0]) = 0) and
         (Pos('ToDspCa', catchRunoffSmryArr[J, 0]) = 0)) then
       begin
         // save catchment and landuse name
@@ -1018,7 +1024,7 @@ begin
       end;
     end;
     // reset now that we know actual number of land uses in catchment
-    SetLength(catOut.annLoadsLUse, catOut.vollandUses.Count+1, NUMCATCHRSLTS);
+    SetLength(catOut.annLoadsLUse, catOut.vollandUses.Count + 1, NUMCATCHRSLTS);
 
     Z := 0;
     // zero out loads from previous catchments
@@ -1032,7 +1038,7 @@ begin
     begin
       if ((Pos(tempCatch.name, catchWashoffSmryArr[J, 0]) > 0) and
         (Pos('ToInfCa', catchWashoffSmryArr[J, 0]) = 0) and
-        (Pos('ToPchCa', catchWashoffSmryArr[J, 0]) = 0)and
+        (Pos('ToPchCa', catchWashoffSmryArr[J, 0]) = 0) and
         (Pos('ToDspCa', catchWashoffSmryArr[J, 0]) = 0)) then
       begin
         // save catchment and landuse name
@@ -1121,8 +1127,8 @@ begin
 
   resultsToTextFile(PLRMResults, PLRMObj.wrkDir + '\' + GSRPTFILENAME, 0);
   resultsToTextFile(PLRMResults, PLRMObj.wrkDir + '\' + GSDETAILRPTFILENAME, 1);
-  //resultsToTextFile(PLRMResults, PLRMObj.wrkDir + '\' + 'swmm.prpt', 0);
-  //resultsToTextFile(PLRMResults, PLRMObj.wrkDir + '\' + 'swmmDetailed.prpt', 1);
+  // resultsToTextFile(PLRMResults, PLRMObj.wrkDir + '\' + 'swmm.prpt', 0);
+  // resultsToTextFile(PLRMResults, PLRMObj.wrkDir + '\' + 'swmmDetailed.prpt', 1);
   // ShowMessage('All Results Collected!');
 
   // plrm 2014 moved reloadUserHydro fxn call to fmain to separate concerns

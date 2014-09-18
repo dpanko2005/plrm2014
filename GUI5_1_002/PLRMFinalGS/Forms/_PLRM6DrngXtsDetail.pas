@@ -1,3 +1,7 @@
+{$WARNINGS ON}
+{$HINTS ON}
+{$WARN UNIT_PLATFORM OFF}
+{$WARN SYMBOL_PLATFORM OFF} // added to turnoff warning "Vcl.FileCtrl is specific to platform"
 unit _PLRM6DrngXtsDetail;
 
 interface

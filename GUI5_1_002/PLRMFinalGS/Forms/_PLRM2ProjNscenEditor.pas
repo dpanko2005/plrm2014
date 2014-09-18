@@ -1,3 +1,7 @@
+{$WARNINGS ON}
+{$HINTS ON}
+{$WARN UNIT_PLATFORM OFF}
+{$WARN SYMBOL_PLATFORM OFF} // added to turnoff warning "Vcl.FileCtrl is specific to platform"
 unit _PLRM2ProjNscenEditor;
 
 interface
@@ -94,11 +98,15 @@ end;
 
 procedure TProjNscenEditor.btnMetGridClick(Sender: TObject);
 var
-  pdfpath: PAnsiChar;
+  //pdfpath: PAnsiChar;
+  pdfpath: String;
 begin
-  pdfpath := PAnsiChar(AnsiString(extractFilePath(Application.ExeName) +
-    'Grid_Map.pdf'));
-  ShellExecute(Handle, 'Open', @pdfpath, nil, nil, SW_SHOW);
+  { pdfpath := PAnsiChar(AnsiString(extractFilePath(Application.ExeName) +
+    'Grid_Map.pdf')); }
+  // pdfpath := PAnsiChar(AnsiString(defaultEngnDir + '\' + 'Grid_Map.pdf'));
+  pdfpath := defaultEngnDir + '\' + 'Grid_Map.pdf';
+  // ShellExecute(Handle, 'Open', @pdfpath, nil, nil, SW_SHOW);
+  ShellExecute(Handle, nil, PChar(pdfpath), nil, nil, SW_SHOWNORMAL);
 end;
 
 procedure TProjNscenEditor.btnSaveClick(Sender: TObject);
@@ -155,7 +163,7 @@ begin
     // Save the project information to a project xml file
     PLRMObj.projXMLPath := PLRMObj.projFolder + '\' + prjID + '.xml';
     if SysUtils.DirectoryExists(PLRMObj.projFolder) = False then
-    // need to create both folders
+      // need to create both folders
       checkNCreateDirectory(PLRMObj.projFolder);
     PLRMObj.writeInitProjectToXML(PLRMObj.projXMLPath);
     ModalResult := mrOK;

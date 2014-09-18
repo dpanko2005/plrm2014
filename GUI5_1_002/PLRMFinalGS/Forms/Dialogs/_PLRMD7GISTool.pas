@@ -298,7 +298,7 @@ begin
   if (not(assigned(tempErrList)) or (tempErrList.Count < 1)) then
   begin // errs occured
     didValidate := True;
-    tempErrList := TStringList.Create;
+    //tempErrList := TStringList.Create;
     lblCurrentItem.Visible := True;
     lblCurrentItem.Caption := 'Success - GIS validation completed successfully';
   end
@@ -341,7 +341,7 @@ begin
 
     if (not(assigned(tempErrList)) or (tempErrList.Count < 1)) then
     begin // errs occured
-      tempErrList := TStringList.Create;
+      //tempErrList := TStringList.Create;
       lblCurrentItem.Caption := 'Success - GIS operations completed successfully';
       ShowMessage('Success - GIS operations completed successfully');
     end

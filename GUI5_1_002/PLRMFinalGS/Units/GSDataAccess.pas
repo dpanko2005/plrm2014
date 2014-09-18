@@ -114,7 +114,7 @@ const
     'SWTCECs', 'Defaults', 'BuildUp', 'WashOff', 'Pollutants', 'TempTimeSeries',
     'PrecipTimeSeries', 'Generic', 'BuildupParcels', 'ParcelCRCs',
     'LanduseParcels', 'LandUses', 'nodeValidationRules',
-    'catchmentValidationRules', 'RoadCRCs2', 'LanduseShapeFileCodes','Soils');
+    'catchmentValidationRules', 'RoadCRCs2', 'LanduseShapeFileCodes', 'Soils');
 
 var
   dbDataSets: array of TADODataSet;
@@ -300,7 +300,10 @@ begin
   if (conn.Connected = True) then
     DS := TADODataSet.Create(application)
   else
+  begin
+    Result := nil;
     Exit;
+  end;
   try
     begin
       DS.Connection := conn;
@@ -758,7 +761,6 @@ begin
   Result := S;
 end;
 
-
 function getCodes(Var S: TStringList; codePrefix: String; fldNum: integer;
   conn: TADOConnection): TStringList;
 var
@@ -940,4 +942,3 @@ begin
 end;
 
 end.
-

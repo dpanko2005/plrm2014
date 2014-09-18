@@ -1650,8 +1650,8 @@ begin
 
       tempNode2.Attributes['width'] := tempWidth;
       // calc hsc width
-      tempArea := frm5of6RoadDrainageEditorData.PervChanFacility.length *
-        frm5of6RoadDrainageEditorData.PervChanFacility.width;
+      //tempArea := frm5of6RoadDrainageEditorData.PervChanFacility.length *
+      //  frm5of6RoadDrainageEditorData.PervChanFacility.width;
       // tempArea := tempArea;
       { tempFloLength := Math.Power(tempArea * widthFactor, widthPower);
         if tempFloLength > maxFloLength then

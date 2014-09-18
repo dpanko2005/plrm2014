@@ -67,7 +67,8 @@ type
   end;
 
 const
-  GISAREACONV = 1 / 43560; // conversions for geom area to acres
+  //GISAREACONV = 1 / 43560; // conversions for geom area to acres
+  GISAREACONV = 0.00024711; // conversions for geom area to acres
   shpExt: String = '.shp';
   minSlope: Double = 0.1;
   smallNum: Double = 0.00000001; // used to prevent 0/Number
@@ -190,9 +191,9 @@ var
 function validateFldNameAndType(featDefn: OGRFeatureDefnH; feat: OGRFeatureH;
   fldName: String; fldType: OGRFieldType; errMsg: String): Boolean;
 var
-//  rslt, flag: Boolean;
+  // rslt, flag: Boolean;
   fieldIndex: longint;
-//  shpPath: String;
+  // shpPath: String;
   fieldDefn: OGRFieldDefnH;
   fieldType: OGRFieldType;
   fieldName: string;
@@ -223,7 +224,7 @@ function validateSingleLayer(layerIdx: Integer; fldName: String;
   layerTypeErrMsg: String): Boolean;
 var
   rslt, flag: Boolean;
-//  I: Integer;
+  // I: Integer;
   shpPath: String;
   ogrLayer: OGRLayerH;
   featDefn: OGRFeatureDefnH;
@@ -261,12 +262,12 @@ function validateAll(shpFilesDict: TDictionary<String, String>;
   var inlblCurrentItem: TLabel; hasManualBMPs: Boolean;
   sgManualBMPs: TStringGrid): TStringList;
 var
-  rslt: Boolean;
-//  featDefn: OGRFeatureDefnH;
-//  ogrLayer: OGRLayerH;
-//  shpPath: String;
-//  tempFieldNames: Array of String;
- // tempFieldTypes: Array of OGRFieldType;
+  // rslt, flag: Boolean;
+  // featDefn: OGRFeatureDefnH;
+  // ogrLayer: OGRLayerH;
+  // shpPath: String;
+  // tempFieldNames: Array of String;
+  // tempFieldTypes: Array of OGRFieldType;
   genericFldErrMsg: String;
   genericLayerTypeErrMsg1, genericLayerTypeErrMsg2: String;
   numberOfpgBarSteps: Integer;
@@ -292,55 +293,50 @@ begin
   else
     gisErrsList.Clear;
 
-  rslt := True;
+  // rslt := True;
   // 1. validate catchment layer - check catchment name field
-  rslt := rslt and validateSingleLayer(0, fldNameCatch, OGRFieldType.OFTString,
+  validateSingleLayer(0, fldNameCatch, OGRFieldType.OFTString,
     OGRwkbGeometryType.wkbPolygon, genericFldErrMsg, genericLayerTypeErrMsg1);
 
   // 1b. validate catchment layer - check catchment area field
-  rslt := rslt and validateSingleLayer(0, fldNameCatchArea,
-    OGRFieldType.OFTReal, OGRwkbGeometryType.wkbPolygon, genericFldErrMsg,
-    genericLayerTypeErrMsg1);
+  validateSingleLayer(0, fldNameCatchArea, OGRFieldType.OFTReal,
+    OGRwkbGeometryType.wkbPolygon, genericFldErrMsg, genericLayerTypeErrMsg1);
 
   // 2. validate slopes layer
-  rslt := rslt and validateSingleLayer(1, fldNameSlope, OGRFieldType.OFTInteger,
+  validateSingleLayer(1, fldNameSlope, OGRFieldType.OFTInteger,
     OGRwkbGeometryType.wkbPolygon, genericFldErrMsg, genericLayerTypeErrMsg1);
 
   // 3. validate land use layer for land use codes field
-  rslt := rslt and validateSingleLayer(2, fldNameLuseCode,
-    OGRFieldType.OFTInteger, OGRwkbGeometryType.wkbPolygon, genericFldErrMsg,
-    genericLayerTypeErrMsg1);
+  validateSingleLayer(2, fldNameLuseCode, OGRFieldType.OFTInteger,
+    OGRwkbGeometryType.wkbPolygon, genericFldErrMsg, genericLayerTypeErrMsg1);
   // 3b. validate land use layer for land use imperviousness field - aware of redundant check for layer type
-  rslt := rslt and validateSingleLayer(2, fldNameLuseImprvCode,
-    OGRFieldType.OFTString, OGRwkbGeometryType.wkbPolygon, genericFldErrMsg,
-    genericLayerTypeErrMsg1);
+  validateSingleLayer(2, fldNameLuseImprvCode, OGRFieldType.OFTString,
+    OGRwkbGeometryType.wkbPolygon, genericFldErrMsg, genericLayerTypeErrMsg1);
 
   // 4. validate soils layer
-  rslt := rslt and validateSingleLayer(3, fldNameSoilCode,
-    OGRFieldType.OFTString, OGRwkbGeometryType.wkbPolygon, genericFldErrMsg,
-    genericLayerTypeErrMsg1);
+  validateSingleLayer(3, fldNameSoilCode, OGRFieldType.OFTString,
+    OGRwkbGeometryType.wkbPolygon, genericFldErrMsg, genericLayerTypeErrMsg1);
 
   // 5. validate road conditions layer
-  rslt := rslt and validateSingleLayer(4, fldNameRdCondition,
-    OGRFieldType.OFTReal, OGRwkbGeometryType.wkbLineString, genericFldErrMsg,
+  validateSingleLayer(4, fldNameRdCondition, OGRFieldType.OFTReal,
+    OGRwkbGeometryType.wkbLineString, genericFldErrMsg,
     genericLayerTypeErrMsg2);
 
   // 6. validate road shoulder erosion layer
-  rslt := rslt and validateSingleLayer(5, fldNameRdShoulder,
-    OGRFieldType.OFTString, OGRwkbGeometryType.wkbLineString, genericFldErrMsg,
+  validateSingleLayer(5, fldNameRdShoulder, OGRFieldType.OFTString,
+    OGRwkbGeometryType.wkbLineString, genericFldErrMsg,
     genericLayerTypeErrMsg2);
 
   // 7. validate road connectivity layer
-  rslt := rslt and validateSingleLayer(6, fldNameRdConn, OGRFieldType.OFTString,
+  validateSingleLayer(6, fldNameRdConn, OGRFieldType.OFTString,
     OGRwkbGeometryType.wkbLineString, genericFldErrMsg,
     genericLayerTypeErrMsg2);
 
   if (hasManualBMPs = False) then
   begin
     // 8. validate bmps layer
-    rslt := rslt and validateSingleLayer(7, fldNameBMPCode,
-      OGRFieldType.OFTString, OGRwkbGeometryType.wkbPolygon, genericFldErrMsg,
-      genericLayerTypeErrMsg1);
+    validateSingleLayer(7, fldNameBMPCode, OGRFieldType.OFTString,
+      OGRwkbGeometryType.wkbPolygon, genericFldErrMsg, genericLayerTypeErrMsg1);
   end;
   Result := gisErrsList;
 end;
@@ -1019,12 +1015,15 @@ begin
       // total area = NoBMPs area              + BMPs area                   + source controls area
       tempTotal := tempf6of6SgNoBMPsData[I, 0] + tempf6of6SgBMPImplData[I, 0] +
         tempf6of6SgBMPImplData[I, 1];
-      tempf6of6SgNoBMPsData[I, 0] := 100 *
-        ((smallNum + tempf6of6SgNoBMPsData[I, 0]) / tempTotal);
-      tempf6of6SgBMPImplData[I, 0] := 100 *
-        ((smallNum + tempf6of6SgBMPImplData[I, 0]) / tempTotal);
-      tempf6of6SgBMPImplData[I, 1] := 100 *
-        ((smallNum + tempf6of6SgBMPImplData[I, 1]) / tempTotal);
+      if (tempTotal <> 0) then
+      begin
+        tempf6of6SgNoBMPsData[I, 0] := 100 *
+          ((smallNum + tempf6of6SgNoBMPsData[I, 0]) / tempTotal);
+        tempf6of6SgBMPImplData[I, 0] := 100 *
+          ((smallNum + tempf6of6SgBMPImplData[I, 0]) / tempTotal);
+        tempf6of6SgBMPImplData[I, 1] := 100 *
+          ((smallNum + tempf6of6SgBMPImplData[I, 1]) / tempTotal);
+      end;
     end;
   end
   else
@@ -1623,10 +1622,11 @@ var
   ogrDriver: OGRSFDriverH;
   ogrDS: OGRDataSourceH;
   ogrLayer: OGRLayerH;
-//  I: longint;
+  // I: longint;
   err: longint;
   intDSName, intDSPath: String;
 begin
+  err := 0;
   OGRRegisterAll;
 
   // get handle on shapefile driver
@@ -1692,7 +1692,8 @@ begin
       [shp1FilePath, shp2FilePath, err]));
 
   // TODO fix // release the datasource
-  err := OGRReleaseDatasource(ogrDS);
+  OGRReleaseDatasource(ogrDS);
+  // err := OGRReleaseDatasource(ogrDS);
   { if err <> OGRERR_NONE then
     handleGISErrs(err, Format('Error releasing datasource: %d', [err])); }
 
@@ -1704,7 +1705,7 @@ function checkGeometryType(desiredGeomType: OGRwkbGeometryType;
   featDefn: OGRFeatureDefnH; errString: String): Boolean;
 var
   geomType: OGRwkbGeometryType;
-//  geom: OGRGeometryH;
+  // geom: OGRGeometryH;
 begin
   // get layer geometry type
   geomType := OGR_FD_GetGeomType(featDefn);

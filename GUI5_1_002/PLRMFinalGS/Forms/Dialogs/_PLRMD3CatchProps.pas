@@ -103,7 +103,7 @@ begin
       GSIO.getSoilsProps(PLRMObj.currentCatchment.soilsMapUnitData);
     allDrxXtcs := getDrngCondsInput(cbxGlobalSpecfc.Text);
     PLRMObj.currentCatchment.hasDefDrnXtcs := true;
-    //btnOk.Enabled := btnDefHydProps.Enabled;
+    // btnOk.Enabled := btnDefHydProps.Enabled;
   end
   else
     ShowMessage
@@ -113,7 +113,7 @@ end;
 procedure TCatchProps.btnDefLuseClick(Sender: TObject);
 var
   tempInt: Integer;
-//  msg: String;
+  // msg: String;
 begin
   { if btnDefHydProps.Enabled then
     begin
@@ -158,7 +158,7 @@ end;
 procedure TCatchProps.btnDefRoadPollsClick(Sender: TObject);
 var
   tempInt: Integer;
-//  msg: String;
+  // msg: String;
 begin
   btnApplyClick(Sender);
   tempInt := showRoadPollutantsDialog(PLRMObj.currentCatchment.name);
@@ -173,7 +173,7 @@ end;
 procedure TCatchProps.btnDefSoilsClick(Sender: TObject);
 var
   tempInt: Integer;
-//  msg: String;
+  // msg: String;
 begin
   // 2014 addition to warn user that ksat values will be overwritten
   { if btnDefHydProps.Enabled then
@@ -192,18 +192,18 @@ begin
   tempInt := getCatchSoilsInput(PLRMObj.currentCatchment.name);
   if tempInt = mrOK then
   begin
-    //btnDefLuseConds.Enabled := true;
+    // btnDefLuseConds.Enabled := true;
     btnDefRoadPolls.Enabled := true;
     btnDefRoadPollsClick(Sender);
     // btnDefLuseCondsClick(Sender);
   end;
-  //btnOk.Enabled := btnDefHydProps.Enabled;
+  // btnOk.Enabled := btnDefHydProps.Enabled;
 end;
 
 procedure TCatchProps.btnOkClick(Sender: TObject);
 begin
   btnApplyClick(Sender);
-  //make sure GIS catchments are intialized only once when first loaded from xml
+  // make sure GIS catchments are intialized only once when first loaded from xml
   PLRMObj.currentCatchment.isGISCatchment := false;
   ModalResult := mrOK;
 end;
@@ -231,7 +231,7 @@ end;
 procedure TCatchProps.btnShowParcelDrainageAndBMPEditorClick(Sender: TObject);
 var
   tempInt: Integer;
- // msg: String;
+  // msg: String;
 begin
   btnApplyClick(Sender);
   if (not(assigned(PLRMObj.currentCatchment.soilsInfData))) then
@@ -244,14 +244,14 @@ begin
     btnOk.Enabled := true;
   end;
 
-  //Reset property changed trackers
+  // Reset property changed trackers
   PLRMObj.currentCatchment.hasChangedSoils := false;
 end;
 
 procedure TCatchProps.btnShowRoadDrainageEditorClick(Sender: TObject);
 var
   tempInt: Integer;
-  //msg: String;
+  // msg: String;
 begin
   btnApplyClick(Sender);
   if (not(assigned(PLRMObj.currentCatchment.soilsInfData))) then
@@ -286,7 +286,7 @@ begin
 
     btnDefLuse.Enabled := true; // always true
     btnDefSoils.Enabled := hasDefLuse; // only true if landuse info provided
-    //btnDefLuseConds.Enabled := (hasDefSoils and hasDefLuse);
+    // btnDefLuseConds.Enabled := (hasDefSoils and hasDefLuse);
 
     tempInt := PLRMObj.catchments.IndexOf(name);
     BrowserUpdate(SUBCATCH, tempInt);
@@ -468,15 +468,26 @@ begin
     sgProps.Cells[2, 0] := 'Units';
     btnDefLuse.Enabled := true; // always true
     btnDefSoils.Enabled := hasDefLuse; // only true if landuse info provided
-    //btnDefLuseConds.Enabled := (hasDefSoils and hasDefLuse);
-    //btnDefHydProps.Enabled := (hasDefSoils and hasDefLuse and hasDefDrnXtcs);
+    // btnDefLuseConds.Enabled := (hasDefSoils and hasDefLuse);
+    // btnDefHydProps.Enabled := (hasDefSoils and hasDefLuse and hasDefDrnXtcs);
 
     btnDefRoadPolls.Enabled := hasDefRoadPolls;
     btnShowRoadDrainageEditor.Enabled := hasDefRoadDrainage;
     btnShowParcelDrainageAndBMPEditor.Enabled := hasDefParcelAndDrainageBMPs;
 
-    //btnOk.Enabled := btnDefHydProps.Enabled;
+    // btnOk.Enabled := btnDefHydProps.Enabled;
     btnOk.Enabled := btnShowParcelDrainageAndBMPEditor.Enabled;
+
+    // for GIS catchments force user to cycle through catchment modules so that numbers
+    // properly updated, especial soils properties, ksat, etc
+    if PLRMObj.currentCatchment.isGISCatchment then
+    begin
+      btnDefSoils.Enabled := false;
+      btnDefRoadPolls.Enabled := false;
+      btnShowRoadDrainageEditor.Enabled := false;
+      btnShowParcelDrainageAndBMPEditor.Enabled := false;
+      btnOk.Enabled := false;
+    end;
   end;
 end;
 
@@ -524,4 +535,3 @@ begin
 end;
 
 end.
-

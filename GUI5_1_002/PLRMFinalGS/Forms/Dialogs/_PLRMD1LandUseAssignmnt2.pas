@@ -61,6 +61,9 @@ type
 
 function getCatchLuseInput(CatchID: String): Integer;
 
+const
+  lusePercentTol = 0.1; // land use percentage tolerance
+
 var
   FrmLuse: TPLRMLandUse;
   catchArea: Double;
@@ -102,7 +105,7 @@ begin
       StrToFloat(Grd.Cells[2, R]) * catchArea);
   end;
   Grd.Cells[0, 0] := 'Sub-totals';
-  Grd.Cells[1, 0] := FormatFloat(TWODP, prcntSum);
+  Grd.Cells[1, 0] := FormatFloat(ONEDP, prcntSum);
   if acreSum = 0 then
     Grd.Cells[2, 0] := '0'
   else
@@ -253,8 +256,13 @@ begin
 end;
 
 procedure TPLRMLandUse.btnOkClick(Sender: TObject);
+var
+  tempNum: Double;
 begin
-  if (sgLuse.Cells[1, 0] <> '100.00') then
+  tempNum := StrToFloat(sgLuse.Cells[1, 0]);
+  // if (sgLuse.Cells[1, 0] <> '100.00') then
+  if (((tempNum + lusePercentTol) < 100) or ((tempNum - lusePercentTol) > 100))
+  then
   begin
     ShowMessage
       ('"% of Catchment Area" assignments in Column 1 of the grid must add up to 100%"');
@@ -338,10 +346,10 @@ begin
 end;
 
 procedure TPLRMLandUse.btnApplyClick(Sender: TObject);
-//var
-//  hasLuse: array [0 .. 6] of Boolean;
-//  I: Integer;
-//  tempRoadArea, tempRoadImpervArea: Double;
+// var
+// hasLuse: array [0 .. 6] of Boolean;
+// I: Integer;
+// tempRoadArea, tempRoadImpervArea: Double;
 begin
   GSPLRM.PLRMObj.currentCatchment.landUseData := GSUtils.copyGridContents(0, 1,
     GSPLRM.PLRMObj.currentCatchment.landUseNames, sgLuse, 1, 0);
@@ -539,7 +547,7 @@ begin
 
   if ACol > 0 then
   begin
-    if (StrToFloat(sgLuse.Cells[ACol, ARow]) > 100) then
+    if (StrToFloat(sgLuse.Cells[ACol, ARow]) > 100 + lusePercentTol) then
     begin
       ShowMessage
         ('Cell values must not exceed 100% and the sum of all the values in this column must add up to 100%!');

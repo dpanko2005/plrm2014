@@ -97,8 +97,8 @@ implementation
 
 var
   tempEdtSavedVal: String;
-//  INFParams: GSInfiltrationFacility;
-//  PCHParams: GSPervChannelFacility;
+  // INFParams: GSInfiltrationFacility;
+  // PCHParams: GSPervChannelFacility;
   // used to account for no road landuses in parcel grid as of 2014 set to two to
   // compensate for and align arrays that have full set of landuses
   luseOffset: Integer;
@@ -198,16 +198,23 @@ begin
       catch.frm5of6RoadDrainageEditorData.DPCH);
 
     // if user assigned a custom infiltration rate use it, however if the soils were changed
-    //then revert to using default inf rate from soils
-    if (PLRMObj.currentCatchment.hasChangedSoils  = false) then
+    // then revert to using default inf rate from soils
+    if (PLRMObj.currentCatchment.hasChangedSoils = false) then
     begin
-    {//TODO replace
-    if(catch.frm5of6RoadDrainageEditorData.shoulderAveAnnInfRate < minKsat)then
-       catch.frm5of6RoadDrainageEditorData.shoulderAveAnnInfRate := minKsat; }
-
-      edtShoulderAveAnnInfRate.Text :=
-        FormatFloat(ONEDP,
-        catch.frm5of6RoadDrainageEditorData.shoulderAveAnnInfRate);
+      { //TODO replace
+        if(catch.frm5of6RoadDrainageEditorData.shoulderAveAnnInfRate < minKsat)then
+        catch.frm5of6RoadDrainageEditorData.shoulderAveAnnInfRate := minKsat; }
+      // 2014 first time through GIS catchment do not overwrite shoulderAveAnnInfRate
+      if PLRMObj.currentCatchment.isGISCatchment then
+      begin
+        // save default computed shoulderAveAnnInfRate
+        catch.frm5of6RoadDrainageEditorData.shoulderAveAnnInfRate :=
+          StrToFloat(edtShoulderAveAnnInfRate.Text);
+      end
+      else
+        edtShoulderAveAnnInfRate.Text :=
+          FormatFloat(ONEDP,
+          catch.frm5of6RoadDrainageEditorData.shoulderAveAnnInfRate);
 
     end;
 
@@ -247,8 +254,9 @@ function TPLRMRoadDrainageEditor.checkAndUpDatePrcntAreas(): Boolean;
 var
   DCIA, ICIA, DINF, DPCH: Double;
 begin
+  Result := True;
   DCIA := StrToFloat(edtDCIA.Text);
-  //ICIA := StrToFloat(edtICIA.Text);
+  // ICIA := StrToFloat(edtICIA.Text);
   DINF := StrToFloat(edtDINF.Text);
   DPCH := StrToFloat(edtDPCH.Text);
 
@@ -258,7 +266,7 @@ begin
   if ((DCIA + ICIA + DINF + DPCH) <> 100) then
   begin
     ShowMessage('Sum of DCIA, ICIA, DINF and DPCH must equal 100%');
-    Result := False;
+    Result := false;
   end;
 
   if ((DCIA > 100) or (ICIA > 100) or (DINF > 100) or (DPCH > 100) or (DCIA < 0)
@@ -266,11 +274,10 @@ begin
   begin
     ShowMessage
       ('Valid values for DCIA, ICIA, DINF and DPCH are integers between 1 and 0');
-    Result := False;
+    Result := false;
   end;
 
   edtICIA.Text := FormatFloat(ZERODP, ICIA);
-  Result := True;
 end;
 
 procedure TPLRMRoadDrainageEditor.edtDCIAKeyUp(Sender: TObject; var Key: Word;
@@ -407,8 +414,8 @@ end;
 
 procedure TPLRMRoadDrainageEditor.initFormContents(catch: String);
 var
-//  idx, I: Integer;
-//  jdx: Integer;
+  // idx, I: Integer;
+  // jdx: Integer;
   hydProps: dbReturnFields;
   kSatMultplrs: dbReturnFields;
 begin
