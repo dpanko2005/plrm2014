@@ -50,6 +50,9 @@ type
     statBar: TStatusBar;
     btnOK: TButton;
     lblRoadImpervAcres: TLabel;
+    Image2: TImage;
+    Label18: TLabel;
+    Panel3: TPanel;
     procedure edtDCIAClick(Sender: TObject);
     procedure edtDINFClick(Sender: TObject);
     procedure edtDPCHClick(Sender: TObject);
@@ -406,7 +409,7 @@ begin
   initFormContents(initCatchID); // also calls updateAreas
   if PLRMObj.currentCatchment.hasDefRoadDrainage = True then
     restoreFormContents(PLRMObj.currentCatchment);
-  lblRoadAcres.Caption := 'Road Acres: ' + FormatFloat('#0.0',
+  lblRoadAcres.Caption := 'Total Road Acres: ' + FormatFloat('#0.0',
     PLRMObj.currentCatchment.totRoadAcres) + ' acres';
   lblRoadImpervAcres.Caption := 'Road Impervious Acres: ' +
     FormatFloat('#0.0', PLRMObj.currentCatchment.totRoadImpervAcres) + ' acres';
