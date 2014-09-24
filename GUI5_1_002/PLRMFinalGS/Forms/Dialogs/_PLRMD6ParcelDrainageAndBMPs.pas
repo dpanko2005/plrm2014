@@ -411,7 +411,7 @@ begin
   { copyContentsToGrid(PLRMObj.currentCatchment.frm6of6SgNoBMPsData, 0, 0,
     sgNoBMPs); }
   copyContentsToGridSubset(PLRMObj.currentCatchment.frm6of6SgNoBMPsData, 0, 0,
-    1, 1, sgNoBMPs)
+    1, 4, sgNoBMPs)
 end;
 
 procedure TPLRMParcelDrngAndBMPs.FormCreate(Sender: TObject);

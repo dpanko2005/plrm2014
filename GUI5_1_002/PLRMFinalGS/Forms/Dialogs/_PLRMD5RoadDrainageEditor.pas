@@ -22,10 +22,8 @@ type
     Label3: TLabel;
     Label4: TLabel;
     edtDINF: TEdit;
-    Label5: TLabel;
     Label6: TLabel;
     edtDPCH: TEdit;
-    Label7: TLabel;
     Label8: TLabel;
     edtDINFAveAnnInf: TEdit;
     edtDINFTotStorage: TEdit;

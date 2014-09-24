@@ -1113,7 +1113,7 @@ function xmlAttachedChildNodesToPLRMGridData(parentNode: IXMLNode;
 var
   // I: Integer;
   tempNode: IXMLNode;
-//  tempNodeList: IXMLNodeList;
+  // tempNodeList: IXMLNodeList;
   // tempData: PLRMGridData;
 begin
   tempNode := parentNode.ChildNodes[childTagName];
@@ -1505,6 +1505,8 @@ var
   icol: Integer;
 begin
   Result := false;
+  numColsToCopy := numColsToCopy - 1;
+  numRowsToCopy := numRowsToCopy - 1;
   if data <> nil then
     if data[0] <> nil then
     begin

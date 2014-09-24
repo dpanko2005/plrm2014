@@ -62,6 +62,7 @@ type
     lblCurrentItem: TLabel;
     lblPercentComplete: TLabel;
     progrBar: TProgressBar;
+    rgpDefaultSlope: TRadioGroup;
 
     procedure initFormContents();
     procedure enableControlsSavePath(idx: Integer; path: String;
@@ -88,6 +89,7 @@ type
       var CanSelect: Boolean);
     procedure sgManualBMPsSetEditText(Sender: TObject; ACol, ARow: Integer;
       const Value: string);
+    procedure rgpDefaultSlopeClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -106,6 +108,12 @@ implementation
 
 uses
   _PLRMD7bGISStatus;
+
+const
+  defaultSlopes: array [0 .. 7] of double = (-1, 1, 5, 10, 15, 20, 25, 30);
+
+var
+  defaultSlope: double;
 
 function TPLRMGISTool.browseToShp(initialDir: String): String;
 var
@@ -189,9 +197,18 @@ procedure TPLRMGISTool.enableControlsSavePath(idx: Integer; path: String;
   var nextBtn: TButton; nextLbl: TLabel;
   var pathDict: TDictionary<String, String>);
 begin
+
   shpPathInputs[idx].Text := path;
   nextBtn.Enabled := True;
   nextLbl.Enabled := True;
+
+  // for slope now using radio btns rather shp files
+  if (idx = 0) then
+  begin
+    nextBtn.Enabled := False;
+    nextLbl.Enabled := False;
+  end;
+
   if (pathDict.ContainsKey(shpFileKeys[idx])) then
     pathDict[shpFileKeys[idx]] := path
   else
@@ -202,6 +219,7 @@ end;
 procedure TPLRMGISTool.btnCatchShpClick(Sender: TObject);
 var
   tempStr: String;
+  idx: Integer;
 begin
   // check if previous shp path save then start from its dir
   if (shpFilesDict.ContainsKey(shpFileKeys[0])) then
@@ -210,7 +228,14 @@ begin
   tempStr := browseToShp(gisShpFileDir);
   if (tempStr <> '') then
   begin
+    // determine the slope selected by the user
+    idx := rgpDefaultSlope.ItemIndex;
+    if (idx > 0) then
+    begin
+      defaultSlope := defaultSlopes[idx];
+    end;
     enableControlsSavePath(0, tempStr, btnSlopeShp, lblSlopeShp, shpFilesDict);
+    // end;
   end;
 end;
 
@@ -291,6 +316,13 @@ begin
   else
     hasManualBMPs := True;
 
+  // validate default slope
+  if (defaultSlope < 0) then
+  begin
+    ShowMessage('Please select valid default slope');
+    Exit;
+  end;
+
   // Ran validation check and display validation errors
   tempErrList := validateAll(shpFilesDict, progrBar, lblPercentComplete,
     lblCurrentItem, hasManualBMPs, sgManualBMPs);
@@ -298,7 +330,7 @@ begin
   if (not(assigned(tempErrList)) or (tempErrList.Count < 1)) then
   begin // errs occured
     didValidate := True;
-    //tempErrList := TStringList.Create;
+    // tempErrList := TStringList.Create;
     lblCurrentItem.Visible := True;
     lblCurrentItem.Caption := 'Success - GIS validation completed successfully';
   end
@@ -337,12 +369,14 @@ begin
 
     // Begin actual GIS processing
     tempErrList := runGISOps(gisXMLFilePath, shpFilesDict, progrBar,
-      lblPercentComplete, lblCurrentItem, hasManualBMPs, sgManualBMPs);
+      lblPercentComplete, lblCurrentItem, hasManualBMPs, sgManualBMPs,
+      defaultSlope);
 
     if (not(assigned(tempErrList)) or (tempErrList.Count < 1)) then
     begin // errs occured
-      //tempErrList := TStringList.Create;
-      lblCurrentItem.Caption := 'Success - GIS operations completed successfully';
+      // tempErrList := TStringList.Create;
+      lblCurrentItem.Caption :=
+        'Success - GIS operations completed successfully';
       ShowMessage('Success - GIS operations completed successfully');
     end
     else
@@ -385,7 +419,19 @@ procedure TPLRMGISTool.FormCreate(Sender: TObject);
 begin
   statBar.SimpleText := PLRMVERSION;
   self.Caption := PLRM7GIS_TITLE;
+  defaultSlope := -1;
   initFormContents();
+end;
+
+procedure TPLRMGISTool.rgpDefaultSlopeClick(Sender: TObject);
+var
+  idx: Integer;
+begin
+  idx := rgpDefaultSlope.ItemIndex;
+  Assert(idx >= 0); // Sanity check
+  defaultSlope := defaultSlopes[idx];
+  enableControlsSavePath(1, IntToStr(idx), btnLuseShp, lblLuseShp,
+    shpFilesDict);
 end;
 
 procedure TPLRMGISTool.rgpSimLengthClick(Sender: TObject);
@@ -444,7 +490,7 @@ end;
 procedure TPLRMGISTool.sgManualBMPsSetEditText(Sender: TObject;
   ACol, ARow: Integer; const Value: string);
 var
-  tempSum: Double;
+  tempSum: double;
   sg: TStringGrid;
 begin
   // tempSum := 0.0;
@@ -471,10 +517,10 @@ end;
 
 procedure TPLRMGISTool.initFormContents();
 var
-  I: Integer;
+  I, tempInt: Integer;
   tempEnabledState: Boolean;
 begin
-  //numberOfShapeFiles := 7;
+  // numberOfShapeFiles := 7;
 
   // save array of buttons for convenient looping
   btnsArr[0] := btnCatchShp;
@@ -519,6 +565,10 @@ begin
     btnsArr[I].Enabled := True;
     btnsArr[I].Visible := True;
   end;
+  // for slopes remember previously selected slope
+  if ((shpFilesDict.ContainsKey('Slopes')) and
+    (TryStrToInt(shpFilesDict['Slopes'], tempInt))) then
+    rgpDefaultSlope.ItemIndex := tempInt;
 
   // populate no bmp implementation grid with initial values
   sgManualBMPs.Cells[0, 0] := '93';
@@ -549,6 +599,9 @@ begin
   btnRun.Enabled := tempEnabledState;
   lblRgpBMPs.Enabled := tempEnabledState;
   rgpSimLength.Enabled := tempEnabledState;
+
+  // now using radion btns for default slope so hide button
+  btnSlopeShp.Visible := False;
 end;
 
 end.

@@ -2269,20 +2269,6 @@ object PLRMGISTool: TPLRMGISTool
     Height = 373
     Caption = 'PLRM Data Inputs'
     TabOrder = 3
-    object lblSlopeShp: TLabel
-      Left = 16
-      Top = 35
-      Width = 136
-      Height = 14
-      Caption = 'Average Slope Shapefile:'
-      Enabled = False
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -12
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
     object lblLuseShp: TLabel
       Left = 16
       Top = 91
@@ -2353,13 +2339,28 @@ object PLRMGISTool: TPLRMGISTool
       Font.Style = []
       ParentFont = False
     end
+    object lblSlopeShp: TLabel
+      Left = 20
+      Top = 35
+      Width = 83
+      Height = 14
+      Caption = 'Average Slope:'
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+    end
     object edtSlopeShpPath: TEdit
-      Left = 16
+      Left = 304
       Top = 55
-      Width = 331
+      Width = 47
       Height = 21
       Enabled = False
       TabOrder = 0
+      Visible = False
     end
     object edtLuseShpPath: TEdit
       Left = 16
@@ -2495,7 +2496,27 @@ object PLRMGISTool: TPLRMGISTool
       Font.Style = []
       ParentFont = False
       TabOrder = 11
+      Visible = False
       OnClick = btnSlopeShpClick
+    end
+    object rgpDefaultSlope: TRadioGroup
+      Left = 16
+      Top = 35
+      Width = 331
+      Height = 43
+      Columns = 8
+      ItemIndex = 0
+      Items.Strings = (
+        'NA'
+        '1%'
+        '5%'
+        '10%'
+        '15%'
+        '20%'
+        '25%'
+        '30%')
+      TabOrder = 12
+      OnClick = rgpDefaultSlopeClick
     end
   end
   object GroupBox2: TGroupBox

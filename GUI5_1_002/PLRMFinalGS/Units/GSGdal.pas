@@ -132,7 +132,8 @@ const
 function runGISOps(gisXMLFilePath: String;
   shpFilesDict: TDictionary<String, String>; var inpgBar: TProgressBar;
   var inlblPercentComplete: TLabel; var inlblCurrentItem: TLabel;
-  hasManualBMPs: Boolean; sgManualBMPs: TStringGrid): TStringList;
+  hasManualBMPs: Boolean; sgManualBMPs: TStringGrid; defaultSlope: Double)
+  : TStringList;
 procedure aggregateOthrAreas(NewCatch: TPLRMCatch);
 function getAreaWeightedTable(var catchDict: TDictionary<String, TGISCatch>;
   shpFilePath: String; catchNameFld: String; propNameFld: String): Boolean;
@@ -148,8 +149,8 @@ function getShapeFilePath(sFilesDict: TDictionary<String, String>;
   I: Integer): String;
 function getLayer(shpFilePath: String): OGRLayerH;
 function createPLRMCatchmentObjs(CDict: TDictionary<String, TGISCatch>;
-  gisXMLFilePath: String; hasManualBMPs: Boolean;
-  sgManualBMPs: TStringGrid): Boolean;
+  gisXMLFilePath: String; hasManualBMPs: Boolean; sgManualBMPs: TStringGrid;
+  defaultSlope: Double): Boolean;
 
 procedure intersectShapeFilesAsLayers(shp1FilePath: String;
   shp2FilePath: String; outShpFilePath: String;
@@ -198,19 +199,21 @@ var
   fieldType: OGRFieldType;
   fieldName: string;
 begin
-
-  fieldIndex := OGR_F_GetFieldIndex(feat, PAnsiChar(AnsiString(fldName)));
-  if (fieldIndex <> -1) then
+  if ((featDefn <> nil) and (feat <> nil)) then
   begin
-    fieldDefn := OGR_FD_GetFieldDefn(featDefn, fieldIndex);
-    if assigned(fieldDefn) then
+    fieldIndex := OGR_F_GetFieldIndex(feat, PAnsiChar(AnsiString(fldName)));
+    if (fieldIndex <> -1) then
     begin
-      fieldName := string(OGR_Fld_GetNameRef(fieldDefn));
-      fieldType := OGR_Fld_GetType(fieldDefn);
-      if ((fieldName = fldName) and (fieldType = fldType)) then
+      fieldDefn := OGR_FD_GetFieldDefn(featDefn, fieldIndex);
+      if assigned(fieldDefn) then
       begin
-        Result := True;
-        Exit;
+        fieldName := string(OGR_Fld_GetNameRef(fieldDefn));
+        fieldType := OGR_Fld_GetType(fieldDefn);
+        if ((fieldName = fldName) and (fieldType = fldType)) then
+        begin
+          Result := True;
+          Exit;
+        end;
       end;
     end;
   end;
@@ -237,6 +240,12 @@ begin
 
   shpPath := getShapeFilePath(shpFilesDict, layerIdx);
   ogrLayer := getLayer(shpPath);
+  if(ogrLayer = nil) then
+  begin
+    handleGISErrs(0, 'Invalid shapefile: ' + shpPath);
+    Result := False;
+    Exit;
+  end;
   featDefn := OGR_L_GetLayerDefn(ogrLayer);
 
   OGR_L_ResetReading(ogrLayer);
@@ -302,9 +311,9 @@ begin
   validateSingleLayer(0, fldNameCatchArea, OGRFieldType.OFTReal,
     OGRwkbGeometryType.wkbPolygon, genericFldErrMsg, genericLayerTypeErrMsg1);
 
-  // 2. validate slopes layer
-  validateSingleLayer(1, fldNameSlope, OGRFieldType.OFTInteger,
-    OGRwkbGeometryType.wkbPolygon, genericFldErrMsg, genericLayerTypeErrMsg1);
+  { // 2. validate slopes layer
+    validateSingleLayer(1, fldNameSlope, OGRFieldType.OFTInteger,
+    OGRwkbGeometryType.wkbPolygon, genericFldErrMsg, genericLayerTypeErrMsg1); }
 
   // 3. validate land use layer for land use codes field
   validateSingleLayer(2, fldNameLuseCode, OGRFieldType.OFTInteger,
@@ -424,23 +433,24 @@ end;
 // mode = 0 > land uses  | mode = 1 > soils | mode = 2 > bmps
 function processLusesSoilsOrBMPs(dir: String; shpPathCatch: String;
   shpPathVar: String; CDict: TDictionary<String, TGISCatch>;
-  sourceDSName: String; rsltShpName: String; fldNameVar: String;
-  mode: Integer): Boolean;
+  sourceDSName: String; rsltShpName: String; fldNameVar: String; mode: Integer)
+  : Boolean;
 var
   flag: Boolean;
   tempKey: String;
   tempCatch: TGISCatch;
 begin
+  // ShowMessage('1');
   intersectShapeFilesAsLayers(shpPathCatch, shpPathVar,
     dir + rsltShpName + shpExt, OGRwkbGeometryType.wkbPolygon);
-
+  // ShowMessage('2');
   if (mode = 0) then
     flag := getAreaWeightedTableLuse(CDict, dir + rsltShpName + shpExt,
       fldNameCatch, fldNameVar, fldNameLuseImprvCode)
   else
     flag := getAreaWeightedTableLuse(CDict, dir + rsltShpName + shpExt,
       fldNameCatch, fldNameVar);
-
+  // ShowMessage('3');
   // calculation was successful if flag is true so copy tempdict to lusedict of each catchment
   if (flag) then
     for tempKey in CDict.Keys do
@@ -610,7 +620,8 @@ end;
 function runGISOps(gisXMLFilePath: String;
   shpFilesDict: TDictionary<String, String>; var inpgBar: TProgressBar;
   var inlblPercentComplete: TLabel; var inlblCurrentItem: TLabel;
-  hasManualBMPs: Boolean; sgManualBMPs: TStringGrid): TStringList;
+  hasManualBMPs: Boolean; sgManualBMPs: TStringGrid; defaultSlope: Double)
+  : TStringList;
 var
   dir: String;
   CDict: TDictionary<String, TGISCatch>;
@@ -636,20 +647,26 @@ begin
   // Step 2: Catchment average slopes
   // *******************************************
   // Intersect catchment layer and slopes layer and calc area-weighted slope by catchment
-  updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 2, startMsgs[1]);
-  shpPathVar := getShapeFilePath(shpFilesDict, 1);
-  processSlopes(dir, shpPathCatch, shpPathVar, CDict);
+  { updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 2, startMsgs[1]);
+    shpPathVar := getShapeFilePath(shpFilesDict, 1);
+    processSlopes(dir, shpPathCatch, shpPathVar, CDict); }
   updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 3, endMsgs[1]);
 
   // Step 3: Catchment land uses
   // *******************************************
   // Intersect catchment layer and landuse layer and calc area-weighted landuse by catchment
+  // ShowMessage('1');
   updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 3, startMsgs[2]);
+  // ShowMessage('2');
   shpPathVar := getShapeFilePath(shpFilesDict, 2);
+  // ShowMessage('3');
   luseDSName := ChangeFileExt(ExtractFileName(shpPathVar), '');
+  // ShowMessage('4');
   processLusesSoilsOrBMPs(dir, shpPathCatch, shpPathVar, CDict, luseDSName,
     intcatchLuse, fldNameLuseCode, 0);
+  // ShowMessage('5');
   updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 4, endMsgs[2]);
+  // ShowMessage('6');
 
   // Step 3b: Catchment land imperviousness
   // *******************************************
@@ -707,7 +724,8 @@ begin
   updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 9, endMsgs[8]);
 
   // Step 9: Serialize collected data to disk
-  createPLRMCatchmentObjs(CDict, gisXMLFilePath, hasManualBMPs, sgManualBMPs);
+  createPLRMCatchmentObjs(CDict, gisXMLFilePath, hasManualBMPs, sgManualBMPs,
+    defaultSlope);
   updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 10, endMsgs[9]);
 
   // clean up and deallocate memory
@@ -716,8 +734,8 @@ begin
   Result := gisErrsList;
 end;
 
-function updateCatchObjLuse(tempCatch: TGISCatch;
-  var NewCatch: TPLRMCatch): Boolean;
+function updateCatchObjLuse(tempCatch: TGISCatch; var NewCatch: TPLRMCatch)
+  : Boolean;
 var
   rsltArry, tempArry: PLRMGridData;
   tempArryVals: PLRMGridDataDbl;
@@ -790,8 +808,8 @@ begin
 end;
 
 // saves soils to catchment obj
-function updateCatchObjSoils(tempCatch: TGISCatch;
-  var NewCatch: TPLRMCatch): Boolean;
+function updateCatchObjSoils(tempCatch: TGISCatch; var NewCatch: TPLRMCatch)
+  : Boolean;
 var
   rsltArry, tempArry: PLRMGridData;
   tempArryVals: PLRMGridDataDbl;
@@ -1171,8 +1189,8 @@ begin
 end;
 
 function createPLRMCatchmentObjs(CDict: TDictionary<String, TGISCatch>;
-  gisXMLFilePath: String; hasManualBMPs: Boolean;
-  sgManualBMPs: TStringGrid): Boolean;
+  gisXMLFilePath: String; hasManualBMPs: Boolean; sgManualBMPs: TStringGrid;
+  defaultSlope: Double): Boolean;
 var
   I: Integer;
   tempKey: String;
@@ -1207,7 +1225,8 @@ begin
       NewCatch.hasDefCustomBMPSizeData := False;
       NewCatch.area := StrToFloat(FormatFloat(THREEDP,
         tempCatch.totalCatchArea));
-      NewCatch.slope := StrToFloat(FormatFloat(THREEDP, tempCatch.aveSlope));
+      { NewCatch.slope := StrToFloat(FormatFloat(THREEDP, tempCatch.aveSlope)); }
+      NewCatch.slope := StrToFloat(FormatFloat(THREEDP, defaultSlope));
 
       // 1. save landuse codes to catchObj
       updateCatchObjLuse(tempCatch, NewCatch);
@@ -1331,6 +1350,7 @@ begin
     feat := OGR_L_GetNextFeature(ogrLayer);
   until feat = nil;
   Result := True;
+  // OGRCleanupAll;
 end;
 
 // computes area weighted average of a single field with multiple possible values such as catchment landuses
@@ -1413,6 +1433,7 @@ begin
     feat := OGR_L_GetNextFeature(ogrLayer);
   until feat = nil;
   Result := True;
+  // OGRCleanupAll;
 end;
 
 // similar to overloaded version, computes area weighted average of a single field with multiple possible values such as catchment landuses but also
@@ -1434,24 +1455,24 @@ var
 Var
   outLuseFamilyCodes: TStringList;
 begin
-
+  // ShowMessage('a1');
   // get landuse codes and family codes
   outLuseCodes := TStringList.Create;
   outLuseFamilyCodes := TStringList.Create;
   getLuseCodeFamily(outLuseCodes, outLuseFamilyCodes);
-
+  // ShowMessage('a2');
   ogrLayer := getLayer(shpFilePath);
-
+  // ShowMessage('a3');
   // it is safe to reset read position on the first feature
   OGR_L_ResetReading(ogrLayer);
-
+  // ShowMessage('a4');
   feat := OGR_L_GetNextFeature(ogrLayer);
   catchFldIdx := OGR_F_GetFieldIndex(feat, PAnsiChar(AnsiString(catchNameFld)));
   propCodeFldIdx := OGR_F_GetFieldIndex(feat,
     PAnsiChar(AnsiString(propNameFld)));
   coPropCodeFldIdx := OGR_F_GetFieldIndex(feat,
     PAnsiChar(AnsiString(coPropNameFld)));
-
+  // ShowMessage('a5');
   Repeat
     geom := OGR_F_GetGeometryRef(feat);
 
@@ -1503,8 +1524,8 @@ begin
               if (AnsiEndsStr(pervImpervDefnStrings[1], coPropCode)) then
                 tempAreaWTObj.tempAccumulation2 :=
                   tempAreaWTObj.tempAccumulation2 + tempArea;
-              tempAreaWTObj.tempWeightedVal := tempAreaWTObj.tempWeightedVal
-                + tempArea;
+              tempAreaWTObj.tempWeightedVal := tempAreaWTObj.tempWeightedVal +
+                tempArea;
             end;
           end
           else
@@ -1524,7 +1545,9 @@ begin
     end;
     feat := OGR_L_GetNextFeature(ogrLayer);
   until feat = nil;
+  // ShowMessage('a6');
   Result := True;
+  // OGRCleanupAll;
 end;
 
 // computes area weighted average of a single field  e.g. catchment slope
@@ -1595,6 +1618,7 @@ begin
     end;
   end;
   Result := True;
+  // OGRCleanupAll;
 end;
 
 function getLayer(shpFilePath: String): OGRLayerH;
@@ -1603,6 +1627,7 @@ var
   ogrDriver: OGRSFDriverH;
   ogrLayer: OGRLayerH;
 begin
+  // ShowMessage('b1');
   OGRRegisterAll;
   // get handle on shapefile driver
   ogrDriver := OGRGetDriverByName(PAnsiChar(driverName));
@@ -1612,7 +1637,7 @@ begin
     Result := nil;
     Exit;
   end;
-
+  // ShowMessage('b2');
   // check to see if intersect result shp file already exists
   if FileExists(shpFilePath) then
   begin
@@ -1635,7 +1660,9 @@ begin
     Result := ogrLayer;
     Exit;
   end;
+  // ShowMessage('b3');
   Result := nil;
+  // OGRCleanupAll;
 end;
 
 procedure intersectShapeFilesAsLayers(shp1FilePath: String;
@@ -1717,6 +1744,7 @@ begin
 
   // TODO fix // release the datasource
   OGRReleaseDatasource(ogrDS);
+  // OGR_DS_Destroy(ogrDS);
   // err := OGRReleaseDatasource(ogrDS);
   { if err <> OGRERR_NONE then
     handleGISErrs(err, Format('Error releasing datasource: %d', [err])); }
