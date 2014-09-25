@@ -1149,8 +1149,8 @@ begin
   numTblCols := 4;
   numTblRows := 1;
   // save in order presented in user grid on frm4of6
-  rdCondStates := TArray<string>.Create('Erodible', 'Protected',
-    'Stable & Protected', 'Stable');
+  rdCondStates := TArray<string>.Create('Erodible', 'Protected', 'Stable',
+    'Stable & Protected');
   rdCondStateList := TStringList.Create;
   rdCondStateList.AddStrings(rdCondStates);
 
