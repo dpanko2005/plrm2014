@@ -240,7 +240,7 @@ begin
 
   shpPath := getShapeFilePath(shpFilesDict, layerIdx);
   ogrLayer := getLayer(shpPath);
-  if(ogrLayer = nil) then
+  if (ogrLayer = nil) then
   begin
     handleGISErrs(0, 'Invalid shapefile: ' + shpPath);
     Result := False;
@@ -433,8 +433,8 @@ end;
 // mode = 0 > land uses  | mode = 1 > soils | mode = 2 > bmps
 function processLusesSoilsOrBMPs(dir: String; shpPathCatch: String;
   shpPathVar: String; CDict: TDictionary<String, TGISCatch>;
-  sourceDSName: String; rsltShpName: String; fldNameVar: String; mode: Integer)
-  : Boolean;
+  sourceDSName: String; rsltShpName: String; fldNameVar: String;
+  mode: Integer): Boolean;
 var
   flag: Boolean;
   tempKey: String;
@@ -734,8 +734,8 @@ begin
   Result := gisErrsList;
 end;
 
-function updateCatchObjLuse(tempCatch: TGISCatch; var NewCatch: TPLRMCatch)
-  : Boolean;
+function updateCatchObjLuse(tempCatch: TGISCatch;
+  var NewCatch: TPLRMCatch): Boolean;
 var
   rsltArry, tempArry: PLRMGridData;
   tempArryVals: PLRMGridDataDbl;
@@ -808,8 +808,8 @@ begin
 end;
 
 // saves soils to catchment obj
-function updateCatchObjSoils(tempCatch: TGISCatch; var NewCatch: TPLRMCatch)
-  : Boolean;
+function updateCatchObjSoils(tempCatch: TGISCatch;
+  var NewCatch: TPLRMCatch): Boolean;
 var
   rsltArry, tempArry: PLRMGridData;
   tempArryVals: PLRMGridDataDbl;
@@ -1524,8 +1524,8 @@ begin
               if (AnsiEndsStr(pervImpervDefnStrings[1], coPropCode)) then
                 tempAreaWTObj.tempAccumulation2 :=
                   tempAreaWTObj.tempAccumulation2 + tempArea;
-              tempAreaWTObj.tempWeightedVal := tempAreaWTObj.tempWeightedVal +
-                tempArea;
+              tempAreaWTObj.tempWeightedVal := tempAreaWTObj.tempWeightedVal
+                + tempArea;
             end;
           end
           else

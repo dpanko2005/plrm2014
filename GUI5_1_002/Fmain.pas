@@ -2796,7 +2796,7 @@ begin
       // used in Fstatus to decide whether to show plrm status form or default swmm status form
       RefreshStatusReport;
       RefreshStatusReport(PLRMObj.wrkdir + '\' + GSRPTFILENAME);
-      //RefreshStatusReport(PLRMObj.wrkdir + '\' + 'swmm.prpt');
+      // RefreshStatusReport(PLRMObj.wrkdir + '\' + 'swmm.prpt');
       // set back to false in fStatus.close  isPLRMStatusReportActive := false;
       // SetFocus;
       StatusForm.ManualFloat(StatusForm.ClientRect);
@@ -2837,6 +2837,17 @@ procedure TMainForm.btnRecRngRprtClick(Sender: TObject);
 begin
   // Display result validation html file in browser
   // 2014 now using this button to trigger this no longer loaded automatically from GSPLRM
+  if (FileExists(defaultValidateFilePath) = True) then
+  begin
+    BrowseURL(defaultValidateFilePath);
+    Exit;
+  end;
+
+  //2014 added to allow display of plrm r3 report even when swmm has not been run
+  btnSavePLRMClick(Sender);
+  // transform main xml file into validation file and display it
+  transformXMLToSwmm(validateXslPath, PLRMObj.scenarioXMLFilePath,
+    defaultValidateFilePath);
   if (FileExists(defaultValidateFilePath) = True) then
     BrowseURL(defaultValidateFilePath);
 end;
@@ -2927,8 +2938,8 @@ begin
     Exit;
 
   // if model has not been run warn and exit
-   if (FileExists(PLRMObj.wrkdir + '\' + GSRPTFILENAME) = False) then
-  //if (FileExists(PLRMObj.wrkdir + '\' + 'swmm.prpt') = False) then
+  if (FileExists(PLRMObj.wrkdir + '\' + GSRPTFILENAME) = False) then
+  // if (FileExists(PLRMObj.wrkdir + '\' + 'swmm.prpt') = False) then
   begin
     ShowMessage
       ('This model has not been run. Run the model first before attempting to save the report');
@@ -2938,18 +2949,26 @@ begin
   with SaveDialog do
   begin
     Title := 'Save PLRM Status Report As:';
-    Filter := 'PLRM Report Files (*.PRPT)|*.PRPT|All files|*.*';
+    { Filter := 'PLRM Report Files (*.PRPT)|*.PRPT|All files|*.*';
+      InitialDir := ExtractFileDir(PLRMObj.scenarioXMLFilePath);
+      DefaultExt := '.PRPT'; }
+    Filter := 'Exported PLRM Report (*.txt)|*.txt|All files|*.*';
     InitialDir := ExtractFileDir(PLRMObj.scenarioXMLFilePath);
-    DefaultExt := '.PRPT';
+    DefaultExt := '.txt';
     if Length(InputFileName) > 0 then
       Filename := ChangeFileExt(ExtractFileName(PLRMObj.scenarioXMLFilePath),
         DefaultExt)
       // then Filename := ExtractFileName(PLRMObj.scenarioXMLFilePath),DefaultExt
     else
-      Filename := '*.PRPT';
+      Filename := '*.txt';
     if Execute then
-    gsCopyFile(InitialDir + '\' + GSRPTFILENAME, Filename, True);
-      //gsCopyFile(InitialDir + '\' + 'swmm.prpt', Filename, True);
+      gsCopyFile(InitialDir + '\' + GSRPTFILENAME, Filename, True);
+    // 2014 added to save both summary and detailed reports and also use .txt extension rather than prpt
+    gsCopyFile(InitialDir + '\' + GSDETAILRPTFILENAME,
+      StringReplace(Filename, DefaultExt, 'Detailed' + DefaultExt,
+      [rfReplaceAll, rfIgnoreCase]), True);
+
+    // gsCopyFile(InitialDir + '\' + 'swmm.prpt', Filename, True);
     // SaveFile(Filename);
     DefaultExt := '';
   end;
@@ -2999,7 +3018,7 @@ begin
       // used in Fstatus to decide whether to show plrm status form or default swmm status form
       RefreshStatusReport;
       RefreshStatusReport(PLRMObj.wrkdir + '\' + GSRPTFILENAME);
-      //RefreshStatusReport(PLRMObj.wrkdir + '\' + 'swmm.prpt');
+      // RefreshStatusReport(PLRMObj.wrkdir + '\' + 'swmm.prpt');
       // set back to false in fStatus.close  isPLRMStatusReportActive := false;
       // SetFocus;
       StatusForm.ManualFloat(StatusForm.ClientRect);
@@ -3037,7 +3056,7 @@ begin
       isPLRMStatusReportActive := True;
       // used in Fstatus to decide whether to show plrm status form or default swmm status form
       RefreshStatusReport;
-      //RefreshStatusReport(PLRMObj.wrkdir + '\' + 'swmmDetailed.prpt');
+      // RefreshStatusReport(PLRMObj.wrkdir + '\' + 'swmmDetailed.prpt');
       RefreshStatusReport(PLRMObj.wrkdir + '\' + GSDETAILRPTFILENAME);
       // set back to false in fStatus.close  isPLRMStatusReportActive := false;
       // SetFocus;
