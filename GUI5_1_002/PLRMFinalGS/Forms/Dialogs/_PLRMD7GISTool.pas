@@ -354,7 +354,10 @@ begin
       gisXMLFilePath := tempStr;
     end
     else
+    begin
       gisXMLFilePath := defaultGISDir + '\GIS.xml';
+      Exit;
+    end;
 
     // save form data
     PLRMObj.PLRMGISObj.PLRMGISRec.shpFilesDict := shpFilesDict;
@@ -541,12 +544,15 @@ begin
   shpPathInputs[6] := edtRunoffConnectivityShpPath;
   shpPathInputs[7] := edtBMPShpPath;
 
+  if (assigned(shpFilesDict)) then
+  FreeAndNil(shpFilesDict);
+
   // create data structure for holding shp file paths
-  if (not(assigned(shpFilesDict))) then
-  begin
+  //if (not(assigned(shpFilesDict))) then
+  //begin
     shpFilesDict := TDictionary<String, String>.Create();
     ReadIniFile();
-  end;
+  //end;
 
   shpPathInputs[0] := edtCatchShpPath;
   shpPathInputs[1] := edtSlopeShpPath;
