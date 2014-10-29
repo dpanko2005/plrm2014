@@ -2019,8 +2019,14 @@ begin
   // Compute world distance units per pixel in the X & Y directions
   Dx := Dimensions.UpperRight.X - Dimensions.LowerLeft.X;
   Dy := Dimensions.UpperRight.Y - Dimensions.LowerLeft.Y;
-  WPPx0 := Dx/Window.Pwidth;
-  WPPy0 := Dy/Window.Pheight;
+  //2013 plrm
+  //WPPx0 := Dx/Window.Pwidth;
+  //WPPy0 := Dy/Window.Pheight;
+  if(( Window.Pwidth <> 0) and (Window.Pheight<>0)) then
+  begin
+    WPPx0 := Dx/Window.Pwidth;
+    WPPy0 := Dy/Window.Pheight;
+  end;
 
   // Adjust scaling to maintain a 1:1 aspect ratio
   if WPPy0 > WPPx0 then WPPx0 := WPPy0

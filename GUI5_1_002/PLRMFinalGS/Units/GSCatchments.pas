@@ -1563,7 +1563,11 @@ begin
     tempFloLength := Math.Power(tempArea * widthFactor, widthPower);
     if tempFloLength > MaxFloLength then
       tempFloLength := MaxFloLength;
-    tempWidth := tempArea / tempFloLength;
+    //2014-10
+    if(tempFloLength <> 0)then
+      tempWidth := tempArea / tempFloLength
+    else
+      tempWidth := 0;
 
     if (tempArea = 0) then
       // tempWidth := 0

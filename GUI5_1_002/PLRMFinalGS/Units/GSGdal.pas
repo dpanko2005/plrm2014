@@ -606,6 +606,7 @@ procedure updateProgress(var pgBar: TProgressBar;
 var
   percentComplete: Double;
 begin
+numberOfpgBarSteps := 10;
   if stepNum = 0 then
     stepNum := 1;
 
@@ -822,8 +823,11 @@ begin
 
   if (assigned(tempCatch.soilsDict)) then
   begin
-    SetLength(tempArry, luseDBData[0].Count, numSoilTblCols);
-    SetLength(tempArryVals, luseDBData[0].Count, numSoilTblCols);
+  //2014-10 beta fix
+    //SetLength(tempArry, luseDBData[0].Count, numSoilTblCols);
+    //SetLength(tempArryVals, luseDBData[0].Count, numSoilTblCols);
+    SetLength(tempArry, tempCatch.soilsDict.Count, numSoilTblCols);
+    SetLength(tempArryVals, tempCatch.soilsDict.Count, numSoilTblCols);
     I := 0;
     for tempVarKey in tempCatch.soilsDict.Keys do
     begin
