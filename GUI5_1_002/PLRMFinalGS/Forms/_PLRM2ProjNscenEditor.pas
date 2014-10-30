@@ -161,6 +161,8 @@ begin
     PLRMTree.PrjNames[prjIdx] := prjName;
 
     // Save the project information to a project xml file
+    //2014/10 added for fix beta bug where changing project properties fails
+    PLRMObj.projFolder := defaultPrjDir + '\' + prjID;
     PLRMObj.projXMLPath := PLRMObj.projFolder + '\' + prjID + '.xml';
     if SysUtils.DirectoryExists(PLRMObj.projFolder) = False then
       // need to create both folders

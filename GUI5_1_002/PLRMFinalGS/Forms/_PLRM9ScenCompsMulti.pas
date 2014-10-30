@@ -368,7 +368,7 @@ begin
     btnToRight.enabled := true;
     //10/ 18 data1 := getScenarioSummary(defaultPrjDir + '\' + prjName + '\' + scnName + '\' + 'swmm.prpt',searchStr,5);
     //data1 := getScenarioSummary(defaultPrjDir + '\' + prjName + '\' + scnDirname + '\' + 'swmm.prpt',searchStr,5);
-    data1 := getScenarioSummary(defaultPrjDir + '\' + prjName + '\' + scnDirname + '\' + GSRPTFILENAME,searchStr,5);
+    data1 := getScenarioSummary(defaultPrjDir + '\' + prjName + '\' + scnDirname + '\' + GSDETAILRPTFILENAME,searchStr,5);
     if data1 = nil  then exit;
 
       //2014 resent grid lengths to prevent phantom rows

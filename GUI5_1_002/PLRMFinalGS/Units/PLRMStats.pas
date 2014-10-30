@@ -937,6 +937,8 @@ var
   tempNode: TPLRMNode;
   tempSWMMNode: TNode;
   tempLoads: PLRMGridData;
+  tempStr: String;
+  tempStrLst: TStrings;
 
   catchRunoffSmryArr: PLRMGridData;
   catchWashoffSmryArr: PLRMGridData;
@@ -950,7 +952,7 @@ var
   I, J, K, Z, swtCount: Integer;
   tempNatvSwmmRptFile: TStringList;
 begin
-
+  tempStrLst := TStringList.Create();
   PLRMResults.nativeSWMMRpt := TStringList.Create();
   PLRMResults.nativeSWMMRpt.LoadFromFile(TempReportFile);
 
@@ -1005,10 +1007,15 @@ begin
     // compute catchment annual volumes from Subcatment runoff summary
     for J := 0 to High(catchRunoffSmryArr) do
     begin
-      if ((Pos(tempCatch.name, catchRunoffSmryArr[J, 0]) > 0) and
+      Split('_', catchRunoffSmryArr[J, 0], tempStrLst);
+      tempStr := tempStrLst[0];
+      { if ((Pos(tempCatch.name, catchRunoffSmryArr[J, 0]) > 0) and
         (Pos('ToInfCa', catchRunoffSmryArr[J, 0]) = 0) and
         (Pos('ToPchCa', catchWashoffSmryArr[J, 0]) = 0) and
-        (Pos('ToDspCa', catchRunoffSmryArr[J, 0]) = 0)) then
+        (Pos('ToDspCa', catchRunoffSmryArr[J, 0]) = 0)) then }
+      if ((tempCatch.name = tempStr) and (Pos('ToInfCa', tempStr) = 0)
+        and (Pos('ToPchCa', tempStr) = 0) and (Pos('ToDspCa', tempStr) = 0))
+      then
       begin
         // save catchment and landuse name
         catOut.vollandUses.Add(catchRunoffSmryArr[J, 0]);
@@ -1036,10 +1043,16 @@ begin
     // compute catchment annual loads from Subcatment washoff summary
     for J := 0 to High(catchWashoffSmryArr) do
     begin
-      if ((Pos(tempCatch.name, catchWashoffSmryArr[J, 0]) > 0) and
+    Split('_', catchRunoffSmryArr[J, 0], tempStrLst);
+      tempStr := tempStrLst[0];
+      {if ((Pos(tempCatch.name, catchWashoffSmryArr[J, 0]) > 0) and
         (Pos('ToInfCa', catchWashoffSmryArr[J, 0]) = 0) and
         (Pos('ToPchCa', catchWashoffSmryArr[J, 0]) = 0) and
-        (Pos('ToDspCa', catchWashoffSmryArr[J, 0]) = 0)) then
+        (Pos('ToDspCa', catchWashoffSmryArr[J, 0]) = 0)) then  }
+        if ((tempCatch.name = tempStr) and
+        (Pos('ToInfCa', tempStr) = 0) and
+        (Pos('ToPchCa', tempStr) = 0) and
+        (Pos('ToDspCa', tempStr) = 0)) then
       begin
         // save catchment and landuse name
         catOut.loadLandUses.Add(catchWashoffSmryArr[J, 0]);

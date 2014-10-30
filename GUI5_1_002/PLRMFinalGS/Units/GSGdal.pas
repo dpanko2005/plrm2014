@@ -263,6 +263,9 @@ begin
 
   updateProgress(pgBar, lblPercentComplete, lblCurrentItem, layerIdx,
     endValidtnMsgs[layerIdx]);
+
+  //OGR_DS_Destroy(ogrLayer);
+  //GDALClose(ogrLayer);
   Result := rslt;
 end;
 
@@ -606,7 +609,7 @@ procedure updateProgress(var pgBar: TProgressBar;
 var
   percentComplete: Double;
 begin
-numberOfpgBarSteps := 10;
+  numberOfpgBarSteps := 10;
   if stepNum = 0 then
     stepNum := 1;
 
@@ -823,9 +826,9 @@ begin
 
   if (assigned(tempCatch.soilsDict)) then
   begin
-  //2014-10 beta fix
-    //SetLength(tempArry, luseDBData[0].Count, numSoilTblCols);
-    //SetLength(tempArryVals, luseDBData[0].Count, numSoilTblCols);
+    // 2014-10 beta fix
+    // SetLength(tempArry, luseDBData[0].Count, numSoilTblCols);
+    // SetLength(tempArryVals, luseDBData[0].Count, numSoilTblCols);
     SetLength(tempArry, tempCatch.soilsDict.Count, numSoilTblCols);
     SetLength(tempArryVals, tempCatch.soilsDict.Count, numSoilTblCols);
     I := 0;
@@ -1353,6 +1356,9 @@ begin
 
     feat := OGR_L_GetNextFeature(ogrLayer);
   until feat = nil;
+      GDALClose(ogrLayer);
+  //OGR_DS_Destroy(ogrLayer);
+  OGRCleanupAll;
   Result := True;
   // OGRCleanupAll;
 end;
@@ -1436,6 +1442,9 @@ begin
     end;
     feat := OGR_L_GetNextFeature(ogrLayer);
   until feat = nil;
+      GDALClose(ogrLayer);
+  //OGR_DS_Destroy(ogrLayer);
+  OGRCleanupAll;
   Result := True;
   // OGRCleanupAll;
 end;
@@ -1550,6 +1559,10 @@ begin
     feat := OGR_L_GetNextFeature(ogrLayer);
   until feat = nil;
   // ShowMessage('a6');
+    GDALClose(ogrLayer);
+  //OGR_DS_Destroy(ogrLayer);
+  OGRCleanupAll;
+
   Result := True;
   // OGRCleanupAll;
 end;
@@ -1565,6 +1578,7 @@ var
   catchName, tempKey: String;
   propVal, tempArea: Double;
   tempCatch: TGISCatch;
+  err: longint;
 begin
 
   ogrLayer := getLayer(shpFilePath);
@@ -1622,7 +1636,8 @@ begin
     end;
   end;
   Result := True;
-  // OGRCleanupAll;
+  GDALClose(ogrLayer);
+  OGRCleanupAll;
 end;
 
 function getLayer(shpFilePath: String): OGRLayerH;
@@ -1631,7 +1646,6 @@ var
   ogrDriver: OGRSFDriverH;
   ogrLayer: OGRLayerH;
 begin
-  // ShowMessage('b1');
   OGRRegisterAll;
   // get handle on shapefile driver
   ogrDriver := OGRGetDriverByName(PAnsiChar(driverName));
@@ -1641,18 +1655,9 @@ begin
     Result := nil;
     Exit;
   end;
-  // ShowMessage('b2');
-  // check to see if intersect result shp file already exists
+  // check to see if shp file exists, if so read in as layer
   if FileExists(shpFilePath) then
   begin
-    // Prepare to intersect source shapefiles
-    OGR_Dr_Open(ogrDriver, PAnsiChar(AnsiString(shpFilePath)), 0);
-    if ogrDriver = Nil then
-    begin
-      handleGISErrs(-1, Format('unable to open %s.', [shpFilePath]));
-      Result := nil;
-      Exit;
-    end;
     ogrShp1 := OGROpen(PAnsiChar(AnsiString(shpFilePath)), 0, Nil);
     ogrLayer := OGR_DS_GetLayer(ogrShp1, 0);
     if ogrShp1 = nil then
@@ -1664,9 +1669,8 @@ begin
     Result := ogrLayer;
     Exit;
   end;
-  // ShowMessage('b3');
   Result := nil;
-  // OGRCleanupAll;
+  OGRCleanupAll;
 end;
 
 procedure intersectShapeFilesAsLayers(shp1FilePath: String;
@@ -1674,12 +1678,15 @@ procedure intersectShapeFilesAsLayers(shp1FilePath: String;
   resultShpFileType: OGRwkbGeometryType);
 var
   ogrShp1, ogrShp2: OGRLayerH;
+  ogrShp1f, ogrShp2f: OGRLayerH;
   ogrDriver: OGRSFDriverH;
   ogrDS: OGRDataSourceH;
   ogrLayer: OGRLayerH;
-  // I: longint;
   err: longint;
   intDSName, intDSPath: String;
+  lSearchRec: TSearchRec;
+  lFind: Integer;
+  ldir: string;
 begin
   err := 0;
   OGRRegisterAll;
@@ -1695,6 +1702,7 @@ begin
   // get name of resulting intersected shapefile from path passed in
   intDSName := ChangeFileExt(ExtractFileName(outShpFilePath), '');
   intDSPath := ExtractFilePath(outShpFilePath) + intDSName;
+  ldir := ExtractFilePath(outShpFilePath);
 
   // check to see if intersect result shp file already exists
   // TODO, uncomment for production
@@ -1725,16 +1733,16 @@ begin
     Exit;
   end;
 
-  ogrShp1 := OGROpen(PAnsiChar(AnsiString(shp1FilePath)), 0, Nil);
-  ogrShp1 := OGR_DS_GetLayer(ogrShp1, 0);
+  ogrShp1f := OGROpen(PAnsiChar(AnsiString(shp1FilePath)), 0, Nil);
+  ogrShp1 := OGR_DS_GetLayer(ogrShp1f, 0);
   if ogrShp1 = nil then
   begin
     handleGISErrs(err, shp1FilePath + ' was not found');
     Exit;
   end;
 
-  ogrShp2 := OGROpen(PAnsiChar(AnsiString(shp2FilePath)), 0, Nil);
-  ogrShp2 := OGR_DS_GetLayer(ogrShp2, 0);
+  ogrShp2f := OGROpen(PAnsiChar(AnsiString(shp2FilePath)), 0, Nil);
+  ogrShp2 := OGR_DS_GetLayer(ogrShp2f, 0);
   if ogrShp2 = nil then
   begin
     handleGISErrs(err, shp2FilePath + ' was not found');
@@ -1746,12 +1754,13 @@ begin
     handleGISErrs(err, Format('Failed to intersect layers: %s and %s err:%d',
       [shp1FilePath, shp2FilePath, err]));
 
-  // TODO fix // release the datasource
-  OGRReleaseDatasource(ogrDS);
-  // OGR_DS_Destroy(ogrDS);
-  // err := OGRReleaseDatasource(ogrDS);
-  { if err <> OGRERR_NONE then
-    handleGISErrs(err, Format('Error releasing datasource: %d', [err])); }
+  { Closes opened datasource and releases allocated resources }
+  //OGR_DS_Destroy(ogrShp1f);
+  //OGR_DS_Destroy(ogrShp2f);
+  OGR_DS_Destroy(ogrShp1);
+  OGR_DS_Destroy(ogrShp2);
+  OGR_DS_Destroy(ogrLayer);
+  OGR_Dr_DeleteDataSource(ogrDriver,ogrDS);
 
   OGRCleanupAll;
 end;

@@ -1563,8 +1563,8 @@ begin
     tempFloLength := Math.Power(tempArea * widthFactor, widthPower);
     if tempFloLength > MaxFloLength then
       tempFloLength := MaxFloLength;
-    //2014-10
-    if(tempFloLength <> 0)then
+    // 2014-10
+    if (tempFloLength <> 0) then
       tempWidth := tempArea / tempFloLength
     else
       tempWidth := 0;
@@ -1654,8 +1654,8 @@ begin
 
       tempNode2.Attributes['width'] := tempWidth;
       // calc hsc width
-      //tempArea := frm5of6RoadDrainageEditorData.PervChanFacility.length *
-      //  frm5of6RoadDrainageEditorData.PervChanFacility.width;
+      // tempArea := frm5of6RoadDrainageEditorData.PervChanFacility.length *
+      // frm5of6RoadDrainageEditorData.PervChanFacility.width;
       // tempArea := tempArea;
       { tempFloLength := Math.Power(tempArea * widthFactor, widthPower);
         if tempFloLength > maxFloLength then
@@ -1782,7 +1782,11 @@ begin
             tempFloLength := Math.Power(tempArea * widthFactor, widthPower);
             if tempFloLength > MaxFloLength then
               tempFloLength := MaxFloLength;
-            tempWidth := tempArea / tempFloLength;
+            // 2014/10
+            if tempFloLength = 0 then
+              tempWidth := 0
+            else
+              tempWidth := tempArea / tempFloLength;
             tempNode3.Attributes['widthToOut'] := tempWidth;
 
             // calc *ToInf catchment width
@@ -1794,7 +1798,12 @@ begin
             tempFloLength := Math.Power(tempArea * widthFactor, widthPower);
             if tempFloLength > MaxFloLength then
               tempFloLength := MaxFloLength;
-            tempWidth := tempArea / tempFloLength;
+            // 2014/10
+            if tempFloLength = 0 then
+              tempWidth := 0
+            else
+              tempWidth := tempArea / tempFloLength;
+
             tempNode3.Attributes['widthToInf'] := tempWidth;
 
             // calc hsc width
@@ -1808,7 +1817,11 @@ begin
             tempFloLength := Math.Power(tempArea * widthFactor, widthPower);
             if tempFloLength > MaxFloLength then
               tempFloLength := MaxFloLength;
-            tempWidth := tempArea / tempFloLength;
+            // 2014/10
+            if tempFloLength = 0 then
+              tempWidth := 0
+            else
+              tempWidth := tempArea / tempFloLength;
             tempNode3.Attributes['hscWidth'] := tempWidth;
             if tempArea = 0 then
               tempNode3.Attributes['hscWidth'] := 0;
@@ -1860,7 +1873,11 @@ begin
         tempFloLength := Math.Power(tempArea * widthFactor, widthPower);
         if tempFloLength > MaxFloLength then
           tempFloLength := MaxFloLength;
-        tempWidth := tempArea / tempFloLength;
+        // 2014/10
+        if tempFloLength = 0 then
+          tempWidth := 0
+        else
+          tempWidth := tempArea / tempFloLength;
 
         { // tempWidth := Math.Power(tempArea * widthFactor, widthPower);
           tempWidth := widthFactor * Math.Power(tempArea, widthPower);
