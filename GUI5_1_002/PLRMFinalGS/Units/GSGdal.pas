@@ -264,8 +264,8 @@ begin
   updateProgress(pgBar, lblPercentComplete, lblCurrentItem, layerIdx,
     endValidtnMsgs[layerIdx]);
 
-  //OGR_DS_Destroy(ogrLayer);
-  //GDALClose(ogrLayer);
+  // OGR_DS_Destroy(ogrLayer);
+  // GDALClose(ogrLayer);
   Result := rslt;
 end;
 
@@ -442,6 +442,10 @@ var
   flag: Boolean;
   tempKey: String;
   tempCatch: TGISCatch;
+  tempDictKey: String;
+  tempDictValue: TGSAreaWTObj;
+  soilMapUnitList: TStringList;
+  tempInt: Integer;
 begin
   // ShowMessage('1');
   intersectShapeFilesAsLayers(shpPathCatch, shpPathVar,
@@ -450,9 +454,14 @@ begin
   if (mode = 0) then
     flag := getAreaWeightedTableLuse(CDict, dir + rsltShpName + shpExt,
       fldNameCatch, fldNameVar, fldNameLuseImprvCode)
+
   else
+  begin
+    if (mode = 1) then
+      soilMapUnitList := GSIO.getMapUnitMuNumber();
     flag := getAreaWeightedTableLuse(CDict, dir + rsltShpName + shpExt,
       fldNameCatch, fldNameVar);
+  end;
   // ShowMessage('3');
   // calculation was successful if flag is true so copy tempdict to lusedict of each catchment
   if (flag) then
@@ -468,6 +477,7 @@ begin
             tempCatch.luseDict := TDictionary<String, TGSAreaWTObj>.Create
               (tempCatch.TempAreaWTDict);
             tempCatch.totalLuseArea := tempCatch.tempTotalArea;
+            // no need to search the dictionary and remove entries that do not match PLRM luse codes cause already done in area weighting function
           end
           // for soils
           else if (mode = 1) then
@@ -475,6 +485,19 @@ begin
             tempCatch.soilsDict := TDictionary<String, TGSAreaWTObj>.Create
               (tempCatch.TempAreaWTDict);
             tempCatch.totalSoilsArea := tempCatch.tempTotalArea;
+            // TODO search the dictionary and remove entries that do not match PLRM soil codes,
+            for tempDictKey in tempCatch.soilsDict.Keys do
+            begin
+              tempInt := soilMapUnitList.IndexOf(tempDictKey);
+              if (tempInt = -1) then
+              begin
+                tempDictValue := tempCatch.soilsDict.Items[tempDictKey];
+                tempCatch.totalSoilsArea := tempCatch.totalSoilsArea -
+                  tempDictValue.tempTotalArea;
+                  //remove the unknown soil type from the dictionary
+                  tempCatch.soilsDict.Remove(tempDictKey);
+              end;
+            end; //
           end
           // for bmps
           else if ((mode = 2) and assigned(tempCatch.TempAreaWTDict)) then
@@ -659,18 +682,12 @@ begin
   // Step 3: Catchment land uses
   // *******************************************
   // Intersect catchment layer and landuse layer and calc area-weighted landuse by catchment
-  // ShowMessage('1');
   updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 3, startMsgs[2]);
-  // ShowMessage('2');
   shpPathVar := getShapeFilePath(shpFilesDict, 2);
-  // ShowMessage('3');
   luseDSName := ChangeFileExt(ExtractFileName(shpPathVar), '');
-  // ShowMessage('4');
   processLusesSoilsOrBMPs(dir, shpPathCatch, shpPathVar, CDict, luseDSName,
     intcatchLuse, fldNameLuseCode, 0);
-  // ShowMessage('5');
   updateProgress(pgBar, lblPercentComplete, lblCurrentItem, 4, endMsgs[2]);
-  // ShowMessage('6');
 
   // Step 3b: Catchment land imperviousness
   // *******************************************
@@ -1356,8 +1373,8 @@ begin
 
     feat := OGR_L_GetNextFeature(ogrLayer);
   until feat = nil;
-      GDALClose(ogrLayer);
-  //OGR_DS_Destroy(ogrLayer);
+  GDALClose(ogrLayer);
+  // OGR_DS_Destroy(ogrLayer);
   OGRCleanupAll;
   Result := True;
   // OGRCleanupAll;
@@ -1442,8 +1459,8 @@ begin
     end;
     feat := OGR_L_GetNextFeature(ogrLayer);
   until feat = nil;
-      GDALClose(ogrLayer);
-  //OGR_DS_Destroy(ogrLayer);
+  GDALClose(ogrLayer);
+  // OGR_DS_Destroy(ogrLayer);
   OGRCleanupAll;
   Result := True;
   // OGRCleanupAll;
@@ -1494,73 +1511,77 @@ begin
       catchName := String(OGR_F_GetFieldAsString(feat, catchFldIdx));
       propCode := String(OGR_F_GetFieldAsString(feat, propCodeFldIdx));
       tempIndex := outLuseCodes.IndexOf(propCode);
-      if (tempIndex = -1) then
+      // ignore propeCode 0 - waterbody and null land use polygons
+      if (propCode <> '0') then
       begin
-        handleGISErrs(0, 'Unknown land use code found in land use layer.' +
-          propCode);
-      end;
-      // need to use first 2 characters of the code to get land use code that is common to both perv and imperv
-      // propCode := AnsiLeftStr(propCode, 2);
-      propCode := outLuseFamilyCodes[tempIndex];
-
-      coPropCode := String(OGR_F_GetFieldAsString(feat, coPropCodeFldIdx));
-      geom := OGR_F_GetGeometryRef(feat);
-      tempArea := OGR_G_GetArea(geom) * GISAREACONV;
-
-      // Try looking up current catchment.
-      if catchDict.ContainsKey(catchName) then
-      begin
-        if (catchDict.TryGetValue(catchName, tempCatch) = True) then
+        if (tempIndex = -1) then
         begin
-          if tempCatch.id = '' then
-            tempCatch.id := catchName;
+          handleGISErrs(0, 'Unknown land use code found in land use layer.' +
+            propCode);
+        end;
+        // need to use first 2 characters of the code to get land use code that is common to both perv and imperv
+        // propCode := AnsiLeftStr(propCode, 2);
+        propCode := outLuseFamilyCodes[tempIndex];
 
-          if (not(assigned(tempCatch.TempAreaWTDict))) then
-          begin
-            tempCatch.TempAreaWTDict :=
-              TDictionary<String, TGSAreaWTObj>.Create;
-          end;
+        coPropCode := String(OGR_F_GetFieldAsString(feat, coPropCodeFldIdx));
+        geom := OGR_F_GetGeometryRef(feat);
+        tempArea := OGR_G_GetArea(geom) * GISAREACONV;
 
-          if tempCatch.TempAreaWTDict.ContainsKey(propCode) then
+        // Try looking up current catchment.
+        if catchDict.ContainsKey(catchName) then
+        begin
+          if (catchDict.TryGetValue(catchName, tempCatch) = True) then
           begin
-            if (tempCatch.TempAreaWTDict.TryGetValue(propCode, tempAreaWTObj)
-              = True) then
+            if tempCatch.id = '' then
+              tempCatch.id := catchName;
+
+            if (not(assigned(tempCatch.TempAreaWTDict))) then
             begin
-              // accumulate total parent area - in this case parent is individual catchment containing this landuse
-              tempCatch.tempTotalArea := tempCatch.tempTotalArea + tempArea;
+              tempCatch.TempAreaWTDict :=
+                TDictionary<String, TGSAreaWTObj>.Create;
+            end;
 
-              // accumulate total area for this variable e.g. SFR sliver
-              tempAreaWTObj.tempTotalArea := tempAreaWTObj.tempTotalArea
-                + tempArea;
-              tempAreaWTObj.tempAccumulation := tempAreaWTObj.tempAccumulation
-                + tempArea;
+            if tempCatch.TempAreaWTDict.ContainsKey(propCode) then
+            begin
+              if (tempCatch.TempAreaWTDict.TryGetValue(propCode, tempAreaWTObj)
+                = True) then
+              begin
+                // accumulate total parent area - in this case parent is individual catchment containing this landuse
+                tempCatch.tempTotalArea := tempCatch.tempTotalArea + tempArea;
+
+                // accumulate total area for this variable e.g. SFR sliver
+                tempAreaWTObj.tempTotalArea := tempAreaWTObj.tempTotalArea
+                  + tempArea;
+                tempAreaWTObj.tempAccumulation := tempAreaWTObj.tempAccumulation
+                  + tempArea;
+                if (AnsiEndsStr(pervImpervDefnStrings[1], coPropCode)) then
+                  tempAreaWTObj.tempAccumulation2 :=
+                    tempAreaWTObj.tempAccumulation2 + tempArea;
+                tempAreaWTObj.tempWeightedVal := tempAreaWTObj.tempWeightedVal
+                  + tempArea;
+              end;
+            end
+            else
+            begin
+              tempCatch.tempTotalArea := tempCatch.tempTotalArea + tempArea;
+              tempAreaWTObj := TGSAreaWTObj.Create;
+              tempAreaWTObj.tempTotalArea := tempArea;
+              tempAreaWTObj.tempAccumulation := tempArea;
               if (AnsiEndsStr(pervImpervDefnStrings[1], coPropCode)) then
                 tempAreaWTObj.tempAccumulation2 :=
                   tempAreaWTObj.tempAccumulation2 + tempArea;
-              tempAreaWTObj.tempWeightedVal := tempAreaWTObj.tempWeightedVal
-                + tempArea;
+              tempAreaWTObj.tempWeightedVal := 0;
+              tempCatch.TempAreaWTDict.Add(propCode, tempAreaWTObj);
             end;
           end
-          else
-          begin
-            tempCatch.tempTotalArea := tempCatch.tempTotalArea + tempArea;
-            tempAreaWTObj := TGSAreaWTObj.Create;
-            tempAreaWTObj.tempTotalArea := tempArea;
-            tempAreaWTObj.tempAccumulation := tempArea;
-            if (AnsiEndsStr(pervImpervDefnStrings[1], coPropCode)) then
-              tempAreaWTObj.tempAccumulation2 := tempAreaWTObj.tempAccumulation2
-                + tempArea;
-            tempAreaWTObj.tempWeightedVal := 0;
-            tempCatch.TempAreaWTDict.Add(propCode, tempAreaWTObj);
-          end;
-        end
+        end;
       end;
     end;
     feat := OGR_L_GetNextFeature(ogrLayer);
   until feat = nil;
   // ShowMessage('a6');
-    GDALClose(ogrLayer);
-  //OGR_DS_Destroy(ogrLayer);
+  GDALClose(ogrLayer);
+  // OGR_DS_Destroy(ogrLayer);
   OGRCleanupAll;
 
   Result := True;
@@ -1755,12 +1776,12 @@ begin
       [shp1FilePath, shp2FilePath, err]));
 
   { Closes opened datasource and releases allocated resources }
-  //OGR_DS_Destroy(ogrShp1f);
-  //OGR_DS_Destroy(ogrShp2f);
+  // OGR_DS_Destroy(ogrShp1f);
+  // OGR_DS_Destroy(ogrShp2f);
   OGR_DS_Destroy(ogrShp1);
   OGR_DS_Destroy(ogrShp2);
   OGR_DS_Destroy(ogrLayer);
-  OGR_Dr_DeleteDataSource(ogrDriver,ogrDS);
+  OGR_Dr_DeleteDataSource(ogrDriver, ogrDS);
 
   OGRCleanupAll;
 end;

@@ -999,6 +999,9 @@ begin
     // stores loads for each landuse in the catchment
     catOut.loadLandUses := TStringList.Create();
     // SetLength(catOut.annLoadsLUse, Length(catchRunoffSmryArr), NUMCATCHRSLTS);
+
+    //reset ann luse load array before setting actual size to erase previous entries
+    SetLength(catOut.annLoadsLUse, 0, 0);
     SetLength(catOut.annLoadsLUse, 100, NUMCATCHRSLTS);
     SetLength(catOut.AnnLoads, 1, NUMCATCHRSLTS);
 
@@ -1013,9 +1016,13 @@ begin
         (Pos('ToInfCa', catchRunoffSmryArr[J, 0]) = 0) and
         (Pos('ToPchCa', catchWashoffSmryArr[J, 0]) = 0) and
         (Pos('ToDspCa', catchRunoffSmryArr[J, 0]) = 0)) then }
-      if ((tempCatch.name = tempStr) and (Pos('ToInfCa', tempStr) = 0)
-        and (Pos('ToPchCa', tempStr) = 0) and (Pos('ToDspCa', tempStr) = 0))
-      then
+
+      { if ((tempCatch.name = tempStr) and (Pos('ToInfCa', tempStr) = 0)
+        and (Pos('ToPchCa', tempStr) = 0) and (Pos('ToDspCa', tempStr) = 0)) }
+      if ((tempCatch.name = tempStr) and
+        (Pos('ToInfCa', catchRunoffSmryArr[J, 0]) = 0) and
+        (Pos('ToPchCa', catchRunoffSmryArr[J, 0]) = 0) and
+        (Pos('ToDspCa', catchRunoffSmryArr[J, 0]) = 0)) then
       begin
         // save catchment and landuse name
         catOut.vollandUses.Add(catchRunoffSmryArr[J, 0]);
@@ -1024,7 +1031,8 @@ begin
         begin
           // catOut.vollandUses.Add(catchRunoffSmryArr[J, 0]);
           tempDbl := StrToFloat(catchRunoffSmryArr[J, K]) / numSimYears;
-          catOut.annLoadsLUse[Z, 0] := tempDbl;
+          // catOut.annLoadsLUse[Z, 0] := tempDbl;
+          catOut.annLoadsLUse[Z, 0] := catOut.annLoadsLUse[Z, 0] + tempDbl;
           catOut.AnnLoads[0, 0] := catOut.AnnLoads[0, 0] + tempDbl;
         end;
         inc(Z);
@@ -1043,16 +1051,22 @@ begin
     // compute catchment annual loads from Subcatment washoff summary
     for J := 0 to High(catchWashoffSmryArr) do
     begin
-    Split('_', catchRunoffSmryArr[J, 0], tempStrLst);
+      // Split('_', catchRunoffSmryArr[J, 0], tempStrLst);
+      Split('_', catchWashoffSmryArr[J, 0], tempStrLst);
       tempStr := tempStrLst[0];
-      {if ((Pos(tempCatch.name, catchWashoffSmryArr[J, 0]) > 0) and
+      { if ((Pos(tempCatch.name, catchWashoffSmryArr[J, 0]) > 0) and
         (Pos('ToInfCa', catchWashoffSmryArr[J, 0]) = 0) and
         (Pos('ToPchCa', catchWashoffSmryArr[J, 0]) = 0) and
-        (Pos('ToDspCa', catchWashoffSmryArr[J, 0]) = 0)) then  }
-        if ((tempCatch.name = tempStr) and
+        (Pos('ToDspCa', catchWashoffSmryArr[J, 0]) = 0)) then }
+
+      { if ((tempCatch.name = tempStr) and
         (Pos('ToInfCa', tempStr) = 0) and
         (Pos('ToPchCa', tempStr) = 0) and
-        (Pos('ToDspCa', tempStr) = 0)) then
+        (Pos('ToDspCa', tempStr) = 0)) then }
+      if ((tempCatch.name = tempStr) and
+        (Pos('ToInfCa', catchWashoffSmryArr[J, 0]) = 0) and
+        (Pos('ToPchCa', catchWashoffSmryArr[J, 0]) = 0) and
+        (Pos('ToDspCa', catchWashoffSmryArr[J, 0]) = 0)) then
       begin
         // save catchment and landuse name
         catOut.loadLandUses.Add(catchWashoffSmryArr[J, 0]);
@@ -1065,7 +1079,8 @@ begin
             (Pos('DIN', Project.PollutNames[K-1]) = 0)) then
             begin }
           tempDbl := StrToFloat(catchWashoffSmryArr[J, K]) / numSimYears;
-          catOut.annLoadsLUse[Z, K] := tempDbl;
+          // catOut.annLoadsLUse[Z, K] := tempDbl;
+          catOut.annLoadsLUse[Z, K] := catOut.annLoadsLUse[Z, K] + tempDbl;
           catOut.AnnLoads[0, K] := catOut.AnnLoads[0, K] + tempDbl;
           { end; }
         end;

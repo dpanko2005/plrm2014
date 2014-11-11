@@ -70,7 +70,8 @@ begin
       lusePositionCheckList.Add(tempStr);
       for J := 0 to High(loadsByLuse[0]) do
       begin
-        loadsByLuseCombined[I, J] := loadsByLuse[I, J];
+        //loadsByLuseCombined[I, J] := loadsByLuse[I, J];
+        loadsByLuseCombined[K, J] := loadsByLuseCombined[K, J] + loadsByLuse[I, J];
       end;
       inc(K);
     end

@@ -66,8 +66,11 @@ var
 begin
   // change default PLRM directory
   selectedDir := gsSelectDirectory(defaultPrjDir);
-  FolderLookAddUserName(selectedDir, RootNode, TreeView1);
-  updatePLRMPaths(selectedDir);
+  if (selectedDir <> '') then
+  begin
+    FolderLookAddUserName(selectedDir, RootNode, TreeView1);
+    updatePLRMPaths(selectedDir);
+  end;
 end;
 
 procedure TProjNscenManager.btnExitPlrmClick(Sender: TObject);
@@ -623,7 +626,7 @@ procedure getProjManager(firstTimeFlag: Integer = 0);
 var
   buttonSelected: Integer;
 begin
-//  buttonSelected := 0;
+  // buttonSelected := 0;
 
   // 2014 commented out to provide a smoother experience, scenario will be autosaved and
   // dialog will not be presented to the user

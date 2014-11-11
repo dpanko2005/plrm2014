@@ -11,6 +11,7 @@ uses
 function getLuseCodeFamily(Var outLuseCodes: TStringList;
   Var outLuseFamilyCodes: TStringList): TStringList;
 function getMapUnitMuName(): TStringList;
+function getMapUnitMuNumber(): TStringList;
 function getAndSaveTSeries(metGridNum: Integer; var PBar: TProgressBar)
   : TStringList;
 function getSwmmDefaultBlocks(typeFlag: Integer; optional2ndParam: string = '0')
@@ -290,6 +291,18 @@ begin
   S := TStringList.Create;
   Conn := initConn(GSDataAccess.connStr);
   GSDataAccess.getMapUnitMuName(S, Conn);
+  // read required codes from the database
+  Result := S;
+end;
+
+function getMapUnitMuNumber(): TStringList;
+var
+  S: TStringList;
+  Conn: TADOConnection;
+begin
+  S := TStringList.Create;
+  Conn := initConn(GSDataAccess.connStr);
+  GSDataAccess.getMapUnitMuNumber(S, Conn);
   // read required codes from the database
   Result := S;
 end;

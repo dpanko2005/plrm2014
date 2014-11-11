@@ -159,6 +159,7 @@ function getTemperature1(Var S: TStringList; metGrid: integer; adcType: String;
   conn: TADOConnection): TStringList;
 function getMapUnitMuName(Var S: TStringList; conn: TADOConnection)
   : TStringList;
+function getMapUnitMuNumber(Var S: TStringList; conn: TADOConnection): TStringList;
 function getSWMMDefaults(Var outCodes: TStringList; Var outValues: TStringList;
   codePrefix: string; conn: TADOConnection): TStringList;
 
@@ -759,6 +760,21 @@ begin
   while not DT.Eof do
   begin
     S.Add(DT.Fields[1].AsString + '-' + DT.Fields[8].AsString);
+    DT.Next;
+  end;
+  Result := S;
+end;
+
+function getMapUnitMuNumber(Var S: TStringList; conn: TADOConnection)
+  : TStringList;
+var
+  DT: TADOTable;
+begin
+  DT := getDbTable(dbTblNames[11], conn, dbTblQrys[11], false);
+  DT.First;
+  while not DT.Eof do
+  begin
+    S.Add(DT.Fields[1].AsString);
     DT.Next;
   end;
   Result := S;

@@ -131,7 +131,8 @@ begin
 
   GSUtils.TransferLstBxItems(lbxScnRight,lbxScnLeft);
   btnToLeft.enabled := true;
-  data2 := getScenarioSummary(defaultPrjDir + '\' + prjName + '\' + scnDirname + '\' + GSRPTFILENAME,searchStr,5);
+  //data2 := getScenarioSummary(defaultPrjDir + '\' + prjName + '\' + scnDirname + '\' + GSRPTFILENAME,searchStr,5);
+  data2 := getScenarioSummary(defaultPrjDir + '\' + prjName + '\' + scnDirname + '\' + GSDETAILRPTFILENAME,searchStr,5);
   //data2 := getScenarioSummary(defaultPrjDir + '\' + prjName + '\' + scnDirname + '\' + 'swmm.prpt',searchStr,5);
   if data2 = nil then  exit;
 
