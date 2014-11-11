@@ -2631,4 +2631,14 @@ object PLRMParcelDrngAndBMPs: TPLRMParcelDrngAndBMPs
     ParentBackground = False
     TabOrder = 9
   end
+  object Panel5: TPanel
+    Left = 489
+    Top = 295
+    Width = 78
+    Height = 26
+    BevelOuter = bvNone
+    Color = clSkyBlue
+    ParentBackground = False
+    TabOrder = 10
+  end
 end

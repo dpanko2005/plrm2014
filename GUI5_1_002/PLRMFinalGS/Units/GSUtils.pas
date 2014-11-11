@@ -112,6 +112,8 @@ procedure gsEditKeyPress(Sender: TObject; var Key: Char;
   const exptdTypeCode: TExptdTypeCodes);
 procedure gsEditKeyPressNoSpace(Sender: TObject; var Key: Char;
   const exptdTypeCode: TExptdTypeCodes);
+procedure gsEditKeyPressNoSpaceSepecialChars(Sender: TObject; var Key: Char;
+  const exptdTypeCode: TExptdTypeCodes);
 procedure exportGridToTxt(delimiter: String; sg: TStringGrid;
   colLables: TStringList; rowLabels: TStringList; filePath: String); overload;
 procedure exportGridToTxt(delimiter: String; sg: TStringGrid; sg2: TStringGrid;
@@ -1354,6 +1356,40 @@ begin
     '>', ':', '^', '@'])) then
     // if (Key in ['"', ';', '?', '/', '!', '\', '|', '[', ']', '=','<','>',':','^','@']) then
     Key := #0;
+  if exptdTypeCode = gemNoSpace then
+    if (Key = ' ') then
+      Key := #0;
+
+  // allow 0 - 9 and numpad 0 to numpad 9
+  if (not(Key in [#48 .. #105])) then
+    Key := #0;
+end;
+procedure gsEditKeyPressNoSpaceSepecialChars(Sender: TObject; var Key: Char;
+  const exptdTypeCode: TExptdTypeCodes);
+// -----------------------------------------------------------------------------
+// Used by OnKeyPress events for Textboxes use for names to handle edits
+// based on Lew R. procedure TPropEdit.EditKeyPress(Sender: TObject; var Key: Char);
+// -----------------------------------------------------------------------------
+begin
+  // allow backspace and enter
+  if (Key = #8) or (Key = #13) then
+    exit;
+
+  if (CharInSet(Key, ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'])) then
+    exit;
+  if (CharInSet(Key, ['k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't'])) then
+    exit;
+  if (CharInSet(Key, ['u', 'v', 'w', 'x', 'y', 'z'])) then
+    exit;
+  { if (Key in ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']) then exit;
+    if (Key in ['k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't']) then exit;
+    if (Key in ['u', 'v', 'w', 'x', 'y', 'z']) then exit; }
+
+  // disallow punctuation
+  if (CharInSet(Key, ['_', '"', ';', '?', '/', '!', '\', '|', '[', ']', '=', '<',
+    '>', ':', '^', '@'])) then
+    Key := #0;
+
   if exptdTypeCode = gemNoSpace then
     if (Key = ' ') then
       Key := #0;

@@ -329,6 +329,11 @@ begin
       StrToFloat(FrmLuseConds.luseAreaNPrcnt[roadLandUseArrIndex, 0]);
     PLRMObj.currentCatchment.totRoadImpervAcres :=
       StrToFloat(FrmLuseConds.luseAreaNPrcnt[roadLandUseArrIndex, 1]);
+  end
+  else
+  begin
+     PLRMObj.currentCatchment.totRoadAcres :=0;
+    PLRMObj.currentCatchment.totRoadImpervAcres :=0;
   end;
 
   FrmLuseConds.luseAreaNPrcnt[othrLandUseArrIndex, 0] :=

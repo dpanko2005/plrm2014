@@ -2508,7 +2508,7 @@ object PLRMD2SoilsAssignmnt: TPLRMD2SoilsAssignmnt
   end
   object btnOK: TButton
     Left = 682
-    Top = 610
+    Top = 617
     Width = 65
     Height = 25
     Caption = 'Next >>'

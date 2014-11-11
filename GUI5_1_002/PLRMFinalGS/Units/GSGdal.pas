@@ -494,8 +494,8 @@ begin
                 tempDictValue := tempCatch.soilsDict.Items[tempDictKey];
                 tempCatch.totalSoilsArea := tempCatch.totalSoilsArea -
                   tempDictValue.tempTotalArea;
-                  //remove the unknown soil type from the dictionary
-                  tempCatch.soilsDict.Remove(tempDictKey);
+                // remove the unknown soil type from the dictionary
+                tempCatch.soilsDict.Remove(tempDictKey);
               end;
             end; //
           end
@@ -1011,7 +1011,7 @@ var
   areaWTObj: TGSAreaWTObj;
   tempf6of6SgBMPImplData: PLRMGridDataDbl;
   tempf6of6SgNoBMPsData: PLRMGridDataDbl;
-  I: Integer;
+  I, tempHigh: Integer;
   tempTotal: Double;
   // represents landuse index and BMP type index
   luseidx, ctrlidx: Integer;
@@ -1057,7 +1057,8 @@ begin
       end;
     end;
     // now loop through and calculate actual percentages from accumulated areas
-    for I := 0 to High(tempf6of6SgNoBMPsData) do
+    tempHigh := High(tempf6of6SgNoBMPsData);
+    for I := 0 to tempHigh do
     begin
       // total area = NoBMPs area              + BMPs area                   + source controls area
       tempTotal := tempf6of6SgNoBMPsData[I, 0] + tempf6of6SgBMPImplData[I, 0] +
@@ -1072,6 +1073,11 @@ begin
           ((smallNum + tempf6of6SgBMPImplData[I, 1]) / tempTotal);
       end;
     end;
+    // fix for bug where vgt is wrongly assigned BMPs in GIS files. Solution is to sum up
+    // src ctrls and bmps and save result as src ctrls
+    // last entry is vgt so update as follows
+    tempf6of6SgBMPImplData[tempHigh, 1] := tempf6of6SgBMPImplData[tempHigh, 1] + tempf6of6SgBMPImplData[tempHigh, 0];
+    tempf6of6SgBMPImplData[tempHigh, 0] := 0;
   end
   else
   begin
@@ -1240,7 +1246,7 @@ begin
       NewCatch := TPLRMCatch.Create;
       NewCatch.ObjIndex := -1;
       NewCatch.ObjType := SUBCATCH;
-      NewCatch.name := tempCatch.id;
+      NewCatch.name := StringReplace(tempCatch.id, '_', '', [rfReplaceAll]);
       NewCatch.hasDefLuse := True;
       NewCatch.hasDefSoils := True;
       NewCatch.hasDefRoadPolls := True;

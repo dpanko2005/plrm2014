@@ -422,7 +422,7 @@ end;
 
 procedure TCatchProps.edtCatchNameKeyPress(Sender: TObject; var Key: Char);
 begin
-  gsEditKeyPressNoSpace(Sender, Key, gemPosNumber);
+  gsEditKeyPressNoSpaceSepecialChars(Sender, Key, gemPosNumber);
 end;
 
 procedure TCatchProps.FormClose(Sender: TObject; var Action: TCloseAction);

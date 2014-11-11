@@ -46,6 +46,7 @@ type
     edtImpCicuArea: TEdit;
     edtTotVegTArea: TEdit;
     Panel11: TPanel;
+    Panel5: TPanel;
     procedure FormCreate(Sender: TObject);
     procedure initFormContents(catch: String);
     procedure UpdateAreas();

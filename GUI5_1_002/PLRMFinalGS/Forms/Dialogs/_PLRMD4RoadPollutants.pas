@@ -384,6 +384,7 @@ begin
       High(PLRMObj.currentCatchment.frm4of6SgRoadConditionData) + 2;
   end;
 
+
   // do not overwrite crcs for GIS catchments when first loaded from xml
   if (PLRMObj.currentCatchment.isGISCatchment = False) then
   begin
@@ -405,6 +406,11 @@ begin
         end;
       end;
     end;
+  end
+  else
+  begin
+  //for first time with GIS catchment size crc grid row count to match # of roadcodition rows
+  sgCRCs.RowCount := High(PLRMObj.currentCatchment.frm4of6SgRoadConditionData) + 1;
   end;
 end;
 
