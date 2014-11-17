@@ -4,8 +4,8 @@ interface
 
 uses
   SysUtils, Windows, Messages, Classes, Controls, Forms, Dialogs, XMLIntf,
-  msxmldom, XMLDoc,
-  StdCtrls, ComCtrls, Grids, GSUtils, GSTypes, Uproject, GSCatchments, GSNodes,
+  msxmldom, XMLDoc, Generics.Collections, StdCtrls, ComCtrls, Grids, GSUtils,
+  GSTypes, Uproject, GSCatchments, GSNodes,
   GSGIS;
 
 const
@@ -133,6 +133,10 @@ type
     function getSWTTypeNodes(swtType: Integer): TStringList;
     function writeInitProjectToXML(filePath: String;
       scnName: String = ''): Boolean;
+
+    function ramSWTsToXML(nodeList: TStringList): IXMLNode;
+    function ramParcelBMPsSrcCtrlToXML(catchmentsList: TStringList): IXMLNode;
+    function ramRoadConditionToXML(catchmentsList: TStringList): IXMLNode;
     function plrmToXML(): Boolean;
     function plrmGISToXML(catchList: TStringList;
       saveToFilePath: String): Boolean;
@@ -251,6 +255,13 @@ begin
   if (FindFirst(defaultValidateDir + '\*.xsl', faAnyFile, SearchRec) = 0) then
   begin
     validateXslPath := defaultValidateDir + '\' + SearchRec.Name;
+    SysUtils.FindClose(SearchRec);
+  end;
+
+  //2014 set default CAP xsl path to the path of any .xsl file in the /Engine/CAP folder
+  if (FindFirst(defaultEngnDir + '\CAP\*.xsl', faAnyFile, SearchRec) = 0) then
+  begin
+    CAPXslPath := defaultEngnDir + '\CAP\' + SearchRec.Name;
     SysUtils.FindClose(SearchRec);
   end;
 
@@ -385,14 +396,18 @@ begin
     transformXMLToSwmm(validateXslPath, scenarioXMLFilePath,
       defaultValidateFilePath);
 
+    // Step 4 - 2014 transform main xml file into cap csv file.
+    transformXMLToSwmm(CAPXslPath, scenarioXMLFilePath,
+      defaultCAPFilePath);
+
     // Display result validation html file in browser
     // 2014 now added a button to trigger this no longer loaded automatically
     // BrowseURL(defaultValidateFilePath);
 
-    // Step 2 - transform main xml file into swmm file
+    // Step 3 - transform main xml file into swmm file
     transformXMLToSwmm(defaultXslPath, scenarioXMLFilePath,
       curSWMMInptFilePath);
-    // Step 3 - open temporarily generated PLRM swmm input file
+    // Step 4 - open temporarily generated PLRM swmm input file
     MainForm.OpenFile(nil, curSWMMInptFilePath);
     // MainForm.OpenFile(sender,curSWMMInptFilePath);
     currentRptFilePath := userSWMMRptFilePath;
@@ -459,6 +474,221 @@ begin
   Result := false;
 end;
 
+function TPLRM.ramSWTsToXML(nodeList: TStringList): IXMLNode;
+var
+  XMLDoc: IXMLDocument;
+  iNode: IXMLNode;
+  tempNode: IXMLNode;
+  UniqueSWTsDict: TDictionary<Integer, String>;
+  tempPLRMTbl: PLRMGridData;
+  tempDbl: Double;
+  tempStr, tempKey: String;
+  tempInt:Integer;
+  I, J: Integer;
+  tempSWT: TPLRMNode;
+const
+  swtNames: array [0 .. 6] of string = ('NA', SWTDETBASIN, SWTINFBASIN,
+    SWTWETBASIN, SWTGRNFILTR, SWTCRTFILTR, SWTTRTVAULT);
+  ramSwtNames: array [0 .. 6] of string = ('NA','DryBasin', 'WetBasin',
+    'InfiltrationBasin', 'CartridgeFilter', 'TreatmentVault', 'BedFilter');
+
+begin
+  XMLDoc := TXMLDocument.Create(nil);
+  XMLDoc.Active := true;
+  iNode := XMLDoc.AddChild('CAPSWTs');
+  { iNode.Attributes['name'] := userName;
+    iNode.Attributes['NodeType'] := intToStr(swtType);
+    iNode.Attributes['ObjIndex'] := intToStr(objIndex);
+    iNode.Attributes['ObjType'] := intToStr(objType); }
+
+  // loop through catchments and prepare data summary for tahoe tools
+  UniqueSWTsDict := TDictionary<Integer, String>.Create();
+
+  for I := 0 to nodeList.count - 1 do
+  begin
+    tempSWT := (nodeList.Objects[I] as TPLRMNode);
+    if (tempSWT.objType = 7) then // then its a treatment node swt
+    begin
+      UniqueSWTsDict.Add(tempSWT.swtType, swtNames[tempSWT.swtType]);
+    end;
+  end;
+
+  // save dictionary contents as xml
+  for tempInt in UniqueSWTsDict.Keys do
+  begin
+    tempNode := iNode.AddChild('CAPBMPs', '');
+    tempNode.Attributes['P_BMP'] := swtNames[tempInt];
+    tempNode.Attributes['P_BMPType'] := tempInt;
+    tempNode.Attributes['BMP'] := ramSwtNames[tempInt];
+  end;
+  iNode.Attributes['count'] := UniqueSWTsDict.count;
+  Result := iNode;
+end;
+
+function TPLRM.ramParcelBMPsSrcCtrlToXML(catchmentsList: TStringList): IXMLNode;
+var
+  XMLDoc: IXMLDocument;
+  iNode: IXMLNode;
+  tempNode: IXMLNode;
+  UniqueParcelsDict: TDictionary<String, Double>;
+  tempPLRMTbl: PLRMGridData;
+  tempDbl: Double;
+  tempStr, tempKey, tempKey1, tempKey2, tempKey3, tempKey4, tempKey5,
+    tempKey6: String;
+  I, J: Integer;
+  tempCatch: TPLRMCatch;
+begin
+  XMLDoc := TXMLDocument.Create(nil);
+  XMLDoc.Active := true;
+  iNode := XMLDoc.AddChild('CAPParcelBMPsAndSrcCtrls');
+
+  tempKey1 := 'PP_pSC';
+  tempKey2 := 'PP_pBMP';
+  tempKey3 := 'MfrSC';
+  tempKey4 := 'MfrBMP';
+  tempKey5 := 'CicSc';
+  tempKey6 := 'CicBmp';
+
+  // loop through catchments and prepare data summary for tahoe tools
+  UniqueParcelsDict := TDictionary<String, Double>.Create();
+
+  // set intial values to 0
+  // sfr source control areas summed for all catchments
+  UniqueParcelsDict.Add(tempKey1, 0);
+  // sfr bmp areas summed for all catchments
+  UniqueParcelsDict.Add(tempKey2, 0);
+  // mfr source control areas summed for all catchments
+  UniqueParcelsDict.Add(tempKey3, 0);
+  // mfr bmp areas summed for all catchments
+  UniqueParcelsDict.Add(tempKey4, 0);
+  // cicu source control areas summed for all catchments
+  UniqueParcelsDict.Add(tempKey5, 0);
+  // cicu bmp areas summed for all catchments
+  UniqueParcelsDict.Add(tempKey6, 0);
+
+  for I := 0 to catchments.count - 1 do
+  begin
+    tempCatch := (catchments.Objects[I] as TPLRMCatch);
+    // tabulate unique road condition score areas
+    tempPLRMTbl := tempCatch.frm6of6SgBMPImplData;
+    if (tempCatch.frm6of6AreasData.luseAreaNImpv[0 + luseOffset, 0] <> '') then
+    begin
+      tempDbl := UniqueParcelsDict[tempKey1] +
+        (StrToFloat(tempPLRMTbl[0, 0]) *
+        StrToFloat(tempCatch.frm6of6AreasData.luseAreaNImpv[0 + luseOffset,
+        0]) / 100);
+      UniqueParcelsDict[tempKey1] := tempDbl;
+
+      tempDbl := UniqueParcelsDict[tempKey2] +
+        (StrToFloat(tempPLRMTbl[0, 1]) *
+        StrToFloat(tempCatch.frm6of6AreasData.luseAreaNImpv[0 + luseOffset,
+        0]) / 100);
+      UniqueParcelsDict[tempKey2] := tempDbl;
+    end;
+    if (tempCatch.frm6of6AreasData.luseAreaNImpv[1 + luseOffset, 0] <> '') then
+    begin
+      tempDbl := UniqueParcelsDict[tempKey3] +
+        (StrToFloat(tempPLRMTbl[1, 0]) *
+        StrToFloat(tempCatch.frm6of6AreasData.luseAreaNImpv[1 + luseOffset,
+        0]) / 100);
+      UniqueParcelsDict[tempKey3] := tempDbl;
+
+      tempDbl := UniqueParcelsDict[tempKey4] +
+        (StrToFloat(tempPLRMTbl[1, 1]) *
+        StrToFloat(tempCatch.frm6of6AreasData.luseAreaNImpv[1 + luseOffset,
+        0]) / 100);
+      UniqueParcelsDict[tempKey4] := tempDbl;
+    end;
+    if (tempCatch.frm6of6AreasData.luseAreaNImpv[2 + luseOffset, 0] <> '') then
+    begin
+      tempDbl := UniqueParcelsDict[tempKey5] +
+        (StrToFloat(tempPLRMTbl[2, 0]) *
+        StrToFloat(tempCatch.frm6of6AreasData.luseAreaNImpv[2 + luseOffset,
+        0]) / 100);
+      UniqueParcelsDict[tempKey5] := tempDbl;
+
+      tempDbl := UniqueParcelsDict[tempKey6] +
+        (StrToFloat(tempPLRMTbl[2, 1]) *
+        StrToFloat(tempCatch.frm6of6AreasData.luseAreaNImpv[2 + luseOffset,
+        0]) / 100);
+      UniqueParcelsDict[tempKey6] := tempDbl;
+    end;
+  end;
+
+  // save dictionary contents as xml
+  for tempStr in UniqueParcelsDict.Keys do
+  begin
+    tempNode := iNode.AddChild('CAPParcelBMPsSrcCtrl', '');
+    tempNode.Attributes['item'] := tempStr;
+    tempNode.Attributes['value'] :=
+      FormatFloat(TWODP, UniqueParcelsDict[tempStr]);
+  end;
+  iNode.Attributes['count'] := UniqueParcelsDict.count;
+  Result := iNode;
+end;
+
+function TPLRM.ramRoadConditionToXML(catchmentsList: TStringList): IXMLNode;
+var
+  XMLDoc: IXMLDocument;
+  iNode: IXMLNode;
+  tempNode: IXMLNode;
+  UniqueRdCondDict: TDictionary<String, Double>;
+  tempfrm4of6SgRoadConditionData: PLRMGridData;
+  tempDbl: Double;
+  tempStr, tempKey: String;
+  I, J: Integer;
+begin
+  XMLDoc := TXMLDocument.Create(nil);
+  XMLDoc.Active := true;
+  iNode := XMLDoc.AddChild('CAPRoadConditions');
+
+  // loop through catchments and prepare data summary for tahoe tools
+  UniqueRdCondDict := TDictionary<String, Double>.Create();
+  for I := 0 to catchments.count - 1 do
+  begin
+    // tabulate unique road condition score areas
+    tempfrm4of6SgRoadConditionData := (catchments.Objects[I] as TPLRMCatch)
+      .frm4of6SgRoadConditionData;
+    for J := 0 to High(tempfrm4of6SgRoadConditionData) do
+    begin
+      // store current key
+      tempKey := tempfrm4of6SgRoadConditionData[J, 1];
+      // check for blank rows
+      if (tempKey <> '') then
+      begin
+        // rounding errors sometimes cause same keys to be stored differently eg 4 vs 4.00 so round all to 2 dp
+        tempKey := FormatFloat(ONEDP, StrToFloat(tempKey));
+
+        // see if key already recorded in dict
+        if (UniqueRdCondDict.ContainsKey(tempKey)) then
+        begin
+          // get existing sum
+          tempDbl := UniqueRdCondDict[tempKey];
+          // update sum
+          UniqueRdCondDict[tempKey] := tempDbl +
+            StrToFloat(tempfrm4of6SgRoadConditionData[J, 0]) *
+            (catchments.Objects[I] as TPLRMCatch).totRoadImpervAcres / 100;
+        end
+        else
+          UniqueRdCondDict.Add(tempKey,
+            StrToFloat(tempfrm4of6SgRoadConditionData[J, 0]) *
+            (catchments.Objects[I] as TPLRMCatch).totRoadImpervAcres / 100);
+      end;
+    end;
+  end;
+
+  // save dictionary contents as xml
+  for tempStr in UniqueRdCondDict.Keys do
+  begin
+    tempNode := iNode.AddChild('CAPRoadCondition', '');
+    tempNode.Attributes['r_score'] := tempStr;
+    tempNode.Attributes['r_area'] :=
+      FormatFloat(TWODP, UniqueRdCondDict[tempStr]);
+  end;
+  iNode.Attributes['count'] := UniqueRdCondDict.count;
+  Result := iNode;
+end;
+
 function TPLRM.plrmToXML(): Boolean;
 var
   XMLDoc: IXMLDocument;
@@ -477,9 +707,13 @@ var
   tempNode9: IXMLNode;
   tempNode10: IXMLNode;
   tempNode19b: IXMLNode;
+  tempNode20: IXMLNode; // CAP Road condition nodes
+  tempNode21: IXMLNode; // CAP Parcel BMP & Src control nodes
+  tempNode22: IXMLNode; // CAP SWTS
+
   catchmentValidationXMLNode: IXMLNode;
   nodeValidationXMLNode: IXMLNode;
-  I: Integer;
+  I, J: Integer;
 begin
   // Result := false;
 
@@ -508,6 +742,11 @@ begin
       tempNodeArry[I] := (catchments.Objects[I] as TPLRMCatch)
         .catchToXML(projectLandUseNames, projectLandUseCodes);
     end;
+
+    // loop through catchments and nodes to prepare data summary for tahoe tools
+    tempNode20 := ramRoadConditionToXML(catchments);
+    tempNode21 := ramParcelBMPsSrcCtrlToXML(catchments);
+    tempNode22 := ramSWTsToXML(nodes);
 
     // Prep nodes
     SetLength(tempNodeArry2, nodes.count);
@@ -633,7 +872,12 @@ begin
     // 29. Write map
     XMLDoc.ChildNodes[0].ChildNodes.Add(tempNodeArry3[3]);
 
-    // 30. Write Schemes
+    // 30. Write CAP nodes
+    XMLDoc.ChildNodes[0].ChildNodes.Add(tempNode20);
+    XMLDoc.ChildNodes[0].ChildNodes.Add(tempNode21);
+    XMLDoc.ChildNodes[0].ChildNodes.Add(tempNode22);
+
+    // 31. Write Schemes
     if (rdCondsSchemes.count + hydPropsSchemes.count) > 0 then
     begin
       XMLDoc.ChildNodes[0].AddChild('Schemes');
@@ -648,7 +892,7 @@ begin
           (tempNodeArry5[I]);
     end;
 
-    // 31. Write Catchment and Node validation rules
+    // 32. Write Catchment and Node validation rules
     // create catchment and node validation xmlNodes
     catchmentValidationXMLNode := catchmentValidationTblToXML();
     nodeValidationXMLNode := nodeValidationTblToXML();
@@ -688,8 +932,8 @@ var
   // tempNode9: IXMLNode;
   // tempNode10: IXMLNode;
   // tempNode19b: IXMLNode;
-//  catchmentValidationXMLNode: IXMLNode;
-//  nodeValidationXMLNode: IXMLNode;
+  // catchmentValidationXMLNode: IXMLNode;
+  // nodeValidationXMLNode: IXMLNode;
   I: Integer;
 begin
   Try
@@ -936,7 +1180,7 @@ var
   tempNodeList: IXMLNodeList;
   I: Integer;
   tempCatch: TPLRMCatch;
-//  tempPLRMNode: TPLRMNode;
+  // tempPLRMNode: TPLRMNode;
 begin
   try
     XMLDoc := TXMLDocument.Create(nil);

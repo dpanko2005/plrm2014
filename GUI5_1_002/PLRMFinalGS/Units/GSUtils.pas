@@ -233,6 +233,7 @@ const { ID num for accessing Icons for treeview from  imagelist }
 var
   defaultXslPath: String;
   validateXslPath: String;
+  CAPXslPath:String;
   luseNameCodeTable: PLRMGridData;
   shpFilesDict: TDictionary<String, String>;
 
@@ -338,6 +339,7 @@ var
   defaultUserSwmmRptPath: String;
   defaultValidateDir: String;
   defaultValidateFilePath: String;
+  defaultCAPFilePath:String;
   PLRMInitIni: String;
   HYDSCHMSDIR: String;
   RCONDSCHMSDIR: String;

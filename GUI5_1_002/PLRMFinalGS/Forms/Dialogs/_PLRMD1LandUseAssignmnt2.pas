@@ -478,6 +478,9 @@ begin
   // S := GSIO.getCodes('l1%');
   lbxLuseFrom.Items := S;
   sgLuse.ColWidths[0] := 260;
+
+  //Erase previous results before creating space for new results
+  SetLength(FrmLuseConds.luseAreaNPrcnt, 0, 0);
   // create space for computation and aggregation of landuses
   SetLength(FrmLuseConds.luseAreaNPrcnt, High(frmsLuses) + 1, 2);
 

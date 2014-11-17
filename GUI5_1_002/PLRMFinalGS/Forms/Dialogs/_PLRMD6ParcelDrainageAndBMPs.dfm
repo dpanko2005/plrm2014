@@ -2524,7 +2524,7 @@ object PLRMParcelDrngAndBMPs: TPLRMParcelDrngAndBMPs
     end
     object edtTotSfrArea: TEdit
       Left = 12
-      Top = 47
+      Top = 48
       Width = 30
       Height = 22
       Enabled = False

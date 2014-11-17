@@ -229,7 +229,14 @@ begin
     // Save information to XML doc
     PLRMObj.scenarioXMLFilePath := scnFilePath;
     if FileExists(PLRMObj.scenarioXMLFilePath) = True then // update
+    begin
       PLRMObj.updateScenarioXML(PLRMObj.scenarioXMLFilePath);
+      // 2014 path to CAP csv file
+      if SysUtils.DirectoryExists(defaultPrjDir + '\Registration') = False then
+        checkNCreateDirectory(defaultPrjDir + '\Registration');
+      defaultCAPFilePath := defaultPrjDir + '\Registration\' + prjID + '_' +
+        newScnID + '_CAP.csv';
+    end;
 
     // Update PLRMTree
     PLRMTree.addNewScn(prjID, newScnID, tmpUserName);
@@ -289,6 +296,11 @@ begin
     scnFolderPath := prjFolder + '\' + scnName;
     checkNCreateDirectory(scnFolderPath);
     scnFilePath := scnFolderPath + '\' + scnName + '.xml';
+    // 2014 path to CAP csv file
+    if SysUtils.DirectoryExists(defaultPrjDir + '\Registration') = False then
+      checkNCreateDirectory(defaultPrjDir + '\Registration');
+    defaultCAPFilePath := defaultPrjDir + '\Registration\' + prjName + '_' +
+      scnName + '_CAP.csv';
 
     PLRMObj.scenarioXMLFilePath := scnFilePath;
     PLRMObj.writeInitProjectToXML(PLRMObj.scenarioXMLFilePath, scnName);
@@ -297,7 +309,6 @@ begin
   else
     TreeView1.Items.Delete(activeNode);
   // remove the node that was added if user canceled in project editor
-
 end;
 
 procedure TProjNscenManager.f1BtnNwScnClick(Sender: TObject);
@@ -465,6 +476,12 @@ begin
     scnFilePath := scnFolderPath + '\' + scnID + '.xml';
     PLRMObj.wrkdir := scnFolderPath;
     PLRMObj.scenarioXMLFilePath := scnFilePath;
+    // 2014 path to CAP csv file
+    if SysUtils.DirectoryExists(defaultPrjDir + '\Registration') = False then
+      checkNCreateDirectory(defaultPrjDir + '\Registration');
+    defaultCAPFilePath := defaultPrjDir + '\Registration\' + prjID + '_' + scnID
+      + '_CAP.csv';
+
     ProjScenMangerFrm.closeModal;
     ProjNscenEditorFrm := TProjNscenEditor.Create(Application);
 
