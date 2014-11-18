@@ -213,6 +213,7 @@ const { ID num for accessing Icons for treeview from  imagelist }
   ISAOpenFolder = 2;
   defaultProjName = 'DefaultProject';
   defaultScnName = 'DefaultScenario';
+  defaultRegFolderName = 'Registration';
   othrLandUseArrIndex = 6;
   roadLandUseArrIndex = 7;
 

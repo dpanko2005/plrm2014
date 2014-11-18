@@ -2441,6 +2441,10 @@ object PLRMScenComps: TPLRMScenComps
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object Panel15: TPanel
           Left = 151
           Top = 3
@@ -2666,6 +2670,10 @@ object PLRMScenComps: TPLRMScenComps
         Font.Style = []
         ImageIndex = 1
         ParentFont = False
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object Panel1: TPanel
           Left = 151
           Top = 3

@@ -232,9 +232,9 @@ begin
     begin
       PLRMObj.updateScenarioXML(PLRMObj.scenarioXMLFilePath);
       // 2014 path to CAP csv file
-      if SysUtils.DirectoryExists(defaultPrjDir + '\Registration') = False then
-        checkNCreateDirectory(defaultPrjDir + '\Registration');
-      defaultCAPFilePath := defaultPrjDir + '\Registration\' + prjID + '_' +
+      if SysUtils.DirectoryExists(defaultPrjDir + '\' + defaultRegFolderName) = False then
+        checkNCreateDirectory(defaultPrjDir + '\' + defaultRegFolderName );
+      defaultCAPFilePath := defaultPrjDir + '\' + defaultRegFolderName + '\' + prjID + '_' +
         newScnID + '_CAP.csv';
     end;
 
