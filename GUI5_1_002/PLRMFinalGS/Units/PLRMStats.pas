@@ -959,6 +959,9 @@ begin
   // Get general information
   numSimYears := (EndDateTime - StartDateTime) / 365.2422;
   PLRMResults.numYrsSimulated := Round(numSimYears);
+  //2014 addition
+  PLRMObj.numSimYears := numSimYears;
+
   PLRMResults.metGridNum := PLRMObj.metGridNum;
   PLRMResults.scenarioName := PLRMObj.scenarioName;
   PLRMResults.projectName := PLRMObj.projUserName;

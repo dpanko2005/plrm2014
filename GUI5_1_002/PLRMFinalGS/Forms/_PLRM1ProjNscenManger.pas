@@ -234,8 +234,8 @@ begin
       // 2014 path to CAP csv file
       if SysUtils.DirectoryExists(defaultPrjDir + '\' + defaultRegFolderName) = False then
         checkNCreateDirectory(defaultPrjDir + '\' + defaultRegFolderName );
-      defaultCAPFilePath := defaultPrjDir + '\' + defaultRegFolderName + '\' + prjID + '_' +
-        newScnID + '_CAP.csv';
+      defaultCAPFilePath := defaultPrjDir + '\' + defaultRegFolderName + '\' + prjNode.Text + '_' +
+        scnNode.Text + '_CAP.csv';
     end;
 
     // Update PLRMTree
@@ -479,7 +479,7 @@ begin
     // 2014 path to CAP csv file
     if SysUtils.DirectoryExists(defaultPrjDir + '\Registration') = False then
       checkNCreateDirectory(defaultPrjDir + '\Registration');
-    defaultCAPFilePath := defaultPrjDir + '\Registration\' + prjID + '_' + scnID
+    defaultCAPFilePath := defaultPrjDir + '\Registration\' + prjNode.Text + '_' + scenNode.Text
       + '_CAP.csv';
 
     ProjScenMangerFrm.closeModal;

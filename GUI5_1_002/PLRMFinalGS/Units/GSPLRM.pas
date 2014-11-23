@@ -60,6 +60,7 @@ type
     implAgency: string;
     createdBy: string;
     metgridNum: Integer;
+    numSimYears: Double;
     prjDescription: String;
     scenarioName: String;
     scenarioNotes: String;
@@ -258,7 +259,7 @@ begin
     SysUtils.FindClose(SearchRec);
   end;
 
-  //2014 set default CAP xsl path to the path of any .xsl file in the /Engine/CAP folder
+  // 2014 set default CAP xsl path to the path of any .xsl file in the /Engine/CAP folder
   if (FindFirst(defaultEngnDir + '\CAP\*.xsl', faAnyFile, SearchRec) = 0) then
   begin
     CAPXslPath := defaultEngnDir + '\CAP\' + SearchRec.Name;
@@ -397,8 +398,7 @@ begin
       defaultValidateFilePath);
 
     // Step 4 - 2014 transform main xml file into cap csv file.
-    transformXMLToSwmm(CAPXslPath, scenarioXMLFilePath,
-      defaultCAPFilePath);
+    transformXMLToSwmm(CAPXslPath, scenarioXMLFilePath, defaultCAPFilePath);
 
     // Display result validation html file in browser
     // 2014 now added a button to trigger this no longer loaded automatically
@@ -483,14 +483,14 @@ var
   tempPLRMTbl: PLRMGridData;
   tempDbl: Double;
   tempStr, tempKey: String;
-  tempInt:Integer;
+  tempInt: Integer;
   I, J: Integer;
   tempSWT: TPLRMNode;
 const
   swtNames: array [0 .. 6] of string = ('NA', SWTDETBASIN, SWTINFBASIN,
     SWTWETBASIN, SWTGRNFILTR, SWTCRTFILTR, SWTTRTVAULT);
-  ramSwtNames: array [0 .. 6] of string = ('NA','DryBasin', 'WetBasin',
-    'InfiltrationBasin', 'CartridgeFilter', 'TreatmentVault', 'BedFilter');
+  //ramSwtNames: array [0 .. 6] of string = ('NA', 'DryBasin', 'WetBasin',
+  //  'InfiltrationBasin', 'CartridgeFilter', 'TreatmentVault', 'BedFilter');
 
 begin
   XMLDoc := TXMLDocument.Create(nil);
@@ -501,27 +501,37 @@ begin
     iNode.Attributes['ObjIndex'] := intToStr(objIndex);
     iNode.Attributes['ObjType'] := intToStr(objType); }
 
-  // loop through catchments and prepare data summary for tahoe tools
-  UniqueSWTsDict := TDictionary<Integer, String>.Create();
+  { Need only if aggregating by swt type
+    // loop through swts and prepare data summary for tahoe tools
+    UniqueSWTsDict := TDictionary<Integer, String>.Create();
 
+    for I := 0 to nodeList.count - 1 do
+    begin
+    tempSWT := (nodeList.Objects[I] as TPLRMNode);
+    if (tempSWT.objType = 7) then // then its a treatment node swt
+    begin
+    UniqueSWTsDict.Add(tempSWT.swtType, swtNames[tempSWT.swtType]);
+    end;
+    end; }
+
+  // save dictionary contents as xml
+  // for tempInt in UniqueSWTsDict.Keys do
   for I := 0 to nodeList.count - 1 do
   begin
     tempSWT := (nodeList.Objects[I] as TPLRMNode);
     if (tempSWT.objType = 7) then // then its a treatment node swt
     begin
-      UniqueSWTsDict.Add(tempSWT.swtType, swtNames[tempSWT.swtType]);
+      tempNode := iNode.AddChild('CAPBMPs', '');
+      {tempNode.Attributes['P_BMP'] := swtNames[tempInt];
+      tempNode.Attributes['P_BMPType'] := tempInt;
+      tempNode.Attributes['BMP'] := ramSwtNames[tempInt]; }
+
+      tempNode.Attributes['P_BMP'] := tempSWT.userName;
+      tempNode.Attributes['P_BMPType'] := tempSWT.swtType;
+      tempNode.Attributes['BMP'] := swtNames[tempSWT.swtType];
     end;
   end;
-
-  // save dictionary contents as xml
-  for tempInt in UniqueSWTsDict.Keys do
-  begin
-    tempNode := iNode.AddChild('CAPBMPs', '');
-    tempNode.Attributes['P_BMP'] := swtNames[tempInt];
-    tempNode.Attributes['P_BMPType'] := tempInt;
-    tempNode.Attributes['BMP'] := ramSwtNames[tempInt];
-  end;
-  iNode.Attributes['count'] := UniqueSWTsDict.count;
+  //iNode.Attributes['count'] := UniqueSWTsDict.count;
   Result := iNode;
 end;
 
@@ -537,17 +547,21 @@ var
     tempKey6: String;
   I, J: Integer;
   tempCatch: TPLRMCatch;
+  tempCatchArea: Double;
+  tempCatchSFRArea: Double;
+  tempCatchMFRArea: Double;
+  tempCatchCicuArea: Double;
 begin
   XMLDoc := TXMLDocument.Create(nil);
   XMLDoc.Active := true;
   iNode := XMLDoc.AddChild('CAPParcelBMPsAndSrcCtrls');
 
-  tempKey1 := 'PP_pSC';
-  tempKey2 := 'PP_pBMP';
-  tempKey3 := 'MfrSC';
-  tempKey4 := 'MfrBMP';
-  tempKey5 := 'CicSc';
-  tempKey6 := 'CicBmp';
+  tempKey1 := 'SfrBMP';
+  tempKey2 := 'SfrSC';
+  tempKey3 := 'MfrBMP';
+  tempKey4 := 'MfrSC';
+  tempKey5 := 'CicBMP';
+  tempKey6 := 'CicSC';
 
   // loop through catchments and prepare data summary for tahoe tools
   UniqueParcelsDict := TDictionary<String, Double>.Create();
@@ -569,10 +583,13 @@ begin
   for I := 0 to catchments.count - 1 do
   begin
     tempCatch := (catchments.Objects[I] as TPLRMCatch);
+    tempCatchArea := tempCatchArea + tempCatch.area;
     // tabulate unique road condition score areas
     tempPLRMTbl := tempCatch.frm6of6SgBMPImplData;
     if (tempCatch.frm6of6AreasData.luseAreaNImpv[0 + luseOffset, 0] <> '') then
     begin
+      tempCatchSFRArea := tempCatchSFRArea +
+        StrToFloat(tempCatch.frm6of6AreasData.luseAreaNImpv[0 + luseOffset, 0]);
       tempDbl := UniqueParcelsDict[tempKey1] +
         (StrToFloat(tempPLRMTbl[0, 0]) *
         StrToFloat(tempCatch.frm6of6AreasData.luseAreaNImpv[0 + luseOffset,
@@ -587,6 +604,8 @@ begin
     end;
     if (tempCatch.frm6of6AreasData.luseAreaNImpv[1 + luseOffset, 0] <> '') then
     begin
+      tempCatchMFRArea := tempCatchMFRArea +
+        StrToFloat(tempCatch.frm6of6AreasData.luseAreaNImpv[1 + luseOffset, 0]);
       tempDbl := UniqueParcelsDict[tempKey3] +
         (StrToFloat(tempPLRMTbl[1, 0]) *
         StrToFloat(tempCatch.frm6of6AreasData.luseAreaNImpv[1 + luseOffset,
@@ -601,6 +620,8 @@ begin
     end;
     if (tempCatch.frm6of6AreasData.luseAreaNImpv[2 + luseOffset, 0] <> '') then
     begin
+      tempCatchCicuArea := tempCatchCicuArea +
+        StrToFloat(tempCatch.frm6of6AreasData.luseAreaNImpv[2 + luseOffset, 0]);
       tempDbl := UniqueParcelsDict[tempKey5] +
         (StrToFloat(tempPLRMTbl[2, 0]) *
         StrToFloat(tempCatch.frm6of6AreasData.luseAreaNImpv[2 + luseOffset,
@@ -624,6 +645,11 @@ begin
       FormatFloat(TWODP, UniqueParcelsDict[tempStr]);
   end;
   iNode.Attributes['count'] := UniqueParcelsDict.count;
+  // iNode.Attributes['totalCatchmentArea'] := tempCatchArea;
+  iNode.Attributes['totalSFRArea'] := tempCatchSFRArea;
+  iNode.Attributes['totalMFRArea'] := tempCatchMFRArea;
+  iNode.Attributes['totalCicuArea'] := tempCatchCicuArea;
+
   Result := iNode;
 end;
 
@@ -791,6 +817,7 @@ begin
       DateTimeToStr(Now);
     iNode.ChildNodes['Project'].Attributes['name'] := projUserName;
     iNode.ChildNodes['Metgrid'].Text := intToStr(metgridNum);
+    iNode.ChildNodes['SimYears'].Text := FloatToStr(numSimYears);
     iNode.ChildNodes['UserSWMMInpt'].Text := userSWMMInptFilePath;
     iNode.ChildNodes['GenSWMMInpt'].Text := curSWMMInptFilePath;
     iNode.ChildNodes['WorkingDir'].Text := wrkdir;
