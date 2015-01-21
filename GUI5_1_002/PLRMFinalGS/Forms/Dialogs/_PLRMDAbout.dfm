@@ -47,7 +47,7 @@ object AboutPLRMBoxForm: TAboutPLRMBoxForm
     Transparent = True
     Visible = False
   end
-  object Label3: TLabel
+  object lblAboutVer: TLabel
     Left = 434
     Top = 338
     Width = 78

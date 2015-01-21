@@ -498,13 +498,13 @@
 					<Platform value="Win32">True</Platform>
 				</Platforms>
 				<Deployment>
-					<DeployFile Class="ProjectOutput" Configuration="Release" LocalName="Epaswmm5.exe">
-						<Platform Name="Win32"/>
-					</DeployFile>
 					<DeployFile Class="DebugSymbols" Configuration="Release" LocalName="Epaswmm5.rsm">
 						<Platform Name="Win32">
 							<RemoteName>Epaswmm5.rsm</RemoteName>
 						</Platform>
+					</DeployFile>
+					<DeployFile Class="ProjectOutput" Configuration="Release" LocalName="Epaswmm5.exe">
+						<Platform Name="Win32"/>
 					</DeployFile>
 					<DeployClass Name="ProjectOutput" Required="true">
 						<Platform Name="OSX32">

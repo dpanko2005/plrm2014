@@ -13,7 +13,7 @@ unit _PLRMDAbout;
 interface
 
 uses Windows, Types, Classes, Graphics, Forms, Controls, StdCtrls,
-  Buttons, ExtCtrls, ComCtrls, Vcl.Imaging.GIFImg, ShellAPI;
+  Buttons, ExtCtrls, ComCtrls, Vcl.Imaging.GIFImg, ShellAPI, GSTypes;
 
 type
   TAboutPLRMBoxForm = class(TForm)
@@ -27,7 +27,7 @@ type
     TabSheet2: TTabSheet;
     Memo1: TMemo;
     Memo2: TMemo;
-    Label3: TLabel;
+    lblAboutVer: TLabel;
     Image1: TImage;
     Panel2: TPanel;
     Label4: TLabel;
@@ -110,6 +110,7 @@ Disclaimer2014 =
 
 procedure TAboutPLRMBoxForm.FormCreate(Sender: TObject);
 begin
+lblAboutVer.Caption := PLRMVERSION;
   Label4.Caption := 'Pollutant Load Reduction Model (PLRM)'#10'Version 2.0';
   LinkLabel1.Caption := '<a href="http://www.tiims.org/TIIMS-Sub-Sites/PLRM.aspx">www.tiims.org</a>';
   LinkLabel1.Hint := 'http://www.tiims.org/TIIMS-Sub-Sites/PLRM.aspx';

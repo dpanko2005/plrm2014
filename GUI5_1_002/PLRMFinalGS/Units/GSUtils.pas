@@ -234,7 +234,7 @@ const { ID num for accessing Icons for treeview from  imagelist }
 var
   defaultXslPath: String;
   validateXslPath: String;
-  CAPXslPath:String;
+  CAPXslPath: String;
   luseNameCodeTable: PLRMGridData;
   shpFilesDict: TDictionary<String, String>;
 
@@ -340,7 +340,7 @@ var
   defaultUserSwmmRptPath: String;
   defaultValidateDir: String;
   defaultValidateFilePath: String;
-  defaultCAPFilePath:String;
+  defaultCAPFilePath: String;
   PLRMInitIni: String;
   HYDSCHMSDIR: String;
   RCONDSCHMSDIR: String;
@@ -1367,6 +1367,7 @@ begin
   if (not(Key in [#48 .. #105])) then
     Key := #0;
 end;
+
 procedure gsEditKeyPressNoSpaceSepecialChars(Sender: TObject; var Key: Char;
   const exptdTypeCode: TExptdTypeCodes);
 // -----------------------------------------------------------------------------
@@ -1389,8 +1390,8 @@ begin
     if (Key in ['u', 'v', 'w', 'x', 'y', 'z']) then exit; }
 
   // disallow punctuation
-  if (CharInSet(Key, ['_', '"', ';', '?', '/', '!', '\', '|', '[', ']', '=', '<',
-    '>', ':', '^', '@'])) then
+  if (CharInSet(Key, ['_', '"', ';', '?', '/', '!', '\', '|', '[', ']', '=',
+    '<', '>', ':', '^', '@'])) then
     Key := #0;
 
   if exptdTypeCode = gemNoSpace then
@@ -2199,11 +2200,17 @@ begin
   // if the directory is empty exit
   If projSL.Count < 1 then
   begin
-    exit;
-  end;
+    // do nothing exit;
+  end
+  else
+  begin
 
-  // remove all the items currently in the treeview before adding new ones
-  TV.Items.Clear();
+    // remove all the items currently in the treeview before adding new ones
+    If (assigned(TV.Items)) Then
+    begin
+      TV.Items.Clear();
+    end;
+  end;
 
   // Add project and scenario folders to TreeView
   for I := 0 to projSL.Count - 1 do
@@ -2245,7 +2252,11 @@ begin
     end;
   end;
   // Must free up resources used by these successful finds
-  SysUtils.FindClose(SearchRec);
+  If projSL.Count > 0 then
+  begin
+    SysUtils.FindClose(SearchRec);
+  end;
+
   FreeAndNil(projNames);
   FreeAndNil(projFolders);
   FreeAndNil(scenFolders);

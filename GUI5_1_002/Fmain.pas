@@ -2956,8 +2956,10 @@ begin
     InitialDir := ExtractFileDir(PLRMObj.scenarioXMLFilePath);
     DefaultExt := '.txt';
     if Length(InputFileName) > 0 then
-      Filename := ChangeFileExt(ExtractFileName(PLRMObj.scenarioXMLFilePath),
-        DefaultExt)
+      {Filename := ChangeFileExt(ExtractFileName(PLRMObj.scenarioXMLFilePath),
+        DefaultExt) }
+        //change to use user supplied name of scenario rather that plrm name for saving exported reports
+           Filename := PLRMObj.scenarioName + '.' + DefaultExt
       // then Filename := ExtractFileName(PLRMObj.scenarioXMLFilePath),DefaultExt
     else
       Filename := '*.txt';

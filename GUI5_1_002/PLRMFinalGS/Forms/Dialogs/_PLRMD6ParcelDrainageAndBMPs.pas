@@ -287,7 +287,22 @@ begin
 end;
 
 procedure TPLRMParcelDrngAndBMPs.btnOKClick(Sender: TObject);
+var
+  I:Integer;
+  almostZero: Double;
 begin
+  almostZero := 0.001;
+
+  //check for 0 ksat values and quit if any invalid entries found
+  for I := 0 to sgNoBMPs.RowCount - 1 do
+  begin
+    if (StrToFloat(sgNoBMPs.Cells[2, I]) < almostZero) then
+    begin
+      ShowMessage('KSat values must not be zero');
+      exit;
+    end;
+  end;
+
   // silently cll BMP sizing we can get BMP sizing default saved into catchment object if the form was never opened
   // silent call BMP sizing we can get BMP sizing default saved into catc
   if (not(PLRMObj.currentCatchment.hasDefCustomBMPSizeData)) then

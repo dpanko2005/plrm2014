@@ -2273,7 +2273,7 @@ object ProjNscenEditor: TProjNscenEditor
     Top = 599
     Width = 66
     Height = 25
-    Caption = 'Next>'
+    Caption = 'Open'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -15
@@ -2284,7 +2284,7 @@ object ProjNscenEditor: TProjNscenEditor
     OnClick = btnNextClick
   end
   object btnCloseFrm: TButton
-    Left = 340
+    Left = 412
     Top = 599
     Width = 66
     Height = 25
@@ -2297,7 +2297,6 @@ object ProjNscenEditor: TProjNscenEditor
     Font.Style = []
     ParentFont = False
     TabOrder = 1
-    Visible = False
     OnClick = btnCloseFrmClick
   end
   object grpbxPrjInfo: TGroupBox
@@ -2853,11 +2852,11 @@ object ProjNscenEditor: TProjNscenEditor
     end
   end
   object btnBack: TButton
-    Left = 412
+    Left = 122
     Top = 599
     Width = 66
     Height = 25
-    Caption = '<Back'
+    Caption = 'Cancel'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -15
@@ -2865,10 +2864,11 @@ object ProjNscenEditor: TProjNscenEditor
     Font.Style = []
     ParentFont = False
     TabOrder = 4
+    Visible = False
     OnClick = btnBackClick
   end
   object btnSave: TButton
-    Left = 208
+    Left = 280
     Top = 599
     Width = 126
     Height = 25

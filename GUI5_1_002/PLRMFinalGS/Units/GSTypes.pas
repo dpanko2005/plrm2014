@@ -194,7 +194,7 @@ const
   // Form titles
   // PLRMVERSION = 'Tahoe Pollutant Load Reduction Model - v1.0';
   // 2014 PLRMVERSION = 'Lake Tahoe PLRM v2.0  ';
-  PLRMVERSION = 'PLRM v2.0  ';
+  PLRMVERSION = 'PLRM v2.0.2  ';
 
   PLRM0_WIZTITLE = 'PLRM Wizard';
   PLRM1_TITLE = 'Project and Scenario Manager';

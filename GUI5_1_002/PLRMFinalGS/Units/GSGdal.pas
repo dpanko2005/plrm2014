@@ -118,13 +118,13 @@ const
   fldNameRdCondition = 'SCORE';
   fldNameRdConn = 'CONNECT';
 
-  intcatchSlope = 'PLRM_CatchSlopes';
-  intCatchBMP = 'PLRM_CatchBMPs';
-  intcatchLuse = 'PLRM_CatchLuses';
-  intcatchSoil = 'PLRM_CatchSoils';
-  intcatchRdShd = 'PLRM_CatchShlds';
-  intcatchRdCondition = 'PLRM_CatchCond';
-  intcatchRdConn = 'PLRM_CatchConn';
+  intcatchSlope = '_TempClip_CatchSlopes';
+  intCatchBMP = '_TempClip_CatchBMPs';
+  intcatchLuse = '_TempClip_CatchLuses';
+  intcatchSoil = '_TempClip_CatchSoils';
+  intcatchRdShd = '_TempClip_CatchShlds';
+  intcatchRdCondition = '_TempClip_CatchCond';
+  intcatchRdConn = '_TempClip_CatchConn';
 
   layerNum = 0;
   driverName = 'ESRI Shapefile';
@@ -311,8 +311,9 @@ begin
     OGRwkbGeometryType.wkbPolygon, genericFldErrMsg, genericLayerTypeErrMsg1);
 
   // 1b. validate catchment layer - check catchment area field
-  validateSingleLayer(0, fldNameCatchArea, OGRFieldType.OFTReal,
-    OGRwkbGeometryType.wkbPolygon, genericFldErrMsg, genericLayerTypeErrMsg1);
+  //2015 round29 fixes requires to no longer check for Acres
+  //validateSingleLayer(0, fldNameCatchArea, OGRFieldType.OFTReal,
+  //  OGRwkbGeometryType.wkbPolygon, genericFldErrMsg, genericLayerTypeErrMsg1);
 
   { // 2. validate slopes layer
     validateSingleLayer(1, fldNameSlope, OGRFieldType.OFTInteger,

@@ -318,8 +318,8 @@ var
   prjName: String;
   scenName: String;
   prjNode, newScnNode: TTreeNode;
-  // finished : Boolean;
-  // matchCount : Integer;
+  scnFilePath: String; // full path to scenario.xml file
+  //scnID: String; // automatically generated scenario name
 begin
   if TreeView1.selected = nil then
     ShowMessage
@@ -343,6 +343,15 @@ begin
       PLRMTree.addNewScn(prjID, scenName, scenName);
       TreeView1.Select(newScnNode);
       TreeView1DblClick(Sender);
+
+      //now check to see if scenario was created if not delete the node that was newly added
+      //scnID := PLRMTree.getScenIDFromUserName(prjID, scenName);
+      scnFilePath := defaultPrjDir + '\' + prjID + '\' + scenName + '\' + scenName + '.xml';
+      if ((FileExists(scnFilePath) = False) and (scenName <> '')) then
+        begin
+          PLRMTree.deleteScn(prjID, scenName, scenName);
+          TreeView1.Items.Delete(newScnNode);
+        end
     end
     else // it is a scenario node
       ShowMessage

@@ -2554,6 +2554,7 @@ object PLRMRoadPollutants: TPLRMRoadPollutants
     Height = 25
     Caption = 'Edit'
     TabOrder = 7
+    Visible = False
   end
   object statBar: TStatusBar
     Left = 0

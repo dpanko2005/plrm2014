@@ -87,6 +87,7 @@ type
     procedure btnExptRltvClick(Sender: TObject);
     procedure btnExptAbslutClick(Sender: TObject);
     procedure upDateRsltGrids();
+    procedure Panel4Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -413,6 +414,12 @@ begin
   FreeAndNil(tempStrLst);
   // update absolue and relative grids when baseline changes
   upDateRsltGrids();
+
+  //delete list box items cause starting over
+  for I := 0 to lbxScnRight.Items.Count - 1 do
+  begin
+      lbxScnRight.Items.Clear; //(I);
+  end;
 end;
 
 // when baseline scenario changes need to update all calcs
@@ -468,6 +475,16 @@ begin
     end;
   end;
   cbxProjects.Items := PrjNames;
+
+  //resize string grid cells so scenarios with long names have more room
+  with sgLoads do
+  ColWidths[0] := ClientWidth - (ColWidths[1] * 7 );
+
+  with sgReltv do
+  ColWidths[0] := ClientWidth - (ColWidths[1] * 7 );
+
+  with sgAbslut do
+  ColWidths[0] := ClientWidth - (ColWidths[1]* 7 );
 end;
 
 function TPLRMScenComps.getScenarioSummary(filePath: String;
@@ -503,6 +520,11 @@ begin
   for I := 2 to S.count - 1 do
     rslt[0][I - 2] := S[I];
   Result := rslt;
+end;
+
+procedure TPLRMScenComps.Panel4Click(Sender: TObject);
+begin
+
 end;
 
 // Grays out 1st row of the grid to signify that it is the baseline scenario

@@ -4,7 +4,7 @@ object PLRMScenComps: TPLRMScenComps
   BorderIcons = []
   Caption = 'Scenario Comparisons'
   ClientHeight = 642
-  ClientWidth = 639
+  ClientWidth = 977
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,7 +18,7 @@ object PLRMScenComps: TPLRMScenComps
   object Image1: TImage
     Left = 0
     Top = 0
-    Width = 778
+    Width = 977
     Height = 102
     Picture.Data = {
       0A544A504547496D61676569120100FFD8FFE000104A46494600010100000100
@@ -2217,11 +2217,12 @@ object PLRMScenComps: TPLRMScenComps
       171F7EEBFE05FF00A2E8A288F4FF000BFF00D3B4C6FE1F9C7FF484668FF551FF
       00C03FF46542BF7A5FFB63FCA6A28AEA7F14BFEE1FE4871F8BFEDD5F9448E2FB
       D37FD743FC851451593DFE51FC91C7D65FE297FE94CFFFD9}
+    Stretch = True
   end
   object statBar: TStatusBar
     Left = 0
     Top = 623
-    Width = 639
+    Width = 977
     Height = 19
     Panels = <>
     SimplePanel = True
@@ -2229,7 +2230,7 @@ object PLRMScenComps: TPLRMScenComps
   object GroupBox6: TGroupBox
     Left = 6
     Top = 107
-    Width = 625
+    Width = 963
     Height = 174
     Caption = 'Scenario Comparision '
     Font.Charset = DEFAULT_CHARSET
@@ -2255,8 +2256,8 @@ object PLRMScenComps: TPLRMScenComps
       Visible = False
     end
     object Label1: TLabel
-      Left = 349
-      Top = 23
+      Left = 677
+      Top = 25
       Width = 182
       Height = 14
       Caption = '(Step 2) Select Baseline Scenario'
@@ -2282,8 +2283,8 @@ object PLRMScenComps: TPLRMScenComps
       ParentFont = False
     end
     object lblRightLbx: TLabel
-      Left = 349
-      Top = 72
+      Left = 677
+      Top = 74
       Width = 118
       Height = 14
       Caption = 'Compared to Baseline'
@@ -2324,8 +2325,8 @@ object PLRMScenComps: TPLRMScenComps
       Visible = False
     end
     object cbxScenarios: TComboBox
-      Left = 349
-      Top = 37
+      Left = 677
+      Top = 39
       Width = 270
       Height = 22
       Style = csDropDownList
@@ -2348,8 +2349,8 @@ object PLRMScenComps: TPLRMScenComps
       TabOrder = 1
     end
     object btnToRight: TButton
-      Left = 281
-      Top = 114
+      Left = 457
+      Top = 108
       Width = 50
       Height = 20
       Caption = '>'
@@ -2358,8 +2359,8 @@ object PLRMScenComps: TPLRMScenComps
       OnClick = btnToRightClick
     end
     object btnToLeft: TButton
-      Left = 281
-      Top = 140
+      Left = 457
+      Top = 134
       Width = 50
       Height = 20
       Caption = '<'
@@ -2368,8 +2369,8 @@ object PLRMScenComps: TPLRMScenComps
       OnClick = btnToLeftClick
     end
     object lbxScnRight: TListBox
-      Left = 349
-      Top = 92
+      Left = 677
+      Top = 94
       Width = 270
       Height = 77
       Enabled = False
@@ -2392,8 +2393,8 @@ object PLRMScenComps: TPLRMScenComps
       OnChange = cbxProjectsChange
     end
     object Button7: TButton
-      Left = 569
-      Top = 10
+      Left = 897
+      Top = 12
       Width = 50
       Height = 25
       Caption = 'Exit'
@@ -2410,7 +2411,7 @@ object PLRMScenComps: TPLRMScenComps
   object GroupBox1: TGroupBox
     Left = 8
     Top = 287
-    Width = 623
+    Width = 961
     Height = 330
     Caption = 'Runoff Volume and Pollutant Load Reduction'
     Font.Charset = DEFAULT_CHARSET
@@ -2423,9 +2424,9 @@ object PLRMScenComps: TPLRMScenComps
     object PageControl2: TPageControl
       Left = 3
       Top = 145
-      Width = 616
+      Width = 955
       Height = 182
-      ActivePage = TabSheet3
+      ActivePage = TabSheet4
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -12
@@ -2441,26 +2442,22 @@ object PLRMScenComps: TPLRMScenComps
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object Panel15: TPanel
-          Left = 151
-          Top = 3
-          Width = 430
+          Left = 368
+          Top = 0
+          Width = 563
           Height = 69
           BevelEdges = []
           BevelOuter = bvNone
           BorderWidth = 1
-          Color = cl3DLight
+          Color = clWindow
           ParentBackground = False
           TabOrder = 1
           DesignSize = (
-            430
+            563
             69)
           object Label7: TLabel
-            Left = 91
+            Left = 178
             Top = 11
             Width = 206
             Height = 13
@@ -2476,8 +2473,8 @@ object PLRMScenComps: TPLRMScenComps
             WordWrap = True
           end
           object Label32: TLabel
-            Left = 25
-            Top = 44
+            Left = 58
+            Top = 47
             Width = 21
             Height = 13
             Alignment = taCenter
@@ -2491,8 +2488,8 @@ object PLRMScenComps: TPLRMScenComps
             WordWrap = True
           end
           object Label33: TLabel
-            Left = 98
-            Top = 44
+            Left = 151
+            Top = 47
             Width = 20
             Height = 13
             Alignment = taCenter
@@ -2506,8 +2503,8 @@ object PLRMScenComps: TPLRMScenComps
             WordWrap = True
           end
           object Label34: TLabel
-            Left = 171
-            Top = 44
+            Left = 245
+            Top = 47
             Width = 14
             Height = 13
             Alignment = taCenter
@@ -2521,8 +2518,8 @@ object PLRMScenComps: TPLRMScenComps
             WordWrap = True
           end
           object Label35: TLabel
-            Left = 245
-            Top = 44
+            Left = 339
+            Top = 47
             Width = 22
             Height = 13
             Alignment = taCenter
@@ -2536,8 +2533,8 @@ object PLRMScenComps: TPLRMScenComps
             WordWrap = True
           end
           object Label36: TLabel
-            Left = 318
-            Top = 44
+            Left = 422
+            Top = 47
             Width = 14
             Height = 13
             Alignment = taCenter
@@ -2551,8 +2548,8 @@ object PLRMScenComps: TPLRMScenComps
             WordWrap = True
           end
           object Label37: TLabel
-            Left = 392
-            Top = 44
+            Left = 512
+            Top = 47
             Width = 20
             Height = 13
             Alignment = taCenter
@@ -2566,7 +2563,7 @@ object PLRMScenComps: TPLRMScenComps
             WordWrap = True
           end
           object Label5: TLabel
-            Left = 95
+            Left = 182
             Top = 22
             Width = 199
             Height = 13
@@ -2584,11 +2581,11 @@ object PLRMScenComps: TPLRMScenComps
         end
         object Panel3: TPanel
           Left = 14
-          Top = 3
-          Width = 144
+          Top = 0
+          Width = 363
           Height = 77
           BevelOuter = bvNone
-          Color = 16776176
+          Color = clWindow
           ParentBackground = False
           TabOrder = 2
           object Label4: TLabel
@@ -2607,8 +2604,8 @@ object PLRMScenComps: TPLRMScenComps
             WordWrap = True
           end
           object Label16: TLabel
-            Left = 89
-            Top = 18
+            Left = 293
+            Top = 21
             Width = 55
             Height = 39
             Alignment = taCenter
@@ -2625,13 +2622,14 @@ object PLRMScenComps: TPLRMScenComps
         object sgReltv: TStringGrid
           Left = 13
           Top = 66
-          Width = 577
+          Width = 924
           Height = 87
           BevelEdges = []
           BevelInner = bvNone
           BevelOuter = bvNone
+          BorderStyle = bsNone
           ColCount = 8
-          DefaultColWidth = 70
+          DefaultColWidth = 90
           FixedCols = 0
           RowCount = 1
           FixedRows = 0
@@ -2640,14 +2638,15 @@ object PLRMScenComps: TPLRMScenComps
           Font.Height = -11
           Font.Name = 'Tahoma'
           Font.Style = []
+          GridLineWidth = 0
           ParentFont = False
           ScrollBars = ssVertical
           TabOrder = 0
           OnDrawCell = sgAbslutDrawCell
         end
         object btnExptRltv: TButton
-          Left = 523
-          Top = 10
+          Left = 875
+          Top = 3
           Width = 50
           Height = 20
           Caption = 'Export'
@@ -2670,26 +2669,22 @@ object PLRMScenComps: TPLRMScenComps
         Font.Style = []
         ImageIndex = 1
         ParentFont = False
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object Panel1: TPanel
-          Left = 151
-          Top = 3
-          Width = 430
+          Left = 368
+          Top = 0
+          Width = 563
           Height = 69
           BevelEdges = []
           BevelOuter = bvNone
           BorderWidth = 1
-          Color = cl3DLight
+          Color = clWindow
           ParentBackground = False
           TabOrder = 0
           DesignSize = (
-            430
+            563
             69)
           object Label8: TLabel
-            Left = 91
+            Left = 178
             Top = 11
             Width = 206
             Height = 13
@@ -2705,8 +2700,8 @@ object PLRMScenComps: TPLRMScenComps
             WordWrap = True
           end
           object Label9: TLabel
-            Left = 24
-            Top = 46
+            Left = 58
+            Top = 47
             Width = 21
             Height = 13
             Alignment = taCenter
@@ -2720,8 +2715,8 @@ object PLRMScenComps: TPLRMScenComps
             WordWrap = True
           end
           object Label10: TLabel
-            Left = 97
-            Top = 46
+            Left = 151
+            Top = 47
             Width = 20
             Height = 13
             Alignment = taCenter
@@ -2735,8 +2730,8 @@ object PLRMScenComps: TPLRMScenComps
             WordWrap = True
           end
           object Label11: TLabel
-            Left = 170
-            Top = 46
+            Left = 245
+            Top = 47
             Width = 14
             Height = 13
             Alignment = taCenter
@@ -2750,8 +2745,8 @@ object PLRMScenComps: TPLRMScenComps
             WordWrap = True
           end
           object Label12: TLabel
-            Left = 244
-            Top = 46
+            Left = 339
+            Top = 47
             Width = 22
             Height = 13
             Alignment = taCenter
@@ -2765,8 +2760,8 @@ object PLRMScenComps: TPLRMScenComps
             WordWrap = True
           end
           object Label13: TLabel
-            Left = 317
-            Top = 46
+            Left = 422
+            Top = 47
             Width = 14
             Height = 13
             Alignment = taCenter
@@ -2780,8 +2775,8 @@ object PLRMScenComps: TPLRMScenComps
             WordWrap = True
           end
           object Label14: TLabel
-            Left = 391
-            Top = 46
+            Left = 512
+            Top = 47
             Width = 20
             Height = 13
             Alignment = taCenter
@@ -2795,7 +2790,7 @@ object PLRMScenComps: TPLRMScenComps
             WordWrap = True
           end
           object Label6: TLabel
-            Left = 103
+            Left = 182
             Top = 22
             Width = 199
             Height = 13
@@ -2813,11 +2808,11 @@ object PLRMScenComps: TPLRMScenComps
         end
         object Panel2: TPanel
           Left = 14
-          Top = 3
-          Width = 144
+          Top = 0
+          Width = 363
           Height = 77
           BevelOuter = bvNone
-          Color = 16776176
+          Color = clWindow
           ParentBackground = False
           TabOrder = 2
           object Label15: TLabel
@@ -2836,8 +2831,8 @@ object PLRMScenComps: TPLRMScenComps
             WordWrap = True
           end
           object Label2: TLabel
-            Left = 89
-            Top = 18
+            Left = 293
+            Top = 21
             Width = 55
             Height = 39
             Alignment = taCenter
@@ -2854,13 +2849,14 @@ object PLRMScenComps: TPLRMScenComps
         object sgAbslut: TStringGrid
           Left = 13
           Top = 66
-          Width = 579
+          Width = 924
           Height = 87
           BevelEdges = []
           BevelInner = bvNone
           BevelOuter = bvNone
+          BorderStyle = bsNone
           ColCount = 8
-          DefaultColWidth = 70
+          DefaultColWidth = 90
           FixedCols = 0
           RowCount = 1
           FixedRows = 0
@@ -2869,6 +2865,7 @@ object PLRMScenComps: TPLRMScenComps
           Font.Height = -11
           Font.Name = 'Tahoma'
           Font.Style = []
+          GridLineWidth = 0
           ParentFont = False
           ScrollBars = ssVertical
           TabOrder = 1
@@ -2876,8 +2873,8 @@ object PLRMScenComps: TPLRMScenComps
           OnKeyPress = sgAbslutKeyPress
         end
         object btnExptAbslut: TButton
-          Left = 523
-          Top = 10
+          Left = 881
+          Top = 3
           Width = 50
           Height = 20
           Caption = 'Export'
@@ -2895,7 +2892,7 @@ object PLRMScenComps: TPLRMScenComps
     object Panel4: TPanel
       Left = 159
       Top = 19
-      Width = 430
+      Width = 779
       Height = 53
       BevelEdges = []
       BevelOuter = bvNone
@@ -2903,11 +2900,12 @@ object PLRMScenComps: TPLRMScenComps
       Color = clWindow
       ParentBackground = False
       TabOrder = 1
+      OnClick = Panel4Click
       DesignSize = (
-        430
+        779
         53)
       object Label17: TLabel
-        Left = 90
+        Left = 424
         Top = 1
         Width = 152
         Height = 13
@@ -2923,7 +2921,7 @@ object PLRMScenComps: TPLRMScenComps
         WordWrap = True
       end
       object Label19: TLabel
-        Left = 24
+        Left = 274
         Top = 20
         Width = 21
         Height = 13
@@ -2938,7 +2936,7 @@ object PLRMScenComps: TPLRMScenComps
         WordWrap = True
       end
       object Label20: TLabel
-        Left = 97
+        Left = 367
         Top = 20
         Width = 20
         Height = 13
@@ -2953,7 +2951,7 @@ object PLRMScenComps: TPLRMScenComps
         WordWrap = True
       end
       object Label21: TLabel
-        Left = 170
+        Left = 460
         Top = 20
         Width = 14
         Height = 13
@@ -2968,7 +2966,7 @@ object PLRMScenComps: TPLRMScenComps
         WordWrap = True
       end
       object Label22: TLabel
-        Left = 244
+        Left = 554
         Top = 20
         Width = 22
         Height = 13
@@ -2983,7 +2981,7 @@ object PLRMScenComps: TPLRMScenComps
         WordWrap = True
       end
       object Label23: TLabel
-        Left = 317
+        Left = 637
         Top = 20
         Width = 14
         Height = 13
@@ -2998,7 +2996,7 @@ object PLRMScenComps: TPLRMScenComps
         WordWrap = True
       end
       object Label24: TLabel
-        Left = 391
+        Left = 731
         Top = 20
         Width = 20
         Height = 13
@@ -3016,7 +3014,7 @@ object PLRMScenComps: TPLRMScenComps
     object Panel5: TPanel
       Left = 22
       Top = 19
-      Width = 144
+      Width = 395
       Height = 53
       BevelOuter = bvNone
       Color = clWhite
@@ -3038,7 +3036,7 @@ object PLRMScenComps: TPLRMScenComps
         WordWrap = True
       end
       object Label26: TLabel
-        Left = 89
+        Left = 292
         Top = 0
         Width = 55
         Height = 39
@@ -3056,13 +3054,14 @@ object PLRMScenComps: TPLRMScenComps
     object sgLoads: TStringGrid
       Left = 21
       Top = 58
-      Width = 577
+      Width = 924
       Height = 71
       BevelEdges = []
       BevelInner = bvNone
       BevelOuter = bvNone
+      BorderStyle = bsNone
       ColCount = 8
-      DefaultColWidth = 70
+      DefaultColWidth = 90
       FixedCols = 0
       RowCount = 1
       FixedRows = 0

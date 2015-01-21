@@ -141,12 +141,24 @@ begin
     (StrToFloat(edtDINFTotStorage.Text) < almostZero)) then
     errMsgs.add('Please provide dimensions for infiltration facility');
 
-  // 2. if more that 0% draining to pch facility must provide inf size
+  // 3. if more that 0% draining to pch facility must provide inf size
   if (StrToFloat(edtDPCH.Text) > almostZero) and
     ((StrToFloat(edtDPCHLen.Text) < almostZero) or
     (StrToFloat(edtDPCHWidth.Text) < almostZero) or
     (StrToFloat(edtDPCHStorDepth.Text) < almostZero)) then
     errMsgs.add('Please provide dimensions for pervious channel');
+
+  // 4. check that icia, dcia, etc not greater than 100 or less than 0
+  if (checkAndUpDatePrcntAreas() = false) then Exit;
+
+    // 5. check ksat values are not zero
+  if (StrToFloat(edtShoulderAveAnnInfRate.Text) < almostZero) then
+    errMsgs.add('Average annual infiltration rate for all road shoulders must not be zero');
+  if (StrToFloat(edtDINFAveAnnInf.Text) < almostZero) then
+    errMsgs.add('Average annual infiltration rate for areas draining to infiltration facilities must not be zero');
+  if (StrToFloat(edtDPCHAveAnnInf.Text) < almostZero) then
+    errMsgs.add('Average annual infiltration rate for areas draining to pervious channels must not be zero');
+
   if (errMsgs.Count <> 0) then
   begin
     for I := 0 to errMsgs.Count - 1 do
@@ -155,6 +167,9 @@ begin
     ShowMessage(errMsg);
     Exit;
   end;
+
+
+
   // save form inputs
   FrmData.DCIA := StrToFloat(edtDCIA.Text);
   FrmData.ICIA := StrToFloat(edtICIA.Text);
@@ -256,6 +271,11 @@ var
   DCIA, ICIA, DINF, DPCH: Double;
 begin
   Result := True;
+  //replace blanks with 0
+  if(edtDCIA.Text = '') then    edtDCIA.Text := '0';
+  if(edtDINF.Text = '') then    edtDINF.Text := '0';
+  if(edtDPCH.Text = '') then    edtDPCH.Text := '0';
+
   DCIA := StrToFloat(edtDCIA.Text);
   // ICIA := StrToFloat(edtICIA.Text);
   DINF := StrToFloat(edtDINF.Text);
@@ -274,7 +294,7 @@ begin
     or (ICIA < 0) or (DINF < 0) or (DPCH < 0)) then
   begin
     ShowMessage
-      ('Valid values for DCIA, ICIA, DINF and DPCH are integers between 1 and 0');
+      ('Valid values for DCIA, ICIA, DINF and DPCH are integers between 0 and 100');
     Result := false;
   end;
 
@@ -391,7 +411,6 @@ procedure TPLRMRoadDrainageEditor.edtShoulderAveAnnInfRateKeyUp(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
   // TODO - validate inf rate
-
 end;
 
 procedure TPLRMRoadDrainageEditor.FormCreate(Sender: TObject);
@@ -415,8 +434,6 @@ end;
 
 procedure TPLRMRoadDrainageEditor.initFormContents(catch: String);
 var
-  // idx, I: Integer;
-  // jdx: Integer;
   hydProps: dbReturnFields;
   kSatMultplrs: dbReturnFields;
 begin

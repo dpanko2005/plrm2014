@@ -189,7 +189,8 @@ end;
 
 procedure TPLRMGISTool.btnCancelClick(Sender: TObject);
 begin
-  shpFilesDict.Free;
+  // shpFilesDict.Free; turning this line on causes access violation after form closes and makes form semi-transparent, messed-up and hard to read
+  self.btnRun.Enabled := true;
   self.Close;
 end;
 
@@ -310,7 +311,7 @@ var
   didValidate: Boolean;
 begin
   didValidate := False;
-
+  self.btnRun.Enabled := false;
   if (rgpSimLength.ItemIndex = 0) then
     hasManualBMPs := False
   else
@@ -356,6 +357,7 @@ begin
     else
     begin
       gisXMLFilePath := defaultGISDir + '\GIS.xml';
+      self.btnRun.Enabled := true;
       Exit;
     end;
 
@@ -384,8 +386,10 @@ begin
     end
     else
       showGISProgressDialog(tempErrList, True);
+      self.btnRun.Enabled := true;
     self.Close;
   end;
+  self.btnRun.Enabled := true;
 end;
 
 // 7. select connectivity shp file

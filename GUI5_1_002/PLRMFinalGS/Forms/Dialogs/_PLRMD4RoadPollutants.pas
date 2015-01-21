@@ -268,14 +268,14 @@ begin
     begin
     ShowMessage('% of Road shoulder length" assignments must add up to 100%');
     Exit;
-    end;
+    end; }
 
     // validate road shoulder assignments
-    if (StrToFloat(sgRoadConditions.Cells[0, 0]) <> 100) then
+    if ((StrToFloat(sgRoadConditions.Cells[0, 0]) > 100.01) or (StrToFloat(sgRoadConditions.Cells[0, 0]) < -0.01)) then
     begin
     ShowMessage('% of Road conditions assignments must add up to 100%');
     Exit;
-    end; }
+    end;
 
   // validate condition score assignments
   // 1. make sure no two condition scores are the same
@@ -503,6 +503,7 @@ var
   R, lastRow, startCol: longInt;
   conditionScore, prcntSum: Double;
 begin
+
   sg := Sender as TStringGrid;
   // acreSum := 0;
   prcntSum := 0;
@@ -540,12 +541,13 @@ begin
     // prcntSum);
   end;
 
+ { disabling cell by cell check per round29 bug tracker request
   if (((100 - prcntSum) > 100) or ((100 - prcntSum) < 0)) then
   begin
     ShowMessage
       ('Cell values must not exceed 100% and the sum of all the values in this row must add up to 100%!');
     exit
-  end;
+  end;}
   updateCRCs();
 end;
 
