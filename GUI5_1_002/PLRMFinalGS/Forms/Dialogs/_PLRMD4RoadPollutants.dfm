@@ -2265,7 +2265,7 @@ object PLRMRoadPollutants: TPLRMRoadPollutants
     BevelOuter = bvNone
     Color = clSkyBlue
     ParentBackground = False
-    TabOrder = 1
+    TabOrder = 2
     object Label1: TLabel
       Left = 136
       Top = 11
@@ -2370,7 +2370,7 @@ object PLRMRoadPollutants: TPLRMRoadPollutants
     BevelOuter = bvNone
     Color = clMoneyGreen
     ParentBackground = False
-    TabOrder = 2
+    TabOrder = 3
     object Label6: TLabel
       Left = 11
       Top = 11
@@ -2428,7 +2428,7 @@ object PLRMRoadPollutants: TPLRMRoadPollutants
     BorderWidth = 1
     Color = cl3DLight
     ParentBackground = False
-    TabOrder = 3
+    TabOrder = 4
     object Label11: TLabel
       Left = 9
       Top = 8
@@ -2455,7 +2455,7 @@ object PLRMRoadPollutants: TPLRMRoadPollutants
     BevelOuter = bvNone
     Color = clMoneyGreen
     ParentBackground = False
-    TabOrder = 4
+    TabOrder = 5
     object Label8: TLabel
       Left = 35
       Top = 11
@@ -2519,7 +2519,7 @@ object PLRMRoadPollutants: TPLRMRoadPollutants
     BorderWidth = 1
     Color = cl3DLight
     ParentBackground = False
-    TabOrder = 5
+    TabOrder = 6
     object Label10: TLabel
       Left = 9
       Top = 8
@@ -2544,7 +2544,7 @@ object PLRMRoadPollutants: TPLRMRoadPollutants
     Width = 75
     Height = 25
     Caption = 'Next >>'
-    TabOrder = 6
+    TabOrder = 1
     OnClick = btnOkClick
   end
   object Button2: TButton

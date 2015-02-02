@@ -61,7 +61,7 @@ object AboutPLRMBoxForm: TAboutPLRMBoxForm
     Height = 25
     Caption = 'OK'
     ModalResult = 1
-    TabOrder = 2
+    TabOrder = 1
   end
   object Panel1: TPanel
     Left = 0
@@ -634,7 +634,7 @@ object AboutPLRMBoxForm: TAboutPLRMBoxForm
     Width = 60
     Height = 19
     Caption = 'LinkLabel1'
-    TabOrder = 1
+    TabOrder = 2
     TabStop = True
     Visible = False
     OnLinkClick = LinkLabel1LinkClick

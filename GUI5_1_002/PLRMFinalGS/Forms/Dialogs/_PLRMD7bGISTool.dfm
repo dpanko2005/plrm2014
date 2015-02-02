@@ -2557,7 +2557,7 @@ object PLRMGISCatchDlg: TPLRMGISCatchDlg
     Top = 125
     Width = 249
     Height = 21
-    TabOrder = 1
+    TabOrder = 2
   end
   object btnCatchShp: TButton
     Left = 279
@@ -2571,7 +2571,7 @@ object PLRMGISCatchDlg: TPLRMGISCatchDlg
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 2
+    TabOrder = 3
     OnClick = btnCatchShpClick
   end
   object cbxCatchments: TComboBox
@@ -2586,7 +2586,7 @@ object PLRMGISCatchDlg: TPLRMGISCatchDlg
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 3
+    TabOrder = 4
     Visible = False
     OnChange = cbxCatchmentsChange
   end
@@ -2602,7 +2602,7 @@ object PLRMGISCatchDlg: TPLRMGISCatchDlg
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 4
+    TabOrder = 5
     OnClick = btnCancelClick
   end
   object btnOK: TButton
@@ -2617,7 +2617,7 @@ object PLRMGISCatchDlg: TPLRMGISCatchDlg
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 5
+    TabOrder = 1
     OnClick = btnOKClick
   end
 end

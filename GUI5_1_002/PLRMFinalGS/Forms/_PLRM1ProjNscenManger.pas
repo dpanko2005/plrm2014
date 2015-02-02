@@ -232,10 +232,11 @@ begin
     begin
       PLRMObj.updateScenarioXML(PLRMObj.scenarioXMLFilePath);
       // 2014 path to CAP csv file
-      if SysUtils.DirectoryExists(defaultPrjDir + '\' + defaultRegFolderName) = False then
-        checkNCreateDirectory(defaultPrjDir + '\' + defaultRegFolderName );
-      defaultCAPFilePath := defaultPrjDir + '\' + defaultRegFolderName + '\' + prjNode.Text + '_' +
-        scnNode.Text + '_CAP.csv';
+      if SysUtils.DirectoryExists(defaultPrjDir + '\' + defaultRegFolderName) = False
+      then
+        checkNCreateDirectory(defaultPrjDir + '\' + defaultRegFolderName);
+      defaultCAPFilePath := defaultPrjDir + '\' + defaultRegFolderName + '\' +
+        prjNode.Text + '_' + scnNode.Text + '_CAP.csv';
     end;
 
     // Update PLRMTree
@@ -319,7 +320,7 @@ var
   scenName: String;
   prjNode, newScnNode: TTreeNode;
   scnFilePath: String; // full path to scenario.xml file
-  //scnID: String; // automatically generated scenario name
+  // scnID: String; // automatically generated scenario name
 begin
   if TreeView1.selected = nil then
     ShowMessage
@@ -344,14 +345,19 @@ begin
       TreeView1.Select(newScnNode);
       TreeView1DblClick(Sender);
 
-      //now check to see if scenario was created if not delete the node that was newly added
-      //scnID := PLRMTree.getScenIDFromUserName(prjID, scenName);
-      scnFilePath := defaultPrjDir + '\' + prjID + '\' + scenName + '\' + scenName + '.xml';
+      // now check to see if scenario was created if not delete the node that was newly added
+      // scnID := PLRMTree.getScenIDFromUserName(prjID, scenName);
+      scnFilePath := defaultPrjDir + '\' + prjID + '\' + scenName + '\' +
+        scenName + '.xml';
       if ((FileExists(scnFilePath) = False) and (scenName <> '')) then
+      begin
+        PLRMTree.deleteScn(prjID, scenName, scenName);
+        TreeView1.Items.Delete(newScnNode);
+        if DirectoryExists(defaultPrjDir + '\' + prjID + '\' + scenName + '\') then
         begin
-          PLRMTree.deleteScn(prjID, scenName, scenName);
-          TreeView1.Items.Delete(newScnNode);
-        end
+           RemoveDir(defaultPrjDir + '\' + prjID + '\' + scenName + '\') ;
+        end;
+      end
     end
     else // it is a scenario node
       ShowMessage
@@ -488,8 +494,8 @@ begin
     // 2014 path to CAP csv file
     if SysUtils.DirectoryExists(defaultPrjDir + '\Registration') = False then
       checkNCreateDirectory(defaultPrjDir + '\Registration');
-    defaultCAPFilePath := defaultPrjDir + '\Registration\' + prjNode.Text + '_' + scenNode.Text
-      + '_CAP.csv';
+    defaultCAPFilePath := defaultPrjDir + '\Registration\' + prjNode.Text + '_'
+      + scenNode.Text + '_CAP.csv';
 
     ProjScenMangerFrm.closeModal;
     ProjNscenEditorFrm := TProjNscenEditor.Create(Application);

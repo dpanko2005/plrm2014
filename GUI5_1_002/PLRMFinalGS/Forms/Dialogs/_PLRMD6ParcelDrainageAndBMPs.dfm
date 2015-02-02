@@ -2254,7 +2254,7 @@ object PLRMParcelDrngAndBMPs: TPLRMParcelDrngAndBMPs
     BevelOuter = bvNone
     Color = clSkyBlue
     ParentBackground = False
-    TabOrder = 1
+    TabOrder = 2
     object Label1: TLabel
       Left = 24
       Top = 11
@@ -2342,7 +2342,7 @@ object PLRMParcelDrngAndBMPs: TPLRMParcelDrngAndBMPs
     BevelOuter = bvNone
     Color = clSkyBlue
     ParentBackground = False
-    TabOrder = 2
+    TabOrder = 3
     object Label4: TLabel
       Left = 24
       Top = 11
@@ -2400,7 +2400,7 @@ object PLRMParcelDrngAndBMPs: TPLRMParcelDrngAndBMPs
     BorderWidth = 1
     Color = cl3DLight
     ParentBackground = False
-    TabOrder = 3
+    TabOrder = 4
     object Label7: TLabel
       Left = 40
       Top = 6
@@ -2428,7 +2428,7 @@ object PLRMParcelDrngAndBMPs: TPLRMParcelDrngAndBMPs
     BevelOuter = bvNone
     Color = clSkyBlue
     ParentBackground = False
-    TabOrder = 4
+    TabOrder = 5
     object Label10: TLabel
       Left = 7
       Top = 35
@@ -2464,7 +2464,7 @@ object PLRMParcelDrngAndBMPs: TPLRMParcelDrngAndBMPs
     Width = 89
     Height = 25
     Caption = 'Edit BMP Sizing'
-    TabOrder = 5
+    TabOrder = 6
     OnClick = btnEditBMPSizeClick
   end
   object btnOK: TButton
@@ -2473,7 +2473,7 @@ object PLRMParcelDrngAndBMPs: TPLRMParcelDrngAndBMPs
     Width = 75
     Height = 25
     Caption = 'OK'
-    TabOrder = 6
+    TabOrder = 1
     OnClick = btnOKClick
   end
   object statBar: TStatusBar

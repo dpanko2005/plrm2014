@@ -2197,20 +2197,25 @@ begin
     scenFilePaths := TStringList.Create;
 
   projSL := getFoldersInFolder(startPath);
-  // if the directory is empty exit
+ { // if the directory is empty exit
   If projSL.Count < 1 then
   begin
-    // do nothing exit;
+    TV.Items.Clear();
   end
   else
   begin
-
     // remove all the items currently in the treeview before adding new ones
     If (assigned(TV.Items)) Then
     begin
       TV.Items.Clear();
     end;
-  end;
+  end; }
+
+  // remove all the items currently in the treeview before adding new ones
+    If (assigned(TV.Items)) Then
+    begin
+      TV.Items.Clear();
+    end;
 
   // Add project and scenario folders to TreeView
   for I := 0 to projSL.Count - 1 do

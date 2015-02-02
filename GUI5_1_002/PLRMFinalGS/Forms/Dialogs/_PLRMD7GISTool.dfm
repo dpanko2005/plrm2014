@@ -2245,7 +2245,7 @@ object PLRMGISTool: TPLRMGISTool
     Top = 125
     Width = 347
     Height = 21
-    TabOrder = 1
+    TabOrder = 2
   end
   object btnCatchShp: TButton
     Left = 361
@@ -2259,7 +2259,7 @@ object PLRMGISTool: TPLRMGISTool
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 2
+    TabOrder = 3
     OnClick = btnCatchShpClick
   end
   object GroupBox1: TGroupBox
@@ -2268,7 +2268,7 @@ object PLRMGISTool: TPLRMGISTool
     Width = 425
     Height = 373
     Caption = 'PLRM Data Inputs'
-    TabOrder = 3
+    TabOrder = 4
     object lblLuseShp: TLabel
       Left = 16
       Top = 91
@@ -2525,7 +2525,7 @@ object PLRMGISTool: TPLRMGISTool
     Width = 418
     Height = 373
     Caption = 'BMP Implementation'
-    TabOrder = 4
+    TabOrder = 5
     object lblRgpBMPs: TLabel
       Left = 16
       Top = 35
@@ -2785,7 +2785,7 @@ object PLRMGISTool: TPLRMGISTool
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 5
+    TabOrder = 6
     OnClick = btnCancelClick
   end
   object btnRun: TButton
@@ -2801,7 +2801,7 @@ object PLRMGISTool: TPLRMGISTool
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 6
+    TabOrder = 1
     OnClick = btnRunClick
   end
   object opnTxtFileDialog: TOpenTextFileDialog

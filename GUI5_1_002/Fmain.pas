@@ -2363,7 +2363,7 @@ procedure TMainForm.BrowserBtnDeleteClick(Sender: TObject);
 // OnClick handler for the Delete button on the Browser's Data page.
 // -----------------------------------------------------------------------------
 begin
-  Ubrowser.BrowserDeleteObject;
+ Ubrowser.BrowserDeleteObject;
 end;
 
 procedure TMainForm.BrowserBtnEditClick(Sender: TObject);
@@ -3543,6 +3543,12 @@ begin
   // Turn off adding objects when Escape is pressed
   if (Key = VK_ESCAPE) and BrowserBtnNew.Down then
     SelectorButtonClick;
+
+  //plrm 2014 added to correct inability to delete one object right after another
+  if (Key = VK_DELETE) then
+  begin
+    MapForm.FormKeyDown(Sender, Key,Shift);
+  end
 end;
 
 procedure TMainForm.CreateReport(ReportSelection: TReportSelection);

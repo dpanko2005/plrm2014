@@ -331,8 +331,10 @@ begin
     PLRMObj.prjDescription := tbxProjDescription.Text;
     PLRMObj.scenarioName := tbxScenName.Text;
     PLRMObj.scenarioNotes := mbxScenarioNotes.Text;
-
     Uglobals.TempDir := PLRMObj.wrkDir;
+
+    defaultCAPFilePath := defaultPrjDir + '\Registration\' + PLRMObj.projUserName + '_' +
+      PLRMObj.scenarioName + '_CAP.csv';
 
     Screen.Cursor := crDefault; // return cursor to default
 

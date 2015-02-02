@@ -2865,7 +2865,6 @@ object PLRMScenComps: TPLRMScenComps
           Font.Height = -11
           Font.Name = 'Tahoma'
           Font.Style = []
-          GridLineWidth = 0
           ParentFont = False
           ScrollBars = ssVertical
           TabOrder = 1

@@ -146,7 +146,7 @@ uses
 begin
   Application.Initialize;
   Application.MainFormOnTaskBar := True; // added for MDI app
-  Application.Title := 'SWMM 5';
+  Application.Title := 'PLRM';
   Application.HelpFile := '';
   Application.CreateForm(TMainForm, MainForm);
   Application.CreateForm(TPLRMGISProgrsDlg, PLRMGISProgrsDlg);
