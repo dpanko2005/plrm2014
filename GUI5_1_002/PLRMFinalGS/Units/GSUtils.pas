@@ -364,7 +364,8 @@ begin
   data := getCatchmentValidationRules();
   Result := plrmGridDataToXML3('catchmentValidation', 'rule', data,
     xmlTagList, 5);
-  FreeAndNil(xmlTagList);
+    xmlTagList.Free;
+  //FreeAndNil(xmlTagList);
 end;
 
 function nodeValidationTblToXML(): IXMLNode;
@@ -378,7 +379,8 @@ begin
     xmlTagList.add(validationXMLTags[I]);
   data := getNodeValidationRules();
   Result := plrmGridDataToXML3('nodeValidation', 'rule', data, xmlTagList, 5);
-  FreeAndNil(xmlTagList);
+   xmlTagList.Free;
+  //FreeAndNil(xmlTagList);
 end;
 
 procedure exportGridToTxt(delimiter: String; sg: TStringGrid;
@@ -1051,6 +1053,8 @@ var
   textList, attribTags: TStringList;
   I: Integer;
 begin
+  textList := nil;
+  attribTags := nil;
   try
     data := getDBDataAsPLRMGridData(11);
     textList := TStringList.Create;
@@ -1064,8 +1068,10 @@ begin
     Result := plrmGridDataToXML('Pollutants', 'Pollutant', data, attribTags,
       textList);
   finally
-    FreeAndNil(textList);
-    FreeAndNil(attribTags);
+    //FreeAndNil(textList);
+    //FreeAndNil(attribTags);
+    textList.Free;
+    attribTags.Free;
   end;
 end;
 
@@ -2179,6 +2185,12 @@ var
   // stores scenario names on tree used with scenFolders list below to facilitate deletion
 
 begin
+  projNames:= nil;
+  projFolders := nil;
+  scenNames := nil;
+  scenFolders := nil;
+  scenFilePaths := nil;
+
   Result := SysUtils.DirectoryExists(startPath);
   If not Result then
     exit;
@@ -2262,12 +2274,18 @@ begin
     SysUtils.FindClose(SearchRec);
   end;
 
-  FreeAndNil(projNames);
+  {FreeAndNil(projNames);
   FreeAndNil(projFolders);
   FreeAndNil(scenFolders);
   FreeAndNil(scenFilePaths);
   FreeAndNil(scenNames);
-  FreeAndNil(projSL);
+  FreeAndNil(projSL);}
+  projNames.Free;
+  projFolders.Free;
+  scenFolders.Free;
+  scenFilePaths.Free;
+  scenNames.Free;
+  projSL.Free;
 
   // scenSL := nil; //Memory release via prjNames when tree destroyed
   // scenSL2 := nil; //Memory release via prjNames when tree destroyed

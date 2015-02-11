@@ -479,12 +479,12 @@ var
   XMLDoc: IXMLDocument;
   iNode: IXMLNode;
   tempNode: IXMLNode;
-  UniqueSWTsDict: TDictionary<Integer, String>;
-  tempPLRMTbl: PLRMGridData;
-  tempDbl: Double;
-  tempStr, tempKey: String;
-  tempInt: Integer;
-  I, J: Integer;
+  //UniqueSWTsDict: TDictionary<Integer, String>;
+//  tempPLRMTbl: PLRMGridData;
+//  tempDbl: Double;
+//  tempStr, tempKey: String;
+ // tempInt: Integer;
+  I: Integer;
   tempSWT: TPLRMNode;
 const
   swtNames: array [0 .. 6] of string = ('NA', SWTDETBASIN, SWTINFBASIN,
@@ -552,6 +552,12 @@ var
   tempCatchMFRArea: Double;
   tempCatchCicuArea: Double;
 begin
+
+  tempCatchArea := 0;
+  tempCatchSFRArea := 0;
+  tempCatchMFRArea:=0;
+  tempCatchCicuArea := 0;
+
   XMLDoc := TXMLDocument.Create(nil);
   XMLDoc.Active := true;
   iNode := XMLDoc.AddChild('CAPParcelBMPsAndSrcCtrls');
@@ -739,7 +745,7 @@ var
 
   catchmentValidationXMLNode: IXMLNode;
   nodeValidationXMLNode: IXMLNode;
-  I, J: Integer;
+  I: Integer;
 begin
   // Result := false;
 
@@ -1550,6 +1556,7 @@ begin
       I := I + 1;
     end;
   end;
+  Result := true;
 end;
 
 procedure TPLRM.addNode(N: Uproject.TNode; objIndex: Integer);

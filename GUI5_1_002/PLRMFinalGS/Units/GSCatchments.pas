@@ -1757,7 +1757,9 @@ begin
               tempHscArea := 0;
             end;
 
-            tempNode3.Attributes['hscArea'] := tempHscArea;
+            //tempNode3.Attributes['hscArea'] := tempHscArea;
+            tempNode3.Attributes['hscArea'] := FormatFloat('0.000', tempHscArea);
+            ;
 
             // only SFR,MFR,CICU have BMP sizes
             // if ((I >= luseOffset) and (I-luseOffset <= High(tempBMPSizeGridArr))) then

@@ -448,6 +448,7 @@ var
   soilMapUnitList: TStringList;
   tempInt: Integer;
 begin
+soilMapUnitList := nil;
   // ShowMessage('1');
   intersectShapeFilesAsLayers(shpPathCatch, shpPathVar,
     dir + rsltShpName + shpExt, OGRwkbGeometryType.wkbPolygon);
@@ -1606,7 +1607,7 @@ var
   catchName, tempKey: String;
   propVal, tempArea: Double;
   tempCatch: TGISCatch;
-  err: longint;
+//  err: longint;
 begin
 
   ogrLayer := getLayer(shpFilePath);
@@ -1712,8 +1713,8 @@ var
   ogrLayer: OGRLayerH;
   err: longint;
   intDSName, intDSPath: String;
-  lSearchRec: TSearchRec;
-  lFind: Integer;
+//  lSearchRec: TSearchRec;
+//  lFind: Integer;
   ldir: string;
 begin
   err := 0;

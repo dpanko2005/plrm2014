@@ -522,7 +522,7 @@
 					<Platform value="Win32">True</Platform>
 				</Platforms>
 				<Deployment>
-					<DeployFile Class="ProjectOutput" Configuration="Release" LocalName="Epaswmm5.exe">
+					<DeployFile Class="ProjectOutput" Configuration="DpRelease" LocalName="PLRM2014.exe">
 						<Platform Name="Win32"/>
 					</DeployFile>
 					<DeployFile Class="DebugSymbols" Configuration="Release" LocalName="Epaswmm5.rsm">
@@ -535,7 +535,7 @@
 							<RemoteName>PLRM2014.rsm</RemoteName>
 						</Platform>
 					</DeployFile>
-					<DeployFile Class="ProjectOutput" Configuration="DpRelease" LocalName="PLRM2014.exe">
+					<DeployFile Class="ProjectOutput" Configuration="Release" LocalName="Epaswmm5.exe">
 						<Platform Name="Win32"/>
 					</DeployFile>
 					<DeployClass Name="ProjectOutput" Required="true">
