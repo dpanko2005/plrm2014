@@ -4,8 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, jpeg, ExtCtrls, Grids, DBGrids, GSTypes,
-  _PLRM5RoadDrnXtcs;
+  Dialogs, StdCtrls, ComCtrls, jpeg, ExtCtrls, Grids, DBGrids, GSTypes;
 
 type
   TCatchProps = class(TForm)
@@ -19,7 +18,6 @@ type
     btnDefLuse: TButton;
     btnDefSoils: TButton;
     GroupBox2: TGroupBox;
-    btnDefLuseConds: TButton;
     btnApply: TButton;
     Button5: TButton;
     Label1: TLabel;
@@ -28,7 +26,6 @@ type
     edtCatchName: TEdit;
     GroupBox3: TGroupBox;
     Image2: TImage;
-    btnDefHydProps: TButton;
     btnDefRoadPolls: TButton;
     btnShowRoadDrainageEditor: TButton;
     btnShowParcelDrainageAndBMPEditor: TButton;
@@ -77,7 +74,7 @@ implementation
 uses
   GSIO, GSUtils, GSPLRM, GSNodes, GSCatchments, UProject, UGlobals,
   Uvalidate, _PLRMD1LandUseAssignmnt2, _PLRMD4RoadPollutants,
-  _PLRMD2SoilsAssignmnt, _PLRM3PSCDef, _PLRMD5RoadDrainageEditor,
+  _PLRMD2SoilsAssignmnt, _PLRMD5RoadDrainageEditor,
   _PLRMD6ParcelDrainageAndBMPs,
   FPropEd, UBrowser;
 
@@ -101,7 +98,7 @@ begin
   begin
     PLRMObj.currentCatchment.soilsInfData :=
       GSIO.getSoilsProps(PLRMObj.currentCatchment.soilsMapUnitData);
-    allDrxXtcs := getDrngCondsInput(cbxGlobalSpecfc.Text);
+
     PLRMObj.currentCatchment.hasDefDrnXtcs := true;
     // btnOk.Enabled := btnDefHydProps.Enabled;
   end
@@ -131,8 +128,6 @@ begin
   if tempInt = mrOK then
   begin
     btnDefSoils.Enabled := true;
-    btnDefLuseConds.Enabled := false;
-    btnDefHydProps.Enabled := false;
     btnOk.Enabled := false;
     Self.btnDefSoilsClick(Sender);
   end;
@@ -149,8 +144,6 @@ begin
     ShowMessage('Please provide land use information first');
     Exit;
   end;
-  getSCandDrngXtrstcsInput(PLRMObj.currentCatchment.name);
-  btnDefHydProps.Enabled := true;
   btnOk.Enabled := false;
   btnDefHydPropsClick(Sender);
 end;
@@ -346,22 +339,6 @@ begin
 
       PLRMObj.currentCatchment.name := edtCatchName.Text;
 
-      // change catchment names in road condition schemes
-      if PLRMObj.currentCatchment.primRdRcSchm <> nil then
-        PLRMObj.currentCatchment.primRdRcSchm.catchName := edtCatchName.Text;
-      if PLRMObj.currentCatchment.secRdRcSchm <> nil then
-        PLRMObj.currentCatchment.secRdRcSchm.catchName := edtCatchName.Text;
-      // change catchment names in hyd prop schemes
-      for I := 0 to High(PLRMObj.currentCatchment.catchHydPropSchemes) do
-      begin
-        for J := 0 to High(PLRMObj.currentCatchment.catchHydPropSchemes[I]) do
-        begin
-          if (PLRMObj.currentCatchment.catchHydPropSchemes[I][J] <> nil) then
-            PLRMObj.currentCatchment.catchHydPropSchemes[I][J].catchName :=
-              edtCatchName.Text;
-        end;
-      end;
-
       // update name in swmm
       EditorObject := SUBCATCH;
       // lets swmm functions know we are working with catchments
@@ -389,35 +366,33 @@ end;
 
 procedure TCatchProps.edtCatchNameExit(Sender: TObject);
 var
-  HydSchm: TPLRMHydPropsScheme; // 2014
-  RdSchm: TPLRMRdCondsScheme; // 2014
   I: Integer;
 begin
   checkDupCatchName();
 
   // 2014 when catchment name changes update hydProp schemes to reflect new catchment names
-  if ((PLRMObj.hydPropsSchemes <> nil)) then
-  begin
-    for I := 0 to PLRMObj.hydPropsSchemes.Count - 1 do
-    begin
-      HydSchm := PLRMObj.hydPropsSchemes.Objects[I] as TPLRMHydPropsScheme;
-      // if the catchment name for the scheme matches the old catchment name, update it
-      if (HydSchm.catchName = currentCatchOrigName) then
-        HydSchm.catchName := PLRMObj.currentCatchment.name;
-    end;
-  end;
+//  if ((PLRMObj.hydPropsSchemes <> nil)) then
+//  begin
+//    for I := 0 to PLRMObj.hydPropsSchemes.Count - 1 do
+//    begin
+//      HydSchm := PLRMObj.hydPropsSchemes.Objects[I] as TPLRMHydPropsScheme;
+//      // if the catchment name for the scheme matches the old catchment name, update it
+//      if (HydSchm.catchName = currentCatchOrigName) then
+//        HydSchm.catchName := PLRMObj.currentCatchment.name;
+//    end;
+//  end;
 
-  // 2014 when catchment name changes update rdCond schemes to reflect new catchment names
-  if ((PLRMObj.rdCondsSchemes <> nil)) then
-  begin
-    for I := 0 to PLRMObj.rdCondsSchemes.Count - 1 do
-    begin
-      RdSchm := PLRMObj.rdCondsSchemes.Objects[I] as TPLRMRdCondsScheme;
-      // if the catchment name for the scheme matches the old catchment name, update it
-      if (RdSchm.catchName = currentCatchOrigName) then
-        RdSchm.catchName := PLRMObj.currentCatchment.name;
-    end;
-  end;
+//  // 2014 when catchment name changes update rdCond schemes to reflect new catchment names
+//  if ((PLRMObj.rdCondsSchemes <> nil)) then
+//  begin
+//    for I := 0 to PLRMObj.rdCondsSchemes.Count - 1 do
+//    begin
+//      RdSchm := PLRMObj.rdCondsSchemes.Objects[I] as TPLRMRdCondsScheme;
+//      // if the catchment name for the scheme matches the old catchment name, update it
+//      if (RdSchm.catchName = currentCatchOrigName) then
+//        RdSchm.catchName := PLRMObj.currentCatchment.name;
+//    end;
+//  end;
 end;
 
 procedure TCatchProps.edtCatchNameKeyPress(Sender: TObject; var Key: Char);
@@ -512,8 +487,6 @@ begin
   // if any of the input changes invalidate and have user go back through forms
   btnDefLuse.Enabled := true; // always true
   btnDefSoils.Enabled := false;
-  btnDefLuseConds.Enabled := false;
-  btnDefHydProps.Enabled := false;
   btnDefRoadPolls.Enabled := false;
   btnShowRoadDrainageEditor.Enabled := false;
   btnShowParcelDrainageAndBMPEditor.Enabled := false;

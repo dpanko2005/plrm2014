@@ -206,13 +206,13 @@ var
       end;
     end;
 
-    xmlDoc := nil;
+    //xmlDoc := nil;
     // dont set to nil iNode := nil;
-    tempNode := nil;
-    tempNodeList:= nil;
-    tempNode2:= nil;
-    tempNodeList2:= nil;
-    tempNode3:= nil;
+    //tempNode := nil;
+    //tempNodeList:= nil;
+    //tempNode2:= nil;
+    //tempNodeList2:= nil;
+    //tempNode3:= nil;
 
     Result:= iNode;
   end;

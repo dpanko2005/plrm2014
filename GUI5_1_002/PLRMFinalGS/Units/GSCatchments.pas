@@ -63,70 +63,6 @@ type
   end;
 
 type
-  TPLRMHydPropsScheme = class
-    // flags
-    isSet: boolean;
-
-    name: String;
-    catchName: String;
-    id: String;
-    description: String;
-    category: String;
-    stype: Integer;
-    // sType -0 - to outlet, 1 - to infiltration, 2 - to pervious dispersion
-    snowPackID: String;
-    luse: String;
-    // added to seperate schemes of the same stype and belonging to the same catchment but assigned to dif luses
-
-    // data from _PLRMD6DrngXtsDetail form
-    drngHydProps: PLRMGridData;
-    // Drainage area hydrologic properties grid values
-    hydPropsHSC: PLRMGridData;
-    // HSC hydrologic properties grid values for infiltration or pervious dispersion
-    hydPropsGA: PLRMGridData; // Green-Ampt props grid values
-
-    constructor Create;
-    destructor Destroy; override;
-    function writeSchemeXML(): IXMLNode;
-    procedure readSchemeXML(iNode: IXMLNode);
-    procedure readSchemeDb(schmExt: String; soilsInfData: PLRMGridData);
-  end;
-
-type
-  TPLRMRdCondsScheme = class
-    isSet: boolean;
-    name: String;
-    catchName: String; // catchment name + id
-    id: String;
-    description: String;
-    stype: Integer;
-    pollPotential: PLRMGridData;
-    pollPotentialIDs: PLRMGridData;
-    shoulderConds: PLRMGridData;
-    rdReportCardPPS: PLRMGridData;
-    rdReportCardSES: PLRMGridData;
-    runoffConcs: PLRMGridData;
-    pollDelFactors: PLRMGridData;
-
-    constructor Create;
-    destructor Destroy; override;
-    function writeSchemeXML(): IXMLNode;
-    procedure readSchemeXML(filePath: String); overload;
-    procedure readSchemeXML(iNode: IXMLNode); overload;
-    // function validate():TStringList;
-  private
-    // XML Related Variables
-    rdShouldrTags: TStringList;
-    reportCardTagsPPS: TStringList;
-    reportCardTagsSES: TStringList;
-    runoffConcsTags: TStringList;
-    pollDelFactorTags: TStringList;
-  end;
-
-type
-  SchemeArray = array [0 .. 2] of TPLRMHydPropsScheme;
-
-type
   TPLRMCatch = class
     // identification
     id: Integer;
@@ -196,9 +132,7 @@ type
     othrPrcntToOut: double;
     othrPrcntImpv: double;
 
-    // _PLRM4RoadConditions
-    secRdRcSchm: TPLRMRdCondsScheme;
-    primRdRcSchm: TPLRMRdCondsScheme;
+
 
     // _PLRM5RoadDrnXtcs input
     secRdDrng: PLRMGridData;
@@ -208,14 +142,6 @@ type
     cicuDrng: PLRMGridData;
     vegTDrng: PLRMGridData;
     othrDrng: PLRMGridData;
-
-    // _PLRM5RoadDrnXtcs input
-    secRdSchm: TPLRMHydPropsScheme;
-    primRdSchm: TPLRMHydPropsScheme;
-    sfrSchm: TPLRMHydPropsScheme;
-    mfrSchm: TPLRMHydPropsScheme;
-    cicuSchm: TPLRMHydPropsScheme;
-    vegTSchm: TPLRMHydPropsScheme;
 
     // 2014
     frm4of6SgRoadShoulderData: PLRMGridData;
@@ -235,21 +161,6 @@ type
     frm6of6aSgBMPSizeMFRData: PLRMGridData;
     frm6of6aSgBMPSizeCICUData: PLRMGridData;
 
-    secRdSchms: array [0 .. 2] of TPLRMHydPropsScheme;
-    primRdSchms: array [0 .. 2] of TPLRMHydPropsScheme;
-    sfrSchms: array [0 .. 2] of TPLRMHydPropsScheme;
-    // more than needed for uniformity and possible future extension
-    mfrSchms: array [0 .. 2] of TPLRMHydPropsScheme;
-    // more than needed for uniformity and possible future extension
-    cicuSchms: array [0 .. 2] of TPLRMHydPropsScheme;
-    // more than needed for uniformity and possible future extension
-    vegTSchms: array [0 .. 2] of TPLRMHydPropsScheme;
-    // more than needed for uniformity and possible future extension
-    othrSchms: array [0 .. 2] of TPLRMHydPropsScheme;
-    // more than needed for uniformity and possible future extension
-    catchHydPropSchemes: array of array of TPLRMHydPropsScheme;
-    // used to store all of the above arrays (see constructor) for easy processing
-
     constructor Create;
     destructor Destroy; override;
     function getKSat(typeFlag: Integer): double;
@@ -260,17 +171,13 @@ type
     procedure updateSWMM();
     function catchToXML(projectLuseNames: TStringList;
       ProjectLuseCodes: TStringList): IXMLNode;
-    procedure xmlToCatch(iNode: IXMLNode; hydSchemes: TStringList;
-      rcSchemes: TStringList);
+    procedure xmlToCatch(iNode: IXMLNode);
 
   public
     procedure updateCurCatchProps(newName: String; physclProps: PLRMGridData;
       outGSNode: TPLRMNode);
     // always use PLRMObj version so that PLRMObj catchment list is updated
-    procedure copyHydSchemesToArray();
   end;
-
-procedure freeListofHydpropSchemes(var SchmList: TStringList);
 
 var
   luseOffset: Integer;
@@ -386,645 +293,9 @@ var
 implementation
 
 uses
-  _PLRMD3CatchProps, _PLRM7SWTs, Fmain, Uimport, Uglobals, GSIO;
+   _PLRM7SWTs, Fmain, Uimport, Uglobals, GSIO;
 
-{$REGION 'PLRMHydPropsScheme Class Methods' }
 
-constructor TPLRMHydPropsScheme.Create();
-begin
-  isSet := false;
-  id := '-1';
-  snowPackID := '-1';
-  SetLength(drngHydProps, 4, 3);
-  SetLength(hydPropsHSC, 4, 3);
-  SetLength(hydPropsGA, 3, 3);
-end;
-
-destructor TPLRMHydPropsScheme.Destroy;
-begin
-  // Free plrmgridata types
-  drngHydProps := nil;
-  hydPropsHSC := nil;
-  hydPropsGA := nil;
-  inherited;
-end;
-
-function TPLRMHydPropsScheme.writeSchemeXML(): IXMLNode;
-var
-  XMLDoc: IXMLDocument;
-  iNode: IXMLNode;
-  tempNode0: IXMLNode;
-  tempNode1: IXMLNode;
-  tempNode2: IXMLNode;
-  tempNode3: IXMLNode;
-  tempNode4: IXMLNode;
-  tempNode5: IXMLNode;
-  tempNode6: IXMLNode;
-  tempNode7: IXMLNode;
-  tempNode8: IXMLNode;
-  tempNode9: IXMLNode;
-  tempNode10: IXMLNode;
-  tempNode11: IXMLNode;
-begin
-  XMLDoc := TXMLDocument.Create(nil);
-  XMLDoc.Active := true;
-
-  tempNode9 := XMLDoc.AddChild('PLRM');
-  tempNode0 := tempNode9.AddChild('Schemes');
-  iNode := tempNode0.AddChild('Scheme');
-  iNode.Attributes['id'] := id;
-  iNode.Attributes['name'] := name;
-  iNode.Attributes['catchName'] := catchName;
-  iNode.Attributes['luse'] := luse;
-  iNode.Attributes['description'] := description;
-  iNode.Attributes['category'] := category;
-  iNode.Attributes['stype'] := stype;
-  iNode.Attributes['snowPackID'] := snowPackID;
-
-  tempNode11 := iNode.AddChild('ManningsImpervious', '');
-  tempNode11.Attributes['default'] := drngHydProps[0, 0];
-  tempNode11.Attributes['units'] := drngHydProps[0, 1];
-  tempNode11.Text := drngHydProps[0, 2];
-
-  tempNode1 := iNode.AddChild('ManningsPervious', '');
-  tempNode1.Attributes['default'] := drngHydProps[1, 0];
-  tempNode1.Attributes['units'] := drngHydProps[1, 1];
-  tempNode1.Text := drngHydProps[1, 2];
-
-  tempNode2 := iNode.AddChild('DepStoreImpervious', '');
-  tempNode2.Attributes['default'] := drngHydProps[2, 0];
-  tempNode2.Attributes['units'] := drngHydProps[2, 1];
-  tempNode2.Text := drngHydProps[2, 2];
-
-  tempNode3 := iNode.AddChild('DepStorePerv', '');
-  tempNode3.Attributes['default'] := drngHydProps[3, 0];
-  tempNode3.Attributes['units'] := drngHydProps[3, 1];
-  tempNode3.Text := drngHydProps[3, 2];
-
-  tempNode10 := iNode.AddChild('SnowMelt', '');
-  tempNode10.Text := snowPackID;
-
-  tempNode4 := iNode.AddChild('GreenAmpt', '');
-
-  tempNode5 := tempNode4.AddChild('Ksat', '');
-  tempNode5.Attributes['default'] := hydPropsGA[0, 0];
-  tempNode5.Attributes['units'] := hydPropsGA[0, 1];
-  tempNode5.Text := hydPropsGA[0, 2];
-
-  tempNode6 := tempNode4.AddChild('Ssh', '');
-  tempNode6.Attributes['default'] := hydPropsGA[1, 0];
-  tempNode6.Attributes['units'] := hydPropsGA[1, 1];
-  tempNode6.Text := hydPropsGA[1, 2];
-
-  tempNode7 := tempNode4.AddChild('Smd', '');
-  tempNode7.Attributes['default'] := hydPropsGA[2, 0];
-  tempNode7.Attributes['units'] := hydPropsGA[2, 1];
-  tempNode7.Text := hydPropsGA[2, 2];
-
-  case stype of
-    0:
-      ; // do nothing areas draining to outlet
-    1:
-      begin
-        tempNode8 := iNode.AddChild('UnitStorArea');
-        tempNode8.Attributes['default'] := hydPropsHSC[0, 0];
-        tempNode8.Attributes['units'] := hydPropsHSC[0, 1];
-        tempNode8.Text := hydPropsHSC[0, 2];
-
-        tempNode8 := iNode.AddChild('Ksat');
-        tempNode8.Attributes['default'] := hydPropsHSC[1, 0];
-        tempNode8.Attributes['units'] := hydPropsHSC[1, 1];
-        tempNode8.Text := hydPropsHSC[1, 2];
-      end;
-    2:
-      begin
-        tempNode8 := iNode.AddChild('DspArea');
-        tempNode8.Attributes['default'] := hydPropsHSC[0, 0];
-        tempNode8.Attributes['units'] := hydPropsHSC[0, 1];
-        tempNode8.Text := hydPropsHSC[0, 2];
-
-        tempNode8 := iNode.AddChild('Slope');
-        tempNode8.Attributes['default'] := hydPropsHSC[1, 0];
-        tempNode8.Attributes['units'] := hydPropsHSC[1, 1];
-        tempNode8.Text := hydPropsHSC[1, 2];
-
-        tempNode8 := iNode.AddChild('Ksat');
-        tempNode8.Attributes['default'] := hydPropsHSC[2, 0];
-        tempNode8.Attributes['units'] := hydPropsHSC[2, 1];
-        tempNode8.Text := hydPropsHSC[2, 2];
-
-        tempNode8 := iNode.AddChild('PDAdepStor');
-        tempNode8.Attributes['default'] := hydPropsHSC[3, 0];
-        tempNode8.Attributes['units'] := hydPropsHSC[3, 1];
-        tempNode8.Text := hydPropsHSC[3, 2];
-      end;
-  end;
-  XMLDoc := nil;
-  Result := tempNode9;
-end;
-
-procedure TPLRMHydPropsScheme.readSchemeDb(schmExt: String;
-  soilsInfData: PLRMGridData);
-var
-  hydProps: dbReturnFields;
-  gaProps: dbReturnFields;
-begin
-  hydProps := GSIO.getDefaults('"6%"');
-
-  id := '-1';
-  name := schmExt; // 'ParcelsInfProp25';
-  catchName := 'TempName';
-  luse := 'temp';
-  description := 'Hydrologic Properties Scheme - To Infiltration HSC';
-
-  if (schmExt = HSRDOUTSCHMEXT) then
-  begin
-    category := 'ToOutlet';
-    stype := 0;
-    snowPackID := 'Roads';
-  end;
-  if (schmExt = HSRDINFSCHMEXT) then
-  begin
-    gaProps := GSIO.getDefaults('"8%"');
-    category := 'ToInfiltration';
-    stype := 1;
-    snowPackID := 'Roads';
-  end;
-  if (schmExt = HSRDDSPSCHMEXT) then
-  begin
-    gaProps := GSIO.getDefaults('"9%"');
-    category := 'ToPerviousDispersion';
-    stype := 2;
-    snowPackID := 'Roads';
-  end;
-  if (schmExt = HSPCOTHRSCHMEXT) then
-  begin
-    category := 'ToOutlet';
-    stype := 0;
-    snowPackID := 'Parcels';
-  end;
-  if (schmExt = HSPCINFSCHMEXT) then
-  begin
-    gaProps := GSIO.getDefaults('"8%"');
-    category := 'ToInfiltration';
-    stype := 1;
-    snowPackID := 'Parcels';
-  end;
-
-  drngHydProps[0, 0] := FormatFloat('#0.000', StrToFloat(hydProps[0][0]));
-  drngHydProps[0, 1] := hydProps[0][1];
-  drngHydProps[0, 2] := FormatFloat('#0.000', StrToFloat(hydProps[0][0]));
-
-  drngHydProps[1, 0] := FormatFloat('#0.000', StrToFloat(hydProps[0][1]));
-  drngHydProps[1, 1] := hydProps[1][1];;
-  drngHydProps[1, 2] := FormatFloat('#0.000', StrToFloat(hydProps[0][1]));
-
-  drngHydProps[2, 0] := FormatFloat('#0.0', StrToFloat(hydProps[0][2]));
-  drngHydProps[2, 1] := hydProps[1][2];
-  drngHydProps[2, 2] := FormatFloat('#0.0', StrToFloat(hydProps[0][2]));
-
-  drngHydProps[3, 0] := FormatFloat('#0.0', StrToFloat(hydProps[0][3]));
-  drngHydProps[3, 1] := hydProps[1][3];
-  drngHydProps[3, 2] := FormatFloat('#0.0', StrToFloat(hydProps[0][3]));
-
-  if (assigned(soilsInfData)) then
-  begin
-    // KSat
-    hydPropsGA[0, 0] := FormatFloat('#0.000', StrToFloat(soilsInfData[0][1]));
-    hydPropsGA[0, 1] := 'in/hr';
-    hydPropsGA[0, 2] := FormatFloat('#0.000', StrToFloat(soilsInfData[0][1]));
-    // Ssh
-    hydPropsGA[1, 0] := FormatFloat('#0.000', StrToFloat(soilsInfData[0][2]));
-    hydPropsGA[1, 1] := 'in';
-    hydPropsGA[1, 2] := FormatFloat('#0.000', StrToFloat(soilsInfData[0][2]));
-    // Smd
-    hydPropsGA[2, 0] := FormatFloat('#0.000', StrToFloat(soilsInfData[0][3]));
-    hydPropsGA[2, 1] := 'in';
-    hydPropsGA[2, 2] := FormatFloat('#0.000', StrToFloat(soilsInfData[0][3]));
-  end
-  else
-  begin
-    // Values below overwritten later when catchment properties provided
-    // KSat
-    hydPropsGA[0, 0] := '-1';
-    hydPropsGA[0, 1] := 'in/hr';
-    hydPropsGA[0, 2] := '-1';
-    // Ssh
-    hydPropsGA[1, 0] := '-1';
-    hydPropsGA[1, 1] := 'in';
-    hydPropsGA[1, 2] := '-1';
-    // Smd
-    hydPropsGA[2, 0] := '-1';
-    hydPropsGA[2, 1] := 'in';
-    hydPropsGA[2, 2] := '-1';
-  end;
-
-  case stype of
-    0:
-      ; // do nothing areas draining to outlet
-    1:
-      begin
-        // Unit storage area
-        hydPropsHSC[0, 0] := FormatFloat('#0', StrToFloat(gaProps[0][0]));
-        hydPropsHSC[0, 1] := gaProps[1][0];
-        hydPropsHSC[0, 2] := FormatFloat('#0', StrToFloat(gaProps[0][0]));
-        // KSat
-        hydPropsHSC[1, 0] := FormatFloat('#0.00', StrToFloat(gaProps[0][1]));
-        hydPropsHSC[1, 1] := gaProps[1][1];
-        hydPropsHSC[1, 2] := FormatFloat('#0.00', StrToFloat(gaProps[0][1]));
-      end;
-    2:
-      begin
-        // DspArea
-        hydPropsHSC[0, 0] := FormatFloat('#0', StrToFloat(gaProps[0][0]));
-        hydPropsHSC[0, 1] := gaProps[1][0];
-        hydPropsHSC[0, 2] := FormatFloat('#0', StrToFloat(gaProps[0][0]));
-        // Slope
-        hydPropsHSC[1, 0] := FormatFloat('#0.0', StrToFloat(gaProps[0][1]));
-        hydPropsHSC[1, 1] := gaProps[1][1];
-        hydPropsHSC[1, 2] := FormatFloat('#0.0', StrToFloat(gaProps[0][1]));
-
-        // KSat   - use native soils rate
-        // Jan 2010 edit to fix #232
-        if (assigned(soilsInfData)) then
-        begin
-          hydPropsHSC[2, 0] := FormatFloat('#0.000',
-            StrToFloat(soilsInfData[0][1]));
-          hydPropsHSC[2, 1] := 'in/hr';
-          hydPropsHSC[2, 2] := FormatFloat('#0.000',
-            StrToFloat(soilsInfData[0][1]));
-        end
-        else
-          Showmessage('Soils information is incomplete');
-
-        // DepStorPerv
-        hydPropsHSC[3, 0] := FormatFloat('#0.0', StrToFloat(gaProps[0][2]));
-        hydPropsHSC[3, 1] := gaProps[1][2];
-        hydPropsHSC[3, 2] := FormatFloat('#0.0', StrToFloat(gaProps[0][2]));
-      end;
-  end;
-  isSet := true;
-end;
-
-// updated 10/18
-procedure TPLRMHydPropsScheme.readSchemeXML(iNode: IXMLNode);
-var
-  hydProps: dbReturnFields;
-  // gaProps: dbReturnFields;
-begin
-  hydProps := GSIO.getDefaults('"6%"');
-
-  id := iNode.Attributes['id'];
-  name := iNode.Attributes['name'];
-  catchName := iNode.Attributes['catchName'];
-  luse := iNode.Attributes['luse'];
-  description := iNode.Attributes['description'];
-  category := iNode.Attributes['category'];
-  stype := iNode.Attributes['stype'];
-  snowPackID := iNode.Attributes['snowPackID'];
-
-  drngHydProps[0, 0] := FormatFloat('#0.000', StrToFloat(hydProps[0][0]));
-  drngHydProps[0, 1] := hydProps[0][1];
-  drngHydProps[0, 2] := FormatFloat('#0.000', StrToFloat(hydProps[0][0]));
-
-  drngHydProps[1, 0] := FormatFloat('#0.000', StrToFloat(hydProps[0][1]));
-  drngHydProps[1, 1] := hydProps[1][1];;
-  drngHydProps[1, 2] := FormatFloat('#0.000', StrToFloat(hydProps[0][1]));
-
-  drngHydProps[2, 0] := FormatFloat('#0.0', StrToFloat(hydProps[0][2]));
-  drngHydProps[2, 1] := hydProps[1][2];
-  drngHydProps[2, 2] := FormatFloat('#0.0', StrToFloat(hydProps[0][2]));
-
-  drngHydProps[3, 0] := FormatFloat('#0.0', StrToFloat(hydProps[0][3]));
-  drngHydProps[3, 1] := hydProps[1][3];
-  drngHydProps[3, 2] := FormatFloat('#0.0', StrToFloat(hydProps[0][3]));
-
-  hydPropsGA[0, 0] := iNode.ChildNodes['GreenAmpt'].ChildNodes['Ksat']
-    .Attributes['default'];
-  hydPropsGA[0, 1] := iNode.ChildNodes['GreenAmpt'].ChildNodes['Ksat']
-    .Attributes['units'];
-  hydPropsGA[0, 2] := iNode.ChildNodes['GreenAmpt'].ChildNodes['Ksat'].Text;
-
-  hydPropsGA[1, 0] := iNode.ChildNodes['GreenAmpt'].ChildNodes['Ssh'].Attributes
-    ['default'];
-  hydPropsGA[1, 1] := iNode.ChildNodes['GreenAmpt'].ChildNodes['Ssh']
-    .Attributes['units'];
-  hydPropsGA[1, 2] := iNode.ChildNodes['GreenAmpt'].ChildNodes['Ssh'].Text;
-
-  hydPropsGA[2, 0] := iNode.ChildNodes['GreenAmpt'].ChildNodes['Smd'].Attributes
-    ['default'];
-  hydPropsGA[2, 1] := iNode.ChildNodes['GreenAmpt'].ChildNodes['Smd']
-    .Attributes['units'];
-  hydPropsGA[2, 2] := iNode.ChildNodes['GreenAmpt'].ChildNodes['Smd'].Text;
-
-  case stype of
-    0:
-      ; // do nothing areas draining to outlet
-    1:
-      begin
-        // infiltration footprint
-        hydPropsHSC[0, 0] := iNode.ChildNodes['UnitStorArea'].Attributes
-          ['default'];
-        hydPropsHSC[0, 1] := iNode.ChildNodes['UnitStorArea']
-          .Attributes['units'];
-        hydPropsHSC[0, 2] := iNode.ChildNodes['UnitStorArea'].Text;
-
-        // infiltration ksat
-        hydPropsHSC[1, 0] := iNode.ChildNodes['Ksat'].Attributes['default'];
-        hydPropsHSC[1, 1] := iNode.ChildNodes['Ksat'].Attributes['units'];
-        hydPropsHSC[1, 2] := iNode.ChildNodes['Ksat'].Text;
-      end;
-    2:
-      begin
-        // gaProps := GSIO.getDefaults('"9%"');
-        hydPropsHSC[0, 0] := iNode.ChildNodes['DspArea'].Attributes['default'];
-        hydPropsHSC[0, 1] := iNode.ChildNodes['DspArea'].Attributes['units'];
-        hydPropsHSC[0, 2] := iNode.ChildNodes['DspArea'].Text;
-
-        // Pervious Dispersion slope
-        hydPropsHSC[1, 0] := iNode.ChildNodes['Slope'].Attributes['default'];
-        hydPropsHSC[1, 1] := iNode.ChildNodes['Slope'].Attributes['units'];
-        hydPropsHSC[1, 2] := iNode.ChildNodes['Slope'].Text;
-
-        // Pervious Dispersion ksat
-        hydPropsHSC[2, 0] := iNode.ChildNodes['Ksat'].Attributes['default'];
-        hydPropsHSC[2, 1] := iNode.ChildNodes['Ksat'].Attributes['units'];
-        hydPropsHSC[2, 2] := iNode.ChildNodes['Ksat'].Text;
-
-        // Pervious Dispersion Depression Storage
-        hydPropsHSC[3, 0] := iNode.ChildNodes['PDAdepStor'].Attributes
-          ['default'];
-        hydPropsHSC[3, 1] := iNode.ChildNodes['PDAdepStor'].Attributes['units'];
-        hydPropsHSC[3, 2] := iNode.ChildNodes['PDAdepStor'].Text;
-
-      end;
-  end;
-  isSet := true;
-end;
-
-procedure freeListofHydpropSchemes(var SchmList: TStringList);
-var
-  I: Integer;
-  O: TObject;
-begin
-  // schemes may be pointers to other schemes so deallocate one at a time
-  for I := 0 to SchmList.Count - 1 do
-  begin
-    O := SchmList.Objects[I];
-    if ((assigned(O)) and ((O as TPLRMHydPropsScheme).drngHydProps <> nil)) then
-      FreeAndNil(O);
-  end;
-  FreeAndNil(SchmList);
-end;
-
-{$ENDREGION}
-{$REGION 'TPLRMRdCondsScheme Class Methods' }
-
-constructor TPLRMRdCondsScheme.Create();
-var
-  I: Integer;
-begin
-  isSet := false;
-  id := '-1';
-  SetLength(pollPotential, 3, 3);
-  SetLength(pollPotentialIDs, 3, 3);
-  SetLength(shoulderConds, 3, 4);
-  SetLength(rdReportCardPPS, 3, 1);
-  SetLength(rdReportCardSES, 3, 1);
-  SetLength(runoffConcs, 3, 5);
-  SetLength(pollDelFactors, 3, 2);
-
-  rdShouldrTags := TStringList.Create;
-  reportCardTagsPPS := TStringList.Create;
-  reportCardTagsSES := TStringList.Create;
-  runoffConcsTags := TStringList.Create;
-  pollDelFactorTags := TStringList.Create;
-
-  reportCardTagsPPS.Add('PollPotScore');
-  reportCardTagsSES.Add('SweepEffctvScore');
-
-  for I := 0 to High(rdShouldrCondsXMLTags) do
-    rdShouldrTags.Add(rdShouldrCondsXMLTags[I]);
-  for I := 0 to High(runoffConcsXMLTags) do
-    runoffConcsTags.Add(runoffConcsXMLTags[I]);
-  for I := 0 to High(rdReportCardXMLTags) do
-    pollDelFactorTags.Add(pollDelFactorXMLTags[I]);
-end;
-
-// TWords destructor - release storage
-destructor TPLRMRdCondsScheme.Destroy;
-begin
-  // no need to free record types so skipped
-  // free plrmgridata types
-  pollPotential := nil;
-  pollPotentialIDs := nil;
-  shoulderConds := nil;
-  rdReportCardPPS := nil;
-  rdReportCardSES := nil;
-  runoffConcs := nil;
-  pollDelFactors := nil;
-  FreeAndNil(rdShouldrTags);
-  FreeAndNil(reportCardTagsPPS);
-  FreeAndNil(reportCardTagsSES);
-  FreeAndNil(runoffConcsTags);
-  FreeAndNil(pollDelFactorTags);
-
-  inherited;
-end;
-
-function TPLRMRdCondsScheme.writeSchemeXML(): IXMLNode;
-var
-  XMLDoc: IXMLDocument;
-  iNode: IXMLNode;
-  tempNode0: IXMLNode;
-  tempNode1: IXMLNode;
-  tempNode2: IXMLNode;
-  tempNode3: IXMLNode;
-  tempNode4: IXMLNode;
-  tempNode5: IXMLNode;
-  tempNode5b: IXMLNode;
-  tempNode6: IXMLNode;
-  tempNode7: IXMLNode;
-  tempNode8: IXMLNode;
-  tempLst: TStringList;
-  tempNodeLst1: array [0 .. 2] of IXMLNode;
-  tempNodeLst2: array [0 .. 2] of IXMLNode;
-  tempNodeLst3: array [0 .. 2] of IXMLNode;
-  tempNodeLst4: IXMLNodeList;
-  tempNodeLst5: IXMLNodeList;
-  tempNodeLst6: IXMLNodeList;
-  tempNodeLst7: IXMLNodeList;
-  I: Integer;
-
-begin
-  XMLDoc := TXMLDocument.Create(nil);
-  XMLDoc.Active := true;
-
-  tempNode8 := XMLDoc.AddChild('PLRM');
-  tempNode3 := tempNode8.AddChild('Schemes');
-  iNode := tempNode3.AddChild('Scheme');
-  iNode.Attributes['id'] := id;
-  iNode.Attributes['name'] := name;
-  iNode.Attributes['catchName'] := catchName;
-  iNode.Attributes['description'] := description;
-  iNode.Attributes['stype'] := stype;
-
-  // write abrasives application info
-  tempNode0 := iNode.AddChild('RoadConditions', '');
-  tempNode1 := tempNode0.AddChild('RoadAbbrasiveAppl', '');
-  for I := 0 to High(cats) do
-  begin
-    tempNode1.Attributes[cats[I]] := pollPotentialIDs[I][0];
-    tempNodeLst1[I] := tempNode1.AddChild(cats[I], '');
-    tempNodeLst1[I].Text := pollPotential[I][0];
-  end;
-
-  tempNode0.Resync;
-
-  // write sweeper type info
-  tempNode2 := tempNode0.AddChild('SweeperType', '');
-  for I := 0 to High(cats) do
-  begin
-    tempNode2.Attributes[cats[I]] := pollPotentialIDs[I][1];
-    tempNodeLst2[I] := tempNode2.AddChild(cats[I], '');
-    tempNodeLst2[I].Text := pollPotential[I][1];
-  end;
-  tempNode0.Resync;
-
-  // write sweeping frequency info
-  tempNode3 := tempNode0.AddChild('SweepingFreq', '');
-  for I := 0 to High(cats) do
-  begin
-    tempNode3.Attributes[cats[I]] := pollPotentialIDs[I][2];
-    tempNodeLst3[I] := tempNode3.AddChild(cats[I], '');
-    tempNodeLst3[I].Text := pollPotential[I][2];
-  end;
-  tempNode0.Resync;
-
-  tempLst := TStringList.Create;
-  tempLst.Add(cats[0]);
-  tempLst.Add(cats[1]);
-  tempLst.Add(cats[2]);
-
-  // write roadshoulder conditions info
-  tempNodeLst4 := GSUtils.plrmGridDataToXML2('RoadShoulderConditions1',
-    shoulderConds, rdShouldrTags, tempLst, tempLst);
-  tempNode4 := iNode.AddChild('RoadShoulderConditions', '');
-  for I := 0 to tempNodeLst4.Count - 1 do
-    tempNode4.ChildNodes.Add(tempNodeLst4[I]);
-  tempNode0.Resync;
-
-  // write road report card  now split into PPS - pollutant potential score and SES - sweeper effectiveness score
-  tempNodeLst5 := GSUtils.plrmGridDataToXML2('PPS', rdReportCardPPS,
-    reportCardTagsPPS, tempLst, tempLst);
-  tempNode5 := iNode.AddChild('PollutantPotentailScore', '');
-  for I := 0 to tempNodeLst5.Count - 1 do
-    tempNode5.ChildNodes.Add(tempNodeLst5[I]);
-  tempNode0.Resync;
-
-  tempNodeLst5 := GSUtils.plrmGridDataToXML2('SES', rdReportCardSES,
-    reportCardTagsSES, tempLst, tempLst);
-  tempNode5b := iNode.AddChild('SweeperEffectivenessScore', '');
-  for I := 0 to tempNodeLst5.Count - 1 do
-    tempNode5b.ChildNodes.Add(tempNodeLst5[I]);
-  tempNode0.Resync;
-
-  // write characteristic runoff concentrations
-  tempNodeLst6 := GSUtils.plrmGridDataToXML2('RunoffConcentrations1',
-    runoffConcs, runoffConcsTags, tempLst, tempLst);
-  tempNode6 := iNode.AddChild('RunoffConcentrations', '');
-  for I := 0 to tempNodeLst4.Count - 1 do
-    tempNode6.ChildNodes.Add(tempNodeLst6[I]);
-  tempNode0.Resync;
-
-  // write pollutant delivery factors
-  tempNodeLst7 := GSUtils.plrmGridDataToXML2('PollutantDeliveryFactors1',
-    pollDelFactors, pollDelFactorTags, tempLst, tempLst);
-  tempNode7 := iNode.AddChild('PollutantDeliveryFactors', '');
-  for I := 0 to tempNodeLst7.Count - 1 do
-    tempNode7.ChildNodes.Add(tempNodeLst7[I]);
-  tempNode0.Resync;
-
-  XMLDoc := nil;
-  Result := tempNode8;
-end;
-
-procedure TPLRMRdCondsScheme.readSchemeXML(iNode: IXMLNode);
-var
-  tempNode1: IXMLNode;
-  tempNode2: IXMLNode;
-  tempNode3: IXMLNode;
-  tempNodeLst1: array [0 .. 2] of IXMLNode;
-  tempNodeLst2: array [0 .. 2] of IXMLNode;
-  tempNodeLst3: array [0 .. 2] of IXMLNode;
-  I: Integer;
-begin
-  stype := iNode.Attributes['stype'];
-  if ((stype <> 3) or (stype <> 4)) then
-
-    id := String(iNode.Attributes['id']);
-  name := iNode.Attributes['name'];
-  catchName := iNode.Attributes['catchName'];
-  description := iNode.Attributes['description'];
-
-  // read abrasives application info
-  tempNode1 := iNode.ChildNodes['RoadConditions'].ChildNodes
-    ['RoadAbbrasiveAppl'];
-  for I := 0 to High(cats) do
-  begin
-    tempNodeLst1[I] := tempNode1.ChildNodes[cats[I]];
-    pollPotential[I][0] := tempNodeLst1[I].Text;
-    pollPotentialIDs[I][0] := tempNode1.Attributes[cats[I]];
-  end;
-
-  // read sweeper type info
-  tempNode2 := iNode.ChildNodes['RoadConditions'].ChildNodes['SweeperType'];
-  for I := 0 to High(cats) do
-  begin
-    tempNodeLst2[I] := tempNode2.ChildNodes[cats[I]];
-    pollPotential[I][1] := tempNodeLst2[I].Text;
-    pollPotentialIDs[I][1] := tempNode2.Attributes[cats[I]];
-  end;
-
-  // read sweeping frequency info
-  tempNode3 := iNode.ChildNodes['RoadConditions'].ChildNodes['SweepingFreq'];
-  for I := 0 to High(cats) do
-  begin
-    tempNodeLst3[I] := tempNode3.ChildNodes[cats[I]];
-    pollPotential[I][2] := tempNodeLst3[I].Text;
-    pollPotentialIDs[I][2] := tempNode3.Attributes[cats[I]];
-  end;
-  shoulderConds := GSUtils.xmlAttribToPlrmGridData
-    (iNode.ChildNodes['RoadShoulderConditions'], rdShouldrTags);
-  pollDelFactors := GSUtils.xmlAttribToPlrmGridData
-    (iNode.ChildNodes['PollutantDeliveryFactors'], pollDelFactorTags);
-  rdReportCardPPS := GSUtils.xmlAttribToPlrmGridData
-    (iNode.ChildNodes['PollutantPotentailScore'], reportCardTagsPPS);
-  rdReportCardSES := GSUtils.xmlAttribToPlrmGridData
-    (iNode.ChildNodes['SweeperEffectivenessScore'], reportCardTagsSES);
-  runoffConcs := GSUtils.xmlAttribToPlrmGridData
-    (iNode.ChildNodes['RunoffConcentrations'], runoffConcsTags);
-end;
-
-procedure TPLRMRdCondsScheme.readSchemeXML(filePath: String);
-var
-  XMLDoc: IXMLDocument;
-  iNode: IXMLNode;
-begin
-  XMLDoc := TXMLDocument.Create(nil);
-  XMLDoc.LoadFromFile(filePath);
-  XMLDoc.Active := true;
-
-  iNode := XMLDoc.ChildNodes['PLRM'].ChildNodes['Schemes'].ChildNodes['Scheme'];
-  readSchemeXML(iNode);
-  XMLDoc := nil;
-end;
-
-// function TPLRMRdCondsScheme.validate():TStringList;
-// begin
-//
-// end;
-{$ENDREGION}
 {$REGION 'PLRMCatch class methods'}
 
 // -----------------------------------------------------------------------------
@@ -1094,77 +365,7 @@ begin
   // using scheme list. Not released here cause other catchments might still
   // be referencing them
 
-  // Road condition schemes
-  secRdRcSchm := nil;
-  primRdRcSchm := nil;
-
-  // Hyd prop schemes
-  secRdSchm := nil;
-  primRdSchm := nil;
-  sfrSchm := nil;
-  mfrSchm := nil;
-  cicuSchm := nil;
-  vegTSchm := nil;
-
-  for I := 0 to 2 do
-  begin
-    // Set schemes to nil, actual memory released in when Schemes destroyed
-    // using scheme list. Not released here cause other catchments might still
-    // be referencing them
-    secRdSchms[I] := nil;
-    primRdSchms[I] := nil;
-    sfrSchms[I] := nil;
-    mfrSchms[I] := nil;
-    cicuSchms[I] := nil;
-    vegTSchms[I] := nil;
-    othrSchms[I] := nil;
-    // memory already free by another scheme pointing to same memeory
-  end;
-
-  for I := 0 to High(catchHydPropSchemes) do
-  begin
-    catchHydPropSchemes[I] := nil;
-  end;
-
   inherited Destroy;
-end;
-
-procedure TPLRMCatch.copyHydSchemesToArray();
-var
-  I: Integer;
-begin
-
-  SetLength(catchHydPropSchemes, 7);
-  for I := 0 to High(catchHydPropSchemes) do
-    SetLength(catchHydPropSchemes[I], 3);
-
-  catchHydPropSchemes[0, 0] := primRdSchms[0];
-  catchHydPropSchemes[0, 1] := primRdSchms[1];
-  catchHydPropSchemes[0, 2] := primRdSchms[2];
-
-  catchHydPropSchemes[1, 0] := secRdSchms[0];
-  catchHydPropSchemes[1, 1] := secRdSchms[1];
-  catchHydPropSchemes[1, 2] := secRdSchms[2];
-
-  catchHydPropSchemes[2, 0] := sfrSchms[0];
-  catchHydPropSchemes[2, 1] := sfrSchms[1];
-  catchHydPropSchemes[2, 2] := sfrSchms[2];
-
-  catchHydPropSchemes[3, 0] := mfrSchms[0];
-  catchHydPropSchemes[3, 1] := mfrSchms[1];
-  catchHydPropSchemes[3, 2] := mfrSchms[2];
-
-  catchHydPropSchemes[4, 0] := cicuSchms[0];
-  catchHydPropSchemes[4, 1] := cicuSchms[1];
-  catchHydPropSchemes[4, 2] := cicuSchms[2];
-
-  catchHydPropSchemes[5, 0] := vegTSchms[0];
-  catchHydPropSchemes[5, 1] := vegTSchms[1];
-  catchHydPropSchemes[5, 2] := vegTSchms[2];
-
-  catchHydPropSchemes[6, 0] := othrSchms[0];
-  catchHydPropSchemes[6, 1] := othrSchms[1];
-  catchHydPropSchemes[6, 2] := othrSchms[2];
 end;
 
 procedure TPLRMCatch.updateCurCatchProps(newName: String;
@@ -1524,14 +725,6 @@ begin
         (frm5of6RoadDrainageEditorData.ICIA +
         frm5of6RoadDrainageEditorData.DCIA) * totRoadImpervAcres / 100;
 
-      // calc catchment width
-      { tempArea := tempArea * 43560;
-        // tempWidth := Math.Power(tempArea * widthFactor, widthPower);
-        tempWidth := widthFactor * Math.Power(tempArea, widthPower);
-        if tempWidth > maxWidth then
-        tempWidth := maxWidth;
-        // tempWidth := tempArea / tempFloLength; }
-
       tempArea := tempArea * 43560;
       tempFloLength := Math.Power(tempArea * widthFactor, widthPower);
       if tempFloLength > MaxFloLength then
@@ -1551,13 +744,6 @@ begin
     tempNode2.Attributes['areaAc'] := tempArea;
     tempNode2.Attributes['impervArea'] := frm5of6RoadDrainageEditorData.ICIA *
       totRoadImpervAcres / 100;
-
-    // calc catchment width
-    { tempArea := tempArea * 43560;
-      // tempWidth := Math.Power(tempArea * widthFactor, widthPower);
-      tempWidth := widthFactor * Math.Power(tempArea, widthPower);
-      if tempWidth > maxWidth then
-      tempWidth := maxWidth; }
 
     tempArea := tempArea * 43560;
     tempFloLength := Math.Power(tempArea * widthFactor, widthPower);
@@ -1594,19 +780,9 @@ begin
       if tempFloLength > MaxFloLength then
         tempFloLength := MaxFloLength;
       tempWidth := tempArea / tempFloLength;
-
-      { // tempWidth := Math.Power(tempArea * widthFactor, widthPower);
-        tempWidth := widthFactor * Math.Power(tempArea, widthPower);
-        if tempWidth > maxWidth then
-        tempWidth := maxWidth;
-        // tempWidth := tempArea / tempFloLength; }
       tempNode2.Attributes['width'] := tempWidth;
       // calc hsc width
       tempArea := frm5of6RoadDrainageEditorData.INFFacility.totSurfaceArea;
-      { // tempWidth := Math.Power(tempArea * widthFactor, widthPower);
-        tempWidth := widthFactor * Math.Power(tempArea, widthPower);
-        if tempWidth > maxWidth then
-        tempWidth := maxWidth; }
 
       tempArea := tempArea * 1;
       // no need to convert to sq.ft since alread in sq.ft 43560;
@@ -1643,25 +819,12 @@ begin
 
       // calc catchment width
       tempArea := tempArea * 43560;
-      { tempWidth := widthFactor * Math.Power(tempArea, widthPower);
-        if tempWidth > maxWidth then
-        tempWidth := maxWidth; }
-
       tempFloLength := Math.Power(tempArea * widthFactor, widthPower);
       if tempFloLength > MaxFloLength then
         tempFloLength := MaxFloLength;
       tempWidth := tempArea / tempFloLength;
 
       tempNode2.Attributes['width'] := tempWidth;
-      // calc hsc width
-      // tempArea := frm5of6RoadDrainageEditorData.PervChanFacility.length *
-      // frm5of6RoadDrainageEditorData.PervChanFacility.width;
-      // tempArea := tempArea;
-      { tempFloLength := Math.Power(tempArea * widthFactor, widthPower);
-        if tempFloLength > maxFloLength then
-        tempFloLength := maxFloLength;
-        tempWidth := tempArea / tempFloLength;
-        tempNode2.Attributes['hscWidth'] := tempWidth; }
       tempNode2.Attributes['hscWidth'] :=
         2 * frm5of6RoadDrainageEditorData.PervChanFacility.width;
 
@@ -1985,144 +1148,6 @@ begin
         // for inf
         tempHSCParam[1] := 0; // for dsp
         tempHSCParam[2] := 0; // for out
-        case I of
-          0: // Primary Roads
-            begin
-              if (primRdSchms[0] <> nil) then
-                tempNode2.Attributes[drngSchmTypeXMLAttribTags[0]] :=
-                  primRdSchms[0].id
-              else
-                tempNode2.Attributes[drngSchmTypeXMLAttribTags[0]] := '-1';
-              if (primRdSchms[1] <> nil) then
-              begin
-                tempNode2.Attributes[drngSchmTypeXMLAttribTags[1]] :=
-                  primRdSchms[1].id;
-                tempHSCParam[0] := StrToFloat(primRdSchms[1].hydPropsHSC[0, 2])
-                  * StrToFloat(primRdDrng[0, 2]) * CONVCUFT;
-                // inf numbers in first row of grid at index 0
-              end
-              else
-                tempNode2.Attributes[drngSchmTypeXMLAttribTags[1]] := '-1';
-              if (primRdSchms[2] <> nil) then
-              begin
-                tempNode2.Attributes[drngSchmTypeXMLAttribTags[2]] :=
-                  primRdSchms[2].id;
-                tempHSCParam[1] := StrToFloat(primRdSchms[2].hydPropsHSC[0, 2])
-                // * strToFloat(primRdDrng[1,2])* CONVCUFT; //dsp numbers in second row of grid at index 1
-              end
-              else
-                tempNode2.Attributes[drngSchmTypeXMLAttribTags[2]] := '-1';
-            end;
-          1: // Secondary Roads
-            begin
-              if (secRdSchms[0] <> nil) then
-                tempNode2.Attributes[drngSchmTypeXMLAttribTags[0]] :=
-                  secRdSchms[0].id
-              else
-                tempNode2.Attributes[drngSchmTypeXMLAttribTags[0]] := '-1';
-              if (secRdSchms[1] <> nil) then
-              begin
-                tempNode2.Attributes[drngSchmTypeXMLAttribTags[1]] :=
-                  secRdSchms[1].id;
-                tempHSCParam[0] := StrToFloat(secRdSchms[1].hydPropsHSC[0, 2]) *
-                  StrToFloat(secRdDrng[0, 2]) * CONVCUFT;
-                // inf numbers in first row of grid at index 0
-              end
-              else
-                tempNode2.Attributes[drngSchmTypeXMLAttribTags[1]] := '-1';
-              if (secRdSchms[2] <> nil) then
-              begin
-                tempNode2.Attributes[drngSchmTypeXMLAttribTags[2]] :=
-                  secRdSchms[2].id;
-                tempHSCParam[1] := StrToFloat(secRdSchms[2].hydPropsHSC[0, 2])
-                // * strToFloat(secRdDrng[1,2])* CONVCUFT; //dsp numbers in second row of grid at index 1
-              end
-              else
-                tempNode2.Attributes[drngSchmTypeXMLAttribTags[2]] := '-1';
-            end;
-
-          2: // SFR
-            begin
-              if (sfrSchms[0] <> nil) then
-                tempNode2.Attributes[drngSchmTypeXMLAttribTags[0]] :=
-                  sfrSchms[0].id
-              else
-                tempNode2.Attributes[drngSchmTypeXMLAttribTags[0]] := '-1';
-              if (sfrSchms[1] <> nil) then
-              begin
-                tempNode2.Attributes[drngSchmTypeXMLAttribTags[1]] :=
-                  sfrSchms[1].id;
-                tempHSCParam[0] := StrToFloat(sfrSchms[1].hydPropsHSC[0, 2]) *
-                  StrToFloat(sfrDrng[0, 2]) * CONVCUFT;
-                // inf numbers in second row of grid at index 0
-              end
-              else
-                tempNode2.Attributes[drngSchmTypeXMLAttribTags[1]] := '-1';
-              tempNode2.Attributes[drngSchmTypeXMLAttribTags[2]] := '-1';
-            end;
-          3:
-            // MFR
-            begin
-              if (mfrSchms[0] <> nil) then
-                tempNode2.Attributes[drngSchmTypeXMLAttribTags[0]] :=
-                  mfrSchms[0].id
-              else
-                tempNode2.Attributes[drngSchmTypeXMLAttribTags[0]] := '-1';
-              if (mfrSchms[1] <> nil) then
-              begin
-                tempNode2.Attributes[drngSchmTypeXMLAttribTags[1]] :=
-                  mfrSchms[1].id;
-                tempHSCParam[0] := StrToFloat(mfrSchms[1].hydPropsHSC[0, 2]) *
-                  StrToFloat(mfrDrng[0, 2]) * CONVCUFT;
-                // inf numbers in second row of grid at index 0
-              end
-              else
-                tempNode2.Attributes[drngSchmTypeXMLAttribTags[1]] := '-1';
-              tempNode2.Attributes[drngSchmTypeXMLAttribTags[2]] := '-1';
-            end;
-          4:
-            // CICU
-            begin
-              if (cicuSchms[0] <> nil) then
-                tempNode2.Attributes[drngSchmTypeXMLAttribTags[0]] :=
-                  cicuSchms[0].id
-              else
-                tempNode2.Attributes[drngSchmTypeXMLAttribTags[0]] := '-1';
-              if (cicuSchms[1] <> nil) then
-              begin
-                tempNode2.Attributes[drngSchmTypeXMLAttribTags[1]] :=
-                  cicuSchms[1].id;
-                tempHSCParam[0] := StrToFloat(cicuSchms[1].hydPropsHSC[0, 2]) *
-                  StrToFloat(cicuDrng[0, 2]) * CONVCUFT;
-                // inf numbers in second row of grid at index 0
-              end
-              else
-                tempNode2.Attributes[drngSchmTypeXMLAttribTags[1]] := '-1';
-              tempNode2.Attributes[drngSchmTypeXMLAttribTags[2]] := '-1';
-            end;
-          5:
-            // VegT
-            begin
-              if (vegTSchms[0] <> nil) then
-                tempNode2.Attributes[drngSchmTypeXMLAttribTags[0]] :=
-                  vegTSchms[0].id
-              else
-                tempNode2.Attributes[drngSchmTypeXMLAttribTags[0]] := '-1';
-              tempNode2.Attributes[drngSchmTypeXMLAttribTags[1]] := '-1';
-              tempNode2.Attributes[drngSchmTypeXMLAttribTags[2]] := '-1';
-            end;
-          6:
-            // Othr
-            begin
-              if (othrSchms[0] <> nil) then
-                tempNode2.Attributes[drngSchmTypeXMLAttribTags[0]] :=
-                  othrSchms[0].id
-              else
-                tempNode2.Attributes[drngSchmTypeXMLAttribTags[0]] := '-1';
-              tempNode2.Attributes[drngSchmTypeXMLAttribTags[1]] := '-1';
-              tempNode2.Attributes[drngSchmTypeXMLAttribTags[2]] := '-1';
-            end;
-        end;
 
         tempNodeList := GSUtils.plrmGridDataToXML('meth', tempDrnGridArr[I],
           parcelAndRdMethTagList, tempTextListDrngArr[I], tempListDrngArr[I]);
@@ -2175,10 +1200,11 @@ begin
     end;
     // end;
     Result := iNode;
-    iNode := nil;
-    tempNode := nil;
-    tempNode2 := nil;
-    tempNodeList := nil;
+    //iNode := nil;
+    //tempNode := nil;
+    //tempNode2 := nil;
+    //tempNodeList := nil;
+    //XMLDoc := nil;
     luseTagList.Free;
     soilsTagList.Free;
     rdRiskTagList.Free;
@@ -2186,9 +1212,15 @@ begin
     parcelAndRdMethTagList.Free;
     roadPollutantsRdShoulderTagList.Free;
     roadPollutantsRdConditionTagList.Free;
+    parcelDrainageAndBMPsWithBMPTagList.Free;
+     parcelDrainageAndBMPsNoBMPTagList.Free;
+    roadPollutantsRdCRCTagList.Free;
+    rdShouldrCondsXMLTagList.Free;
+    runoffConcsTags.Free;
 
     tempList.Free;
     tempList2.Free;
+    tempList3.Free;
     FreeAndNil(tempListDrng0);
     FreeAndNil(tempListDrng1);
     FreeAndNil(tempListDrng2);
@@ -2197,6 +1229,10 @@ begin
     FreeAndNil(tempTextListDrng1);
     FreeAndNil(tempTextListDrng2);
 
+    for I := Low(tempListDrngArr) to High(tempListDrngArr) do
+      tempListDrngArr[i].Free;
+    for I := Low(tempTextListDrngArr) to High(tempTextListDrngArr) do
+      tempTextListDrngArr[i].Free;
   except
     on E: Exception do
     begin
@@ -2206,8 +1242,7 @@ begin
   end;
 end;
 
-procedure TPLRMCatch.xmlToCatch(iNode: IXMLNode; hydSchemes: TStringList;
-  rcSchemes: TStringList);
+procedure TPLRMCatch.xmlToCatch(iNode: IXMLNode);
 var
   luseTagList, tempList: TStringList;
   soilsTagList: TStringList;

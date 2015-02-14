@@ -2601,23 +2601,6 @@ object CatchProps: TCatchProps
       Height = 180
       Caption = 'Additional Attributes'
       TabOrder = 1
-      object btnDefLuseConds: TButton
-        Left = 145
-        Top = -3
-        Width = 153
-        Height = 25
-        Caption = 'Step 4: Define Land Use Conditions'
-        Enabled = False
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 0
-        Visible = False
-        OnClick = btnDefLuseCondsClick
-      end
       object btnDefSoils: TButton
         Left = 8
         Top = 57
@@ -2631,7 +2614,7 @@ object CatchProps: TCatchProps
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        TabOrder = 1
+        TabOrder = 0
         OnClick = btnDefSoilsClick
       end
       object btnDefLuse: TButton
@@ -2646,25 +2629,8 @@ object CatchProps: TCatchProps
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        TabOrder = 2
+        TabOrder = 1
         OnClick = btnDefLuseClick
-      end
-      object btnDefHydProps: TButton
-        Left = 193
-        Top = -3
-        Width = 153
-        Height = 25
-        Caption = 'Step 5: Define Drainage Conditions'
-        Enabled = False
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 3
-        Visible = False
-        OnClick = btnDefHydPropsClick
       end
     end
     object GroupBox3: TGroupBox

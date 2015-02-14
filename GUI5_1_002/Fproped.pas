@@ -60,7 +60,7 @@ implementation
 {$R *.DFM}
 
 uses Fmain, Ubrowser, Uedit, Uvalidate, Ulid,
-_PLRMD1LandUseAssignmnt2, _PLRMD2SoilsAssignmnt, _PLRM3PSCDef, GSPLRM, GSUtils, GSTypes;//PLRM Additions
+_PLRMD1LandUseAssignmnt2, _PLRMD2SoilsAssignmnt, GSPLRM, GSUtils, GSTypes;//PLRM Additions
 
 const
   TXT_PROPERTY = 'Property';
@@ -204,8 +204,7 @@ begin
       ShowMessage('Please provide land use information first');
       Exit;
     end;
-    //FrmDrnXtcs := TPLRMPCSDef.Create(Application);
-    getSCandDrngXtrstcsInput(Project.GetID(SUBCATCH, Project.CurrentItem[CurrentList]));
+
   end
 
   // User wants to edit a node's inflows

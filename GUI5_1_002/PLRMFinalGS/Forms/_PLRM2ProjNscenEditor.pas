@@ -80,7 +80,7 @@ implementation
 
 uses
   Fmain, Uimport, Uglobals,
-  GSIO, _PLRM1ProjNscenManger, _PLRM3PSCDef, GSFileManage, _PLRMDprogress;
+  GSIO, _PLRM1ProjNscenManger, GSFileManage, _PLRMDprogress;
 
 {$R *.dfm}
 

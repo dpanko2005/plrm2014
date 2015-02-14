@@ -127,8 +127,6 @@ function xmlAttachedChildNodesToPLRMGridData(parentNode: IXMLNode;
   tags: TStringList): PLRMGridData;
 function cdataTextToXML(txt: String; nodeName: String): IXMLNode;
 function checkNCreateDirectory(folderPath: String): boolean;
-procedure copyCbxObjects(inCbx: TCombobox; var outLst: TStringList);
-procedure copyHydSchmToCbx(var outCbx: TCombobox; inLst: TStringList);
 function getUserProjectOrScenName(xmlFilePath: String; nodeTag: String): String;
 function getDefaultCatchProps(): PLRMGridData;
 function getXMLRootChildTagValue(tagName: String; filePath: String): String;
@@ -205,6 +203,7 @@ function xmlAttribToPlrmGridData(iNode: IXMLNode; tags: TStringList)
 function lookUpCodeFrmName(const searchNames: PLRMGridData; searchCol: Integer;
   projectNamesList: TStringList; projectCodesList: TStringList): TStringList;
 procedure FreeStringListObjects(const strings: TStrings);
+procedure FreeArrayOfStringListObjects(data: array of TStrings);
 procedure cleanUp();
 
 const { ID num for accessing Icons for treeview from  imagelist }
@@ -462,37 +461,6 @@ begin
   tempLst.Free;
 end;
 
-procedure copyCbxObjects(inCbx: TCombobox; var outLst: TStringList);
-var
-  I: Integer;
-Begin
-  if outLst = nil then
-    outLst := TStringList.Create();
-
-  for I := 0 to inCbx.Items.Count - 1 do
-  begin
-    if assigned(inCbx.Items.Objects[I]) then
-      outLst.AddObject((inCbx.Items.Objects[I] as TPLRMHydPropsScheme).name,
-        inCbx.Items.Objects[I]);
-  end;
-End;
-
-procedure copyHydSchmToCbx(var outCbx: TCombobox; inLst: TStringList);
-var
-  I: Integer;
-Begin
-  if outCbx = nil then
-    exit;
-  if inLst = nil then
-    exit;
-
-  for I := 0 to inLst.Count - 1 do
-  begin
-    if assigned(inLst.Objects[I]) then
-      outCbx.Items.AddObject((inLst.Objects[I] as TPLRMHydPropsScheme).name,
-        inLst.Objects[I]);
-  end;
-End;
 
 // extracts user assigned project name from project xml file
 function getUserProjectOrScenName(xmlFilePath: String; nodeTag: String): String;
@@ -504,7 +472,6 @@ begin
   XMLDoc.loadFromFile(xmlFilePath);
   rootNode := XMLDoc.DocumentElement;
   Result := rootNode.ChildNodes[nodeTag].Text;
-  XMLDoc := nil;
 end;
 
 procedure reNameProjOrScen(xmlFilePath: String; nodeTag: String;
@@ -518,7 +485,6 @@ begin
   rootNode := XMLDoc.DocumentElement;
   rootNode.ChildNodes[nodeTag].Text := newName;
   saveXmlDoc(xmlFilePath, XMLDoc, '', '');
-  XMLDoc := nil;
 end;
 
 // adapted from http://delphi.about.com/cs/adptips2002/a/bltip1102_5.htm
@@ -548,7 +514,6 @@ begin
   XMLDoc.loadFromFile(filePath);
   rootNode := XMLDoc.DocumentElement;
   Result := rootNode.ChildNodes[tagName].Text;
-  XMLDoc := nil;
 end;
 
 function openAndLoadSWMMInptFilefromXML(xmlFilePath: String): boolean;
@@ -572,7 +537,6 @@ begin
     Result := true;
     exit;
   end;
-  XMLDoc := nil;
   Result := false;
 end;
 
@@ -845,7 +809,6 @@ begin
   XMLDoc.Active := true;
   root := XMLDoc.AddChild(nodeName);
   root.Text := txt;
-  XMLDoc := nil;
   Result := root;
 end;
 
@@ -1884,6 +1847,7 @@ begin
   end;
 end;
 
+
 procedure FreeObjects(const strings: TStrings);
 var
   s: Integer;
@@ -2564,6 +2528,15 @@ begin
     o := strings.Objects[s];
     FreeAndNil(o);
   end;
+end;
+
+// Values in txtList become XML text and txtNodeLabelList are used as node labels, all else are attributes
+procedure FreeArrayOfStringListObjects(data: array of TStrings);
+var
+  I: Integer;
+begin
+  for I := Low(data) to High(data) do
+    data[i].Free;
 end;
 
 procedure gsCopyFile(srcPath: String; destPath: String;

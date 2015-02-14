@@ -92,10 +92,11 @@ begin
 
   finally
     PLRMGISRec.shpFilesDict.Free;
-    iNode := nil;
-    tempNode := nil;
-    tempNode2 := nil;
-    tempNodeList := nil;
+    //iNode := nil;
+    //tempNode := nil;
+    //tempNode2 := nil;
+    //tempNodeList := nil;
+    //XMLDoc := nil;
     //luseTagList.Free;
     //soilsTagList.Free;
     //rdRiskTagList.Free;

@@ -79,23 +79,22 @@ type
     nodesTypeIndexes: array [1 .. MAXNODETYPES] of Integer;
     globalSchmID: Integer;
 
-    curRdCondsPropsSchmID: Integer;
-    curRdCondsScheme: TPLRMRdCondsScheme;
-    rdCondsSchemes: TStringList;
-    curhydPropsSchmID: Integer;
-    curHydPropsScheme: TPLRMHydPropsScheme;
+    //curRdCondsPropsSchmID: Integer;
+    //rdCondsSchemes: TStringList;
+    //curhydPropsSchmID: Integer;
 
-    hydPropsSchemes: TStringList;
-    hydPropsRdInfSchemes: TStringList;
-    // temporarily saves PLRM5RoadDrxnXtcs Form combo box schemes
-    hydPropsRdDspSchemes: TStringList;
-    // temporarily saves PLRM5RoadDrxnXtcs Form combo box schemes
-    hydPropsRdOutSchemes: TStringList;
-    // temporarily saves PLRM5RoadDrxnXtcs Form combo box schemes
-    hydPropsPcInfSchemes: TStringList;
-    // temporarily saves PLRM5RoadDrxnXtcs Form combo box schemes
-    hydPropsPcOutSchemes: TStringList;
-    // temporarily saves PLRM5RoadDrxnXtcs Form combo box schemes
+
+//    hydPropsSchemes: TStringList;
+//    hydPropsRdInfSchemes: TStringList;
+//    // temporarily saves PLRM5RoadDrxnXtcs Form combo box schemes
+//    hydPropsRdDspSchemes: TStringList;
+//    // temporarily saves PLRM5RoadDrxnXtcs Form combo box schemes
+//    hydPropsRdOutSchemes: TStringList;
+//    // temporarily saves PLRM5RoadDrxnXtcs Form combo box schemes
+//    hydPropsPcInfSchemes: TStringList;
+//    // temporarily saves PLRM5RoadDrxnXtcs Form combo box schemes
+//    hydPropsPcOutSchemes: TStringList;
+//    // temporarily saves PLRM5RoadDrxnXtcs Form combo box schemes
 
     ObjCatSecondaryFlag: Integer;
     // used to distinguish between different jucntion types introduced by PLRM
@@ -118,13 +117,6 @@ type
     function loadFromXML(xmlFilePath: String): Boolean;
     function loadGISCatchmentsFromXML(xmlFilePath: String): Boolean;
     function loadFromPrjXML(xmlFilePath: String): Boolean;
-    procedure loadHydPropsSchemeFromDb(schmExt: String;
-      soilsInfData: PLRMGridData);
-    procedure loadHydPropsSchemeFromXML(iNode: IXMLNode); overload;
-    procedure loadRdCondsSchemeFromXML(filePath: String); overload;
-    procedure loadRdCondsSchemeFromXML(iNode: IXMLNode); overload;
-    procedure getHydSchemes(var Schm: TPLRMHydPropsScheme; sType: Integer;
-      ext: String; parcelOrRoad: String; luse: String);
     procedure launchPropEditForm(objType: Integer; objIndex: Integer);
     function getCurCatchLuseProp(strLuse: string; colNum: Integer;
       var status: Boolean): Double;
@@ -163,7 +155,7 @@ var
 implementation
 
 uses
-  _PLRMD3CatchProps, _PLRM7SWTs, Fmain, Uimport, Uglobals, GSIO, Uvalidate;
+    _PLRMD3CatchProps,_PLRM7SWTs, Fmain, Uimport, Uglobals, GSIO, Uvalidate;
 
 {$REGION 'PLRM class methods'}
 
@@ -183,12 +175,12 @@ begin
   gageID := '1';
   runType := 0;
   simTypeID := 2; // default is short simulation
-  curhydPropsSchmID := -1;
-  curRdCondsPropsSchmID := -1;
+  //curhydPropsSchmID := -1;
+  //curRdCondsPropsSchmID := -1;
   globalSchmID := -1;
   catchments := TStringList.Create;
-  hydPropsSchemes := TStringList.Create;
-  rdCondsSchemes := TStringList.Create;
+  //hydPropsSchemes := TStringList.Create;
+  //rdCondsSchemes := TStringList.Create;
   nodeAndCatchNames := TStringList.Create;
   createdBy := 'unknown';
 
@@ -197,19 +189,6 @@ begin
   projectLandUseCodes := getCodes('1%', 2);
   projectLandUseNames := TStringList.Create;
   projectLandUseNames := getCodes('1%', 1);
-
-  // instantiate lists for storing hydrologic propert scheme combox items
-  if hydPropsPcOutSchemes = nil then
-    hydPropsPcOutSchemes := TStringList.Create();
-  if hydPropsPcInfSchemes = nil then
-    hydPropsPcInfSchemes := TStringList.Create();
-
-  if hydPropsRdOutSchemes = nil then
-    hydPropsRdOutSchemes := TStringList.Create();
-  if hydPropsRdInfSchemes = nil then
-    hydPropsRdInfSchemes := TStringList.Create();
-  if hydPropsRdDspSchemes = nil then
-    hydPropsRdDspSchemes := TStringList.Create();
 
   // Initialize nodes
   nodes := TStringList.Create;
@@ -295,37 +274,24 @@ begin
   FreeAndNil(nodeAndCatchNames); // simple Stringlist has only strings
   FreeStringListObjects(catchments);
   FreeStringListObjects(nodes);
-  FreeStringListObjects(rdCondsSchemes);
+  //FreeStringListObjects(rdCondsSchemes);
   FreeStringListObjects(projectLandUseCodes);
   FreeStringListObjects(projectLandUseNames);
-
-  GSCatchments.freeListofHydpropSchemes(hydPropsSchemes);
-  GSCatchments.freeListofHydpropSchemes(hydPropsRdInfSchemes);
-  GSCatchments.freeListofHydpropSchemes(hydPropsRdDspSchemes);
-  GSCatchments.freeListofHydpropSchemes(hydPropsRdOutSchemes);
-  GSCatchments.freeListofHydpropSchemes(hydPropsPcInfSchemes);
-  GSCatchments.freeListofHydpropSchemes(hydPropsPcOutSchemes);
 
   if assigned(currentCatchment) then
     currentCatchment := nil;
   // memory already freed when freeing list of catchments
   if assigned(currentNode) then
     currentNode := nil; // memory already freed when freeing list of nodes
-  if assigned(curRdCondsScheme) then
-    curRdCondsScheme := nil;
-  // memory already freed when freeing list of rdcondschemes
-  if assigned(curHydPropsScheme) then
-    curHydPropsScheme := nil;
-  // memory already freed when freeing list of hydpropschemes
 
-  inputFileXMLNode := nil;
+  //inputFileXMLNode := nil;
   for I := 1 to MAXNODETYPES do
     FreeAndNil(nodesTypeLists[I]);
 
   for I := 0 to MAXSWMMDEFBLKS do
   begin
     FreeAndNil(swmmDefaultBlocks[I]);
-    swmmDefaultBlockXML[I] := nil;
+    //swmmDefaultBlockXML[I] := nil;
   end;
 
   // 2014 create obj to hold GIS data
@@ -479,11 +445,6 @@ var
   XMLDoc: IXMLDocument;
   iNode: IXMLNode;
   tempNode: IXMLNode;
-  //UniqueSWTsDict: TDictionary<Integer, String>;
-//  tempPLRMTbl: PLRMGridData;
-//  tempDbl: Double;
-//  tempStr, tempKey: String;
- // tempInt: Integer;
   I: Integer;
   tempSWT: TPLRMNode;
 const
@@ -496,23 +457,6 @@ begin
   XMLDoc := TXMLDocument.Create(nil);
   XMLDoc.Active := true;
   iNode := XMLDoc.AddChild('CAPSWTs');
-  { iNode.Attributes['name'] := userName;
-    iNode.Attributes['NodeType'] := intToStr(swtType);
-    iNode.Attributes['ObjIndex'] := intToStr(objIndex);
-    iNode.Attributes['ObjType'] := intToStr(objType); }
-
-  { Need only if aggregating by swt type
-    // loop through swts and prepare data summary for tahoe tools
-    UniqueSWTsDict := TDictionary<Integer, String>.Create();
-
-    for I := 0 to nodeList.count - 1 do
-    begin
-    tempSWT := (nodeList.Objects[I] as TPLRMNode);
-    if (tempSWT.objType = 7) then // then its a treatment node swt
-    begin
-    UniqueSWTsDict.Add(tempSWT.swtType, swtNames[tempSWT.swtType]);
-    end;
-    end; }
 
   // save dictionary contents as xml
   // for tempInt in UniqueSWTsDict.Keys do
@@ -531,7 +475,6 @@ begin
       tempNode.Attributes['BMP'] := swtNames[tempSWT.swtType];
     end;
   end;
-  //iNode.Attributes['count'] := UniqueSWTsDict.count;
   Result := iNode;
 end;
 
@@ -655,7 +598,6 @@ begin
   iNode.Attributes['totalSFRArea'] := tempCatchSFRArea;
   iNode.Attributes['totalMFRArea'] := tempCatchMFRArea;
   iNode.Attributes['totalCicuArea'] := tempCatchCicuArea;
-
   Result := iNode;
 end;
 
@@ -747,11 +689,10 @@ var
   nodeValidationXMLNode: IXMLNode;
   I: Integer;
 begin
-  // Result := false;
 
-  // Step 1 - first make swmm save user inp file as swmm.inp
-  makeSWMMSaveInpFile(userSWMMInptFilePath, userSWMMRptFilePath);
   Try
+    // Step 1 - first make swmm save user inp file as swmm.inp
+    makeSWMMSaveInpFile(userSWMMInptFilePath, userSWMMRptFilePath);
 
     gageFilePath := defaultDataDir + '\' + intToStr(metgridNum) + '_Precip.dat';
     tempNode3 := swmmInptFileRainGageToXML(PLRMObj.gageID, gageFilePath);
@@ -794,18 +735,6 @@ begin
     tempNodeArry3[1] := swmmInptFileReportToXML();
     tempNodeArry3[2] := swmmInptFileTagsToXML();
     tempNodeArry3[3] := swmmInptFileMapToXML();
-
-    // Write Road Condition Schemes
-    SetLength(tempNodeArry4, rdCondsSchemes.count);
-    for I := 0 to rdCondsSchemes.count - 1 do
-      tempNodeArry4[I] := ((rdCondsSchemes.Objects[I] as TPLRMRdCondsScheme)
-        .writeSchemeXML()).ChildNodes['Schemes'].ChildNodes['Scheme'];
-
-    // Write Hydprop Condition Schemes
-    SetLength(tempNodeArry5, hydPropsSchemes.count);
-    for I := 0 to hydPropsSchemes.count - 1 do
-      tempNodeArry5[I] := ((hydPropsSchemes.Objects[I] as TPLRMHydPropsScheme)
-        .writeSchemeXML()).ChildNodes['Schemes'].ChildNodes['Scheme'];;
 
     XMLDoc := TXMLDocument.Create(nil);
     XMLDoc.Active := true;
@@ -911,19 +840,19 @@ begin
     XMLDoc.ChildNodes[0].ChildNodes.Add(tempNode22);
 
     // 31. Write Schemes
-    if (rdCondsSchemes.count + hydPropsSchemes.count) > 0 then
-    begin
-      XMLDoc.ChildNodes[0].AddChild('Schemes');
-      XMLDoc.Resync;
-      // Write Road Condition Schemes
-      for I := 0 to rdCondsSchemes.count - 1 do
-        XMLDoc.ChildNodes[0].ChildNodes['Schemes'].ChildNodes.Add
-          (tempNodeArry4[I]);
-      // Write Hydro Properties Condition Schemes
-      for I := 0 to hydPropsSchemes.count - 1 do
-        XMLDoc.ChildNodes[0].ChildNodes['Schemes'].ChildNodes.Add
-          (tempNodeArry5[I]);
-    end;
+//    if (rdCondsSchemes.count + hydPropsSchemes.count) > 0 then
+//    begin
+//      XMLDoc.ChildNodes[0].AddChild('Schemes');
+//      XMLDoc.Resync;
+//      // Write Road Condition Schemes
+//      for I := 0 to rdCondsSchemes.count - 1 do
+//        XMLDoc.ChildNodes[0].ChildNodes['Schemes'].ChildNodes.Add
+//          (tempNodeArry4[I]);
+//      // Write Hydro Properties Condition Schemes
+//      for I := 0 to hydPropsSchemes.count - 1 do
+//        XMLDoc.ChildNodes[0].ChildNodes['Schemes'].ChildNodes.Add
+//          (tempNodeArry5[I]);
+//    end;
 
     // 32. Write Catchment and Node validation rules
     // create catchment and node validation xmlNodes
@@ -952,21 +881,8 @@ var
   XMLDoc: IXMLDocument;
   iNode: IXMLNode;
   tempNodeArry: array of IXMLNode;
-  // tempNodeArry2: array of IXMLNode;
-  // tempNodeArry3: array of IXMLNode;
-  // tempNodeArry4: array of IXMLNode;
-  // tempNodeArry5: array of IXMLNode;
-  // tempNode3: IXMLNode;
   tempNode4: IXMLNode;
   tempNode4b: IXMLNode;
-  // tempNode6: IXMLNode;
-  // tempNode7: IXMLNode;
-  // tempNode8: IXMLNode;
-  // tempNode9: IXMLNode;
-  // tempNode10: IXMLNode;
-  // tempNode19b: IXMLNode;
-  // catchmentValidationXMLNode: IXMLNode;
-  // nodeValidationXMLNode: IXMLNode;
   I: Integer;
 begin
   Try
@@ -1024,6 +940,7 @@ begin
     end;
 
     saveXmlDoc2(saveToFilePath, XMLDoc);
+    //XMLDoc := nil;
     Result := true;
   except
     on E: Exception do
@@ -1068,7 +985,7 @@ begin
     if (filePath = '') then
       filePath := defaultPrjDir;
     saveXmlDoc(filePath, XMLDoc, defaultXMLDeclrtn, defaultXslPath);
-    XMLDoc := nil;
+    //XMLDoc := nil;
     Result := true;
   Except
     on E: Exception do
@@ -1105,6 +1022,7 @@ begin
     S.Assign(XMLDoc.XML);
     S.SaveToFile(xmlFilePath);
     S.Free;
+    //XMLDoc := nil;
   end;
   Result := true
 end;
@@ -1134,19 +1052,6 @@ begin
     scenarioName := rootNode.ChildNodes['ScenName'].Text;
     scenarioNotes := rootNode.ChildNodes['ScenDescription'].Text;
 
-    // Load rdconds scheme information
-    rdCondsSchemes.Clear;
-    hydPropsSchemes.Clear;
-    tempNodeList := rootNode.ChildNodes['Schemes'].ChildNodes;
-    for I := 0 to tempNodeList.count - 1 do
-    begin
-      if ((tempNodeList[I].Attributes['stype'] = '3') or
-        (tempNodeList[I].Attributes['stype'] = '4')) then
-        loadRdCondsSchemeFromXML(tempNodeList[I])
-      else
-        loadHydPropsSchemeFromXML(tempNodeList[I])
-    end;
-
     // Load catchment information
     catchments.Clear;
     tempNodeList := XMLDoc.DocumentElement.ChildNodes['Catchments'].ChildNodes;
@@ -1158,28 +1063,7 @@ begin
         PLRMObj.currentCatchment := tempCatch;
         catchments.AddObject(tempNodeList[I].Attributes['name'], tempCatch);
         nodeAndCatchNames.Add(tempNodeList[I].Attributes['name']);
-        tempCatch.xmlToCatch(tempNodeList[I], hydPropsSchemes, rdCondsSchemes);
-
-        // link catchment to its schemes
-        for J := 0 to High(tempCatch.primRdSchms) do
-          getHydSchemes(tempCatch.primRdSchms[J], J, HYDSCHMEXTS[J],
-            'Roads', 'Prr');
-        for J := 0 to High(tempCatch.secRdSchms) do
-          getHydSchemes(tempCatch.secRdSchms[J], J, HYDSCHMEXTS[J],
-            'Roads', 'Ser');
-        for J := 0 to High(tempCatch.sfrSchms) - 1 do
-          getHydSchemes(tempCatch.sfrSchms[J], J, HYDSCHMEXTS[J + 3],
-            'Parcels', 'Sfr');
-        for J := 0 to High(tempCatch.mfrSchms) - 1 do
-          getHydSchemes(tempCatch.mfrSchms[J], J, HYDSCHMEXTS[J + 3], 'Parcels',
-            'Mfr'); // if tempCatch.mfrSchms[J] <> nil then getHydSchemes(tempCatch.mfrSchms[J], J,HYDSCHMEXTS[J+3], 'Parcels', 'Mfr');
-        for J := 0 to High(tempCatch.cicuSchms) - 1 do
-          getHydSchemes(tempCatch.cicuSchms[J], J, HYDSCHMEXTS[J + 3],
-            'Parcels', 'Cic');
-        getHydSchemes(tempCatch.vegTSchms[0], 0, HYDSCHMEXTS[3],
-          'Parcels', 'Vgt');
-        getHydSchemes(tempCatch.othrSchms[0], 0, HYDSCHMEXTS[3],
-          'Parcels', 'Othr');
+        tempCatch.xmlToCatch(tempNodeList[I]);
       end;
     end;
 
@@ -1201,7 +1085,7 @@ begin
       end;
     end;
   finally
-    XMLDoc := nil;
+    //XMLDoc := nil;
   end;
   Result := true
 end;
@@ -1230,11 +1114,11 @@ begin
         // currentCatchment := tempCatch;
         catchments.AddObject(tempNodeList[I].Attributes['name'], tempCatch);
         nodeAndCatchNames.Add(tempNodeList[I].Attributes['name']);
-        tempCatch.xmlToCatch(tempNodeList[I], hydPropsSchemes, rdCondsSchemes);
+        tempCatch.xmlToCatch(tempNodeList[I]);
       end;
     end;
   finally
-    XMLDoc := nil;
+    //XMLDoc := nil;
   end;
   Result := true
 end;
@@ -1261,110 +1145,9 @@ begin
     metgridNum := StrToInt(rootNode.ChildNodes['MetGridNumber'].Text);
     simTypeID := StrToInt(rootNode.ChildNodes['SimTypeID'].Text);
   finally
-    XMLDoc := nil;
+    //XMLDoc := nil;
   end;
   Result := true
-end;
-
-procedure TPLRM.loadHydPropsSchemeFromDb(schmExt: String;
-  soilsInfData: PLRMGridData);
-var
-  scheme: TPLRMHydPropsScheme;
-begin
-  scheme := TPLRMHydPropsScheme.Create;
-  scheme.readSchemeDb(schmExt, soilsInfData);
-  scheme.id := intToStr(hydPropsSchemes.count);
-  // need to renumber schemes so that no holes exist
-  curhydPropsSchmID := hydPropsSchemes.AddObject(scheme.id, scheme);
-  globalSchmID := StrToInt(scheme.id); // globalSchmID + 1;
-  curHydPropsScheme := scheme;
-end;
-
-procedure TPLRM.loadHydPropsSchemeFromXML(iNode: IXMLNode);
-var
-  scheme: TPLRMHydPropsScheme;
-begin
-  if (StrToInt(iNode.Attributes['stype']) > 2) then
-    exit; // the it is a road conditions scheme with stype =3 so exit
-  scheme := TPLRMHydPropsScheme.Create;
-  scheme.readSchemeXML(iNode);
-  curhydPropsSchmID := hydPropsSchemes.AddObject(scheme.id, scheme);
-  globalSchmID := StrToInt(scheme.id); // globalSchmID + 1;
-  curHydPropsScheme := scheme;
-  if AnsiCompareStr(scheme.snowPackID, 'Roads') = 0 then
-  begin
-    case scheme.sType of
-      0:
-        hydPropsRdOutSchemes.AddObject(scheme.Name, scheme);
-      1:
-        hydPropsRdInfSchemes.AddObject(scheme.Name, scheme);
-      2:
-        hydPropsRdDspSchemes.AddObject(scheme.Name, scheme);
-    end;
-  end
-  else
-  begin
-    case scheme.sType of
-      0:
-        hydPropsPcOutSchemes.AddObject(scheme.Name, scheme);
-      1:
-        hydPropsPcInfSchemes.AddObject(scheme.Name, scheme);
-    end;
-  end;
-
-end;
-
-procedure TPLRM.loadRdCondsSchemeFromXML(filePath: String);
-var
-  scheme: TPLRMRdCondsScheme;
-begin
-  scheme := TPLRMRdCondsScheme.Create;
-  scheme.readSchemeXML(filePath);
-  curRdCondsPropsSchmID := rdCondsSchemes.AddObject(scheme.id, scheme);
-  globalSchmID := StrToInt(scheme.id); // globalSchmID + 1;
-end;
-
-procedure TPLRM.loadRdCondsSchemeFromXML(iNode: IXMLNode);
-var
-  scheme: TPLRMRdCondsScheme;
-begin
-  scheme := TPLRMRdCondsScheme.Create;
-  scheme.readSchemeXML(iNode);
-  curRdCondsPropsSchmID := rdCondsSchemes.AddObject(scheme.id, scheme);
-  globalSchmID := StrToInt(scheme.id); // globalSchmID + 1;
-end;
-
-procedure TPLRM.getHydSchemes(var Schm: TPLRMHydPropsScheme; sType: Integer;
-  ext: String; parcelOrRoad: String; luse: String);
-var
-  I: Integer;
-  TempSchm: TPLRMHydPropsScheme;
-  tempLst: TStringList;
-begin
-  if (Schm <> nil) then
-    exit;
-  // check to see if schemes available from input file and map to catchment schemes
-  if (PLRMObj.hydPropsSchemes.count <> 0) then
-  begin
-    for I := 0 to PLRMObj.hydPropsSchemes.count - 1 do
-    begin
-      TempSchm := PLRMObj.hydPropsSchemes.Objects[I] as TPLRMHydPropsScheme;
-      if ((TempSchm.luse = luse) and (TempSchm.sType = sType) and
-        (TempSchm.snowPackID = parcelOrRoad) and
-        (TempSchm.catchName = PLRMObj.currentCatchment.Name)) then
-        Schm := TempSchm;
-    end;
-  end;
-
-  // if no match load default scheme from file
-  if (Schm = nil) then
-  begin
-    // tempLst := getFilesInFolder(HYDSCHMSDIR, '*.' + ext);
-    // if (assigned(tempLst) and (tempLst <> nil)) then
-    // loadHydPropsSchemeFromDb(ext, PLRMObj.currentCatchment.soilsInfData);
-    // Schm.luse := luse;
-  end;
-  FreeAndNil(tempLst);
 end;
 
 // Finds catchment and if not already in list adds it
