@@ -125,6 +125,8 @@
 			<DelphiCompile Include="$(MainSource)">
 				<MainSource>MainSource</MainSource>
 			</DelphiCompile>
+			<DCCReference Include="PLRMFinalGS\Units\SafeMMXE2Install.pas"/>
+			<DCCReference Include="PLRMFinalGS\Units\SafeMMXE2.pas"/>
 			<DCCReference Include="Dabout.pas">
 				<Form>AboutBoxForm</Form>
 			</DCCReference>
@@ -414,23 +416,18 @@
 			</DCCReference>
 			<DCCReference Include="PLRMFinalGS\Forms\Dialogs\_PLRMD4RoadPollutants.pas">
 				<Form>PLRMRoadPollutants</Form>
-				<FormType>dfm</FormType>
 			</DCCReference>
 			<DCCReference Include="PLRMFinalGS\Forms\Dialogs\_PLRMD5RoadDrainageEditor.pas">
 				<Form>PLRMRoadDrainageEditor</Form>
-				<FormType>dfm</FormType>
 			</DCCReference>
 			<DCCReference Include="PLRMFinalGS\Forms\Dialogs\_PLRMD6ParcelDrainageAndBMPs.pas">
 				<Form>PLRMParcelDrngAndBMPs</Form>
-				<FormType>dfm</FormType>
 			</DCCReference>
 			<DCCReference Include="PLRMFinalGS\Forms\Dialogs\_PLRMD6aBMPSizing.pas">
 				<Form>PLRMBMPSizing</Form>
-				<FormType>dfm</FormType>
 			</DCCReference>
 			<DCCReference Include="PLRMFinalGS\Forms\Dialogs\_PLRMD7GISTool.pas">
 				<Form>PLRMGISTool</Form>
-				<FormType>dfm</FormType>
 			</DCCReference>
 			<DCCReference Include="PLRMFinalGS\Units\GSGIS.pas"/>
 			<DCCReference Include="Uinifile.pas"/>
@@ -440,7 +437,6 @@
 			<DCCReference Include="PLRMFinalGS\Units\ogr.pas"/>
 			<DCCReference Include="PLRMFinalGS\Forms\Dialogs\_PLRMD7bGISTool.pas">
 				<Form>PLRMGISCatchDlg</Form>
-				<FormType>dfm</FormType>
 			</DCCReference>
 			<DCCReference Include="PLRMFinalGS\Forms\Dialogs\_PLRMD7bGISStatus.pas">
 				<Form>PLRMGISProgrsDlg</Form>
@@ -515,7 +511,7 @@
 					<Platform value="Win32">True</Platform>
 				</Platforms>
 				<Deployment>
-					<DeployFile Class="ProjectOutput" Configuration="DpRelease" LocalName="PLRM2014.exe">
+					<DeployFile Class="ProjectOutput" Configuration="Release" LocalName="Epaswmm5.exe">
 						<Platform Name="Win32"/>
 					</DeployFile>
 					<DeployFile Class="DebugSymbols" Configuration="Release" LocalName="Epaswmm5.rsm">
@@ -528,7 +524,7 @@
 							<RemoteName>PLRM2014.rsm</RemoteName>
 						</Platform>
 					</DeployFile>
-					<DeployFile Class="ProjectOutput" Configuration="Release" LocalName="Epaswmm5.exe">
+					<DeployFile Class="ProjectOutput" Configuration="DpRelease" LocalName="PLRM2014.exe">
 						<Platform Name="Win32"/>
 					</DeployFile>
 					<DeployClass Name="ProjectOutput" Required="true">

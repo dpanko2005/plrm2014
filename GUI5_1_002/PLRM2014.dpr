@@ -1,6 +1,9 @@
 program PLRM2014;
 
 uses
+  SafeMMXE2Install in 'PLRMFinalGS\Units\SafeMMXE2Install.pas',
+  SafeMMXE2 in 'PLRMFinalGS\Units\SafeMMXE2.pas',
+  SiAuto,
   Windows,
   Forms,
   Dialogs,
@@ -136,18 +139,27 @@ uses
   ogr in 'PLRMFinalGS\Units\ogr.pas',
   _PLRMD7bGISTool in 'PLRMFinalGS\Forms\Dialogs\_PLRMD7bGISTool.pas' {PLRMGISCatchDlg},
   _PLRMD7bGISStatus in 'PLRMFinalGS\Forms\Dialogs\_PLRMD7bGISStatus.pas' {PLRMGISProgrsDlg};
+  //SafeMMXE2 in 'PLRMFinalGS\Units\SafeMMXE2.pas';
+  //SafeMMXE2Install in 'PLRMFinalGS\Units\SafeMMXE2Install.pas';
 
 {$R *.RES}
 
 begin
-  Application.Initialize;
+  Si.Enabled := True;
+  //Si.Connections := 'file(filename=c:\log.sil)';
+  Si.Connections := 'tcp()';
+  SiMain.EnterProcess('MainPLRMApplication');
+
+try
+Application.Initialize;
   Application.MainFormOnTaskBar := True; // added for MDI app
   Application.Title := 'PLRM';
   Application.HelpFile := '';
   Application.CreateForm(TMainForm, MainForm);
   Application.CreateForm(TPLRMGISProgrsDlg, PLRMGISProgrsDlg);
-  //Application.CreateForm(TPLRMGISProgrsDlg, PLRMGISProgrsDlg);
-  //Application.CreateForm(TPLRMGISCatchDlg, PLRMGISCatchDlg);
-  //Application.CreateForm(TPLRMGISTool, PLRMGISTool);
   Application.Run;
+finally
+    SiMain.LeaveProcess('MainPLRMApplication');
+end;
+
 end.

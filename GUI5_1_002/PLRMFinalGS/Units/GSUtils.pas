@@ -11,7 +11,7 @@ uses
   SysUtils, Windows, Messages, Classes, Graphics, Controls, Forms, Dialogs,
   xmldom, XMLIntf, msxmldom, XMLDoc, Generics.Collections,
   StdCtrls, ComCtrls, Menus, ImgList, ShlObj, ShellApi, Registry,
-  ExtCtrls, Grids, GSTypes, StrUtils, MSXML, Variants, FileCtrl, GSInifile;
+  ExtCtrls, Grids, GSTypes, StrUtils, MSXML, Variants, FileCtrl, GSInifile, SiAuto;
 
 type
   TCopyDataProc = procedure(oldnode, newnode: TTreenode);
@@ -363,8 +363,8 @@ begin
   data := getCatchmentValidationRules();
   Result := plrmGridDataToXML3('catchmentValidation', 'rule', data,
     xmlTagList, 5);
-    xmlTagList.Free;
-  //FreeAndNil(xmlTagList);
+  xmlTagList.Free;
+  // FreeAndNil(xmlTagList);
 end;
 
 function nodeValidationTblToXML(): IXMLNode;
@@ -378,8 +378,8 @@ begin
     xmlTagList.add(validationXMLTags[I]);
   data := getNodeValidationRules();
   Result := plrmGridDataToXML3('nodeValidation', 'rule', data, xmlTagList, 5);
-   xmlTagList.Free;
-  //FreeAndNil(xmlTagList);
+  xmlTagList.Free;
+  // FreeAndNil(xmlTagList);
 end;
 
 procedure exportGridToTxt(delimiter: String; sg: TStringGrid;
@@ -460,7 +460,6 @@ begin
   tempLst.SaveToFile(filePath);
   tempLst.Free;
 end;
-
 
 // extracts user assigned project name from project xml file
 function getUserProjectOrScenName(xmlFilePath: String; nodeTag: String): String;
@@ -877,20 +876,25 @@ var
   tempNode2: IXMLNode;
   XMLDoc: IXMLDocument;
 begin
-  XMLDoc := TXMLDocument.Create(nil);
-  XMLDoc.Active := true;
-  root := XMLDoc.AddChild('Raingages');
-  root.Attributes['name'] := gageID;
-  root.Attributes['type'] := gageType;
-  root.Attributes['timeInterval'] := timeIntv;
-  root.Attributes['snowCatch'] := snowCatch;
+  //SiMain.EnterMethod(Self, 'swmmInptFileRainGageToXML');
+  try
+    XMLDoc := TXMLDocument.Create(nil);
+    XMLDoc.Active := true;
+    root := XMLDoc.AddChild('Raingages');
+    root.Attributes['name'] := gageID;
+    root.Attributes['type'] := gageType;
+    root.Attributes['timeInterval'] := timeIntv;
+    root.Attributes['snowCatch'] := snowCatch;
 
-  tempNode2 := root.ChildNodes['Raingage'].AddChild('DataSource');
-  tempNode2.Text := filePath;
-  tempNode2.Attributes['gageID'] := gageID;
-  tempNode2.Attributes['type'] := dataSrcType;
-  tempNode2.Attributes['param'] := param;
-  Result := root;
+    tempNode2 := root.ChildNodes['Raingage'].AddChild('DataSource');
+    tempNode2.Text := filePath;
+    tempNode2.Attributes['gageID'] := gageID;
+    tempNode2.Attributes['type'] := dataSrcType;
+    tempNode2.Attributes['param'] := param;
+    Result := root;
+  finally
+    //SiMain.LeaveMethod(Self, 'swmmInptFileRainGageToXML');
+  end;
 end;
 
 // Values in valColNum column become XML text and all else are attributes if
@@ -1031,8 +1035,8 @@ begin
     Result := plrmGridDataToXML('Pollutants', 'Pollutant', data, attribTags,
       textList);
   finally
-    //FreeAndNil(textList);
-    //FreeAndNil(attribTags);
+    // FreeAndNil(textList);
+    // FreeAndNil(attribTags);
     textList.Free;
     attribTags.Free;
   end;
@@ -1847,7 +1851,6 @@ begin
   end;
 end;
 
-
 procedure FreeObjects(const strings: TStrings);
 var
   s: Integer;
@@ -2149,7 +2152,7 @@ var
   // stores scenario names on tree used with scenFolders list below to facilitate deletion
 
 begin
-  projNames:= nil;
+  projNames := nil;
   projFolders := nil;
   scenNames := nil;
   scenFolders := nil;
@@ -2173,25 +2176,25 @@ begin
     scenFilePaths := TStringList.Create;
 
   projSL := getFoldersInFolder(startPath);
- { // if the directory is empty exit
-  If projSL.Count < 1 then
-  begin
+  { // if the directory is empty exit
+    If projSL.Count < 1 then
+    begin
     TV.Items.Clear();
-  end
-  else
-  begin
+    end
+    else
+    begin
     // remove all the items currently in the treeview before adding new ones
     If (assigned(TV.Items)) Then
     begin
-      TV.Items.Clear();
+    TV.Items.Clear();
     end;
-  end; }
+    end; }
 
   // remove all the items currently in the treeview before adding new ones
-    If (assigned(TV.Items)) Then
-    begin
-      TV.Items.Clear();
-    end;
+  If (assigned(TV.Items)) Then
+  begin
+    TV.Items.Clear();
+  end;
 
   // Add project and scenario folders to TreeView
   for I := 0 to projSL.Count - 1 do
@@ -2238,12 +2241,12 @@ begin
     SysUtils.FindClose(SearchRec);
   end;
 
-  {FreeAndNil(projNames);
-  FreeAndNil(projFolders);
-  FreeAndNil(scenFolders);
-  FreeAndNil(scenFilePaths);
-  FreeAndNil(scenNames);
-  FreeAndNil(projSL);}
+  { FreeAndNil(projNames);
+    FreeAndNil(projFolders);
+    FreeAndNil(scenFolders);
+    FreeAndNil(scenFilePaths);
+    FreeAndNil(scenNames);
+    FreeAndNil(projSL); }
   projNames.Free;
   projFolders.Free;
   scenFolders.Free;
@@ -2536,7 +2539,7 @@ var
   I: Integer;
 begin
   for I := Low(data) to High(data) do
-    data[i].Free;
+    data[I].Free;
 end;
 
 procedure gsCopyFile(srcPath: String; destPath: String;

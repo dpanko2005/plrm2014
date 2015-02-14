@@ -6,7 +6,7 @@ uses
   SysUtils, Windows, Messages, Classes, Controls, Forms, Dialogs, XMLIntf,
   msxmldom, XMLDoc, Generics.Collections, StdCtrls, ComCtrls, Grids, GSUtils,
   GSTypes, Uproject, GSCatchments, GSNodes,
-  GSGIS;
+  GSGIS, SiAuto;
 
 const
   MAXNODETYPES = 9;
@@ -689,13 +689,10 @@ var
   nodeValidationXMLNode: IXMLNode;
   I: Integer;
 begin
-
+  SiMain.EnterMethod(Self, 'TPLRM.plrmToXML');
   Try
     // Step 1 - first make swmm save user inp file as swmm.inp
     makeSWMMSaveInpFile(userSWMMInptFilePath, userSWMMRptFilePath);
-
-    gageFilePath := defaultDataDir + '\' + intToStr(metgridNum) + '_Precip.dat';
-    tempNode3 := swmmInptFileRainGageToXML(PLRMObj.gageID, gageFilePath);
 
     for I := 0 to High(swmmDefaultBlocks) do
       swmmDefaultBlocks[I] := getSwmmDefaultBlocks(I, intToStr(simTypeID));
@@ -768,7 +765,9 @@ begin
     // add ground water
     iNode.ChildNodes.Add(grndWaterBlockXML);
 
-    // 4.Add raingages
+    // 4.Add raingages \
+    gageFilePath := defaultDataDir + '\' + intToStr(metgridNum) + '_Precip.dat';
+    tempNode3 := swmmInptFileRainGageToXML(PLRMObj.gageID, gageFilePath);
     iNode.ChildNodes.Add(tempNode3);
 
     // Write PLRM Swmm default constants
@@ -870,8 +869,10 @@ begin
     begin
       Result := false;
       ShowMessage('An Error occured, Exception message = ' + E.Message);
+      SiMain.LeaveMethod(Self, 'TPLRM.plrmToXML');
     end;
   end;
+  SiMain.LeaveMethod(Self, 'TPLRM.plrmToXML');
 end;
 
 // 2014 added to serialize GIS Tools inputs and outputs

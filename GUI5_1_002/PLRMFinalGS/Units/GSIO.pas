@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   StrUtils,
   Dialogs, jpeg, ExtCtrls, ComCtrls, StdCtrls, Buttons, DB, ADODB, Uglobals,
-  GSDataAccess, GSUtils, GSTypes;
+  GSDataAccess, GSUtils, GSTypes, SiAuto;
 
 function getLuseCodeFamily(Var outLuseCodes: TStringList;
   Var outLuseFamilyCodes: TStringList): TStringList;
@@ -366,11 +366,16 @@ var
   S: TStringList;
   Conn: TADOConnection;
 begin
+  //SiMain.EnterMethod(Self, 'GSIO.getCodesAndValues');
   S := TStringList.Create;
-  Conn := initConn(GSDataAccess.connStr);
-  GSDataAccess.getCodesAndValues(outCodes, outValues, codePrefix, Conn);
-  // read required codes from the database
-  Result := S;
+  try
+    Conn := initConn(GSDataAccess.connStr);
+    GSDataAccess.getCodesAndValues(outCodes, outValues, codePrefix, Conn);
+    // read required codes from the database
+    Result := S;
+  finally
+    //SiMain.LeaveMethod(Self, 'GSIO.getCodesAndValues');
+  end;
 end;
 
 function lookUpValueFrmPolPotTbl(dbtblName: String; dbField1Name: String;
