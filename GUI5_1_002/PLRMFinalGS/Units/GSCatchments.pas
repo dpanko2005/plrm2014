@@ -169,8 +169,8 @@ type
     function getIMD(): double;
     function getSuct(): double;
     procedure updateSWMM();
-    function catchToXML(projectLuseNames: TStringList;
-      ProjectLuseCodes: TStringList): IXMLNode;
+    function catchToXML(var ownerNode:IXMLNode; projectLuseNames: TStringList;
+  ProjectLuseCodes: TStringList): IXMLNode;
     procedure xmlToCatch(iNode: IXMLNode);
 
   public
@@ -395,7 +395,7 @@ begin
     S.Data[SUBCATCH_OUTLET_INDEX] := '*';
 end;
 
-function TPLRMCatch.catchToXML(projectLuseNames: TStringList;
+function TPLRMCatch.catchToXML(var ownerNode:IXMLNode; projectLuseNames: TStringList;
   ProjectLuseCodes: TStringList): IXMLNode;
 var
   XMLDoc: IXMLDocument;
@@ -473,10 +473,11 @@ begin
     tempTextListDrng1 := TStringList.Create;
     tempTextListDrng2 := TStringList.Create;
 
-    XMLDoc := TXMLDocument.Create(nil);
+    {XMLDoc := TXMLDocument.Create(nil);
     XMLDoc.Active := true;
 
-    iNode := XMLDoc.AddChild('Catchment');
+    iNode := XMLDoc.AddChild('Catchment');}
+    iNode := ownerNode.OwnerDocument.CreateNode('Catchment', ntElement);
     iNode.Attributes['id'] := id;
     iNode.Attributes['ObjIndex'] := intToStr(ObjIndex);
     iNode.Attributes['ObjType'] := intToStr(ObjType);
@@ -582,7 +583,7 @@ begin
     // write all land uses info
     if (assigned(landUseData)) then
     begin
-      tempNodeList := GSUtils.swmmInptFileLandUseToXML('LandUse', landUseData,
+      tempNodeList := GSUtils.swmmInptFileLandUseToXML(iNode,'LandUse', landUseData,
         luseTagList, 0, luseCodeList);
       FreeAndNil(luseCodeList);
       tempNode := iNode.AddChild('LandUses', '');
@@ -1061,9 +1062,10 @@ begin
     begin
       tempList.Add(frmsLuseCodes[0]);
       tempList.Add(frmsLuseCodes[1]);
-      tempNodeList := GSUtils.plrmGridDataToXML('RoadRiskCat', rdRiskCats,
-        rdRiskTagList, tempList);
+
       tempNode := iNode.AddChild('RoadRiskCategories', '');
+      tempNodeList := GSUtils.plrmGridDataToXML(tempNode,'RoadRiskCat', rdRiskCats,
+        rdRiskTagList, tempList);
       tempNode.Attributes['primSchmID'] := primSchmID;
       tempNode.Attributes['secSchmID'] := secSchmID;
       schmIDs[0] := primSchmID;
@@ -1079,9 +1081,10 @@ begin
     // write bmp implementation
     if (assigned(bmpImpl)) then
     begin
-      tempNodeList := GSUtils.plrmGridDataToXML('BmpImpl', bmpImpl,
-        bmpImplTagList, tempList2);
+
       tempNode := iNode.AddChild('BmpImplementation', '');
+      tempNodeList := GSUtils.plrmGridDataToXML(tempNode,'BmpImpl', bmpImpl,
+        bmpImplTagList, tempList2);
       for I := 0 to tempNodeList.Count - 1 do
         tempNode.ChildNodes.Add(tempNodeList[I]);
       tempNode.Resync;
@@ -1149,7 +1152,7 @@ begin
         tempHSCParam[1] := 0; // for dsp
         tempHSCParam[2] := 0; // for out
 
-        tempNodeList := GSUtils.plrmGridDataToXML('meth', tempDrnGridArr[I],
+        tempNodeList := GSUtils.plrmGridDataToXML(tempNode2, 'meth', tempDrnGridArr[I],
           parcelAndRdMethTagList, tempTextListDrngArr[I], tempListDrngArr[I]);
         for J := 0 to tempNodeList.Count - 1 do
         begin

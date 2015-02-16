@@ -79,22 +79,22 @@ type
     nodesTypeIndexes: array [1 .. MAXNODETYPES] of Integer;
     globalSchmID: Integer;
 
-    //curRdCondsPropsSchmID: Integer;
-    //rdCondsSchemes: TStringList;
-    //curhydPropsSchmID: Integer;
+    // curRdCondsPropsSchmID: Integer;
+    // rdCondsSchemes: TStringList;
+    // curhydPropsSchmID: Integer;
 
 
-//    hydPropsSchemes: TStringList;
-//    hydPropsRdInfSchemes: TStringList;
-//    // temporarily saves PLRM5RoadDrxnXtcs Form combo box schemes
-//    hydPropsRdDspSchemes: TStringList;
-//    // temporarily saves PLRM5RoadDrxnXtcs Form combo box schemes
-//    hydPropsRdOutSchemes: TStringList;
-//    // temporarily saves PLRM5RoadDrxnXtcs Form combo box schemes
-//    hydPropsPcInfSchemes: TStringList;
-//    // temporarily saves PLRM5RoadDrxnXtcs Form combo box schemes
-//    hydPropsPcOutSchemes: TStringList;
-//    // temporarily saves PLRM5RoadDrxnXtcs Form combo box schemes
+    // hydPropsSchemes: TStringList;
+    // hydPropsRdInfSchemes: TStringList;
+    // // temporarily saves PLRM5RoadDrxnXtcs Form combo box schemes
+    // hydPropsRdDspSchemes: TStringList;
+    // // temporarily saves PLRM5RoadDrxnXtcs Form combo box schemes
+    // hydPropsRdOutSchemes: TStringList;
+    // // temporarily saves PLRM5RoadDrxnXtcs Form combo box schemes
+    // hydPropsPcInfSchemes: TStringList;
+    // // temporarily saves PLRM5RoadDrxnXtcs Form combo box schemes
+    // hydPropsPcOutSchemes: TStringList;
+    // // temporarily saves PLRM5RoadDrxnXtcs Form combo box schemes
 
     ObjCatSecondaryFlag: Integer;
     // used to distinguish between different jucntion types introduced by PLRM
@@ -127,9 +127,9 @@ type
     function writeInitProjectToXML(filePath: String;
       scnName: String = ''): Boolean;
 
-    function ramSWTsToXML(nodeList: TStringList): IXMLNode;
-    function ramParcelBMPsSrcCtrlToXML(catchmentsList: TStringList): IXMLNode;
-    function ramRoadConditionToXML(catchmentsList: TStringList): IXMLNode;
+    function ramSWTsToXML(var ownerNode:IXMLNode;nodeList: TStringList): IXMLNode;
+    function ramParcelBMPsSrcCtrlToXML(var ownerNode:IXMLNode;catchmentsList: TStringList): IXMLNode;
+    function ramRoadConditionToXML(var ownerNode:IXMLNode;catchmentsList: TStringList): IXMLNode;
     function plrmToXML(): Boolean;
     function plrmGISToXML(catchList: TStringList;
       saveToFilePath: String): Boolean;
@@ -155,7 +155,7 @@ var
 implementation
 
 uses
-    _PLRMD3CatchProps,_PLRM7SWTs, Fmain, Uimport, Uglobals, GSIO, Uvalidate;
+  _PLRMD3CatchProps, _PLRM7SWTs, Fmain, Uimport, Uglobals, GSIO, Uvalidate;
 
 {$REGION 'PLRM class methods'}
 
@@ -163,8 +163,6 @@ constructor TPLRM.Create();
 var
   I: Integer;
   tempList: TStringList;
-  tempListGW: TStringList;
-  tempListGW2: TStringList;
   SearchRec: TSearchRec;
   widthCalcFactors: dbReturnFields;
 begin
@@ -175,12 +173,12 @@ begin
   gageID := '1';
   runType := 0;
   simTypeID := 2; // default is short simulation
-  //curhydPropsSchmID := -1;
-  //curRdCondsPropsSchmID := -1;
+  // curhydPropsSchmID := -1;
+  // curRdCondsPropsSchmID := -1;
   globalSchmID := -1;
   catchments := TStringList.Create;
-  //hydPropsSchemes := TStringList.Create;
-  //rdCondsSchemes := TStringList.Create;
+  // hydPropsSchemes := TStringList.Create;
+  // rdCondsSchemes := TStringList.Create;
   nodeAndCatchNames := TStringList.Create;
   createdBy := 'unknown';
 
@@ -195,17 +193,17 @@ begin
   for I := 1 to MAXNODETYPES do
     nodesTypeLists[I] := TStringList.Create;
 
-  if runType = 0 then // it is new scenario not opened from an input file
+  { if runType = 0 then // it is new scenario not opened from an input file
     // read in groundwater table formated as xml
     tempListGW := TStringList.Create();
-  for I := 0 to High(grnWaterXMLTags) do
+    for I := 0 to High(grnWaterXMLTags) do
     tempListGW.Add(grnWaterXMLTags[I]);
 
-  tempListGW2 := TStringList.Create();
-  tempListGW2.Add('GW'); // arbitrary for naming purposes only
-  grndWaterBlockXML := plrmGridDataToXML2('GroundWater',
+    tempListGW2 := TStringList.Create();
+    tempListGW2.Add('GW'); // arbitrary for naming purposes only
+    grndWaterBlockXML := plrmGridDataToXML2('GroundWater',
     getDBDataAsPLRMGridData('GroundWater'), tempListGW, tempListGW2,
-    tempListGW2)[0];
+    tempListGW2)[0]; }
   swmmDefaults := TStringList.Create();
   tempList := TStringList.Create();
   swmmDefaults := getSWMMDefaults('"6%"', tempList, swmmDefaults);
@@ -260,8 +258,8 @@ begin
   scenarioName := defaultScnName;
   scenarioNotes := 'Provide optional scenario notes';
   FreeAndNil(tempList);
-  FreeAndNil(tempListGW);
-  FreeAndNil(tempListGW2);
+  { FreeAndNil(tempListGW);
+    FreeAndNil(tempListGW2); }
 end;
 
 // TWords destructor - release storage
@@ -274,7 +272,7 @@ begin
   FreeAndNil(nodeAndCatchNames); // simple Stringlist has only strings
   FreeStringListObjects(catchments);
   FreeStringListObjects(nodes);
-  //FreeStringListObjects(rdCondsSchemes);
+  // FreeStringListObjects(rdCondsSchemes);
   FreeStringListObjects(projectLandUseCodes);
   FreeStringListObjects(projectLandUseNames);
 
@@ -284,14 +282,14 @@ begin
   if assigned(currentNode) then
     currentNode := nil; // memory already freed when freeing list of nodes
 
-  //inputFileXMLNode := nil;
+  // inputFileXMLNode := nil;
   for I := 1 to MAXNODETYPES do
     FreeAndNil(nodesTypeLists[I]);
 
   for I := 0 to MAXSWMMDEFBLKS do
   begin
     FreeAndNil(swmmDefaultBlocks[I]);
-    //swmmDefaultBlockXML[I] := nil;
+    // swmmDefaultBlockXML[I] := nil;
   end;
 
   // 2014 create obj to hold GIS data
@@ -440,7 +438,7 @@ begin
   Result := false;
 end;
 
-function TPLRM.ramSWTsToXML(nodeList: TStringList): IXMLNode;
+function TPLRM.ramSWTsToXML(var ownerNode:IXMLNode;nodeList: TStringList): IXMLNode;
 var
   XMLDoc: IXMLDocument;
   iNode: IXMLNode;
@@ -450,13 +448,14 @@ var
 const
   swtNames: array [0 .. 6] of string = ('NA', SWTDETBASIN, SWTINFBASIN,
     SWTWETBASIN, SWTGRNFILTR, SWTCRTFILTR, SWTTRTVAULT);
-  //ramSwtNames: array [0 .. 6] of string = ('NA', 'DryBasin', 'WetBasin',
-  //  'InfiltrationBasin', 'CartridgeFilter', 'TreatmentVault', 'BedFilter');
+  // ramSwtNames: array [0 .. 6] of string = ('NA', 'DryBasin', 'WetBasin',
+  // 'InfiltrationBasin', 'CartridgeFilter', 'TreatmentVault', 'BedFilter');
 
 begin
-  XMLDoc := TXMLDocument.Create(nil);
+  {XMLDoc := TXMLDocument.Create(nil);
   XMLDoc.Active := true;
-  iNode := XMLDoc.AddChild('CAPSWTs');
+  iNode := XMLDoc.AddChild('CAPSWTs');}
+  iNode := ownerNode.OwnerDocument.CreateNode('CAPSWTs', ntElement);
 
   // save dictionary contents as xml
   // for tempInt in UniqueSWTsDict.Keys do
@@ -466,9 +465,9 @@ begin
     if (tempSWT.objType = 7) then // then its a treatment node swt
     begin
       tempNode := iNode.AddChild('CAPBMPs', '');
-      {tempNode.Attributes['P_BMP'] := swtNames[tempInt];
-      tempNode.Attributes['P_BMPType'] := tempInt;
-      tempNode.Attributes['BMP'] := ramSwtNames[tempInt]; }
+      { tempNode.Attributes['P_BMP'] := swtNames[tempInt];
+        tempNode.Attributes['P_BMPType'] := tempInt;
+        tempNode.Attributes['BMP'] := ramSwtNames[tempInt]; }
 
       tempNode.Attributes['P_BMP'] := tempSWT.userName;
       tempNode.Attributes['P_BMPType'] := tempSWT.swtType;
@@ -478,7 +477,7 @@ begin
   Result := iNode;
 end;
 
-function TPLRM.ramParcelBMPsSrcCtrlToXML(catchmentsList: TStringList): IXMLNode;
+function TPLRM.ramParcelBMPsSrcCtrlToXML(var ownerNode:IXMLNode;catchmentsList: TStringList): IXMLNode;
 var
   XMLDoc: IXMLDocument;
   iNode: IXMLNode;
@@ -498,12 +497,13 @@ begin
 
   tempCatchArea := 0;
   tempCatchSFRArea := 0;
-  tempCatchMFRArea:=0;
+  tempCatchMFRArea := 0;
   tempCatchCicuArea := 0;
 
-  XMLDoc := TXMLDocument.Create(nil);
+  {XMLDoc := TXMLDocument.Create(nil);
   XMLDoc.Active := true;
-  iNode := XMLDoc.AddChild('CAPParcelBMPsAndSrcCtrls');
+  iNode := XMLDoc.AddChild('CAPParcelBMPsAndSrcCtrls');}
+  iNode := ownerNode.OwnerDocument.CreateNode('CAPParcelBMPsAndSrcCtrls', ntElement);
 
   tempKey1 := 'SfrBMP';
   tempKey2 := 'SfrSC';
@@ -601,7 +601,7 @@ begin
   Result := iNode;
 end;
 
-function TPLRM.ramRoadConditionToXML(catchmentsList: TStringList): IXMLNode;
+function TPLRM.ramRoadConditionToXML(var ownerNode:IXMLNode;catchmentsList: TStringList): IXMLNode;
 var
   XMLDoc: IXMLDocument;
   iNode: IXMLNode;
@@ -612,9 +612,10 @@ var
   tempStr, tempKey: String;
   I, J: Integer;
 begin
-  XMLDoc := TXMLDocument.Create(nil);
+  {XMLDoc := TXMLDocument.Create(nil);
   XMLDoc.Active := true;
-  iNode := XMLDoc.AddChild('CAPRoadConditions');
+  iNode := XMLDoc.AddChild('CAPRoadConditions');}
+  iNode := ownerNode.OwnerDocument.CreateNode('CAPRoadConditions', ntElement);
 
   // loop through catchments and prepare data summary for tahoe tools
   UniqueRdCondDict := TDictionary<String, Double>.Create();
@@ -667,16 +668,20 @@ function TPLRM.plrmToXML(): Boolean;
 var
   XMLDoc: IXMLDocument;
   iNode: IXMLNode;
+  iCatchmentsNode, iTrueNodes: IXMLNode;
   tempNodeArry: array of IXMLNode;
   tempNodeArry2: array of IXMLNode;
   tempNodeArry3: array of IXMLNode;
   tempNodeArry4: array of IXMLNode;
   tempNodeArry5: array of IXMLNode;
+  tempNodeList0: IXMLNodeList;
+  tempNode0: IXMLNode; // very temporary node
   tempNode3: IXMLNode;
   tempNode4: IXMLNode;
   tempNode4b: IXMLNode;
   tempNode6: IXMLNode;
   tempNode7: IXMLNode;
+  tempNode7b: IXMLNode;
   tempNode8: IXMLNode;
   tempNode9: IXMLNode;
   tempNode10: IXMLNode;
@@ -688,6 +693,9 @@ var
   catchmentValidationXMLNode: IXMLNode;
   nodeValidationXMLNode: IXMLNode;
   I: Integer;
+  tempCount: Integer;
+  tempListGW2: TStringList;
+  tempListGW: TStringList;
 begin
   SiMain.EnterMethod(Self, 'TPLRM.plrmToXML');
   Try
@@ -697,41 +705,18 @@ begin
     for I := 0 to High(swmmDefaultBlocks) do
       swmmDefaultBlocks[I] := getSwmmDefaultBlocks(I, intToStr(simTypeID));
 
-    tempNode6 := swmmDefaultsToXML(swmmDefaults, maxFloLength, widthPower,
-      widthFactor, 'SWMMDefaults'); // Imperv N, pervN, etc
-    tempNode7 := swmmInptFileLossesToXML();
-    tempNode8 := swmmInptFileLoadingsToXML();
-    tempNode9 := swmmInptFileBuildUpToXML();
-    tempNode10 := swmmInptFileWashOffToXML();
-    tempNode19b := swmmInptFileLandUseToXML();
+    {// loop through catchments and nodes to prepare data summary for tahoe tools
+    tempNode20 := ramRoadConditionToXML(iNode,catchments);
+    tempNode21 := ramParcelBMPsSrcCtrlToXML(iNode,catchments);
+    tempNode22 := ramSWTsToXML(iNode,nodes);   }
 
-    // 5.Prep catchments
-    SetLength(tempNodeArry, catchments.count);
-    for I := 0 to catchments.count - 1 do
-    begin
-      tempNodeArry[I] := (catchments.Objects[I] as TPLRMCatch)
-        .catchToXML(projectLandUseNames, projectLandUseCodes);
-    end;
-
-    // loop through catchments and nodes to prepare data summary for tahoe tools
-    tempNode20 := ramRoadConditionToXML(catchments);
-    tempNode21 := ramParcelBMPsSrcCtrlToXML(catchments);
-    tempNode22 := ramSWTsToXML(nodes);
-
-    // Prep nodes
-    SetLength(tempNodeArry2, nodes.count);
-    for I := 0 to nodes.count - 1 do
-    begin
-      tempNodeArry2[I] := (nodes.Objects[I] as TPLRMNode).nodeToXML;
-    end;
-
-    SetLength(tempNodeArry3, 4);
-    temptrFilePath := defaultDataDir + '\' + intToStr(metgridNum) + '_Temp.dat';
-    tempNodeArry3[0] := swmmInptFileTempTimeSeriesToXML('TempTSeries',
+    { SetLength(tempNodeArry3, 4);
+      temptrFilePath := defaultDataDir + '\' + intToStr(metgridNum) + '_Temp.dat';
+      tempNodeArry3[0] := swmmInptFileTempTimeSeriesToXML('TempTSeries',
       temptrFilePath);
-    tempNodeArry3[1] := swmmInptFileReportToXML();
-    tempNodeArry3[2] := swmmInptFileTagsToXML();
-    tempNodeArry3[3] := swmmInptFileMapToXML();
+      tempNodeArry3[1] := swmmInptFileReportToXML(iNode);
+      tempNodeArry3[2] := swmmInptFileTagsToXML(iNode);
+      tempNodeArry3[3] := swmmInptFileMapToXML(iNode); }
 
     XMLDoc := TXMLDocument.Create(nil);
     XMLDoc.Active := true;
@@ -742,41 +727,98 @@ begin
       (PLRMGISObj.PLRMGISRec.shpFilesDict.count < 1)) then
       iNode.ChildNodes.Add(PLRMGISObj.toXML());
 
-    iNode.AddChild('Project');
+    tempNode0 := iNode.AddChild('Project');
     // Add project meta data
-    iNode.ChildNodes['Project'].Attributes['dateCreated'] := dateCreated;
-    iNode.ChildNodes['Project'].Attributes['dateModified'] :=
-      DateTimeToStr(Now);
-    iNode.ChildNodes['Project'].Attributes['name'] := projUserName;
-    iNode.ChildNodes['Metgrid'].Text := intToStr(metgridNum);
-    iNode.ChildNodes['SimYears'].Text := FloatToStr(numSimYears);
-    iNode.ChildNodes['UserSWMMInpt'].Text := userSWMMInptFilePath;
-    iNode.ChildNodes['GenSWMMInpt'].Text := curSWMMInptFilePath;
-    iNode.ChildNodes['WorkingDir'].Text := wrkdir;
-    iNode.ChildNodes['CreatedBy'].Text := createdBy;
-    iNode.ChildNodes['LocationDescription'].Text := prjDescription;
-    iNode.ChildNodes['ScenName'].Text := scenarioName;
-    iNode.ChildNodes['ScenDescription'].Text := scenarioNotes;
+    tempNode0.Attributes['dateCreated'] := dateCreated;
+    tempNode0.Attributes['dateModified'] := DateTimeToStr(Now);
+    tempNode0.Attributes['name'] := projUserName;
+
+    tempNode0 := iNode.AddChild('Metgrid');
+    tempNode0.Text := intToStr(metgridNum);
+
+    tempNode0 := iNode.AddChild('SimYears');
+    tempNode0.Text := FloatToStr(numSimYears);
+
+    tempNode0 := iNode.AddChild('UserSWMMInpt');
+    tempNode0.Text := userSWMMInptFilePath;
+
+    tempNode0 := iNode.AddChild('GenSWMMInpt');
+    tempNode0.Text := curSWMMInptFilePath;
+
+    tempNode0 := iNode.AddChild('WorkingDir');
+    tempNode0.Text := wrkdir;
+
+    tempNode0 := iNode.AddChild('CreatedBy');
+    tempNode0.Text := createdBy;
+
+    tempNode0 := iNode.AddChild('LocationDescription');
+    tempNode0.Text := prjDescription;
+
+    tempNode0 := iNode.AddChild('ScenName');
+    tempNode0.Text := scenarioName;
+
+    tempNode0 := iNode.AddChild('ScenDescription');
+    tempNode0.Text := scenarioNotes;
 
     // 1,2,3,6,7,8. Write options, evap, temperature, aquifers, groundH2O, snowpacks
     for I := 0 to High(swmmDefaultBlocks) do
       swmmBlockLinesToXML(swmmDefaultBlocks[I],
         swmmDefaultBlockXMLTags[I], iNode);
+
     // add ground water
+    // if runType = 0 then // it is new scenario not opened from an input file
+    // read in groundwater table formated as xml
+    tempListGW := TStringList.Create();
+    for I := 0 to High(grnWaterXMLTags) do
+      tempListGW.Add(grnWaterXMLTags[I]);
+
+    tempListGW2 := TStringList.Create();
+    tempListGW2.Add('GW'); // arbitrary for naming purposes only
+    grndWaterBlockXML := plrmGridDataToXML2(iNode,'GroundWater',
+      getDBDataAsPLRMGridData('GroundWater'), tempListGW, tempListGW2,
+      tempListGW2)[0];
     iNode.ChildNodes.Add(grndWaterBlockXML);
 
-    // 4.Add raingages \
+    // 4.Add raingages
     gageFilePath := defaultDataDir + '\' + intToStr(metgridNum) + '_Precip.dat';
-    tempNode3 := swmmInptFileRainGageToXML(PLRMObj.gageID, gageFilePath);
+    // tempNodeList0 := swmmInptFileRainGageToXML(iNode,PLRMObj.gageID, gageFilePath);
+    // tempCount := tempNodeList0.Count;
+    // tempNode3 := tempNodeList0[0];
+    tempNode3 := swmmInptFileRainGageToXML(iNode, PLRMObj.gageID, gageFilePath);
     iNode.ChildNodes.Add(tempNode3);
 
     // Write PLRM Swmm default constants
+    tempNode6 := swmmDefaultsToXML(iNode, swmmDefaults, maxFloLength,
+      widthPower, widthFactor, 'SWMMDefaults'); // Imperv N, pervN, etc
     XMLDoc.Resync;
     XMLDoc.ChildNodes[0].ChildNodes.Add(tempNode6);
 
+    tempNode7 := swmmInptFileLossesToXML(iNode);
+    tempNode8 := swmmInptFileLoadingsToXML(iNode);
+    tempNode9 := swmmInptFileBuildUpToXML(iNode);
+    tempNode10 := swmmInptFileWashOffToXML(iNode);
+    tempNode19b := swmmInptFileLandUseToXML(iNode);
+
+    SetLength(tempNodeArry3, 4);
+    temptrFilePath := defaultDataDir + '\' + intToStr(metgridNum) + '_Temp.dat';
+    tempNodeArry3[0] := swmmInptFileTempTimeSeriesToXML(iNode, 'TempTSeries',
+      temptrFilePath);
+    tempNodeArry3[1] := swmmInptFileReportToXML(iNode);
+    tempNodeArry3[2] := swmmInptFileTagsToXML(iNode);
+    tempNodeArry3[3] := swmmInptFileMapToXML(iNode);
+
     // 5.Add catchments
-    XMLDoc.ChildNodes[0].AddChild('Catchments');
+    iCatchmentsNode := XMLDoc.ChildNodes[0].AddChild('Catchments');
     XMLDoc.Resync;
+
+    // 5.Prep catchments
+    SetLength(tempNodeArry, catchments.count);
+    for I := 0 to catchments.count - 1 do
+    begin
+      tempNodeArry[I] := (catchments.Objects[I] as TPLRMCatch)
+        .catchToXML(iCatchmentsNode, projectLandUseNames, projectLandUseCodes);
+    end;
+
     for I := 0 to catchments.count - 1 do
     begin
       if (assigned(tempNodeArry[I])) then
@@ -786,8 +828,16 @@ begin
     XMLDoc.Resync;
 
     // 9,10,11,12 Add nodes
-    XMLDoc.ChildNodes[0].AddChild('Nodes');
+    iTrueNodes := XMLDoc.ChildNodes[0].AddChild('Nodes');
     XMLDoc.Resync;
+
+    // Prep nodes
+    SetLength(tempNodeArry2, nodes.count);
+    for I := 0 to nodes.count - 1 do
+    begin
+      tempNodeArry2[I] := (nodes.Objects[I] as TPLRMNode).nodeToXML(iTrueNodes);
+    end;
+
     for I := 0 to nodes.count - 1 do
     begin
       if (assigned(tempNodeArry2[I])) then
@@ -800,7 +850,9 @@ begin
     XMLDoc.ChildNodes[0].ChildNodes.Add(tempNode7);
 
     // 18.Write Pollutants
-    XMLDoc.ChildNodes[0].ChildNodes.Add(swmmInptFilePollutantsToXML);
+    //XMLDoc.ChildNodes[0].ChildNodes.Add(swmmInptFilePollutantsToXML)
+    tempNode7b := swmmInptFilePollutantsToXML(iNode);
+    XMLDoc.ChildNodes[0].ChildNodes.Add(tempNode7b);
 
     // 19.Add project land uses
     tempNode4 := XMLDoc.ChildNodes[0].AddChild('LandUses');
@@ -834,29 +886,34 @@ begin
     XMLDoc.ChildNodes[0].ChildNodes.Add(tempNodeArry3[3]);
 
     // 30. Write CAP nodes
+    // loop through catchments and nodes to prepare data summary for tahoe tools
+    tempNode20 := ramRoadConditionToXML(iNode,catchments);
+    tempNode21 := ramParcelBMPsSrcCtrlToXML(iNode,catchments);
+    tempNode22 := ramSWTsToXML(iNode,nodes);
+
     XMLDoc.ChildNodes[0].ChildNodes.Add(tempNode20);
     XMLDoc.ChildNodes[0].ChildNodes.Add(tempNode21);
     XMLDoc.ChildNodes[0].ChildNodes.Add(tempNode22);
 
     // 31. Write Schemes
-//    if (rdCondsSchemes.count + hydPropsSchemes.count) > 0 then
-//    begin
-//      XMLDoc.ChildNodes[0].AddChild('Schemes');
-//      XMLDoc.Resync;
-//      // Write Road Condition Schemes
-//      for I := 0 to rdCondsSchemes.count - 1 do
-//        XMLDoc.ChildNodes[0].ChildNodes['Schemes'].ChildNodes.Add
-//          (tempNodeArry4[I]);
-//      // Write Hydro Properties Condition Schemes
-//      for I := 0 to hydPropsSchemes.count - 1 do
-//        XMLDoc.ChildNodes[0].ChildNodes['Schemes'].ChildNodes.Add
-//          (tempNodeArry5[I]);
-//    end;
+    // if (rdCondsSchemes.count + hydPropsSchemes.count) > 0 then
+    // begin
+    // XMLDoc.ChildNodes[0].AddChild('Schemes');
+    // XMLDoc.Resync;
+    // // Write Road Condition Schemes
+    // for I := 0 to rdCondsSchemes.count - 1 do
+    // XMLDoc.ChildNodes[0].ChildNodes['Schemes'].ChildNodes.Add
+    // (tempNodeArry4[I]);
+    // // Write Hydro Properties Condition Schemes
+    // for I := 0 to hydPropsSchemes.count - 1 do
+    // XMLDoc.ChildNodes[0].ChildNodes['Schemes'].ChildNodes.Add
+    // (tempNodeArry5[I]);
+    // end;
 
     // 32. Write Catchment and Node validation rules
     // create catchment and node validation xmlNodes
-    catchmentValidationXMLNode := catchmentValidationTblToXML();
-    nodeValidationXMLNode := nodeValidationTblToXML();
+    catchmentValidationXMLNode := catchmentValidationTblToXML(iNode);
+    nodeValidationXMLNode := nodeValidationTblToXML(iNode);
     XMLDoc.ChildNodes[0].ChildNodes.Add(catchmentValidationXMLNode);
     XMLDoc.ChildNodes[0].ChildNodes.Add(nodeValidationXMLNode);
 
@@ -880,21 +937,13 @@ function TPLRM.plrmGISToXML(catchList: TStringList;
   saveToFilePath: String): Boolean;
 var
   XMLDoc: IXMLDocument;
-  iNode: IXMLNode;
+  iNode, iCatchmentsNode: IXMLNode;
   tempNodeArry: array of IXMLNode;
   tempNode4: IXMLNode;
   tempNode4b: IXMLNode;
   I: Integer;
 begin
   Try
-
-    // 5.Prep catchments
-    SetLength(tempNodeArry, catchList.count);
-    for I := 0 to catchList.count - 1 do
-    begin
-      tempNodeArry[I] := (catchList.Objects[I] as TPLRMCatch)
-        .catchToXML(projectLandUseNames, projectLandUseCodes);
-    end;
 
     XMLDoc := TXMLDocument.Create(nil);
     XMLDoc.Active := true;
@@ -922,8 +971,17 @@ begin
     XMLDoc.Resync;
 
     // 5.Add catchments
-    XMLDoc.ChildNodes[0].AddChild('Catchments');
+    iCatchmentsNode := XMLDoc.ChildNodes[0].AddChild('Catchments');
     XMLDoc.Resync;
+
+    // 5.Prep catchments
+    SetLength(tempNodeArry, catchList.count);
+    for I := 0 to catchList.count - 1 do
+    begin
+      tempNodeArry[I] := (catchList.Objects[I] as TPLRMCatch)
+        .catchToXML(iCatchmentsNode, projectLandUseNames, projectLandUseCodes);
+    end;
+
     for I := 0 to catchList.count - 1 do
     begin
       if (assigned(tempNodeArry[I])) then
@@ -941,7 +999,7 @@ begin
     end;
 
     saveXmlDoc2(saveToFilePath, XMLDoc);
-    //XMLDoc := nil;
+    // XMLDoc := nil;
     Result := true;
   except
     on E: Exception do
@@ -986,7 +1044,7 @@ begin
     if (filePath = '') then
       filePath := defaultPrjDir;
     saveXmlDoc(filePath, XMLDoc, defaultXMLDeclrtn, defaultXslPath);
-    //XMLDoc := nil;
+    // XMLDoc := nil;
     Result := true;
   Except
     on E: Exception do
@@ -1023,7 +1081,7 @@ begin
     S.Assign(XMLDoc.XML);
     S.SaveToFile(xmlFilePath);
     S.Free;
-    //XMLDoc := nil;
+    // XMLDoc := nil;
   end;
   Result := true
 end;
@@ -1086,7 +1144,7 @@ begin
       end;
     end;
   finally
-    //XMLDoc := nil;
+    // XMLDoc := nil;
   end;
   Result := true
 end;
@@ -1119,7 +1177,7 @@ begin
       end;
     end;
   finally
-    //XMLDoc := nil;
+    // XMLDoc := nil;
   end;
   Result := true
 end;
@@ -1146,7 +1204,7 @@ begin
     metgridNum := StrToInt(rootNode.ChildNodes['MetGridNumber'].Text);
     simTypeID := StrToInt(rootNode.ChildNodes['SimTypeID'].Text);
   finally
-    //XMLDoc := nil;
+    // XMLDoc := nil;
   end;
   Result := true
 end;

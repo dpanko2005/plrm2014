@@ -54,7 +54,7 @@ uses
 
   constructor Create;
   destructor  Destroy; override;
-  function nodeToXML():IXMLNode;
+  function nodeToXML(var ownerNode:IXMLNode):IXMLNode;
   procedure xmlToNode(iNode:IXMLNode);
   //function validate():TStringList;
  end;
@@ -104,7 +104,7 @@ begin
   inherited Destroy;
 end;
 
-function TPLRMNode.nodeToXML():IXMLNode;
+function TPLRMNode.nodeToXML(var ownerNode:IXMLNode):IXMLNode;
 var
    xmlDoc : IXMLDocument;
    iNode : IXMLNode;
@@ -117,10 +117,11 @@ var
    I:Integer;
    dbProps :dbReturnFields3;
   begin
-    xmlDoc := TXMLDocument.Create(nil) ;
+    {xmlDoc := TXMLDocument.Create(nil) ;
     xmlDoc.Active := true;
 
-    iNode := xmlDoc.AddChild('Node');
+    iNode := xmlDoc.AddChild('Node');}
+    iNode := ownerNode.OwnerDocument.CreateNode('Node', ntElement);
     iNode.Attributes['id'] := string(swmmNode.id);
     iNode.Attributes['name'] := userName;
     iNode.Attributes['NodeType'] := intToStr(SWTType);
@@ -163,7 +164,7 @@ var
       //Read design properties
       if xmlTagsDgn = nil then
         xmlTagsDgn:= GSIO.lookUpValFrmTable('SWTDesignParameters','xmlTag',7,false,'WHERE (SWT_Code like '+ qryStrCode + ') ORDER BY SWTDesignParameters.displayOrder');
-      tempNodeList := GSUtils.plrmGridDataToXML('dngParam', designProps,xmlTagsDgn,dgnTblValColNum);
+      tempNodeList := GSUtils.plrmGridDataToXML(iNode,'dngParam', designProps,xmlTagsDgn,dgnTblValColNum);
       tempNode := iNode.AddChild('DesignParamters', '');
       for I := 0 to tempNodeList.Count - 1 do
         tempNode.ChildNodes.Add(tempNodeList[I]);
@@ -174,7 +175,7 @@ var
       begin
         if (xmlTagsEffl = nil)  then
           xmlTagsEffl:= GSIO.lookUpValFrmTable('SWTCECs','xmlTag',7,false,'WHERE (SWT_Code like '+ qryStrCode + ') ORDER BY SWTCECs.displayOrder');
-        tempNodeList2 := GSUtils.plrmGridDataToXML('efflQual', efflConcs,xmlTagsEffl,efflTblValColNum);
+        tempNodeList2 := GSUtils.plrmGridDataToXML(iNode,'efflQual', efflConcs,xmlTagsEffl,efflTblValColNum);
         tempNode2 := iNode.AddChild('EfflQuals', '');
         for I := 0 to tempNodeList2.Count - 1 do
           tempNode2.ChildNodes.Add(tempNodeList2[I]);
@@ -188,7 +189,7 @@ var
       begin
         if (xmlTagsEffl = nil)  then
           xmlTagsEffl:= GSIO.lookUpValFrmTable('SWTCECs','xmlTag',7,false,'WHERE (SWT_Code like '+ qryStrCode + ') ORDER BY SWTCECs.displayOrder');
-        tempNodeList3 := GSUtils.plrmGridDataToXML('efflQualFracs', cecValFracs,xmlTagsEffl,efflFracTblValColNum);
+        tempNodeList3 := GSUtils.plrmGridDataToXML(iNode,'efflQualFracs', cecValFracs,xmlTagsEffl,efflFracTblValColNum);
         tempNode2 := iNode.AddChild('EfflQualsFracs', '');
         for I := 0 to tempNodeList3.Count - 1 do
           tempNode2.ChildNodes.Add(tempNodeList3[I]);

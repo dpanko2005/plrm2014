@@ -1,8 +1,8 @@
 program PLRM2014;
 
 uses
-  SafeMMXE2Install in 'PLRMFinalGS\Units\SafeMMXE2Install.pas',
-  SafeMMXE2 in 'PLRMFinalGS\Units\SafeMMXE2.pas',
+  //SafeMMXE2Install in 'PLRMFinalGS\Units\SafeMMXE2Install.pas',
+  //SafeMMXE2 in 'PLRMFinalGS\Units\SafeMMXE2.pas',
   SiAuto,
   Windows,
   Forms,

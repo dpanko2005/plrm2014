@@ -125,8 +125,6 @@
 			<DelphiCompile Include="$(MainSource)">
 				<MainSource>MainSource</MainSource>
 			</DelphiCompile>
-			<DCCReference Include="PLRMFinalGS\Units\SafeMMXE2Install.pas"/>
-			<DCCReference Include="PLRMFinalGS\Units\SafeMMXE2.pas"/>
 			<DCCReference Include="Dabout.pas">
 				<Form>AboutBoxForm</Form>
 			</DCCReference>

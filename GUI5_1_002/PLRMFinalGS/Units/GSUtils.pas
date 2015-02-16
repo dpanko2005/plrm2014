@@ -125,7 +125,8 @@ function xmlToPlrmGridData(iNode: IXMLNode; tags: TStringList;
 function xmlAttachedChildNodesToPLRMGridData(parentNode: IXMLNode;
   childTagName: string; rowName: String; var data: PLRMGridData;
   tags: TStringList): PLRMGridData;
-function cdataTextToXML(txt: String; nodeName: String): IXMLNode;
+//function cdataTextToXML(txt: String; nodeName: String): IXMLNode;
+function cdataTextToXML(var ownerNode:IXMLNode;txt: String; nodeName: String): IXMLNode;
 function checkNCreateDirectory(folderPath: String): boolean;
 function getUserProjectOrScenName(xmlFilePath: String; nodeTag: String): String;
 function getDefaultCatchProps(): PLRMGridData;
@@ -135,62 +136,63 @@ function LoadXmlDoc(const FileName: WideString): IXMLDOMDocument;
 function makeSWMMSaveInpFile(inputFilePath: String;
   rptfilePath: String): boolean;
 function openAndLoadSWMMInptFilefromXML(xmlFilePath: String): boolean;
-function plrmGridDataToXML(nodeName: String; data: PLRMGridData;
+function plrmGridDataToXML(var ownerNode:IXMLNode;nodeName: String; data: PLRMGridData;
   tags: TStringList; valColNum: Integer): IXMLNodeList; overload;
 function createAndAttachChildNode(var parentNode: IXMLNode;
   childTagName: string; rowName: String; data: PLRMGridData; tags: TStringList;
   txtList: TStringList): IXMLNode;
-function plrmGridDataToXML(nodeName: String; data: PLRMGridData;
+function plrmGridDataToXML(var ownerNode:IXMLNode;nodeName: String; data: PLRMGridData;
   tags: TStringList; txtList: TStringList): IXMLNodeList; overload;
-function plrmGridDataToXML3(nodeName: String; rowNodeName: String;
+function plrmGridDataToXML3(var ownerNode:IXMLNode;nodeName: String; rowNodeName: String;
   data: PLRMGridData; attribTags: TStringList; txtValColumn: Integer): IXMLNode;
-function plrmGridDataToXML(nodeName: String; rowNodeName: String;
+function plrmGridDataToXML(var ownerNode:IXMLNode;nodeName: String; rowNodeName: String;
   data: PLRMGridData; attribTags: TStringList; txtList: TStringList)
   : IXMLNode; overload;
-function plrmGridDataToXML(topNodeLabel: String; data: PLRMGridData;
+function plrmGridDataToXML(var ownerNode:IXMLNode;topNodeLabel: String; data: PLRMGridData;
   tags: TStringList; txtList: TStringList; txtNodeLabelList: TStringList)
   : IXMLNodeList; overload;
-function plrmGridDataToXML2(topNodeLabel: String; data: PLRMGridData;
+function plrmGridDataToXML2(var ownerNode:IXMLNode;topNodeLabel: String; data: PLRMGridData;
   tags: TStringList; txtList: TStringList; txtNodeLabelList: TStringList)
   : IXMLNodeList; overload;
 procedure reNameProjOrScen(xmlFilePath: String; nodeTag: String;
   newName: String);
-function swmmInptFileRainGageToXML(gageID: String; filePath: String;
+function swmmInptFileRainGageToXML(var ownerNode:IXMLNode; gageID: String; filePath: String;
   gageType: String = 'VOLUME'; timeIntv: String = '1:00';
   snowCatch: String = '1.0'; dataSrcType: String = 'FILE'; param: String = 'IN')
-  : IXMLNode;
+  :   IXMLNode;
 function swmmInptFileSoilsToXML(nodeName: String; data: PLRMGridData;
   tags: TStringList; valColNum: Integer): IXMLNodeList;
 procedure saveXmlDoc(saveToPath: String; XMLDoc: IXMLDocument;
   insertStrLine0: String; insertStrLine1: String);
 procedure saveXmlDoc2(saveToPath: String; XMLDoc: IXMLDocument);
-function swmmInptFileBuildUpToXML(): IXMLNode;
+function swmmInptFileBuildUpToXML(var ownerNode:IXMLNode): IXMLNode;
 function swmmInptFileCurvesToXML(invtdCurveData: PLRMGridData;
   curveName: String; curveType: String; var outNode: IXMLNode): IXMLNode;
 function swmmInptFileXMLToCurves(invtdCurveData: PLRMGridData; iNode: IXMLNode)
   : PLRMGridData;
-function swmmInptFileLandUseToXML(nodeName: String; data: PLRMGridData;
+function swmmInptFileLandUseToXML(var ownerNode:IXMLNode;nodeName: String; data: PLRMGridData;
   tags: TStringList; valColNum: Integer): IXMLNodeList; overload;
-function swmmInptFileLandUseToXML(nodeName: String; data: PLRMGridData;
+function swmmInptFileLandUseToXML(var ownerNode:IXMLNode;nodeName: String; data: PLRMGridData;
   tags: TStringList; valColNum: Integer; luseCodeLst: TStringList)
   : IXMLNodeList; overload;
-function swmmInptFileLandUseToXML(): IXMLNode; overload;
-function swmmInptFileLoadingsToXML(): IXMLNode;
-function swmmInptFileLossesToXML(): IXMLNode;
-function swmmInptFileMapToXML(): IXMLNode;
-function swmmInptFilePollutantsToXML(): IXMLNode;
-function swmmInptFileTagsToXML(): IXMLNode;
-function swmmInptFileTempTimeSeriesToXML(const seriesName: String;
+function swmmInptFileLandUseToXML(var ownerNode:IXMLNode): IXMLNode; overload;
+function swmmInptFileLoadingsToXML(var ownerNode:IXMLNode): IXMLNode; overload;
+//function swmmInptFileLossesToXML(): IXMLNode;
+function swmmInptFileLossesToXML(var ownerNode:IXMLNode): IXMLNode;
+function swmmInptFileMapToXML(var ownerNode:IXMLNode): IXMLNode;
+function swmmInptFilePollutantsToXML(var ownerNode:IXMLNode): IXMLNode;
+function swmmInptFileTagsToXML(var ownerNode:IXMLNode): IXMLNode;
+function swmmInptFileTempTimeSeriesToXML(var ownerNode:IXMLNode;const seriesName: String;
   const dataFilePath: String; const seriesType: String = 'FILE'): IXMLNode;
-function swmmInptFileWashOffToXML(): IXMLNode;
-function swmmInptFileReportToXML(): IXMLNode;
+function swmmInptFileWashOffToXML(var ownerNode:IXMLNode): IXMLNode;
+function swmmInptFileReportToXML(var ownerNode:IXMLNode): IXMLNode;
 function swmmBlockLinesToXML(swmmLines: TStringList; nodeName: String;
   var outNode: IXMLNode): IXMLNode;
-function swmmDefaultsToXML(swmmDefaults: TStringList; maxFloLength: Double;
+function swmmDefaultsToXML(var ownerNode:IXMLNode; swmmDefaults: TStringList; maxFloLength: Double;
   widthPower: Double; widthFactor: Double; nodeName: String): IXMLNode;
 
-function catchmentValidationTblToXML(): IXMLNode;
-function nodeValidationTblToXML(): IXMLNode;
+function catchmentValidationTblToXML(var ownerNode:IXMLNode): IXMLNode;
+function nodeValidationTblToXML(var ownerNode:IXMLNode): IXMLNode;
 
 function Split(const delimiter: Char; Input: string;
   var ResultStrings: TStrings): TStrings;
@@ -351,7 +353,7 @@ uses
   Fmain, Uimport, Uglobals, GSIO, UProject, Uoutput, GSFileManage, GSCatchments;
 {$REGION 'XML methods'}
 
-function catchmentValidationTblToXML(): IXMLNode;
+function catchmentValidationTblToXML(var ownerNode:IXMLNode): IXMLNode;
 var
   data: PLRMGridData;
   xmlTagList: TStringList;
@@ -361,13 +363,13 @@ begin
   for I := 0 to High(validationXMLTags) do
     xmlTagList.add(validationXMLTags[I]);
   data := getCatchmentValidationRules();
-  Result := plrmGridDataToXML3('catchmentValidation', 'rule', data,
+  Result := plrmGridDataToXML3(ownerNode,'catchmentValidation', 'rule', data,
     xmlTagList, 5);
   xmlTagList.Free;
   // FreeAndNil(xmlTagList);
 end;
 
-function nodeValidationTblToXML(): IXMLNode;
+function nodeValidationTblToXML(var ownerNode:IXMLNode): IXMLNode;
 var
   data: PLRMGridData;
   xmlTagList: TStringList;
@@ -377,7 +379,7 @@ begin
   for I := 0 to High(validationXMLTags) do
     xmlTagList.add(validationXMLTags[I]);
   data := getNodeValidationRules();
-  Result := plrmGridDataToXML3('nodeValidation', 'rule', data, xmlTagList, 5);
+  Result := plrmGridDataToXML3(ownerNode,'nodeValidation', 'rule', data, xmlTagList, 5);
   xmlTagList.Free;
   // FreeAndNil(xmlTagList);
 end;
@@ -666,7 +668,7 @@ begin
   Result := invtdCurveData;
 end;
 
-function swmmInptFileBuildUpToXML(): IXMLNode;
+function swmmInptFileBuildUpToXML(var ownerNode:IXMLNode): IXMLNode;
 var
   data: PLRMGridData;
   root: IXMLNode;
@@ -676,9 +678,10 @@ var
   I: Integer;
 begin
   data := getDBDataAsPLRMGridData(15);
-  XMLDoc := TXMLDocument.Create(nil);
+  {XMLDoc := TXMLDocument.Create(nil);
   XMLDoc.Active := true;
-  root := XMLDoc.AddChild('BuildUp');
+  root := XMLDoc.AddChild('BuildUp');}
+  root := ownerNode.OwnerDocument.CreateNode('BuildUp', ntElement);
   for I := 0 to High(data) do
   begin
     tempNode1 := root.AddChild('BuildUpEntry');
@@ -695,7 +698,7 @@ begin
   Result := root;
 end;
 
-function swmmInptFileWashOffToXML(): IXMLNode;
+function swmmInptFileWashOffToXML(var ownerNode:IXMLNode): IXMLNode;
 var
   data: PLRMGridData;
   root: IXMLNode;
@@ -705,9 +708,10 @@ var
   I: Integer;
 begin
   data := getDBDataAsPLRMGridData(16);
-  XMLDoc := TXMLDocument.Create(nil);
+  {XMLDoc := TXMLDocument.Create(nil);
   XMLDoc.Active := true;
-  root := XMLDoc.AddChild('WashOff');
+  root := XMLDoc.AddChild('WashOff');}
+  root := ownerNode.OwnerDocument.CreateNode('WashOff', ntElement);
   for I := 0 to High(data) do
   begin
     tempNode1 := root.AddChild('WashOffEntry');
@@ -724,7 +728,7 @@ begin
   Result := root;
 end;
 
-function swmmInptFileLoadingsToXML(): IXMLNode;
+function swmmInptFileLoadingsToXML(var ownerNode:IXMLNode): IXMLNode;
 var
   s: TStringList;
 begin
@@ -732,21 +736,21 @@ begin
   s.add('[LOADINGS]');
   s.add(';;Subcatchment  	Pollutant       	Loading');
   s.add(';;--------------	----------------	----------]]>');
-  Result := cdataTextToXML(s.Text, 'Loadings');
+  Result := cdataTextToXML(ownerNode,s.Text, 'Loadings');
   s.Free;
 end;
 
-function swmmInptFileTagsToXML(): IXMLNode;
+function swmmInptFileTagsToXML(var ownerNode:IXMLNode): IXMLNode;
 var
   s: TStringList;
 begin
   s := TStringList.Create();
   s.add('[TAGS]');
-  Result := cdataTextToXML(s.Text, 'Tags');
+  Result := cdataTextToXML(ownerNode,s.Text, 'Tags');
   s.Free;
 end;
 
-function swmmInptFileTempTimeSeriesToXML(const seriesName: String;
+function swmmInptFileTempTimeSeriesToXML(var ownerNode:IXMLNode;const seriesName: String;
   const dataFilePath: String; const seriesType: String = 'FILE'): IXMLNode;
 var
   s: TStringList;
@@ -756,11 +760,11 @@ begin
   s.add(';;Name          	Type      	Path ');
   s.add(';;--------------	----------	--------------------');
   s.add(seriesName + '      ' + seriesType + '      "' + dataFilePath + '"');
-  Result := cdataTextToXML(s.Text, 'TimeSeries');
+  Result := cdataTextToXML(ownerNode,s.Text, 'TimeSeries');
   s.Free;
 end;
 
-function swmmInptFileReportToXML(): IXMLNode;
+function swmmInptFileReportToXML(var ownerNode:IXMLNode): IXMLNode;
 var
   s: TStringList;
 begin
@@ -771,11 +775,11 @@ begin
   s.add('SUBCATCHMENTS	NONE');
   s.add('NODES	NONE');
   s.add('LINKS	ALL');
-  Result := cdataTextToXML(s.Text, 'Report');
+  Result := cdataTextToXML(ownerNode,s.Text, 'Report');
   s.Free;
 end;
 
-function swmmInptFileMapToXML(): IXMLNode;
+function swmmInptFileMapToXML(var ownerNode:IXMLNode): IXMLNode;
 var
   s: TStringList;
 begin
@@ -783,11 +787,11 @@ begin
   s.add('[MAP]');
   s.add('DIMENSIONS 0.000 0.000 10000.000 10000.000');
   s.add('Units     	Feet ');
-  Result := cdataTextToXML(s.Text, 'Map');
+  Result := cdataTextToXML(ownerNode,s.Text, 'Map');
   s.Free;
 end;
 
-function swmmInptFileLossesToXML(): IXMLNode;
+function swmmInptFileLossesToXML(var ownerNode:IXMLNode): IXMLNode;
 var
   s: TStringList;
 begin
@@ -795,23 +799,24 @@ begin
   s.add('[LOSSES]');
   s.add(';;Link          	Inlet     	Outlet    	Average   	Flap Gate');
   s.add(';;--------------	----------	----------	----------	----------');
-  Result := cdataTextToXML(s.Text, 'Losses');
+  Result := cdataTextToXML(ownerNode,s.Text, 'Losses');
   s.Free;
 end;
 
-function cdataTextToXML(txt: String; nodeName: String): IXMLNode;
+function cdataTextToXML(var ownerNode:IXMLNode;txt: String; nodeName: String): IXMLNode;
 var
   root: IXMLNode;
   XMLDoc: IXMLDocument;
 begin
-  XMLDoc := TXMLDocument.Create(nil);
+  {XMLDoc := TXMLDocument.Create(nil);
   XMLDoc.Active := true;
-  root := XMLDoc.AddChild(nodeName);
+  root := XMLDoc.AddChild(nodeName);}
+  root := ownerNode.OwnerDocument.CreateNode(nodeName, ntElement);
   root.Text := txt;
   Result := root;
 end;
 
-function swmmDefaultsToXML(swmmDefaults: TStringList; maxFloLength: Double;
+function swmmDefaultsToXML(var ownerNode:IXMLNode; swmmDefaults: TStringList; maxFloLength: Double;
   widthPower: Double; widthFactor: Double; nodeName: String): IXMLNode;
 var
   root: IXMLNode;
@@ -824,9 +829,10 @@ var
   tempNode6: IXMLNode;
   XMLDoc: IXMLDocument;
 begin
-  XMLDoc := TXMLDocument.Create(nil);
+  {XMLDoc := TXMLDocument.Create(nil);
   XMLDoc.Active := true;
-  root := XMLDoc.AddChild(nodeName);
+  root := XMLDoc.AddChild(nodeName); }
+  root := ownerNode.OwnerDocument.CreateNode(nodeName, ntElement);
   tempNode := root.AddChild('ImpervN');
   tempNode.Text := swmmDefaults[0];
 
@@ -867,12 +873,13 @@ begin
 
 end;
 
-function swmmInptFileRainGageToXML(gageID: String; filePath: String;
+function swmmInptFileRainGageToXML(var ownerNode:IXMLNode; gageID: String; filePath: String;
   gageType: String = 'VOLUME'; timeIntv: String = '1:00';
   snowCatch: String = '1.0'; dataSrcType: String = 'FILE'; param: String = 'IN')
-  : IXMLNode;
+  :   IXMLNode;
 var
   root: IXMLNode;
+  tempNode1: IXMLNode;
   tempNode2: IXMLNode;
   XMLDoc: IXMLDocument;
 begin
@@ -880,25 +887,32 @@ begin
   try
     XMLDoc := TXMLDocument.Create(nil);
     XMLDoc.Active := true;
-    root := XMLDoc.AddChild('Raingages');
+    //root := XMLDoc.AddChild('Raingages');
+    root := ownerNode.OwnerDocument.CreateNode('Raingages', ntElement);
     root.Attributes['name'] := gageID;
     root.Attributes['type'] := gageType;
     root.Attributes['timeInterval'] := timeIntv;
     root.Attributes['snowCatch'] := snowCatch;
 
-    tempNode2 := root.ChildNodes['Raingage'].AddChild('DataSource');
+    tempNode1 := root.AddChild('Raingage');
+    tempNode2 := tempNode1.AddChild('DataSource');
     tempNode2.Text := filePath;
     tempNode2.Attributes['gageID'] := gageID;
     tempNode2.Attributes['type'] := dataSrcType;
     tempNode2.Attributes['param'] := param;
     Result := root;
+
+    {XMLDoc := nil;
+    root := nil;
+    tempNode1 := nil;
+    tempNode2 := nil;}
   finally
     //SiMain.LeaveMethod(Self, 'swmmInptFileRainGageToXML');
   end;
 end;
 
 // Values in valColNum column become XML text and all else are attributes if
-function swmmInptFileLandUseToXML(nodeName: String; data: PLRMGridData;
+function swmmInptFileLandUseToXML(var ownerNode:IXMLNode;nodeName: String; data: PLRMGridData;
   tags: TStringList; valColNum: Integer; luseCodeLst: TStringList)
   : IXMLNodeList;
 var
@@ -907,9 +921,11 @@ var
   tempNode: IXMLNode;
   XMLDoc: IXMLDocument;
 begin
-  XMLDoc := TXMLDocument.Create(nil);
+  {XMLDoc := TXMLDocument.Create(nil);
   XMLDoc.Active := true;
-  root := XMLDoc.AddChild(nodeName);
+  root := XMLDoc.AddChild(nodeName); }
+  root := ownerNode.OwnerDocument.CreateNode(nodeName, ntElement);
+
   // name at this node does not matter just need a list of nodes
   for I := 0 to High(data) do
   begin
@@ -923,7 +939,7 @@ begin
   Result := root.ChildNodes;
 end;
 
-function swmmInptFileLandUseToXML(nodeName: String; data: PLRMGridData;
+function swmmInptFileLandUseToXML(var ownerNode:IXMLNode;nodeName: String; data: PLRMGridData;
   tags: TStringList; valColNum: Integer): IXMLNodeList;
 var
   I, J: Integer;
@@ -931,9 +947,10 @@ var
   tempNode: IXMLNode;
   XMLDoc: IXMLDocument;
 begin
-  XMLDoc := TXMLDocument.Create(nil);
+  {XMLDoc := TXMLDocument.Create(nil);
   XMLDoc.Active := true;
-  root := XMLDoc.AddChild(nodeName);
+  root := XMLDoc.AddChild(nodeName);}
+  root := ownerNode.OwnerDocument.CreateNode(nodeName, ntElement);
   // name at this node does not matter just need a list of nodes
   for I := 0 to High(data) do
   begin
@@ -947,7 +964,7 @@ begin
   Result := root.ChildNodes;
 end;
 
-function swmmInptFileLandUseToXML(): IXMLNode;
+function swmmInptFileLandUseToXML(var ownerNode:IXMLNode): IXMLNode;
 var
   data: PLRMGridData;
   root: IXMLNode;
@@ -956,9 +973,10 @@ var
   I: Integer;
 begin
   data := getDBDataAsPLRMGridData(17);
-  XMLDoc := TXMLDocument.Create(nil);
+  {XMLDoc := TXMLDocument.Create(nil);
   XMLDoc.Active := true;
-  root := XMLDoc.AddChild('ParcelLandUses');
+  root := XMLDoc.AddChild('ParcelLandUses'); }
+  root := ownerNode.OwnerDocument.CreateNode('ParcelLandUses', ntElement);
   for I := 0 to High(data) do
   begin
     tempNode1 := root.AddChild('LandUse');
@@ -1014,7 +1032,7 @@ begin
   Result := root.ChildNodes;
 end;
 
-function swmmInptFilePollutantsToXML(): IXMLNode;
+function swmmInptFilePollutantsToXML(var ownerNode:IXMLNode): IXMLNode;
 var
   data: PLRMGridData;
   textList, attribTags: TStringList;
@@ -1032,7 +1050,7 @@ begin
     for I := 0 to High(pollutantTags) do
       attribTags.add(pollutantTags[I]);
     // pollutant name to be used as xml node text
-    Result := plrmGridDataToXML('Pollutants', 'Pollutant', data, attribTags,
+    Result := plrmGridDataToXML(ownerNode,'Pollutants', 'Pollutant', data, attribTags,
       textList);
   finally
     // FreeAndNil(textList);
@@ -1043,7 +1061,7 @@ begin
 end;
 
 // Values in txtList become XML text and all else are attributes
-function plrmGridDataToXML(nodeName: String; rowNodeName: String;
+function plrmGridDataToXML(var ownerNode:IXMLNode;nodeName: String; rowNodeName: String;
   data: PLRMGridData; attribTags: TStringList; txtList: TStringList): IXMLNode;
 var
   I, J: Integer;
@@ -1051,9 +1069,10 @@ var
   tempNode: IXMLNode;
   XMLDoc: IXMLDocument;
 begin
-  XMLDoc := TXMLDocument.Create(nil);
+  {XMLDoc := TXMLDocument.Create(nil);
   XMLDoc.Active := true;
-  root := XMLDoc.AddChild(nodeName);
+  root := XMLDoc.AddChild(nodeName);}
+  root := ownerNode.OwnerDocument.CreateNode(nodeName, ntElement);
   for I := 0 to High(data) do
   begin
     tempNode := root.AddChild(rowNodeName);
@@ -1075,7 +1094,7 @@ var
   tempNodeList: IXMLNodeList;
 begin
   tempNode := parentNode.AddChild(childTagName, '');
-  tempNodeList := GSUtils.plrmGridDataToXML(rowName, data, tags, txtList);
+  tempNodeList := GSUtils.plrmGridDataToXML(parentNode,rowName, data, tags, txtList);
   for I := 0 to tempNodeList.Count - 1 do
   begin
     tempNode.ChildNodes.add(tempNodeList[I]);
@@ -1102,7 +1121,7 @@ begin
   Result := data;
 end;
 
-function plrmGridDataToXML3(nodeName: String; rowNodeName: String;
+function plrmGridDataToXML3(var ownerNode:IXMLNode;nodeName: String; rowNodeName: String;
   data: PLRMGridData; attribTags: TStringList; txtValColumn: Integer): IXMLNode;
 var
   I, J: Integer;
@@ -1110,9 +1129,10 @@ var
   tempNode: IXMLNode;
   XMLDoc: IXMLDocument;
 begin
-  XMLDoc := TXMLDocument.Create(nil);
+  {XMLDoc := TXMLDocument.Create(nil);
   XMLDoc.Active := true;
-  root := XMLDoc.AddChild(nodeName);
+  root := XMLDoc.AddChild(nodeName);}
+  root := ownerNode.OwnerDocument.CreateNode(nodeName, ntElement);
   for I := 0 to High(data) do
   begin
     tempNode := root.AddChild(rowNodeName);
@@ -1125,7 +1145,7 @@ begin
 end;
 
 // Values in txtList become XML text and all else are attributes
-function plrmGridDataToXML(nodeName: String; data: PLRMGridData;
+function plrmGridDataToXML(var ownerNode:IXMLNode;nodeName: String; data: PLRMGridData;
   tags: TStringList; txtList: TStringList): IXMLNodeList;
 var
   I, J: Integer;
@@ -1134,9 +1154,10 @@ var
   XMLDoc: IXMLDocument;
 begin
 
-  XMLDoc := TXMLDocument.Create(nil);
+  {XMLDoc := TXMLDocument.Create(nil);
   XMLDoc.Active := true;
-  root := XMLDoc.AddChild(nodeName);
+  root := XMLDoc.AddChild(nodeName);  }
+   root := ownerNode.OwnerDocument.CreateNode(nodeName, ntElement);
   // name at this node does not matter just need a list of nodes
   for I := 0 to High(data) do
   begin
@@ -1208,7 +1229,7 @@ begin
 end;
 
 // Values in txtList become XML text and txtNodeLabelList are used as node labels, all else are attributes
-function plrmGridDataToXML(topNodeLabel: String; data: PLRMGridData;
+function plrmGridDataToXML(var ownerNode:IXMLNode;topNodeLabel: String; data: PLRMGridData;
   tags: TStringList; txtList: TStringList; txtNodeLabelList: TStringList)
   : IXMLNodeList;
 var
@@ -1218,9 +1239,10 @@ var
   XMLDoc: IXMLDocument;
 begin
 
-  XMLDoc := TXMLDocument.Create(nil);
+  {XMLDoc := TXMLDocument.Create(nil);
   XMLDoc.Active := true;
-  root := XMLDoc.AddChild(topNodeLabel);
+  root := XMLDoc.AddChild(topNodeLabel); }
+   root := ownerNode.OwnerDocument.CreateNode(topNodeLabel, ntElement);
   // name at this node does not matter just need a list of nodes
   for I := 0 to High(data) do
   begin
@@ -1233,7 +1255,7 @@ begin
 end;
 
 // Values in txtList become XML text and txtNodeLabelList are used as node labels, all else are attributes
-function plrmGridDataToXML2(topNodeLabel: String; data: PLRMGridData;
+function plrmGridDataToXML2(var ownerNode:IXMLNode;topNodeLabel: String; data: PLRMGridData;
   tags: TStringList; txtList: TStringList; txtNodeLabelList: TStringList)
   : IXMLNodeList;
 var
@@ -1243,9 +1265,10 @@ var
   XMLDoc: IXMLDocument;
 begin
 
-  XMLDoc := TXMLDocument.Create(nil);
+  {XMLDoc := TXMLDocument.Create(nil);
   XMLDoc.Active := true;
-  root := XMLDoc.AddChild(topNodeLabel);
+  root := XMLDoc.AddChild(topNodeLabel); }
+   root := ownerNode.OwnerDocument.CreateNode(topNodeLabel, ntElement);
   // name at this node does not matter just need a list of nodes
   for I := 0 to High(data) do
   begin
@@ -1258,7 +1281,7 @@ begin
 end;
 
 // Values in valColNum column become attributes and column o becomes XML text
-function plrmGridDataToXML(nodeName: String; data: PLRMGridData;
+function plrmGridDataToXML(var ownerNode:IXMLNode;nodeName: String; data: PLRMGridData;
   tags: TStringList; valColNum: Integer): IXMLNodeList;
 var
   I: Integer;
@@ -1267,9 +1290,10 @@ var
   XMLDoc: IXMLDocument;
 begin
 
-  XMLDoc := TXMLDocument.Create(nil);
+  {XMLDoc := TXMLDocument.Create(nil);
   XMLDoc.Active := true;
-  root := XMLDoc.AddChild(nodeName);
+  root := XMLDoc.AddChild(nodeName);}
+  root := ownerNode.OwnerDocument.CreateNode(nodeName, ntElement);
   // name at this node does not matter just need a list of nodes
   for I := 0 to High(data) do
   begin
