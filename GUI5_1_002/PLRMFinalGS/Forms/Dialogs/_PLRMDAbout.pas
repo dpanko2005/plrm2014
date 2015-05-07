@@ -111,7 +111,7 @@ Disclaimer2014 =
 procedure TAboutPLRMBoxForm.FormCreate(Sender: TObject);
 begin
 lblAboutVer.Caption := PLRMVERSION;
-  Label4.Caption := 'Pollutant Load Reduction Model (PLRM)'#10'Version 2.0';
+  Label4.Caption := 'Pollutant Load Reduction Model (PLRM)'#10'Version 2.1';
   LinkLabel1.Caption := '<a href="http://www.tiims.org/TIIMS-Sub-Sites/PLRM.aspx">www.tiims.org</a>';
   LinkLabel1.Hint := 'http://www.tiims.org/TIIMS-Sub-Sites/PLRM.aspx';
   {Memo1.Lines.Add(Disclaimer);

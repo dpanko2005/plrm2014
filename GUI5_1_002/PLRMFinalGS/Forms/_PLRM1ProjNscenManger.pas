@@ -184,6 +184,21 @@ begin
           tbxProjDescription.Text := PLRMObj.prjDescription;
           tbxMetGrid.Text := PLRMObj.gageID;
           tbxDB.Text := PLRMObj.dbPath;
+
+         // Populate project specific-info
+          Caption := PLRM2b_TITLE;
+          tbxProjName.Text := PLRMObj.projUserName;
+          tbxEIPNumber.Text := PLRMObj.eipNum;
+          tbxImplAgency.Text := PLRMObj.implAgency;
+          tbxProjDescription.Text := PLRMObj.prjDescription;
+          tbxMetGrid.Text := intToStr(PLRMObj.metgridNum);
+          tbxDB.Text := PLRMObj.dbPath;
+
+         { if PLRMObj.simTypeID = 2 then
+            rgpSimLength.Buttons[0].Checked := true
+          else
+            rgpSimLength.Buttons[1].Checked := true;    }
+
           grpbxScnInfo.Hide; // hide the scenario information
           btnNext.Hide; // hide the next button
           btnBack.Hide; // hide the back button
@@ -194,6 +209,75 @@ begin
         Free;
       end;
   end
+  { if activeNode.Level = 0 then // at the project level
+    begin
+    prjNode := activeNode;
+    // Load project info from project xml file
+    prjID := PLRMTree.getPrjIDFromUserName(prjNode.Text);
+    prjFolderPath := defaultPrjDir + '\' + prjID;
+    //prjFilePath := prjFolderPath + '\' + prjID + '.xml';
+    //PLRMObj.loadFromPrjXML(prjFilePath);
+
+    // assign new project name
+    newPrjID := GetNextPrjID();
+    newPath := defaultPrjDir + '\' + newPrjID;
+
+    newPath := CopyFolderContents(prjFolderPath, newPath);
+    tmpUserName := 'CopyOf' + prjNode.Text;
+
+    // Add new project to the treeview
+    newPrjNode := TreeView1.Items.Add(RootNode, tmpUserName);
+    activeNode := newPrjNode;
+    // store in the form object so can be accessed by the project editor form
+
+    // Load all available scenarios for the new project into the TreeView
+    prjIdx := PLRMTree.PID.IndexOf(prjID);
+    tmpSL := (PLRMTree.PrjNames.Objects[prjIdx] as TStringList);
+    for I := 0 to tmpSL.Count - 1 do
+    begin
+    tmpScnName := tmpSL[I];
+    TreeView1.Items.AddChild(newPrjNode, tmpScnName);
+    end;
+
+    // Delete copied Project.xml file because a new one will be created
+    prjFilePath := newPath + '\' + prjID + '.xml';
+    deleteFileGSNoConfirm(prjFilePath);
+    // Update PLRMTree
+    PLRMTree.copyPrj(prjID, newPrjID, tmpUserName);
+
+    // Load project parameters from copied project
+    prjFilePath := prjFolderPath + '\' + prjID + '.xml';
+    PLRMObj.loadFromPrjXML(prjFilePath);
+
+    //ProjScenMangerFrm.Hide;
+    // Launch project scenario editor form
+    ProjNscenEditorFrm := TProjNscenEditor.Create(Application);
+    with ProjNscenEditorFrm do
+    try
+    // Populate project specific-info
+    Caption := PLRM2b_TITLE;
+    tbxProjName.Text := PLRMObj.projUserName;
+    tbxEIPNumber.Text := PLRMObj.eipNum;
+    tbxImplAgency.Text := PLRMObj.implAgency;
+    tbxProjDescription.Text := PLRMObj.prjDescription;
+    tbxMetGrid.Text := intToStr(PLRMObj.metgridNum);
+    tbxDB.Text := PLRMObj.dbPath;
+
+    if PLRMObj.simTypeID = 2 then
+    rgpSimLength.Buttons[0].Checked := true
+    else
+    rgpSimLength.Buttons[1].Checked := true;
+
+    grpbxScnInfo.Hide; // hide the scenario information
+    btnNext.Hide; // hide the next button
+    btnBack.Hide; // hide the back button
+    // tempInt := ProjNscenEditorFrm.ShowModal;
+    ProjNscenEditorFrm.ShowModal;
+    finally
+    Free;
+    end;
+    //ProjScenMangerFrm.Show;
+    end }
   else // it is a scenario node; copy within current project folder
   begin
     scnNode := activeNode;
@@ -228,7 +312,7 @@ begin
 
     // Save information to XML doc
     PLRMObj.scenarioXMLFilePath := scnFilePath;
-    if FileExists(PLRMObj.scenarioXMLFilePath) = True then // update
+    if FileExists(PLRMObj.scenarioXMLFilePath) = true then // update
     begin
       PLRMObj.updateScenarioXML(PLRMObj.scenarioXMLFilePath);
       // 2014 path to CAP csv file
@@ -305,7 +389,7 @@ begin
 
     PLRMObj.scenarioXMLFilePath := scnFilePath;
     PLRMObj.writeInitProjectToXML(PLRMObj.scenarioXMLFilePath, scnName);
-    TreeView1.AutoExpand := True;
+    TreeView1.AutoExpand := true;
   end
   else
     TreeView1.Items.Delete(activeNode);
@@ -353,9 +437,10 @@ begin
       begin
         PLRMTree.deleteScn(prjID, scenName, scenName);
         TreeView1.Items.Delete(newScnNode);
-        if DirectoryExists(defaultPrjDir + '\' + prjID + '\' + scenName + '\') then
+        if DirectoryExists(defaultPrjDir + '\' + prjID + '\' + scenName + '\')
+        then
         begin
-           RemoveDir(defaultPrjDir + '\' + prjID + '\' + scenName + '\') ;
+          RemoveDir(defaultPrjDir + '\' + prjID + '\' + scenName + '\');
         end;
       end
     end
@@ -379,9 +464,9 @@ begin
   statBar.SimpleText := PLRMVERSION;
   Self.Caption := PLRM1_TITLE;
 
-  TreeView1.ReadOnly := True;
+  TreeView1.ReadOnly := true;
   FolderLookAddUserName(defaultPrjDir, RootNode, TreeView1);
-  TreeView1.AutoExpand := True;
+  TreeView1.AutoExpand := true;
 end;
 
 procedure TProjNscenManager.TreeView1Click(Sender: TObject);
@@ -485,7 +570,7 @@ begin
 
     // Check for folders, if they do not exist create them
     scnFolderPath := prjFolderPath + '\' + scnID;
-    if checkNCreateDirectory(prjFolderPath) = True then
+    if checkNCreateDirectory(prjFolderPath) = true then
       checkNCreateDirectory(scnFolderPath);
 
     scnFilePath := scnFolderPath + '\' + scnID + '.xml';
@@ -532,16 +617,16 @@ begin
           // Force working directory to handle the case where the scenario was copied
           PLRMObj.wrkdir := scnFolderPath;
 
-          if (openAndLoadSWMMInptFilefromXML(scnFilePath) = True) then
+          if (openAndLoadSWMMInptFilefromXML(scnFilePath) = true) then
             PLRMObj.LinkObjsToSWMMObjs();
           // change specific options from ini file
           with MapForm.Map.Options do
           begin
-            ShowSubcatchIDs := True;
-            ShowNodeIDs := True;
+            ShowSubcatchIDs := true;
+            ShowNodeIDs := true;
             ShowNodeSymbols := False;
             ShowNodeBorder := False;
-            ShowNodeValues := True;
+            ShowNodeValues := true;
             SubcatchSize := 30;
             NotationSize := 12;
             NodeSize := 20;
@@ -611,7 +696,7 @@ begin
       end;
     end;
     if matchCount = 0 then
-      finished := True; // no matches, can now exit
+      finished := true; // no matches, can now exit
   until finished;
   Result := prjName;
 end;
@@ -649,7 +734,7 @@ begin
       end;
     end;
     if matchCount = 0 then
-      finished := True; // no matches, can now exit
+      finished := true; // no matches, can now exit
   until finished;
   Result := scnID;
 end;
@@ -685,7 +770,7 @@ end;
 // Added Jan 5 2010 as fix for #235
 procedure getProjManagerWithMsg();
 begin
-  if PLRMObj.hasActvScn = True then
+  if PLRMObj.hasActvScn = true then
     exit;
   // ShowMessage('You are currently working outside a Project and a Scenario' + #13#10 + 'Please create or load a scenario to proceed');
   { ShowMessage('You are working outside a Project and a Scenario.' + #13#10 +
