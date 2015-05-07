@@ -3,7 +3,7 @@ program PLRM2014;
 uses
   //SafeMMXE2Install in 'PLRMFinalGS\Units\SafeMMXE2Install.pas',
   //SafeMMXE2 in 'PLRMFinalGS\Units\SafeMMXE2.pas',
-  SiAuto,
+  //SiAuto,
   Windows,
   Forms,
   Dialogs,
@@ -145,10 +145,10 @@ uses
 {$R *.RES}
 
 begin
-  Si.Enabled := True;
+  //Si.Enabled := True;
   //Si.Connections := 'file(filename=c:\log.sil)';
-  Si.Connections := 'tcp()';
-  SiMain.EnterProcess('MainPLRMApplication');
+  //Si.Connections := 'tcp()';
+  //SiMain.EnterProcess('MainPLRMApplication');
 
 try
 Application.Initialize;
@@ -159,7 +159,7 @@ Application.Initialize;
   Application.CreateForm(TPLRMGISProgrsDlg, PLRMGISProgrsDlg);
   Application.Run;
 finally
-    SiMain.LeaveProcess('MainPLRMApplication');
+    //SiMain.LeaveProcess('MainPLRMApplication');
 end;
 
 end.

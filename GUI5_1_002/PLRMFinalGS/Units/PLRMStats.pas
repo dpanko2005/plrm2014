@@ -1041,8 +1041,13 @@ begin
         inc(Z);
       end;
     end;
+
+    //workaround for 0 acre infiltration facility sizing problem which results in
+    //fewer rows in swmm results at "Subcatchment Runoff Summary" section where isInf is left out vs
+    //"Subcatchment Washoff Summary" which shows everything so start out with larger array than needed
+    //by multiplying by 2. next setLength will set to actual length
     // reset now that we know actual number of land uses in catchment
-    SetLength(catOut.annLoadsLUse, catOut.vollandUses.Count + 1, NUMCATCHRSLTS);
+    SetLength(catOut.annLoadsLUse, catOut.vollandUses.Count*2 + 1, NUMCATCHRSLTS);
 
     Z := 0;
     // zero out loads from previous catchments

@@ -535,7 +535,7 @@ begin
     tempCatchArea := tempCatchArea + tempCatch.area;
     // tabulate unique road condition score areas
     tempPLRMTbl := tempCatch.frm6of6SgBMPImplData;
-    if (tempCatch.frm6of6AreasData.luseAreaNImpv[0 + luseOffset, 0] <> '') then
+    if ((Length(tempCatch.frm6of6AreasData.luseAreaNImpv)<>0 )and (tempCatch.frm6of6AreasData.luseAreaNImpv[0 + luseOffset, 0] <> '')) then
     begin
       tempCatchSFRArea := tempCatchSFRArea +
         StrToFloat(tempCatch.frm6of6AreasData.luseAreaNImpv[0 + luseOffset, 0]);
@@ -551,7 +551,7 @@ begin
         0]) / 100);
       UniqueParcelsDict[tempKey2] := tempDbl;
     end;
-    if (tempCatch.frm6of6AreasData.luseAreaNImpv[1 + luseOffset, 0] <> '') then
+    if ((Length(tempCatch.frm6of6AreasData.luseAreaNImpv)<>0 )and (tempCatch.frm6of6AreasData.luseAreaNImpv[1 + luseOffset, 0] <> '')) then
     begin
       tempCatchMFRArea := tempCatchMFRArea +
         StrToFloat(tempCatch.frm6of6AreasData.luseAreaNImpv[1 + luseOffset, 0]);
@@ -567,7 +567,7 @@ begin
         0]) / 100);
       UniqueParcelsDict[tempKey4] := tempDbl;
     end;
-    if (tempCatch.frm6of6AreasData.luseAreaNImpv[2 + luseOffset, 0] <> '') then
+    if ((Length(tempCatch.frm6of6AreasData.luseAreaNImpv)<>0 )and (tempCatch.frm6of6AreasData.luseAreaNImpv[2 + luseOffset, 0] <> '')) then
     begin
       tempCatchCicuArea := tempCatchCicuArea +
         StrToFloat(tempCatch.frm6of6AreasData.luseAreaNImpv[2 + luseOffset, 0]);
